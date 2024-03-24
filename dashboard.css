@@ -1,0 +1,207 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+body {
+    background-color: #052355;
+}
+
+.menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 20%;
+    height: 100%;
+    background-color: #000F22;
+}
+
+    .menu p {
+        color: #ffffff;
+    }
+
+.admin {
+    position: relative;
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5vw;
+}
+
+    .admin img {
+        max-width: 8.5vw;
+        max-height:  8.5vw;
+    }
+
+    .admin h1 {
+        color: #C2E8FF;
+        margin-bottom: 0;
+        padding-right: 29%;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.7vw;
+    }
+
+    .admin p {
+        position: absolute;
+        top: 93%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-image: url('bg-img/Rectangle-2.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 9.5vw;
+        text-align: center;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.6vw;
+        padding: 3vw;
+        color: #000F22;
+    }
+
+.buttons, .logout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+    .buttons input {
+        text-align: left;
+        padding: 0.3vw;
+        width: 15vw;
+        background-color: #000F22;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        border-color: #35659f;
+        border-width: 3px;
+        color: #ffffff;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.3vw;
+    }
+
+        .buttons input:hover {
+            background-color: #f79256;
+            color: #000F22;
+        }
+
+    .logout input {
+        margin-top: 8vw;
+        text-align: center;
+        padding: 0.5vw;
+        width: 15vw;
+        background-color: #C2E8FF;
+        color: #000F22;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1vw;
+        font-weight: bold;
+    }
+
+        .logout input:hover {
+            background-color: #f79256;
+            color: #000F22;
+        }
+
+.rightSide h1 {
+    text-align: right;
+    margin-bottom: 0;
+    padding-top: 1.3vw;
+    padding-right: 3.2vw;
+    color: #C2E8FF;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 680;
+    font-size: 1.7vw;
+}
+
+    .rightSide p {
+        text-align: right;
+        margin-top: 0;
+        padding-right: 3.2vw;
+        color: #C2E8FF;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 680;
+        font-size: 1.6vw;
+    }
+
+    .icon-white {
+        color: white;
+        margin-top: 1vw;
+        margin-left: 1vw;
+        margin-bottom: 0;
+    }
+    
+    @media screen and (max-width: 768px) {
+        .menu {
+            width: 40%;
+            transition: width 0.3s ease; /* Smooth transition for width */
+        }
+    
+        .admin h1,
+        .admin p,
+        .buttons input,
+        .logout input,
+        .rightSide h1,
+        .rightSide p {
+            font-size: 2vw;
+            transition: font-size 0.3s ease; /* Smooth transition for font size */
+        }
+
+        .buttons input {
+            width: 20vw;
+        }
+    }
+    
+    @media screen and (max-width: 576px) {
+        .menu {
+            width: 40%;
+        }
+    
+        .admin h1,
+        .admin p,
+        .buttons input,
+        .logout input,
+        .rightSide h1,
+        .rightSide p {
+            font-size: 2.5vw;
+        }
+
+        .buttons input {
+            width: 20vw;
+        }
+    }
+    
+    @media screen and (max-width: 480px) {
+        .menu {
+            width: 45%;
+        }
+    
+        .admin h1,
+        .admin p,
+        .buttons input,
+        .logout input,
+        .rightSide h1,
+        .rightSide p {
+            font-size: 3vw;
+        }
+
+        .buttons input {
+            width: 25vw;
+        }
+    }
+    
+    @media screen and (max-width: 360px) {
+        .menu {
+            width: 40%;
+        }
+    
+        .admin h1,
+        .admin p,
+        .buttons input,
+        .logout input,
+        .rightSide h1,
+        .rightSide p {
+            font-size: 5vw;
+        }
+    }
+    

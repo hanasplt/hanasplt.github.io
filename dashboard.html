@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>DASHBOARD</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="dashboard.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    </head>
+
+    <body>
+        <div class="menu">
+            <i id="menuIcon" class="fas fa-bars icon-white"></i>
+            <div class="admin">
+                <h1>Welcome,</h1>
+                <img src="icons/logo.png"/>
+                <p><b>Admin</b></p>
+            </div>
+
+            <div class="buttons">
+                <input type="button" name="login" value="Dashboard">
+                <input type="button" name="login" value="Appointments">
+                <input type="button" name="login" value="Reservations">
+                <input type="button" name="login" value="Inventory">
+                <input type="button" name="login" value="History">
+                <input type="button" name="login" value="Billing">
+            </div>
+
+            <div class="logout">
+                <input type="button" name="logout" id="logoutButton" value="LOG OUT">
+            </div>
+        </div>
+
+        <div class="rightSide" id="dash">
+            <i id="menuIcon" class="fas fa-bars icon-white"></i> <!-- Font Awesome icon -->
+            <h1>Today's Date:</h1>
+            <p id="date">Date Placeholder</p>
+        </div>
+        
+        <script src="dashboard.js"></script>
+    </body>
+</html>
