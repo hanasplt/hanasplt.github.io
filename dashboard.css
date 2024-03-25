@@ -135,7 +135,6 @@ body {
     @media screen and (max-width: 768px) {
         .menu {
             width: 40%;
-            transition: width 0.3s ease; /* Smooth transition for width */
         }
     
         .admin h1,
@@ -144,16 +143,29 @@ body {
         .logout input,
         .rightSide h1,
         .rightSide p {
-            font-size: 2vw;
-            transition: font-size 0.3s ease; /* Smooth transition for font size */
+            font-size: 3vw;
         }
 
-        .buttons input {
-            width: 20vw;
+        .buttons input, .logout input {
+            width: 30vw;
+            padding: 1vw;
         }
 
         .admin p {
-            background-size: 12vw;
+            background-size: 16vw;
+        }
+
+        .logout input {
+            margin-top: 20vw;
+        }
+
+        .admin {
+            margin-bottom: 9vw;
+        }
+
+        .admin img {
+            max-width: 15vw;
+            max-height: 15vw;
         }
     }
     
@@ -168,26 +180,35 @@ body {
         .logout input,
         .rightSide h1,
         .rightSide p {
-            font-size: 3vw;
+            font-size: 2.8vw;
         }
 
-        .buttons input {
-            width: 25vw;
+        .buttons input, .logout input {
+            width: 30vw;
+            padding: 1vw;
         }
 
         .admin p {
             background-size: 15vw;
         }
 
+        .logout input {
+            margin-top: 18vw;
+        }
+
+        .admin {
+            margin-bottom: 9vw;
+        }
+
         .admin img {
-            max-width: 15vw;
-            max-height: 15vw;
+            max-width: 20vw;
+            max-height: 20vw;
         }
     }
     
     @media screen and (max-width: 480px) {
         .menu {
-            width: 45%;
+            width: 55%;
         }
     
         .admin h1,
@@ -196,20 +217,29 @@ body {
         .logout input,
         .rightSide h1,
         .rightSide p {
-            font-size: 3vw;
+            font-size: 5vw;
         }
 
-        .buttons input {
-            width: 25vw;
+        .buttons input, .logout input {
+            width: 40vw;
+            padding: 1vw;
         }
 
         .admin p {
-            background-size: 15vw;
+            background-size: 20vw;
+        }
+
+        .logout input {
+            margin-top: 18vw;
+        }
+
+        .admin {
+            margin-bottom: 17vw;
         }
 
         .admin img {
-            max-width: 15vw;
-            max-height: 15vw;
+            max-width: 20vw;
+            max-height: 20vw;
         }
     }
     
@@ -229,10 +259,15 @@ body {
 
         .buttons input, .logout input {
             width: 45vw;
+            padding: 1vw;
         }
 
         .admin p {
             background-size: 25vw;
+        }
+
+        .logout input {
+            margin-top: 22vw;
         }
 
         .admin {
@@ -240,8 +275,8 @@ body {
         }
 
         .admin img {
-            max-width: 20vw;
-            max-height: 20vw;
+            max-width: 27vw;
+            max-height: 27vw;
         }
     }
     
