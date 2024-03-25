@@ -215,7 +215,7 @@ body {
     
     @media screen and (max-width: 360px) {
         .menu {
-            width: 50%;
+            width: 60%;
         }
     
         .admin h1,
@@ -224,11 +224,11 @@ body {
         .logout input,
         .rightSide h1,
         .rightSide p {
-            font-size: 4vw;
+            font-size: 5vw;
         }
 
-        .buttons input {
-            width: 30vw;
+        .buttons input, .logout input {
+            width: 40vw;
         }
 
         .admin p {
