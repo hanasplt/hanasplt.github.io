@@ -21,8 +21,9 @@ document.addEventListener("DOMContentLoaded", function() {
     const dash = document.getElementById('dash');
     const menu = document.querySelector('.menu');
     const icon = document.getElementById('menuIcon');
+
+    menu.style.display = 'none';
     
-    // Toggle menu visibility
     function toggleMenu() {
         if (menu.style.display === 'none') {
             menu.style.display = 'block';
@@ -35,12 +36,10 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
     
-    // Add event listener to toggle menu when clicked
     dash.addEventListener('click', toggleMenu);
     
-    // Add event listener to the icon to close the menu
     icon.addEventListener('click', function(event) {
-        event.stopPropagation(); // Prevents the click event from propagating to the 'dash' div
+        event.stopPropagation();
         toggleMenu();
     });
 });
