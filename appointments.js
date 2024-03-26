@@ -24,7 +24,7 @@ function handleReservations(){
     window.location.href = "reservations.html";
 }
 
-    document.getElementById('appButton').onclick = handleReservations;
+    document.getElementById('reservButton').onclick = handleReservations;
 
     
 /*date*/
@@ -66,3 +66,16 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+document.addEventListener("DOMContentLoaded", function() {
+    const searchButton = document.getElementById('searchButton');
+
+    searchButton.addEventListener('click', function() {
+        const searchTerm = document.getElementById('searchInput').value;
+
+        if (searchTerm.trim() !== '') {
+            alert('Searching for: ' + searchTerm);
+        } else {
+            alert('Please enter a search term.');
+        }
+    });
+});

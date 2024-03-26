@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>DASHBOARD</title>
+        <title>APPOINTMENTS</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="dashboard.css">
+        <link rel="stylesheet" href="appointments.css">
         <!-- fonts-->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,23 +46,25 @@
                 <p id="date">Date Placeholder</p>
             </div>
 
+            <div class="inputs">
+                <select id="date-sort">
+                    <option value="recent">Recent</option>
+                    <option value="upcoming">Upcoming</option>
+                </select>
+
+                <div>
+                    <form id="searchContainer">
+                        <button id="searchButton" type="button"><i class="fas fa-search"></i></button>
+                        <div class="divider"></div>
+                        <input type="text" id="searchInput" placeholder="Search...">
+                    </form>
+                    
+                </div>
+            </div>
+
             <div class="content">
                 <div class="UpcomingAppointments">
-                    <p id="content-title">Upcoming Appointments:</p>
-                    <p id="content-count">1</p>
-                    <input type="button" name="view-more" value="View More">
-                </div>
-
-                <div class="UpcomingReservations">
-                    <p id="content-title">Upcoming Reservations:</p>
-                    <p id="content-count">1</p>
-                    <input type="button" name="view-more" value="View More">
-                </div>
-
-                <div class="InventoryStock">
-                    <p id="content-title">Inventory Stock:</p>
-                    <p id="content-count">1</p>
-                    <input type="button" name="view-more" value="View More">
+                    <p>Appointments</p>
                 </div>
             </div>
         </div>
