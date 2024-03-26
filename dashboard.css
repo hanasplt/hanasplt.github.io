@@ -2,6 +2,7 @@ body, html {
     margin: 0;
     padding: 0;
     height: 100%;
+    font-family: 'Montserrat', sans-serif;
 }
 
 body {
@@ -38,9 +39,9 @@ body {
 
     .admin h1 {
         color: #C2E8FF;
+        margin-top: 0;
         margin-bottom: 0;
         padding-right: 29%;
-        font-family: 'Montserrat', sans-serif;
         font-size: 1.7vw;
     }
 
@@ -54,7 +55,6 @@ body {
         background-position: center;
         background-size: 9.5vw;
         text-align: center;
-        font-family: 'Montserrat', sans-serif;
         font-size: 1.6vw;
         padding: 3vw;
         color: #000F22;
@@ -78,7 +78,6 @@ body {
         border-color: #35659f;
         border-width: 3px;
         color: #ffffff;
-        font-family: 'Montserrat', sans-serif;
         font-size: 1.3vw;
     }
 
@@ -94,7 +93,6 @@ body {
         width: 15vw;
         background-color: #C2E8FF;
         color: #000F22;
-        font-family: 'Montserrat', sans-serif;
         font-size: 1vw;
         font-weight: bold;
     }
@@ -110,7 +108,6 @@ body {
     padding-top: 1.3vw;
     padding-right: 3.2vw;
     color: #C2E8FF;
-    font-family: 'Montserrat', sans-serif;
     font-weight: 680;
     font-size: 1.7vw;
 }
@@ -120,7 +117,6 @@ body {
         margin-top: 0;
         padding-right: 3.2vw;
         color: #C2E8FF;
-        font-family: 'Montserrat', sans-serif;
         font-weight: 680;
         font-size: 1.6vw;
     }
@@ -132,6 +128,25 @@ body {
         margin-bottom: 0;
     }
     
+    .close-button {
+        margin-left: 16.9vw;
+        margin-bottom: 0;
+    }
+
+    .rightSide #menuIcon {
+        margin-top: 1vw;
+        margin-bottom: 0;
+        margin-left: 1vw;
+    }
+
+        .rightSide h1 {
+            margin: 0;
+        }
+
+
+
+
+
     @media screen and (max-width: 768px) {
         .menu {
             width: 40%;
@@ -166,6 +181,10 @@ body {
         .admin img {
             max-width: 15vw;
             max-height: 15vw;
+        }
+
+        .close-button {
+            margin-left: 36vw;
         }
     }
     
@@ -204,6 +223,10 @@ body {
             max-width: 20vw;
             max-height: 20vw;
         }
+        
+        .close-button {
+            margin-left: 40vw;
+        }
     }
     
     @media screen and (max-width: 480px) {
@@ -217,7 +240,7 @@ body {
         .logout input,
         .rightSide h1,
         .rightSide p {
-            font-size: 5vw;
+            font-size: 4.5vw;
         }
 
         .buttons input, .logout input {
@@ -240,6 +263,10 @@ body {
         .admin img {
             max-width: 20vw;
             max-height: 20vw;
+        }
+        
+        .close-button {
+            margin-left: 50vw;
         }
     }
     
@@ -277,6 +304,10 @@ body {
         .admin img {
             max-width: 27vw;
             max-height: 27vw;
+        }
+        
+        .close-button {
+            margin-left: 59vw;
         }
     }
     
