@@ -115,6 +115,7 @@ body {
     .rightSide p {
         text-align: right;
         margin-top: 0;
+        margin-bottom: 0;
         padding-right: 3.2vw;
         color: #C2E8FF;
         font-weight: 680;
@@ -311,3 +312,55 @@ body {
         }
     }
     
+
+/*inner*/
+
+.content {
+    padding-bottom: 1vw;
+}
+
+.UpcomingAppointments, .UpcomingReservations, .InventoryStock {
+    margin: auto;
+    margin-bottom: 1vw;
+    background-color: rgba(255, 255, 255, 0.837);
+    width: 30vw;
+    height: 12vw;
+    border-radius: 1vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+    #content-title {
+        font-size: 1.8vw;
+        font-weight: 600;
+        color: #052355;
+        margin: 0;
+        padding-top: 2vw;
+    }
+
+    #content-count {
+        font-size: 1.8vw;
+        font-weight: 700;
+        color: #052355;
+        margin: 0;
+    }
+
+    .content input {
+        margin-top: 1vw;
+        text-align: center;
+        padding: 0.5vw;
+        width: 15vw;
+        background-color: #000F22;
+        color: #fff;
+        font-size: 1.3vw;
+        font-weight: bold;
+        border: none;
+        margin-bottom: 2vw;
+    }
+
+        .content input:hover {
+            background-color: #f79256;
+            color: #000F22;
+        }
