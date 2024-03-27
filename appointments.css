@@ -106,7 +106,7 @@ body {
     text-align: right;
     margin-bottom: 0;
     padding-top: 1.3vw;
-    padding-right: 3.2vw;
+    padding-right: 2vw;
     color: #C2E8FF;
     font-weight: 680;
     font-size: 1.7vw;
@@ -116,7 +116,7 @@ body {
         text-align: right;
         margin-top: 0;
         margin-bottom: 0;
-        padding-right: 3.2vw;
+        padding-right: 2vw;
         color: #C2E8FF;
         font-weight: 680;
         font-size: 1.6vw;
@@ -137,7 +137,7 @@ body {
     .rightSide #menuIcon {
         margin-top: 1vw;
         margin-bottom: 0;
-        margin-left: 1vw;
+        margin-left: 2vw;
     }
 
         .rightSide h1 {
@@ -370,12 +370,52 @@ body {
 .content {
     background-color: #ffffff;
     width: 96%;
-    height: 33vw;
+    height: 32vw;
     margin: auto;
     border-radius: 1vw;
 }
 
-    .content p {
+.UpcomingAppointments {
+    margin: 0;
+}
+
+    .UpcomingAppointments p {
         padding-top: 1vw;
-        padding-left: 1vw;
+        padding-left: 1.5vw;
+        font-size: 1.7vw;
+        font-weight: 600;
+        padding-bottom: 0;
     }
+
+    .appoint {
+        display: flex;
+        margin: auto;
+        align-items: center; 
+    }
+
+        .appoint p {
+            margin: 0;
+            padding: 0;
+            padding-left: 3vw;
+            padding-right: 20vw;
+            font-size: 1.3vw;
+            color: #052355;
+        }
+
+        #deetsButton {
+            margin: 0;
+            padding: 0;
+            height: 1.5vw;
+            width: 5vw;
+            background-color: #052355;
+            color: #ffffff;
+            border-radius: 2vw;
+            font-size: 1.05vw;
+            margin-left: auto;
+            margin-right: 3vw;
+        }
+        .UpcomingAppointments hr {
+            background-color: #052355;
+            height: 1px;
+            width: 90vw;
+        }
