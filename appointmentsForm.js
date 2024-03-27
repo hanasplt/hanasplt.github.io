@@ -79,10 +79,3 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
-
-/*details*/
-function handleDetails(){
-    window.location.href = "appointmentsForm.html";
-}
-
-    document.getElementById('deetsButton').onclick = handleDetails;

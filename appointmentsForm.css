@@ -379,44 +379,69 @@ body {
     margin: 0;
 }
 
-    .UpcomingAppointments p {
-        padding-top: 1vw;
-        padding-left: 1.5vw;
-        font-size: 1.7vw;
-        font-weight: 600;
-        padding-bottom: 0;
+.UpcomingAppointments p {
+    padding-top: 1vw;
+    padding-left: 1.5vw;
+    font-size: 1.7vw;
+    font-weight: 600;
+    padding-bottom: 0;
+}
+
+.appoint {
+    display: flex;
+    justify-content: space-between;
+}
+
+    .appoint-form {
+        width: 15vw;
+        text-align: right;
+        padding-left: 2vw;
+        line-height: 2vw;
     }
 
-    .appoint {
-        display: flex;
-        margin: auto;
-        align-items: center; 
+    .appoint-deets {
+        width: 90vw;
+        margin-right: 10vw;
+        line-height: 2vw;
     }
 
-        .appoint p {
-            margin: 0;
-            padding: 0;
-            padding-left: 3vw;
-            padding-right: 20vw;
-            font-size: 1.3vw;
-            color: #052355;
-        }
 
-        #deetsButton {
-            margin: 0;
-            padding: 0;
-            height: 1.5vw;
-            width: 5vw;
-            background-color: #052355;
-            color: #ffffff;
-            border-radius: 2vw;
-            font-size: 1.05vw;
-            margin-left: auto;
-            margin-right: 3vw;
-            border: none;
-        }
-        .UpcomingAppointments hr {
-            background-color: #052355;
-            height: 1px;
-            width: 90vw;
-        }
+    .appoint p {
+        margin: 0;
+        padding: 0;
+        padding-left: 3vw;
+        font-size: 1.3vw;
+        color: #052355;
+    }
+
+    .UpcomingAppointments hr {
+        background-color: #052355;
+        height: 1px;
+        width: 75vw;
+    }
+
+.appoint-buttons {
+    margin-right: auto;
+}
+
+    #confirmButton{
+        font-size: 1.1vw;
+        background-color: #052355;
+        color: #ffffff;
+        border: none;
+        border-radius: 2vw;
+        width: 6vw;
+        padding-top: 0.3vw;
+        padding-bottom: 0.3vw;
+    }
+
+    #backButton{
+        font-size: 1.1vw;
+        background-color: #8B0000;
+        color: #ffffff;
+        border: none;
+        border-radius: 2vw;
+        width: 6vw;
+        padding-top: 0.3vw;
+        padding-bottom: 0.3vw;
+    }
