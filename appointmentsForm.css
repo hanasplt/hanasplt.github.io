@@ -370,7 +370,7 @@ body {
 .content {
     background-color: #ffffff;
     width: 96%;
-    height: 32vw;
+    min-height: auto;
     margin: auto;
     border-radius: 1vw;
 }
@@ -421,7 +421,10 @@ body {
     }
 
 .appoint-buttons {
-    margin-right: auto;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 4vw;
+    padding-bottom: 2vw;
 }
 
     #confirmButton{
@@ -430,18 +433,31 @@ body {
         color: #ffffff;
         border: none;
         border-radius: 2vw;
-        width: 6vw;
+        width: 7vw;
         padding-top: 0.3vw;
         padding-bottom: 0.3vw;
+        font-weight: 500;
     }
 
     #backButton{
+        margin-left: 1vw;
+        margin-right: 1vw;
         font-size: 1.1vw;
         background-color: #8B0000;
         color: #ffffff;
         border: none;
         border-radius: 2vw;
-        width: 6vw;
+        width: 7vw;
         padding-top: 0.3vw;
         padding-bottom: 0.3vw;
+        font-weight: 500;
     }
+
+.confirmation-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20vw;
+    height: 12vw;
+}

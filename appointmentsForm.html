@@ -46,22 +46,6 @@
                 <p id="date">Date Placeholder</p>
             </div>
 
-            <div class="inputs">
-                <select id="date-sort">
-                    <option value="recent">Recent</option>
-                    <option value="upcoming">Upcoming</option>
-                </select>
-
-                <div>
-                    <form id="searchContainer">
-                        <button id="searchButton" type="button"><i class="fas fa-search"></i></button>
-                        <div class="divider"></div>
-                        <input type="text" id="searchInput" placeholder="Search...">
-                    </form>
-                    
-                </div>
-            </div>
-
             <div class="content">
                 <div class="UpcomingAppointments">
                     <p>Appointments</p>
@@ -104,6 +88,10 @@
             </div>
         </div>
         
+        <div id="confirmation" class="confirmation-popup" style="display: none;">
+            <iframe id="confirmationPopup" src="confirmationPopup.html" frameborder="0" width="100%" height="100%"></iframe>
+        </div>
+
         <script src="appointmentsForm.js"></script>
     </body>
 </html>

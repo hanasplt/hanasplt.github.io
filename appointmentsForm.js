@@ -66,6 +66,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+/*search*/
 document.addEventListener("DOMContentLoaded", function() {
     const searchButton = document.getElementById('searchButton');
 
@@ -79,3 +80,17 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
+
+/*back*/
+function handleBack(){
+    window.location.href = "appointments.html";
+}
+
+    document.getElementById('backButton').onclick = handleBack;
+
+/*confirm*/
+document.getElementById("confirmButton").addEventListener("click", function() {
+    // Show the iframe when the button is clicked
+    document.getElementById("confirmation").style.display = "block";
+});
+
