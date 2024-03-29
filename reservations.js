@@ -66,7 +66,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-/*search*/
 document.addEventListener("DOMContentLoaded", function() {
     const searchButton = document.getElementById('searchButton');
 
@@ -81,15 +80,40 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-/*back*/
-function handleBack(){
-    window.location.href = "appointments.html";
+/*details*/
+function handleDetails(){
+    window.location.href = "appointmentsForm.html";
 }
 
-    document.getElementById('backButton').onclick = handleBack;
+    document.getElementById('deetsButton').onclick = handleDetails;
 
-/*confirm*/
-document.getElementById("confirmButton").addEventListener("click", function() {
-    document.getElementById("confirmation").style.display = "block";
+
+// Get the container and its children
+const container = document.getElementById("reserv-data");
+const items = Array.from(container.children);
+
+// Function to sort items based on selected option
+function sortItems(option) {
+    items.sort((a, b) => {
+        const categoryA = a.getAttribute("data-category");
+        const categoryB = b.getAttribute("data-category");
+        if (option === 'all') return 0; // No sorting needed
+        if (option === 'phone') return categoryA === 'phone' ? -1 : 1;
+        if (option === 'accessories') return categoryA === 'accessories' ? -1 : 1;
+        return 0;
+    });
+
+    // Clear the container
+    container.innerHTML = '';
+
+    // Append the sorted items back to the container
+    items.forEach(item => {
+        container.appendChild(item);
+    });
+}
+
+// Event listener for select element
+document.getElementById('choice-sort').addEventListener('change', function() {
+    sortItems(this.value);
 });
 
