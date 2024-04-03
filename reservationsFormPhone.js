@@ -66,6 +66,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+/*search*/
 document.addEventListener("DOMContentLoaded", function() {
     const searchButton = document.getElementById('searchButton');
 
@@ -80,11 +81,15 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-/*details*/
-function handleDetails(){
-    window.location.href = "reservationsFormPhone.html";
+/*back*/
+function handleBack(){
+    window.location.href = "appointments.html";
 }
 
-    document.getElementById('deetsButton').onclick = handleDetails;
+    document.getElementById('backButton').onclick = handleBack;
 
-    
+/*confirm*/
+document.getElementById("confirmButton").addEventListener("click", function() {
+    document.getElementById("confirmation").style.display = "block";
+});
+

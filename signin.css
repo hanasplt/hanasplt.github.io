@@ -1,0 +1,122 @@
+
+.maindiv{
+    height: 100.8vh;
+    width: 101.6%;
+    display: flex;
+    margin:-1%;
+}
+
+.leftdiv{
+    height: 100%;
+    width: 50%;
+    background-image: url('bg-img/background.svg');
+    float:left;
+}
+
+
+.rightdiv{
+    height: 100%;
+    width: 50%; 
+    float: right;
+    background-color: white;
+}
+
+.logo{
+    width:13%;
+    height: 13vh;
+    margin-top: 5%;
+    margin-left: 4%;
+}
+
+.welcome{
+    font-family: "Krona One", sans-serif;
+    color:white;
+    font-size: 7vh;
+    margin-top: 20%;
+    margin-left: 10%;
+}
+
+.sign{
+    font-family: sans-serif;
+    color:white;
+    font-size: 3vh;
+    margin-top: -5%;
+    margin-left: 12%;
+}
+
+.dont{
+    font-family: sans-serif;
+    color: black;
+    font-size: 2.5vh;
+    margin-top: 30%;
+    text-align: center;
+}
+
+.sign2{
+    font-family:'Arial Narrow Bold', sans-serif;
+    color:midnightblue;
+    font-size: 5vh;
+    text-align:left;
+    margin-left:8%;
+    margin-top:25%;
+}
+
+.username{
+    border: 0px;
+    border-bottom: 1px solid black;
+    margin-left:8%;
+    width: 83%;
+    height: 5vh;
+    font-size:100%;
+    background: transparent;
+    text-indent:7%;
+}
+
+.password{
+    border: 0px;
+    border-bottom: 1px solid black;
+    margin-left:8%;
+    width: 83%;
+    margin-top:1%;
+    height: 5vh;
+    font-size:100%;
+    background: transparent;
+    text-indent:7%;
+}
+
+.button-signin{
+    height: 7vh;
+    width: 84%;
+    margin-top:3%;
+    margin-left:8%;
+    border-radius:2vh;
+    border-width: 0px;
+    background-color: midnightblue;
+    color: white;
+}
+
+.button-signin:hover{
+    background-color:royalblue;
+}
+
+.forgpass{
+    font-family: sans-serif;
+    color: black;
+    font-size: 2.5vh;
+    margin-top: 3%;
+    margin-left:8%;
+}
+
+.field-image{
+    margin-left:-84%;
+    margin-bottom:-0.5%;
+    width:3%;
+    height:3%;
+}
+
+.eye-image{
+    margin-left:75%;
+    margin-bottom:-0.5%;
+    width:3%;
+    height:3%;
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>RESERVATIONS</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="reservationsFormPhone.css">
+        <!-- fonts-->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <!-- icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    </head>
+
+    <body>
+        <div class="menu">
+            <div class="close-button">
+                <i id="menuIcon" class="fas fa-times icon-white"></i>
+            </div>
+            
+            <div class="admin">
+                <h1>Welcome,</h1>
+                <img src="icons/logo.png"/>
+                <p><b>Admin</b></p>
+            </div>
+
+            <div class="buttons">
+                <input type="button" name="dash" id="dashButton" value="Dashboard">
+                <input type="button" name="app" id="appButton" value="Appointments">
+                <input type="button" name="reserv" id="reservButton" value="Reservations">
+                <input type="button" name="inv" id="invButton" value="Inventory">
+                <input type="button" name="history" id="historyButton" value="History">
+                <input type="button" name="bill" id="billButton" value="Billing">
+            </div>
+
+            <div class="logout">
+                <input type="button" name="logout" id="logoutButton" value="LOG OUT">
+            </div>
+        </div>
+
+        <div class="mainContent">
+            <div class="rightSide" id="dash">
+                <i id="menuIcon" class="fas fa-bars icon-white"></i>
+                <h1>Today's Date:</h1>
+                <p id="date">Date Placeholder</p>
+            </div>
+
+            <div class="content">
+                <div class="UpcomingReservations">
+                    <p>Reservations</p>
+
+                    <div class="reserve">
+                        <div class="reserv-form">
+                            <p>Reservations ID:</p>
+                            <p>First Name:</p>
+                            <p>Last Name:</p>
+                            <p>Phone Number:</p>
+                            <p>Email:</p>
+                            <hr/>
+                            <p>Brand:</p>
+                            <p>Model Unit:</p>
+                            <p>Model Unit Color:</p>
+                            <p>Price:</p>
+                            <p>Date to Purchase:</p>
+                            <p>Quantity:</p>
+                        </div>
+
+                        <div class="reserv-phone">
+                            <div class="reserv-deets">
+                                <p>A000001</p>
+                                <p>Barbara</p>
+                                <p>Nightingale</p>
+                                <p>09123456789</p>
+                                <p>healerbarbz@gmail.com</p>
+                                <p id="spacer">a</p>
+                                <p>Tecno</p>
+                                <p>Pova 6 Pro 5G</p>
+                                <p>Comet Green</p>
+                                <p>Php 10, 499</p>
+                                <p>January 20, 2025</p>
+                                <p>1</p>
+                            </div>
+
+                            <div class="reserv-img">
+                                <img src="https://i.pinimg.com/736x/fd/6a/d3/fd6ad38a5af323543f3166edd9cf5f4b.jpg" alt="phone">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="reserv-buttons">
+                        <input type="button" name="confirm" id="confirmButton" value="Confirm">
+                        <input type="button" name="back" id="backButton" value="Back">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="confirmation" class="confirmation-popup" style="display: none;">
+            <iframe id="confirmationPopup" src="confirmationPopup.html" frameborder="0" width="100%" height="100%"></iframe>
+        </div>
+
+        <script src="reservationsFormPhone.js"></script>
+    </body>
+</html>
