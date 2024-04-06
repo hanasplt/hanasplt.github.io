@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 /*back*/
 function handleBack(){
-    window.location.href = "appointments.html";
+    window.location.href = "reservations.html";
 }
 
     document.getElementById('backButton').onclick = handleBack;

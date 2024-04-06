@@ -81,10 +81,16 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 /*details*/
-function handleDetails(){
+function handlePhoneDetails(){
     window.location.href = "reservationsFormPhone.html";
 }
 
-    document.getElementById('deetsButton').onclick = handleDetails;
+    document.getElementById('deetsPhoneButton').onclick = handlePhoneDetails;
+
+function handleAccDetails(){
+    window.location.href = "reservationFormAcc.html";
+}
+
+    document.getElementById('deetsAccButton').onclick = handleAccDetails;
 
     

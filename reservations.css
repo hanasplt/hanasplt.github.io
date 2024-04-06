@@ -17,6 +17,7 @@ body {
     height: 100%;
     background-color: #000F22;
     transition: right 0.3s ease;
+    z-index: 1;
 }
 
     .menu p {
@@ -438,19 +439,21 @@ body {
             padding: 0;
             font-size: 1.3vw;
             color: #052355;
-        }        
+        }           
             .classify-deets h1 {
                 margin-right: 1vw;
                 margin-left: 5vw;
                 font-weight: 400;
                 opacity: 75%;
+                width: 10vw;
+                text-align: right;
             }
 
-            #deetsButton {
+            #deetsPhoneButton, #deetsAccButton {
                 margin-left: auto;
             }
 
-        #deetsButton {
+        #deetsPhoneButton, #deetsAccButton {
             margin: 0;
             padding: 0;
             height: 1.5vw;
@@ -467,9 +470,4 @@ body {
             background-color: #052355;
             height: 1px;
             width: 90vw;
-        }
-
-        .classify {
-            width: 10vw;
-            text-align: right;
         }

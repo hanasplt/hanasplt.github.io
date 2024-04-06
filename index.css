@@ -106,3 +106,139 @@ body {
                     color: #000F22;
                 }
 
+
+                @media screen and (max-width: 768px) {
+                    .theForm {
+                        width: 35vw;
+                        height: 22vw;
+                    }
+
+                    .theForm input[type="text"], .theForm input[type="password"] {
+                        width: 25vw;
+                        height: 3.6vw;
+                        font-size: 2vw;
+                    }
+        
+                    .theForm input[type="button"] {
+                        width: 25vw;
+                        height: 3.6vw;
+                        font-size: 2vw;
+                    }
+                    .titleSide {
+                        line-height: 0.8;
+                        background-size: 27vw, 20vw, 30vw;
+                    }
+                    
+                        .titleSide h1 {
+                            font-size: 6.5vw;
+                        }
+                
+                        .titleSide p {
+                            padding: 14px;
+                            font-size: 4.9vw;
+                            background-size: 26vw;
+                        }
+                }
+                
+                @media screen and (max-width: 576px) {
+                    .theForm {
+                        width: 39vw;
+                        height: 26vw;
+                    }
+
+                    .theForm input[type="text"], .theForm input[type="password"] {
+                        width: 27vw;
+                        height: 3.9vw;
+                        font-size: 2.7vw;
+                    }
+        
+                    .theForm input[type="button"] {
+                        width: 27vw;
+                        height: 3.9vw;
+                        font-size: 2.7vw;
+                    }
+                    .titleSide {
+                        line-height: 0.6;
+                        background-size: 29vw, 23vw, 33vw;
+                    }
+                    
+                        .titleSide h1 {
+                            font-size: 7vw;
+                        }
+                
+                        .titleSide p {
+                            padding: 16px;
+                            font-size: 5vw;
+                            background-size: 28vw;
+                        }
+                }
+                
+                @media screen and (max-width: 480px) {
+                    
+                    .theForm {
+                        width: 40vw;
+                        height: 27vw;
+                    }
+
+                    .theForm input[type="text"], .theForm input[type="password"] {
+                        width: 30vw;
+                        height: 3.8vw;
+                        font-size: 3vw;
+                    }
+        
+                    .theForm input[type="button"] {
+                        width: 30vw;
+                        height: 4.7vw;
+                        font-size: 3vw;
+                    }
+                    .titleSide {
+                        line-height: 0.5;
+                        background-size: 32vw, 27vw, 37vw;
+                    }
+                    
+                        .titleSide h1 {
+                            font-size: 8vw;
+                        }
+                
+                        .titleSide p {
+                            padding: 20px;
+                            font-size: 5.6vw;
+                            background-size: 32vw;
+                        }
+                }
+                
+                @media screen and (max-width: 360px) {
+                    
+                    .theForm {
+                        width: 44vw;
+                        height: 31vw;
+                    }
+
+                    .theForm input[type="text"], .theForm input[type="password"] {
+                        width: 33vw;
+                        height: 4vw;
+                        font-size: 3.8vw;
+                    }
+        
+                    .theForm input[type="button"] {
+                        width: 33vw;
+                        height: 5vw;
+                        font-size: 3.7vw;
+                    }
+                    .titleSide {
+                        line-height: 0.4;
+                        background-size: 34vw, 29vw, 39vw;
+                    }
+                    
+                        .titleSide h1 {
+                            font-size: 9vw;
+                        }
+                
+                        .titleSide p {
+                            padding: 24px;
+                            font-size: 5.8vw;
+                            background-size: 34vw;
+                        }
+                }
+                
+            

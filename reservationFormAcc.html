@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>APPOINTMENTS</title>
+        <title>RESERVATIONS</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="appointmentsForm.css">
+        <link rel="stylesheet" href="reservationsFormAcc.css">
         <!-- fonts-->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,40 +49,47 @@
             </div>
 
             <div class="content">
-                <div class="UpcomingAppointments">
-                    <p>Appointments</p>
+                <div class="UpcomingReservations">
+                    <p>Reservations</p>
 
-                    <div class="appoint">
-                        <div class="appoint-form">
-                            <p>Appointment ID:</p>
+                    <div class="reserve">
+                        <div class="reserv-form">
+                            <p>Reservations ID:</p>
                             <p>First Name:</p>
                             <p>Last Name:</p>
                             <p>Phone Number:</p>
                             <p>Email:</p>
                             <hr/>
-                            <p>Date:</p>
-                            <p>Time:</p>
+                            <p>Brand:</p>
                             <p>Model Unit:</p>
-                            <p>Gadget Issue:</p>
+                            <p>Model Unit Color:</p>
+                            <p>Price:</p>
+                            <p>Date to Purchase:</p>
+                            <p>Quantity:</p>
                         </div>
 
-                        <div class="appoint-deets">
-                            <p>A000001</p>
-                            <p>Barbara</p>
-                            <p>Nightingale</p>
-                            <p>09123456789</p>
-                            <p>healerbarbz@gmail.com</p>
-                            <hr/>
-                            <p>March 27, 2024</p>
-                            <p>1:00 pm - 4:00 pm</p>
-                            <p>Tecno Camon 20 Pro 5g</p>
-                            <p>Phone takes a while to charge and it overheats easily. 
-                                When SD card is inserted, it does not read it. There 
-                                are parts of the screen which is unresponsive and have 
-                                black spots.</p>
+                        <div class="reserv-phone">
+                            <div class="reserv-deets">
+                                <p>A000001</p>
+                                <p>Barbara</p>
+                                <p>Nightingale</p>
+                                <p>09123456789</p>
+                                <p>healerbarbz@gmail.com</p>
+                                <p id="spacer">a</p>
+                                <p>Tecno</p>
+                                <p>Charger</p>
+                                <p>White</p>
+                                <p>Php 200</p>
+                                <p>January 20, 2025</p>
+                                <p>1</p>
+                            </div>
+
+                            <div class="reserv-img">
+                                <img src="https://m.media-amazon.com/images/I/51g8dnWkFcL._AC_UF1000,1000_QL80_.jpg" alt="charger">
+                            </div>
                         </div>
                     </div>
-                    <div class="appoint-buttons">
+                    <div class="reserv-buttons">
                         <input type="button" name="confirm" id="confirmButton" value="Confirm">
                         <input type="button" name="back" id="backButton" value="Back">
                     </div>
@@ -94,6 +101,6 @@
             <iframe id="confirmationPopup" src="confirmationPopup.html" frameborder="0" width="100%" height="100%"></iframe>
         </div>
 
-        <script src="appointmentsForm.js"></script>
+        <script src="reservationsFormPhone.js"></script>
     </body>
 </html>
