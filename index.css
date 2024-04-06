@@ -174,70 +174,82 @@ body {
                 }
                 
                 @media screen and (max-width: 480px) {
-                    
+                    .theWhole {
+                        flex-direction: column;
+                    }
+
                     .theForm {
-                        width: 40vw;
-                        height: 27vw;
+                        width: 50vw;
+                        height: 37vw;
                     }
 
                     .theForm input[type="text"], .theForm input[type="password"] {
-                        width: 30vw;
-                        height: 3.8vw;
-                        font-size: 3vw;
+                        width: 40vw;
+                        height: 5.2vw;
+                        font-size: 3.6vw;
                     }
         
                     .theForm input[type="button"] {
-                        width: 30vw;
-                        height: 4.7vw;
-                        font-size: 3vw;
+                        width: 40vw;
+                        height: 5.5vw;
+                        font-size: 3.6vw;
                     }
                     .titleSide {
+                        order: 1;
+                        width: 100%;
+                        height: 50%;
                         line-height: 0.5;
                         background-size: 32vw, 27vw, 37vw;
                     }
                     
                         .titleSide h1 {
-                            font-size: 8vw;
+                            font-size: 10vw;
                         }
                 
                         .titleSide p {
                             padding: 20px;
-                            font-size: 5.6vw;
-                            background-size: 32vw;
+                            font-size: 7.5vw;
+                            background-size: 40vw;
                         }
+
+                    .loginForm {
+                        order: 2;
+                        width: 100%;
+                        height: 50%;
+                    }
                 }
                 
                 @media screen and (max-width: 360px) {
                     
                     .theForm {
-                        width: 44vw;
-                        height: 31vw;
+                        width: 60vw;
+                        height: 40vw;
                     }
 
                     .theForm input[type="text"], .theForm input[type="password"] {
-                        width: 33vw;
-                        height: 4vw;
-                        font-size: 3.8vw;
+                        width: 45vw;
+                        height: 6vw;
+                        font-size: 4vw;
                     }
         
                     .theForm input[type="button"] {
-                        width: 33vw;
-                        height: 5vw;
-                        font-size: 3.7vw;
+                        width: 45vw;
+                        height: 6.5vw;
+                        font-size: 4vw;
                     }
                     .titleSide {
-                        line-height: 0.4;
+                        line-height: 0.3;
                         background-size: 34vw, 29vw, 39vw;
                     }
                     
                         .titleSide h1 {
-                            font-size: 9vw;
+                            font-size: 11.2vw;
                         }
                 
                         .titleSide p {
-                            padding: 24px;
-                            font-size: 5.8vw;
-                            background-size: 34vw;
+                            padding: 30px;
+                            font-size: 6.7vw;
+                            background-size: 44vw;
                         }
                 }
                 
