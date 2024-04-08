@@ -10,3 +10,20 @@ function handleLogin() {
 }
 
 document.getElementById('loginButton').onclick = handleLogin;
+
+function togglePasswordVisibility() {
+    var passwordField = document.getElementById("passwordField");
+    var eyeIcon = document.getElementById("togglePassword");
+
+    if (passwordField.type === "text") {
+        passwordField.type = "password";
+        eyeIcon.classList.remove("fa-eye");
+        eyeIcon.classList.add("fa-eye-slash");
+    } else {
+        passwordField.type = "text";
+        eyeIcon.classList.remove("fa-eye-slash");
+        eyeIcon.classList.add("fa-eye");
+    }
+}
+
+
