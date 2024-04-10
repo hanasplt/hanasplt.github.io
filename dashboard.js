@@ -18,13 +18,15 @@ function handleAppointments(){
 }
 
     document.getElementById('appButton').onclick = handleAppointments;
+    document.getElementById('appts').onclick = handleAppointments;
 
 /*reservations*/
 function handleReservations(){
     window.location.href = "reservations.html";
 }
 
-    document.getElementById('appButton').onclick = handleReservations;
+    document.getElementById('reservButton').onclick = handleReservations;
+    document.getElementById('resv').onclick = handleReservations;
 
     
 /*date*/
