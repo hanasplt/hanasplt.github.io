@@ -147,172 +147,6 @@ body {
 
 
 
-
-
-    @media screen and (max-width: 768px) {
-        .menu {
-            width: 40%;
-        }
-    
-        .admin h1,
-        .admin p,
-        .buttons input,
-        .logout input,
-        .rightSide h1,
-        .rightSide p {
-            font-size: 3vw;
-        }
-
-        .buttons input, .logout input {
-            width: 30vw;
-            padding: 1vw;
-        }
-
-        .admin p {
-            background-size: 16vw;
-        }
-
-        .logout input {
-            margin-top: 20vw;
-        }
-
-        .admin {
-            margin-bottom: 9vw;
-        }
-
-        .admin img {
-            max-width: 15vw;
-            max-height: 15vw;
-        }
-
-        .close-button {
-            margin-left: 36vw;
-        }
-    }
-    
-    @media screen and (max-width: 576px) {
-        .menu {
-            width: 45%;
-        }
-    
-        .admin h1,
-        .admin p,
-        .buttons input,
-        .logout input,
-        .rightSide h1,
-        .rightSide p {
-            font-size: 2.8vw;
-        }
-
-        .buttons input, .logout input {
-            width: 30vw;
-            padding: 1vw;
-        }
-
-        .admin p {
-            background-size: 15vw;
-        }
-
-        .logout input {
-            margin-top: 18vw;
-        }
-
-        .admin {
-            margin-bottom: 9vw;
-        }
-
-        .admin img {
-            max-width: 20vw;
-            max-height: 20vw;
-        }
-        
-        .close-button {
-            margin-left: 40vw;
-        }
-    }
-    
-    @media screen and (max-width: 480px) {
-        .menu {
-            width: 55%;
-        }
-    
-        .admin h1,
-        .admin p,
-        .buttons input,
-        .logout input,
-        .rightSide h1,
-        .rightSide p {
-            font-size: 4.5vw;
-        }
-
-        .buttons input, .logout input {
-            width: 40vw;
-            padding: 1vw;
-        }
-
-        .admin p {
-            background-size: 20vw;
-        }
-
-        .logout input {
-            margin-top: 18vw;
-        }
-
-        .admin {
-            margin-bottom: 17vw;
-        }
-
-        .admin img {
-            max-width: 20vw;
-            max-height: 20vw;
-        }
-        
-        .close-button {
-            margin-left: 50vw;
-        }
-    }
-    
-    @media screen and (max-width: 360px) {
-        .menu {
-            width: 65%;
-        }
-    
-        .admin h1,
-        .admin p,
-        .buttons input,
-        .logout input,
-        .rightSide h1,
-        .rightSide p {
-            font-size: 5.5vw;
-        }
-
-        .buttons input, .logout input {
-            width: 45vw;
-            padding: 1vw;
-        }
-
-        .admin p {
-            background-size: 25vw;
-        }
-
-        .logout input {
-            margin-top: 22vw;
-        }
-
-        .admin {
-            margin-bottom: 20vw;
-        }
-
-        .admin img {
-            max-width: 27vw;
-            max-height: 27vw;
-        }
-        
-        .close-button {
-            margin-left: 59vw;
-        }
-    }
-    
 /*inner code*/
 .inputs {
     display: flex;
@@ -372,13 +206,13 @@ body {
 .content {
     background-color: #ffffff;
     width: 96%;
-    height: 32vw;
     margin: auto;
     border-radius: 1vw;
 }
 
 .UpcomingReservations {
     margin: 0;
+    padding-bottom: 2.5vw;
 }
 
     .left-title p {
@@ -471,3 +305,434 @@ body {
             height: 1px;
             width: 90vw;
         }
+
+    @media screen and (max-width: 768px) {
+            .menu {
+                width: 40%;
+            }
+        
+            .admin h1,
+            .admin p,
+            .buttons input,
+            .logout input,
+            .rightSide h1,
+            .rightSide p {
+                font-size: 2.2vw;
+            }
+    
+            .buttons input, .logout input {
+                width: 30vw;
+                padding: 0.7vw;
+            }
+    
+            .admin p {
+                background-size: 13vw;
+            }
+    
+            .logout input {
+                margin-top: 17vw;
+            }
+    
+            .admin {
+                margin-bottom: 7vw;
+            }
+    
+            .admin img {
+                max-width: 14vw;
+                max-height: 14vw;
+            }
+    
+            .close-button {
+                margin-left: 35vw;
+                margin-top: 1vw;
+                font-size: 2.5vw;
+            }
+    
+            .rightSide #menuIcon {
+                margin-left: 1.8vw;
+                margin-top: 1.8vw;
+                font-size: 2.5vw;
+            }
+    
+            .rightSide h1 {
+                padding-right: 4vw;
+                font-size: 3vw;
+            }
+            
+                .rightSide p {
+                    padding-right: 4vw;
+                    font-size: 3.1vw;
+                }
+
+                #date-sort {
+                    font-size: 2vw;
+                    padding: 0.8vw;
+                    width: 18vw;
+                    margin-left: 2.3vw;
+                    margin-right: 1.3vw;
+                }
+    
+                #searchContainer {
+                    border-radius: 4vw;
+                }
+    
+                    #searchButton {
+                        font-size: 2.1vw;
+                        padding: 1.5vw;
+                        padding-top: 1.7vw;
+                        padding-left: 1.65vw;
+                    }
+    
+                    #searchInput {
+                        font-size: 16px;
+                    }
+                
+            .left-title p {
+                padding-left: 2vw;
+                font-size: 2.5vw;
+            }
+
+            #choice-sort {
+                font-size: 2vw;
+                padding: 0.7vw;
+                width: 16vw;
+            }
+
+            .classify-deets p, .classify-deets h1 {
+                font-size: 2.2vw;
+            }
+
+                .classify-deets h1 {
+                    margin-right: 2vw;
+                    width: 12vw;
+                }
+
+                #deetsPhoneButton, #deetsAccButton {
+                    height: 2.8vw;
+                    width: 9vw;
+                    font-size: 1.9vw;
+                }
+        }
+        
+        @media screen and (max-width: 576px) {
+            .menu {
+                width: 45%;
+            }
+        
+            .admin h1,
+            .admin p,
+            .buttons input,
+            .logout input,
+            .rightSide h1,
+            .rightSide p {
+                font-size: 2.8vw;
+            }
+    
+            .buttons input, .logout input {
+                width: 30vw;
+                padding: 1vw;
+            }
+    
+            .admin p {
+                background-size: 15vw;
+            }
+    
+            .logout input {
+                margin-top: 18vw;
+            }
+    
+            .admin {
+                margin-bottom: 9vw;
+            }
+    
+            .admin img {
+                max-width: 20vw;
+                max-height: 20vw;
+            }
+            
+            .close-button {
+                margin-left: 39vw;
+                margin-top: 1vw;
+                font-size: 3.5vw;
+            }
+    
+            .rightSide #menuIcon {
+                margin-left: 1.8vw;
+                margin-top: 1.8vw;
+                font-size: 3.5vw;
+            }
+    
+            .rightSide h1 {
+                padding-right: 5vw;
+                font-size: 3.5vw;
+            }
+            
+                .rightSide p {
+                    padding-right: 5vw;
+                    font-size: 3.6vw;
+                }
+
+                #date-sort {
+                    font-size: 2.5vw;
+                    width: 21vw;
+                }
+    
+                #searchContainer {
+                    border-radius: 4vw;
+                }
+    
+                    #searchButton {
+                        font-size: 2.3vw;
+                    }
+    
+                    #searchInput {
+                        font-size: 14px;
+                    }
+                
+            .left-title p {
+                padding-left: 2.5vw;
+                font-size: 3vw;
+            }
+
+            #choice-sort {
+                font-size: 2.5vw;
+                padding: 1vw;
+                width: 19vw;
+            }
+
+            .classify-deets p, .classify-deets h1 {
+                font-size: 2.7vw;
+            }
+
+                .classify-deets p {
+                    margin-right: 9vw;
+                }
+
+                .classify-deets h1 {
+                    margin-right: 2vw;
+                    width: 22vw;
+                }
+
+                #deetsPhoneButton, #deetsAccButton {
+                    height: 3.5vw;
+                    width: 17vw;
+                    font-size: 2.5vw;
+                }
+            .classify-deets {
+                align-items: center;
+            }  
+        }
+        
+        @media screen and (max-width: 480px) {
+            .menu {
+                width: 55%;
+            }
+        
+            .admin h1,
+            .admin p,
+            .buttons input,
+            .logout input,
+            .rightSide h1,
+            .rightSide p {
+                font-size: 4.5vw;
+            }
+    
+            .buttons input, .logout input {
+                width: 40vw;
+                padding: 1vw;
+            }
+    
+            .admin p {
+                background-size: 20vw;
+            }
+    
+            .logout input {
+                margin-top: 18vw;
+            }
+    
+            .admin {
+                margin-bottom: 17vw;
+            }
+    
+            .admin img {
+                max-width: 20vw;
+                max-height: 20vw;
+            }
+            
+            .close-button {
+                margin-left: 48vw;
+                margin-top: 1vw;
+                font-size: 4.5vw;
+            }
+    
+            .rightSide #menuIcon {
+                margin-left: 1.8vw;
+                margin-top: 1.8vw;
+                font-size: 4.5vw;
+            }
+    
+            .rightSide h1 {
+                padding-right: 5vw;
+                font-size: 4vw;
+            }
+            
+                .rightSide p {
+                    padding-right: 5vw;
+                    font-size: 4.1vw;
+                }
+
+                #date-sort {
+                    font-size: 3vw;
+                    width: 23vw;
+                }
+    
+                #searchContainer {
+                    border-radius: 6vw;
+                }
+    
+                    #searchButton {
+                        font-size: 3vw;
+                    }
+    
+                    #searchInput {
+                        font-size: 14px;
+                        width: 33vw;
+                    }
+                
+            .left-title p {
+                padding-left: 3vw;
+                font-size: 4vw;
+            }
+
+            #choice-sort {
+                font-size: 3vw;
+                padding: 1vw;
+                width: 23vw;
+            }
+
+            .classify-deets p, .classify-deets h1 {
+                font-size: 3.3vw;
+            }
+
+                .classify-deets p {
+                    margin-right: 9vw;
+                }
+
+                .classify-deets h1 {
+                    margin-right: 2vw;
+                    width: 40vw;
+                }
+
+                #deetsPhoneButton, #deetsAccButton {
+                    height: 4vw;
+                    width: 24vw;
+                    font-size: 3vw;
+                }
+
+            .classify-deets {
+                align-items: center;
+            }  
+        }
+        
+        @media screen and (max-width: 360px) {
+            .menu {
+                width: 65%;
+            }
+        
+            .admin h1,
+            .admin p,
+            .buttons input,
+            .logout input,
+            .rightSide h1,
+            .rightSide p {
+                font-size: 5.5vw;
+            }
+    
+            .buttons input, .logout input {
+                width: 45vw;
+                padding: 1vw;
+            }
+    
+            .admin p {
+                background-size: 25vw;
+            }
+    
+            .logout input {
+                margin-top: 22vw;
+            }
+    
+            .admin {
+                margin-bottom: 20vw;
+            }
+    
+            .admin img {
+                max-width: 27vw;
+                max-height: 27vw;
+            }
+            
+            .close-button {
+                margin-left: 57vw;
+                margin-top: 1vw;
+                font-size: 5.5vw;
+            }
+    
+            .rightSide #menuIcon {
+                margin-left: 2vw;
+                margin-top: 2vw;
+                font-size: 5.5vw;
+            }
+
+            #date-sort {
+                font-size: 4vw;
+                width: 26vw;
+            }
+
+            #searchContainer {
+                border-radius: 7vw;
+            }
+
+                #searchButton {
+                    font-size: 4vw;
+                }
+
+                #searchInput {
+                    font-size: 14px;
+                    width: 40vw;
+                }
+            
+        .left-title p {
+            padding-left: 4vw;
+            font-size: 5vw;
+        }
+
+        #choice-sort {
+            font-size: 4.3vw;
+            padding: 1vw;
+            width: 30vw;
+        }
+
+        .classify-deets p, .classify-deets h1 {
+            font-size: 4.5vw;
+        }
+
+            .classify-deets p {
+                margin-right: 9vw;
+            }
+
+            .classify-deets h1 {
+                margin-right: 2vw;
+                width: 55vw;
+            }
+
+            #deetsPhoneButton, #deetsAccButton {
+                height: 5.5vw;
+                width: 26vw;
+                font-size: 4vw;
+                border-radius: 5vw;
+            }
+
+        .classify-deets {
+            align-items: center;
+            flex-direction: column;
+        } 
+    }

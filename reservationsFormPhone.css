@@ -143,175 +143,7 @@ body {
         .rightSide h1 {
             margin: 0;
         }
-
-
-
-
-
-    @media screen and (max-width: 768px) {
-        .menu {
-            width: 40%;
-        }
-    
-        .admin h1,
-        .admin p,
-        .buttons input,
-        .logout input,
-        .rightSide h1,
-        .rightSide p {
-            font-size: 3vw;
-        }
-
-        .buttons input, .logout input {
-            width: 30vw;
-            padding: 1vw;
-        }
-
-        .admin p {
-            background-size: 16vw;
-        }
-
-        .logout input {
-            margin-top: 20vw;
-        }
-
-        .admin {
-            margin-bottom: 9vw;
-        }
-
-        .admin img {
-            max-width: 15vw;
-            max-height: 15vw;
-        }
-
-        .close-button {
-            margin-left: 36vw;
-        }
-    }
-    
-    @media screen and (max-width: 576px) {
-        .menu {
-            width: 45%;
-        }
-    
-        .admin h1,
-        .admin p,
-        .buttons input,
-        .logout input,
-        .rightSide h1,
-        .rightSide p {
-            font-size: 2.8vw;
-        }
-
-        .buttons input, .logout input {
-            width: 30vw;
-            padding: 1vw;
-        }
-
-        .admin p {
-            background-size: 15vw;
-        }
-
-        .logout input {
-            margin-top: 18vw;
-        }
-
-        .admin {
-            margin-bottom: 9vw;
-        }
-
-        .admin img {
-            max-width: 20vw;
-            max-height: 20vw;
-        }
-        
-        .close-button {
-            margin-left: 40vw;
-        }
-    }
-    
-    @media screen and (max-width: 480px) {
-        .menu {
-            width: 55%;
-        }
-    
-        .admin h1,
-        .admin p,
-        .buttons input,
-        .logout input,
-        .rightSide h1,
-        .rightSide p {
-            font-size: 4.5vw;
-        }
-
-        .buttons input, .logout input {
-            width: 40vw;
-            padding: 1vw;
-        }
-
-        .admin p {
-            background-size: 20vw;
-        }
-
-        .logout input {
-            margin-top: 18vw;
-        }
-
-        .admin {
-            margin-bottom: 17vw;
-        }
-
-        .admin img {
-            max-width: 20vw;
-            max-height: 20vw;
-        }
-        
-        .close-button {
-            margin-left: 50vw;
-        }
-    }
-    
-    @media screen and (max-width: 360px) {
-        .menu {
-            width: 65%;
-        }
-    
-        .admin h1,
-        .admin p,
-        .buttons input,
-        .logout input,
-        .rightSide h1,
-        .rightSide p {
-            font-size: 5.5vw;
-        }
-
-        .buttons input, .logout input {
-            width: 45vw;
-            padding: 1vw;
-        }
-
-        .admin p {
-            background-size: 25vw;
-        }
-
-        .logout input {
-            margin-top: 22vw;
-        }
-
-        .admin {
-            margin-bottom: 20vw;
-        }
-
-        .admin img {
-            max-width: 27vw;
-            max-height: 27vw;
-        }
-        
-        .close-button {
-            margin-left: 59vw;
-        }
-    }
-    
+  
 /*inner code*/
 .inputs {
     display: flex;
@@ -403,7 +235,6 @@ body {
         line-height: 2vw;
     }
 
-
     .reserve p {
         margin: 0;
         padding: 0;
@@ -477,4 +308,360 @@ body {
     transform: translate(-50%, -50%);
     width: 20vw;
     height: 12vw;
+}
+
+
+@media screen and (max-width: 768px) {
+    .menu {
+        width: 40%;
+    }
+
+    .admin h1,
+    .admin p,
+    .buttons input,
+    .logout input,
+    .rightSide h1,
+    .rightSide p {
+        font-size: 2.2vw;
+    }
+
+    .buttons input, .logout input {
+        width: 30vw;
+        padding: 0.7vw;
+    }
+
+    .admin p {
+        background-size: 13vw;
+    }
+
+    .logout input {
+        margin-top: 17vw;
+    }
+
+    .admin {
+        margin-bottom: 7vw;
+    }
+
+    .admin img {
+        max-width: 14vw;
+        max-height: 14vw;
+    }
+
+    .close-button {
+        margin-left: 35vw;
+        margin-top: 1vw;
+        font-size: 2.5vw;
+    }
+
+    .rightSide #menuIcon {
+        margin-left: 1.8vw;
+        margin-top: 1.8vw;
+        font-size: 2.5vw;
+    }
+
+    .rightSide h1 {
+        padding-right: 4vw;
+        font-size: 3vw;
+    }
+    
+        .rightSide p {
+            padding-right: 4vw;
+            font-size: 3.1vw;
+        }
+
+        .UpcomingReservations p {
+            font-size: 2.5vw;
+        }
+
+            .reserv-form { 
+                width: 25vw;
+            }
+
+            .reserve p{
+                font-size: 2.2vw;
+                line-height: 3.5vw;
+            }
+
+            .reserv-img img {
+                width: 15vw;
+                height: 15vw;
+                margin-top: 23vw;
+            }
+
+                #spacer {
+                    line-height: 2.5vw;
+                }
+
+        #confirmButton, #backButton {
+            font-size: 2.1vw;
+            width: 10vw;
+        }
+}
+
+@media screen and (max-width: 576px) {
+    .menu {
+        width: 45%;
+    }
+
+    .admin h1,
+    .admin p,
+    .buttons input,
+    .logout input,
+    .rightSide h1,
+    .rightSide p {
+        font-size: 2.8vw;
+    }
+
+    .buttons input, .logout input {
+        width: 30vw;
+        padding: 1vw;
+    }
+
+    .admin p {
+        background-size: 15vw;
+    }
+
+    .logout input {
+        margin-top: 18vw;
+    }
+
+    .admin {
+        margin-bottom: 9vw;
+    }
+
+    .admin img {
+        max-width: 20vw;
+        max-height: 20vw;
+    }
+    
+    .close-button {
+        margin-left: 39vw;
+        margin-top: 1vw;
+        font-size: 3.5vw;
+    }
+
+    .rightSide #menuIcon {
+        margin-left: 1.8vw;
+        margin-top: 1.8vw;
+        font-size: 3.5vw;
+    }
+
+    .rightSide h1 {
+        padding-right: 5vw;
+        font-size: 3.5vw;
+    }
+    
+        .rightSide p {
+            padding-right: 5vw;
+            font-size: 3.6vw;
+        }
+
+        .UpcomingReservations p {
+            font-size: 3vw;
+        }
+
+            .reserv-form { 
+                width: 30vw;
+            }
+
+            .reserve p{
+                font-size: 2.7vw;
+                line-height: 4vw;
+            }
+
+            .reserv-img img {
+                width: 20vw;
+                height: 20vw;
+                margin-top: 26vw;
+                padding-left: 0;
+            }
+
+                #spacer {
+                    line-height: 3.3vw;
+                }
+
+        #confirmButton, #backButton {
+            font-size: 2.7vw;
+            width: 15vw;
+        }
+}
+
+@media screen and (max-width: 480px) {
+    .menu {
+        width: 55%;
+    }
+
+    .admin h1,
+    .admin p,
+    .buttons input,
+    .logout input,
+    .rightSide h1,
+    .rightSide p {
+        font-size: 4.5vw;
+    }
+
+    .buttons input, .logout input {
+        width: 40vw;
+        padding: 1vw;
+    }
+
+    .admin p {
+        background-size: 20vw;
+    }
+
+    .logout input {
+        margin-top: 18vw;
+    }
+
+    .admin {
+        margin-bottom: 17vw;
+    }
+
+    .admin img {
+        max-width: 20vw;
+        max-height: 20vw;
+    }
+    
+    .close-button {
+        margin-left: 48vw;
+        margin-top: 1vw;
+        font-size: 4.5vw;
+    }
+
+    .rightSide #menuIcon {
+        margin-left: 1.8vw;
+        margin-top: 1.8vw;
+        font-size: 4.5vw;
+    }
+
+    .rightSide h1 {
+        padding-right: 5vw;
+        font-size: 4vw;
+    }
+    
+        .rightSide p {
+            padding-right: 5vw;
+            font-size: 4.1vw;
+        }
+
+        .UpcomingReservations p {
+            font-size: 4vw;
+        }
+
+            .reserv-form { 
+                width: 35vw;
+            }
+
+            .reserve p{
+                font-size: 3.3vw;
+                line-height: 4.7vw;
+            }
+
+            .reserv-img img {
+                width: 25vw;
+                height: 25vw;
+                margin-top: 5vw;
+            }
+
+            .reserv-phone {
+                flex-direction: column;
+            }
+
+                #spacer {
+                    line-height: 3.9vw;
+                }
+
+        #confirmButton, #backButton {
+            font-size: 3.1vw;
+            width: 17vw;
+        }
+}
+
+@media screen and (max-width: 360px) {
+    .menu {
+        width: 65%;
+    }
+
+    .admin h1,
+    .admin p,
+    .buttons input,
+    .logout input,
+    .rightSide h1,
+    .rightSide p {
+        font-size: 5.5vw;
+    }
+
+    .buttons input, .logout input {
+        width: 45vw;
+        padding: 1vw;
+    }
+
+    .admin p {
+        background-size: 25vw;
+    }
+
+    .logout input {
+        margin-top: 22vw;
+    }
+
+    .admin {
+        margin-bottom: 20vw;
+    }
+
+    .admin img {
+        max-width: 27vw;
+        max-height: 27vw;
+    }
+    
+    .close-button {
+        margin-left: 57vw;
+        margin-top: 1vw;
+        font-size: 5.5vw;
+    }
+
+    .rightSide #menuIcon {
+        margin-left: 2vw;
+        margin-top: 2vw;
+        font-size: 5.5vw;
+    }
+
+    .UpcomingReservations {
+        overflow-x: auto;
+        margin-top: 2vw;
+        margin-left: 2vw;
+        margin-bottom: 0;
+    }
+
+    .UpcomingReservations p {
+        font-size: 5vw;
+    }
+
+        .reserv-form { 
+            width: 43vw;
+        }
+
+        .reserve {
+            width: 1vw;
+        }
+
+        .reserve p{
+            font-size: 4.3vw;
+            line-height: 5vw;
+        }
+
+        .reserv-img img {
+            width: 29vw;
+            height: 29vw;
+            margin-top: 5vw;
+        }
+
+            #spacer {
+                line-height: 5.2vw;
+            }
+    
+    #confirmButton, #backButton {
+        font-size: 4.3vw;
+        width: 24vw;
+        border-radius: 5vw;
+    }
 }
