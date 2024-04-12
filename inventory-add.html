@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Inventory</title>
+ <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="inventory.css">
+        <!-- fonts-->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <!-- icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+		<!--Web-logo-->
+		<link rel="icon" href="icons/logo.svg">
+		<!---->
+</head>
+<body>
+<div class="menu">
+            <div class="close-button">
+                <i id="menuIcon" class="fas fa-times icon-white"></i>
+            </div>
+            
+            <div class="admin">
+                <h1>Welcome,</h1>
+                <img src="icons/logo.png"/>
+                <p><b>Admin</b></p>
+            </div>
+
+            <div class="buttons">
+                <input type="button" name="dash" id="dashButton" value="Dashboard">
+                <input type="button" name="app" id="appButton" value="Appointments">
+                <input type="button" name="reserv" id="reservButton" value="Reservations">
+                <input type="button" name="inv" id="invButton" value="Inventory">
+                <input type="button" name="history" id="historyButton" value="History">
+                <input type="button" name="bill" id="billButton" value="Billing">
+            </div>
+
+            <div class="logout">
+                <input type="button" name="logout" id="logoutButton" value="LOG OUT">
+            </div>
+        </div>
+
+        <div class="mainContent">
+         <div class="rightSide" id="dash">
+                <i id="menuIcon" class="fas fa-bars icon-white"></i>
+                <h1>Today's Date:</h1>
+                <p id="date">Date Placeholder</p>
+            </div>
+			<div class="content">
+			<div class="inventory-add">
+                <p id="inventory-add-title">Add Phone/Accessory</p>
+				<br />
+				<div class="inventory-add-container">
+				<form>
+				TYPE 
+				&emsp13;&emsp13;&emsp13;&emsp13;&emsp13;&emsp13;&emsp13;&emsp13;&emsp13;&nbsp;
+				<select id="dropdown4" name="type">
+				<option value="" selected disabled hidden></option>
+				<option value="Phone">Phone</option>
+				<option value="Accessory">Accessory</option>
+				</select>
+				<br>
+				PROD.ID
+				&emsp13;&emsp13;&emsp13;&emsp13;
+				<input type="text" name="prodid">
+				<br>
+				BRAND
+				&emsp13;&emsp13;&emsp13;&emsp13;&emsp13;&emsp13;
+				<input type="text" name="brand">
+				<br>
+				MODEL
+				&emsp13;&emsp13;&emsp13;&emsp13;&emsp13;&emsp13;
+				<input type="text" name="model">
+				<br>
+				COLOR/S
+				&emsp13;&emsp13;&emsp13;&emsp13;
+				<input type="text" name="color">
+				<br>
+				QUANTITY
+				&emsp13;&emsp13;
+				<input type="text" name="quantity">
+				<br>
+				PRICE
+				&emsp13;&emsp13;&emsp13;&emsp13;&nbsp;&emsp13;&emsp13;&emsp13;&nbsp;
+				<input type="text" name="price">
+				<br>
+				SPECS
+				&emsp13;&emsp13;&emsp13;&emsp13;&nbsp;&emsp13;&emsp13;&emsp13;
+				<input type="text" name="specs">
+				<br>
+				IMAGE
+				&emsp13;&emsp13;&emsp13;&emsp13;&nbsp;&emsp13;&emsp13;&emsp13;
+				<input id="image-upload" type="file" name="image" accept="image/*" multiple style="display: none;" />
+				<label for="image-upload" class="file-upload">
+				<i class="fa fa-cloud-upload"></i>CHOOSE IMAGE
+				</label>
+				</form>
+                <a class="btn btn-save">Save</a>
+				&emsp13;&emsp13;&emsp13;&emsp13;
+                <a href="inventory.html" class="btn btn-cancel">Cancel</a>				
+				</div>
+            </div>
+        </div>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+		<script src="inventory-add.js"></script>
+</body>
+</html>

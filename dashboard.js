@@ -18,7 +18,6 @@ function handleAppointments(){
 }
 
     document.getElementById('appButton').onclick = handleAppointments;
-    document.getElementById('appts').onclick = handleAppointments;
 
 /*reservations*/
 function handleReservations(){
@@ -26,7 +25,27 @@ function handleReservations(){
 }
 
     document.getElementById('reservButton').onclick = handleReservations;
-    document.getElementById('resv').onclick = handleReservations;
+
+/*reservations*/
+function handleInventory(){
+    window.location.href = "inventory.html";
+}
+
+    document.getElementById('invButton').onclick = handleInventory;
+
+/*history*/
+function handleHistory(){
+    window.location.href = "history.html";
+}
+
+    document.getElementById('historyButton').onclick = handleHistory;
+
+/*billing*/
+function handleBilling(){
+    window.location.href = "billing.html";
+}
+
+    document.getElementById('billButton').onclick = handleBilling;    
 
     
 /*date*/
