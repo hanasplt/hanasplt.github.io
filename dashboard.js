@@ -18,6 +18,7 @@ function handleAppointments(){
 }
 
     document.getElementById('appButton').onclick = handleAppointments;
+    document.getElementById('appts').onclick = handleAppointments;
 
 /*reservations*/
 function handleReservations(){
@@ -25,6 +26,7 @@ function handleReservations(){
 }
 
     document.getElementById('reservButton').onclick = handleReservations;
+    document.getElementById('resv').onclick = handleReservations;
 
 /*reservations*/
 function handleInventory(){
@@ -32,6 +34,7 @@ function handleInventory(){
 }
 
     document.getElementById('invButton').onclick = handleInventory;
+    document.getElementById('stcks').onclick = handleInventory;
 
 /*history*/
 function handleHistory(){
