@@ -17,7 +17,7 @@ body {
     height: 100%;
     background-color: #000F22;
     transition: right 0.3s ease;
-    z-index: 2;
+	z-index:2; 
 }
 
     .menu p {
@@ -107,6 +107,7 @@ body {
     text-align: right;
     margin-bottom: 0;
     padding-top: 1.3vw;
+    padding-right: 2vw;
     color: #C2E8FF;
     font-weight: 680;
     font-size: 1.7vw;
@@ -116,6 +117,7 @@ body {
         text-align: right;
         margin-top: 0;
         margin-bottom: 0;
+        padding-right: 2vw;
         color: #C2E8FF;
         font-weight: 680;
         font-size: 1.6vw;
@@ -143,12 +145,179 @@ body {
             margin: 0;
         }
 
+
+
+
+
+    @media screen and (max-width: 768px) {
+        .menu {
+            width: 40%;
+        }
     
+        .admin h1,
+        .admin p,
+        .buttons input,
+        .logout input,
+        .rightSide h1,
+        .rightSide p {
+            font-size: 3vw;
+        }
+
+        .buttons input, .logout input {
+            width: 30vw;
+            padding: 1vw;
+        }
+
+        .admin p {
+            background-size: 16vw;
+        }
+
+        .logout input {
+            margin-top: 20vw;
+        }
+
+        .admin {
+            margin-bottom: 9vw;
+        }
+
+        .admin img {
+            max-width: 15vw;
+            max-height: 15vw;
+        }
+
+        .close-button {
+            margin-left: 36vw;
+        }
+    }
+    
+    @media screen and (max-width: 576px) {
+        .menu {
+            width: 45%;
+        }
+    
+        .admin h1,
+        .admin p,
+        .buttons input,
+        .logout input,
+        .rightSide h1,
+        .rightSide p {
+            font-size: 2.8vw;
+        }
+
+        .buttons input, .logout input {
+            width: 30vw;
+            padding: 1vw;
+        }
+
+        .admin p {
+            background-size: 15vw;
+        }
+
+        .logout input {
+            margin-top: 18vw;
+        }
+
+        .admin {
+            margin-bottom: 9vw;
+        }
+
+        .admin img {
+            max-width: 20vw;
+            max-height: 20vw;
+        }
+        
+        .close-button {
+            margin-left: 40vw;
+        }
+    }
+    
+    @media screen and (max-width: 480px) {
+        .menu {
+            width: 55%;
+        }
+    
+        .admin h1,
+        .admin p,
+        .buttons input,
+        .logout input,
+        .rightSide h1,
+        .rightSide p {
+            font-size: 4.5vw;
+        }
+
+        .buttons input, .logout input {
+            width: 40vw;
+            padding: 1vw;
+        }
+
+        .admin p {
+            background-size: 20vw;
+        }
+
+        .logout input {
+            margin-top: 18vw;
+        }
+
+        .admin {
+            margin-bottom: 17vw;
+        }
+
+        .admin img {
+            max-width: 20vw;
+            max-height: 20vw;
+        }
+        
+        .close-button {
+            margin-left: 50vw;
+        }
+    }
+    
+    @media screen and (max-width: 360px) {
+        .menu {
+            width: 65%;
+        }
+    
+        .admin h1,
+        .admin p,
+        .buttons input,
+        .logout input,
+        .rightSide h1,
+        .rightSide p {
+            font-size: 5.5vw;
+        }
+
+        .buttons input, .logout input {
+            width: 45vw;
+            padding: 1vw;
+        }
+
+        .admin p {
+            background-size: 25vw;
+        }
+
+        .logout input {
+            margin-top: 22vw;
+        }
+
+        .admin {
+            margin-bottom: 20vw;
+        }
+
+        .admin img {
+            max-width: 27vw;
+            max-height: 27vw;
+        }
+        
+        .close-button {
+            margin-left: 59vw;
+        }
+    }
+    
+
 /*inner*/
 
 .content {
     padding-bottom: 1vw;
-
 }
 
 .UpcomingAppointments, .UpcomingReservations, .InventoryStock {
@@ -210,7 +379,7 @@ body {
 	margin: auto;
     margin-bottom: 1vw;
     background-color: rgba(255, 255, 255, 0.837);
-    width: 90%;
+    width: 96%;
     height: 76%;
     border-radius: 1vw;
     display: flex;
@@ -219,14 +388,14 @@ body {
     align-self: flex-end;
     position: absolute;
     top: 58%;
-    left: 5%;
+    right: 2%;
     transform: translateY(-50%);
 }
 .billing2{ 
 	margin: auto;
     margin-bottom: 1vw;
     background-color: #C2E8FF;
-    width: 76%;
+    width: 96%;
     height: 76%;
     border-radius: 1vw;
     display: flex;
@@ -274,7 +443,6 @@ body {
         border: none;
 		border-radius: 20px;
         margin-bottom: 2vw;
-        flex-wrap: wrap;
     }
         .billing-choices input:hover {
             background-color: #f79256;
@@ -285,7 +453,7 @@ body {
 		display: inline-block;
 		vertical-align: top;
 		margin-bottom: 0;
-		margin-left: 22vw;
+		margin-left: 2vw;
 		margin-top: -4vw; 
 		}
 			
@@ -323,7 +491,7 @@ body {
 .billing-input-label1 {
     margin: 0;
     margin-right: 10px;
-	padding-right: 50px;
+	padding-right: 350px;
 	width: 250px;
 	font-size: 20px;
     font-weight: 500;
@@ -333,7 +501,7 @@ body {
 .billing-input-value1 input{
 	text-align: left;
     margin: 0;
-	width: 420px;
+	width: 400px;
 	height: 13px;
 	background-color: white;
 	color: black;
@@ -358,7 +526,7 @@ body {
 .billing-input-label2 {
     margin: 0;
     margin-right: 10px;
-	padding-right: 50px;
+	padding-right: 350px;
 	width: 250px;
 	font-size: 20px;
     font-weight: 500;
@@ -371,7 +539,7 @@ body {
 .billing-input-value3 input{
     text-align: left;
     margin: 0;
-	width: 654px;
+	width: 634px;
 	height: 13px;
 	background-color: white;
 	color: black;
@@ -382,7 +550,7 @@ body {
 .billing-input-value4 input{
     text-align: left;
     margin: 0;
-	width: 654px;
+	width: 634px;
 	height: 13px;
 	background-color: white;
 	color: black;
@@ -449,7 +617,7 @@ body {
 	width: 250px;
 	font-size: 18px;
     font-weight: 500;
-    color: #052355;
+    color: #052355;/
 }
 
 .preview-value {
@@ -525,205 +693,119 @@ body {
     cursor: pointer;
 	margin-right: 30px;
 }
-
-@media screen and (max-width: 1280px) {
-    #search-btn {
-        margin-left: 30px;
-    }
-    .billing-input-label1 {
-        margin-right: 60px;
-    }
-}
-
-@media screen and (max-width: 1120px) {
-    .billing-choices input {
-        width: 310px;
-    }
-}
-
-@media screen and (max-width: 880px) {
-    .billing-choices {
-        display: flex;
-        flex-direction: column;
-    }
-    .billing-choices input {
-        height: 25vh;
-    }
-    .billing1 {
-        height: 80vh;
-        margin-top: 0%;
-    }
-}
-
 @media screen and (max-width: 768px) {
-    .menu {
-        width: 40%;
+    .billing1{
+		width: 90%; 
+        height:75%; 
+        top: 51%; 
+        right: 5%; 
+        transform: translateY(-50%); 
+        border-radius: 10px;
+	}
+    .billing2 {
+        width: 90%; 
+        height: 75%; 
+        top: 51%; 
+        right: 5%; 
+        transform: translateY(-50%); 
+        border-radius: 10px; 
     }
 
-    .admin h1,
-    .admin p,
-    .buttons input,
-    .logout input,
-    .rightSide h1,
-    .rightSide p {
-        font-size: 2.2vw;
+    #billing-title,
+    #billing-details {
+        font-size: 18px; 
+        padding-left: 2%; 
     }
 
-    .buttons input, .logout input {
-        width: 30vw;
-        padding: 0.7vw;
+    .billing-choices input {
+		align-items: center;
+        width: 35%; 
+        height: 150px; 
+        font-size: 14px; 
+        margin-top: 5px; 
     }
 
-    .admin p {
-        background-size: 13vw;
+    .formContainer {
+        margin-left: 5%; 
     }
 
-    .logout input {
-        margin-top: 17vw;
+    .formContainer input {
+        width: 60px;
+		height: 25px;
+		font-size: 15px;
     }
 
-    .admin {
-        margin-bottom: 7vw;
+    .button-container,
+    .button-container1 { 
+		width: auto; 
+        height: auto; 
+        margin-top: 70px; 
     }
 
-    .admin img {
-        max-width: 14vw;
-        max-height: 14vw;
+    .button-container button,
+    .button-container1 button {
+		width: 80px; 
+        height: auto; 
+        margin-right: 8px; 
+        font-size: 12px;  
+        padding: 5px 15px; 
     }
-
-    .close-button {
-        margin-left: 35vw;
-        margin-top: 1vw;
-        font-size: 2.5vw;
-    }
-
-    .rightSide #menuIcon {
-        margin-left: 1.8vw;
-        margin-top: 1.8vw;
-        font-size: 2.5vw;
-    }
-
-    .rightSide h1 {
-        font-size: 3vw;
-    }
-    
-        .rightSide p {
-            font-size: 3.1vw;
-        }
-}
-
-@media screen and (max-width: 576px) {
-    .menu {
-        width: 45%;
-    }
-
-    .admin h1,
-    .admin p,
-    .buttons input,
-    .logout input,
-    .rightSide h1,
-    .rightSide p {
-        font-size: 2.8vw;
-    }
-
-    .buttons input, .logout input {
-        width: 30vw;
-        padding: 1vw;
-    }
-
-    .admin p {
-        background-size: 15vw;
-    }
-
-    .logout input {
-        margin-top: 18vw;
-    }
-
-    .admin {
-        margin-bottom: 9vw;
-    }
-
-    .admin img {
-        max-width: 20vw;
-        max-height: 20vw;
-    }
-    
-    .close-button {
-        margin-left: 39vw;
-        margin-top: 1vw;
-        font-size: 3.5vw;
-    }
-
-    .rightSide #menuIcon {
-        margin-left: 1.8vw;
-        margin-top: 1.8vw;
-        font-size: 3.5vw;
-    }
-
-    .rightSide h1 {
-        font-size: 3.5vw;
-    }
-    
-        .rightSide p {
-            font-size: 3.6vw;
-        }
-}
-
-
-
-@media screen and (max-width: 480px) {
-    .menu {
-        width: 55%;
-    }
-
-    .admin h1,
-    .admin p,
-    .buttons input,
-    .logout input,
-    .rightSide h1,
-    .rightSide p {
-        font-size: 4.5vw;
-    }
-
-    .buttons input, .logout input {
-        width: 40vw;
-        padding: 1vw;
-    }
-
-    .admin p {
-        background-size: 20vw;
-    }
-
-    .logout input {
-        margin-top: 18vw;
-    }
-
-    .admin {
-        margin-bottom: 17vw;
-    }
-
-    .admin img {
-        max-width: 20vw;
-        max-height: 20vw;
-    }
-    
-    .close-button {
-        margin-left: 48vw;
-        margin-top: 1vw;
-        font-size: 4.5vw;
-    }
-
-    .rightSide #menuIcon {
-        margin-left: 1.8vw;
-        margin-top: 1.8vw;
-        font-size: 4.5vw;
-    }
-
-    .rightSide h1 {
-        font-size: 4vw;
-    }
-    
-        .rightSide p {
-            font-size: 4.1vw;
-        }
-}
+	.billing-input-label1{
+	margin-right: 5px;
+	padding-right: 28px;
+	width: 60px;
+	font-size: 8px;	
+	}
+	.billing-input-label2{
+	margin-right: 5px;
+	padding-right: 28px;
+	width: 60px;
+	font-size: 8px;	
+	}
+	.billing-input-value1 input{
+	width: 250px;
+	height: 8px;
+	padding-right: 4px;
+	font-size: 9px;
+	}
+	.billing-input-value2 input{
+	width: 70px;
+	height: 16px;
+	font-size: 9px;
+	margin-left: 4px;	
+	}
+    .billing-input-value3 input{
+	width: 320px;
+	height: 8px;
+	padding-right: 2px;
+	font-size: 9px;	
+	}
+    .billing-input-value4 input{
+	width: 320px;
+	height: 8px;
+	padding-right: 2px;
+	font-size: 9px;	
+	}
+	.btn {
+	width: 80px;
+    height: 20px;
+	font-size: 12px;
+	}
+	.btn-save{
+    top:92%;
+    right: 2.5vw; 
+    margin: 10px;
+    width: 80px;
+    height: 20px;
+	font-size: 12px;
+	}
+	.preview-label {
+    margin-right: 5px;
+	padding-right: 80px;
+	width: 150px;
+	font-size: 12px;
+	}
+	.preview-value {
+	font-size: 12px;
+	}
+}    

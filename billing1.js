@@ -67,45 +67,42 @@ document.addEventListener("DOMContentLoaded", function() {
     searchBtn.addEventListener("click", function(event) {
         event.preventDefault();
 
-        var resIdInput = document.getElementById("res-id");
-        var resId = resIdInput.value.trim();
+        var appIdInput = document.getElementById("app-id");
+        var appId = appIdInput.value.trim();
 
-        var foundRecord = searchRecord(resId);
+        var foundRecord = searchRecord(appId);
 
         if (foundRecord) {
             populateInputFields(foundRecord);
             showSuccessAlert();
         } else {
-            handleNewReservationId(resId);
+            handleNewReservationId(appId);
         }
     });
 
-    function searchRecord(resId) {
+    function searchRecord(appId) {
         var records = [
-            { id: "RP00001", name: "Albert Kesselring", contact_number: "09996320917", email: "ak35krieg@gmail.com", prod_id: "VIVO0001", unit: "Vivo V27 Pro", color: "Himalayan Blue", price: "PHP 26,999", quantity: "1", total_price: "PHP 26,999", payment: "GCash", paid: "PHP 26,999" },
-            { id: "RA00003", name: "Nikolaus Barbie", contact_number: "09880012345", email: " ", prod_id: "PB10001", unit: "Philips 50000mAH Power Bank", color: "White", price: "PHP 3,000", quantity: "1", total_price: "PHP 3,000", payment: "Cash", paid: "PHP 3,000" }
+            { id: "A000001", name: "Debbie Gerodias", contact_number: "09923316087", email: "debbiegerodias19@gmail.com", unit: "Acer Aspire 7", issue: "Unable to start", service_render: "Cleaning and replacement", fee: "PHP 550", date: "April 10, 2024" },
+            { id: "A000003", name: "Hermann Goering", contact_number: "09093346721", email: "luftwaffe@gmail.com", unit: "Lenovo Legion Y70", issue: "Damaged camera", service_render: "camera replacement", fee: "PHP 3,500", date: "January 12, 2024" }
         ];
 
         return records.find(function(record) {
-            return record.id === resId;
+            return record.id === appId;
         });
     }
 
     function populateInputFields(record) {
         document.querySelector("input[name='name']").value = record.name;
         document.querySelector("input[name='contact_number']").value = record.contact_number;
-        document.querySelector("input[name='email']").value = record.email;
-        document.querySelector("input[name='prod_id']").value = record.prod_id;
+        document.querySelector("input[name='email']").value = record.email || ""; 
         document.querySelector("input[name='unit']").value = record.unit;
-        document.querySelector("input[name='color']").value = record.color;
-        document.querySelector("input[name='price']").value = record.price;
-        document.querySelector("input[name='quantity']").value = record.quantity;
-        document.querySelector("input[name='total_price']").value = record.total_price;
-        document.querySelector("input[name='payment']").value = record.payment;
-        document.querySelector("input[name='paid']").value = record.paid;
+        document.querySelector("input[name='issue']").value = record.issue || ""; 
+        document.querySelector("input[name='service-render']").value = record.service_render || ""; 
+        document.querySelector("input[name='fee']").value = record.fee || ""; 
+        document.querySelector("input[name='date']").value = record.date || "";
     }
 
-    function handleNewReservationId(resId) {
+    function handleNewReservationId(appId) {
         Swal.fire({
             icon: 'info',
             title: 'ID not found!',
@@ -126,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 document.addEventListener("DOMContentLoaded", function() {
     var saveBtn = document.querySelector(".btn-save");
-    var resIdInput = document.getElementById("res-id");
+    var appIdInput = document.getElementById("app-id");
 
     saveBtn.addEventListener("click", function(event) {
         event.preventDefault();
@@ -159,9 +156,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function validateReservationId() {
-        var resId = resIdInput.value.trim();
-        var pattern = /^(RP|RA)\d{5}$/;
-        return pattern.test(resId);
+        var appId = appIdInput.value.trim();
+        var pattern = /^A\d{6}$/;
+        return pattern.test(appId);
     }
 
     function validateEmail() {
@@ -180,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function() {
             cancelButtonText: 'Go Back'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = 'purchase-preview.html';
+                window.location.href = 'service-preview.html';
             }
         });
     }
@@ -235,7 +232,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     text: 'Printing document...',
                     confirmButtonText: 'OK'
                 }).then(() => {
-                    window.open("purchase-receipt.html", "_blank");
+                    window.open("service-receipt.html", "_blank");
                     window.location.href = "billing.html";
                 });
             }
@@ -259,7 +256,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     cancelButtonText: 'Go Back'
                 }).then((editResult) => {
                     if (editResult.isConfirmed) {
-                        window.location.href = "billing-purchase.html";
+                        window.location.href = "billing-service.html";
                     }
                 });
             }
