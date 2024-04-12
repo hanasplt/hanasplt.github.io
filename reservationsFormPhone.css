@@ -496,7 +496,7 @@ body {
             width: 50vw;
             height: 30vw;
             top: 42%;
-            left: 42%;
+            left: 45%;
         }
 }
 
@@ -593,6 +593,8 @@ body {
         .confirmation-popup {
             width: 50vw;
             height: 30vw;
+            top: 50%;
+            left: 50%;
         }
 }
 

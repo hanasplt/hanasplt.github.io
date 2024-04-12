@@ -1,0 +1,942 @@
+* {
+ margin: 0;
+ padding: 0;
+}
+body {
+ height: 100vh;
+ font-family: "Inter", sans-serif;
+}
+
+/*header*/
+.header-container {
+ display: grid;
+ grid-template-columns: 1fr 4fr;
+ transition: 0.3s;
+ position: fixed;
+ width: 100%;
+ z-index: 100;
+}
+.left-header {
+ font-family: "Krona One", sans-serif;
+ display: flex;
+ background-color: #2A5181;
+ align-items: center;
+ column-gap: 15px;
+ font-size: 17px;
+ color: white;
+ padding: 20px;
+ padding-left: 50px;
+}
+.navbar {
+ background-color: #000F22;
+ display: flex;
+ justify-content: right;
+ align-items: center;
+}
+.menu {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ column-gap: 40px;
+ padding-right: 50px;
+ white-space: nowrap;
+}
+button {
+ border: none;
+}
+.menu-btn {
+ background-color: #000F22;
+ color: white;
+ font-size: 14px;
+ padding: 20px;
+ cursor: pointer;
+}
+.menu-btn:hover {
+ background-color: #052355;
+ padding: 20px;
+ border-radius: 10px;
+ transition: all 0.3s ease;
+}
+.right-header {
+ padding-right: 60px;
+ display: flex;
+ column-gap: 40px;
+ align-items: center;
+}
+.right-header a {
+ text-decoration: none;
+}
+.sign-in-btn {
+ background-color: #E1F0F9;
+ width: 100px;
+ padding: 7px;
+ font-weight: bold;
+ border-radius: 5px;
+ font-size: 12px;
+ cursor: pointer;
+}
+.sign-in-btn:hover {
+ background-color: #2A5181;
+ color: white;
+ transition: all 0.3s ease;
+}
+#menu-icon {
+ color: white;
+ font-size: 20px;
+ margin-top: 5px;
+ cursor: pointer;
+ z-index: 10001;
+ display: none;
+}
+.x {
+ color: white;
+ font-size: 20px;
+ margin-top: 5px;
+ cursor: pointer;
+ z-index: 10001;
+ display: none;
+}
+/**/
+
+/*landing page main*/
+.main-container {
+ position: relative;
+ padding-top: 90px;
+}
+.bg-img {
+ position: absolute;
+ width: 100%;
+ max-height: 100vh;
+ object-fit: cover;
+}
+.content {
+ position: absolute;
+ z-index: 1;
+ padding-top: 150px;
+ padding-left: 100px;
+}
+.title {
+ color: white;
+ font-size: 64px;
+ font-weight: 500;
+ padding-bottom: 30px;
+} 
+.subtitle {
+ color: white;
+ width: 358px;
+ padding-bottom: 50px;
+}
+.sign-up-btn {
+ background-color: #E1F0F9;
+ width: 100px;
+ padding: 7px;
+ font-weight: bold;
+ border-radius: 5px;
+ font-size: 12px;
+ cursor: pointer;
+}
+.sign-up-btn:hover {
+ background-color: #2A5181;
+ color: white;
+ transition: all 0.3s ease;
+}
+/**/
+
+.space {
+ height: 10vh;
+ display: block;
+}
+
+/*cp new arrivals container*/
+.cp-product-container {
+ padding-bottom: 50px;
+ padding-top: 50px;
+ margin: 0 auto;
+}
+.cp-product-container a {
+ text-decoration: none;
+ color: black;
+}
+.cp-container {
+ margin-top: 45%;
+ display: flex;
+ justify-content: space-between;
+ padding: 0 70px 70px 70px;
+}
+.cellphone-txt {
+ font-size: 25px;
+ color: #052355;
+ font-weight: bold;
+}
+.phone-choices {
+ display: flex;
+ column-gap: 50px;
+ font-size: 15px;
+}
+.cp-new-arrivals {
+ font-weight: bold;
+ position: relative;
+ font-size: 15px;
+}
+.cp-new-arrivals::after {
+ content: '';
+ position: absolute;
+ left: 0;
+ bottom: -2px;
+ width: 40%;
+ border-bottom: 3px solid black;
+ transform: translateX(70%); 
+}
+.cellphones {
+ display: flex;
+ justify-content: center;
+ column-gap: 80px;
+ flex-wrap: wrap;
+}
+.cellphone-container {
+ background-color: #E1F0F9;
+ padding: 30px 50px 30px 50px;
+ border-radius: 10px;
+ text-align: center;
+ transition: transform 0.3s ease; 
+}
+.cellphone-container:hover {
+ transform: scale(1.1); 
+}
+.cellphone-container img {
+ padding-bottom: 10px;
+}
+.cellphone-container p {
+ font-weight: bold;
+}
+.cp-title {
+ width: 150px;
+}
+.pre-order-btn {
+ background-color: #F79256;
+ color: white;
+ padding: 10px 20px 10px 20px;
+ border-radius: 10px;
+ font-weight: bold;
+ font-size: 12px;
+ cursor: pointer;
+}
+.pre-order-btn:hover {
+ background-color: #F2B38D;
+ color: #A4430A;
+ transition: all 0.3s ease;
+}
+.view-more-btn {
+ background-color: #052355;
+ color: white;
+ padding: 10px 20px 10px 20px;
+ border-radius: 5px;
+ font-weight: bold;
+ cursor: pointer;
+}
+.view-more-btn:hover {
+ background-color: #9DB6DE;
+ color: #000F22;
+ transition: all 0.3s ease;
+}
+.view-more-container {
+ text-align: right;
+ padding-top: 30px;
+ padding-right: 70px;
+}
+/**/
+
+/*cp best seller container*/
+.cp-product-container2 {
+ padding-bottom: 50px;
+ padding-top: 50px;
+ display: none;
+}
+.cp-product-container2 a {
+ text-decoration: none;
+ color: black;
+}
+.cp-container2 {
+ margin-top: 45%;
+ display: flex;
+ justify-content: space-between;
+ padding: 0 70px 70px 70px;
+}
+.cp-new-arrivals2 {
+ font-size: 15px;
+}
+.cp-best-seller2 {
+ font-weight: bold;
+ position: relative;
+ font-size: 15px;
+}
+.cp-best-seller2::after {
+ content: '';
+ position: absolute;
+ left: 0;
+ bottom: -2px;
+ width: 40%;
+ border-bottom: 3px solid black;
+ transform: translateX(70%); 
+}
+/**/
+
+/*accessories new arrivals container*/
+.acc-product-container {
+ padding-bottom: 50px;
+}
+.acc-product-container a {
+ text-decoration: none;
+ color: black;
+}
+.acc-container {
+ margin-top: 3%;
+ display: flex;
+ justify-content: space-between;
+ padding: 0 70px 70px 70px;
+}
+.accessories-txt {
+ font-size: 25px;
+ color: #052355;
+ font-weight: bold;
+}
+.accessories-choices {
+ display: flex;
+ column-gap: 50px;
+ font-size: 15px;
+}
+.acc-new-arrivals {
+ font-weight: bold;
+ position: relative;
+ font-size: 15px;
+}
+.acc-new-arrivals::after {
+ content: '';
+ position: absolute;
+ left: 0;
+ bottom: -2px;
+ width: 40%;
+ border-bottom: 3px solid black;
+ transform: translateX(70%); 
+}
+.accessories {
+ display: flex;
+ justify-content: center;
+ column-gap: 80px;
+ flex-wrap: wrap;
+}
+.accessories-container {
+ background-color: #E1F0F9;
+ padding: 30px 50px 30px 50px;
+ border-radius: 10px;
+ text-align: center;
+ transition: transform 0.3s ease; 
+}
+.accessories-container:hover {
+ transform: scale(1.1); 
+}
+.accessories-container img {
+ padding-bottom: 10px;
+}
+.accessories-container p {
+ font-weight: bold;
+}
+.acc-title {
+ width: 200px;
+}
+/**/
+
+/*accessories best seller container*/
+.acc-product-container2 {
+ padding-bottom: 50px;
+ display: none;
+}
+.acc-product-container2 a {
+ text-decoration: none;
+ color: black;
+}
+.acc-container2 {
+ margin-top: 3%;
+ display: flex;
+ justify-content: space-between;
+ padding: 0 70px 70px 70px;
+}
+.acc-new-arrivals2 {
+ font-size: 15px;
+}
+.acc-best-seller2 {
+ font-weight: bold;
+ position: relative;
+ font-size: 15px;
+}
+.acc-best-seller2::after {
+ content: '';
+ position: absolute;
+ left: 0;
+ bottom: -2px;
+ width: 40%;
+ border-bottom: 3px solid black;
+ transform: translateX(70%); 
+}
+/**/
+
+/*services container*/
+.services-container {
+ padding-bottom: 50px;
+ margin-top: 3%;
+ padding: 0 70px 100px 70px;
+}
+.services-division {
+ display: flex;
+ justify-content: space-between;
+}
+.services-txt {
+ font-size: 25px;
+ color: #052355;
+ font-weight: bold;
+ padding-bottom: 40px;
+}
+.services {
+ display: flex;
+ align-items: center;
+ background-color: #E1F0F9;
+ border-radius: 10px;
+ padding: 30px 50px 30px 50px;
+ width: 40%;
+}
+.services img {
+ width: 110%;
+}
+.phone-repair-container {
+ padding-right: 100px;
+}
+.phone-repair-container p {
+ font-size: 20px;
+ font-weight: bold;
+}
+.phone-repair-container ul {
+ padding: 0 0 30px 20px;
+}
+.phone-repair-container li {
+ font-size: 13px;
+}
+.book-now-btn {
+ background-color: #F79256;
+ color: white;
+ padding: 10px 30px 10px 30px;
+ border-radius: 10px;
+ font-weight: bold;
+ font-size: 12px;
+ cursor: pointer;
+}
+.book-now-btn:hover {
+ background-color: #F2B38D;
+ color: #A4430A;
+ transition: all 0.3s ease;
+}
+.services2 {
+ display: flex;
+ align-items: center;
+ background-color: #E1F0F9;
+ border-radius: 10px;
+ padding: 30px 50px 30px 50px;
+ width: 40%;
+}
+.services2 img {
+ width: 110%;
+}
+.laptop-repair-container {
+ padding-right: 100px;
+}
+.laptop-repair-container p {
+ font-size: 20px;
+ font-weight: bold;
+}
+.laptop-repair-container ul {
+ padding: 0 0 30px 20px;
+}
+.laptop-repair-container li {
+ font-size: 13px;
+}
+/**/
+
+/*get in touch*/
+.contacts-container {
+ background-color: #00B2CA;
+ color: white;
+ padding-bottom: 70px;
+}
+.get-in-touch {
+ font-size: 32px;
+ font-weight: bold;
+ text-align: center;
+ padding-top: 50px;
+ padding-bottom: 70px;
+}
+.contacts {
+ display: flex;
+ column-gap: 50px;
+ justify-content: center;
+ align-items: flex-start;
+}
+.location {
+ text-align: center;
+}
+.phone-number {
+ text-align: center;
+}
+.email {
+ text-align: center;
+}
+.facebook {
+ text-align: center;
+}
+.location a, .phone-number a {
+ font-size: 14px;
+}
+.email a {
+ font-size: 14px;
+ color: white;
+ text-decoration: none;
+}
+.facebook a {
+ font-size: 14px;
+ color: white;
+ text-decoration: none;
+}
+/**/
+
+/*media*/
+@media only screen and (max-width: 1160px) {
+ .cellphones {
+  column-gap: 50px;
+ }
+ .accessories-container {
+  padding: 20px 30px 20px 30px;
+ }
+ .accessories {
+  column-gap: 50px;
+ }
+ .services {
+  width: 35%;
+ }
+ .phone-repair-container p {
+  white-space: nowrap;
+ }
+ .laptop-repair-container p {
+  white-space: nowrap;
+ }
+ .phone-repair-container {
+  padding-right: 50px;
+ }
+ .laptop-repair-container {
+  padding-right: 50px;
+ }
+ .get-in-touch {
+  font-size: 30px;
+ }
+ .description {
+  font-size: 12px;
+ }
+ .location a, .phone-number a, .email a, .facebook a{
+  font-size: 12px;
+ }
+}
+
+@media only screen and (max-width: 1000px) {
+ #menu-icon {
+  display: block;
+ }
+ .left-header {
+  font-size: 15px;
+  padding-left: 30px;
+ }
+ .menu {
+  position: absolute;
+  top: 100%;
+  right: -100%;
+  width: 200px;
+  height: 100vh;
+  background-color: #000F22;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  transition: all 0.5s ease;
+ }
+ .menu a {
+  text-decoration: none;
+ }
+ .menu-btn {
+  display: block;
+  margin-left: 50px;
+  margin-bottom: 20px;
+ }
+ .menu-btn:hover {
+  background-color: #000F22;
+ }
+ .sign-in-btn {
+  display: block;
+  margin-left: 50px;
+ }
+ .menu.open {
+  right: 0;
+  transition: all 0.5s ease;
+ }
+ .sign-in-btn:hover, .sign-up-btn:hover {
+  background-color: #E1F0F9;
+  color: black;
+ }
+ .content {
+  padding-top: 100px;
+ }
+ .cellphone-container:hover, .accessories-container:hover {
+  transform: none; 
+ }
+ .pre-order-btn:hover, .book-now-btn:hover {
+  background-color: #F79256;
+  color: white;
+ }
+ .view-more-btn:hover {
+  background-color: #052355;
+  color: white;
+ }
+ .cellphones {
+  column-gap: 30px;
+ }
+ .accessories {
+  column-gap: 30px;
+ }
+ .services-division {
+  display: inline;
+ }
+ .services {
+  width: 60%;
+  margin-bottom: 30px;
+  margin-left: 120px;
+ }
+ .services2 {
+  width: 60%;
+  margin-left: 120px;
+ }
+ .phone-repair-container, .laptop-repair-container {
+  padding-right: 100px;
+ }
+}
+
+@media only screen and (max-width: 950px) {
+ .cp-product-container {
+  padding-top: 10%;
+ }
+ .cellphones {
+  column-gap: 20px;
+ }
+ .accessories {
+  column-gap: 20px;
+ }
+}
+
+@media only screen and (max-width: 850px) {
+ .content {
+  padding-left: 50px;
+  padding-top: 80px;
+ }
+ .title {
+  font-size: 55px;
+ }
+ .subtitle {
+  font-size: 15px;
+  width: 335px;
+ }
+ .cp-product-container2 {
+  padding-top: 10%;
+ }
+ .cellphones {
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  margin: 0 80px 0 20px;
+  gap: 40px;
+ }
+ .cellphone-container {
+  width: 60%;
+  text-align: center;
+  margin: 0 50px 0 50px;
+ }
+ .cp-title {
+  width: 100%;
+ }
+ .accessories {
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  margin: 0 80px 0 20px;
+  gap: 40px;
+ }
+ .accessories-container {
+  width: 70%;
+  text-align: center;
+  margin: 0 50px 0 50px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+ }
+ .acc-title {
+  width: 100%;
+ }
+ .get-in-touch {
+  font-size: 28px;
+ }
+ .contacts {
+  column-gap: 25px;
+ }
+}
+
+@media only screen and (max-width: 770px) {
+ .title {
+  font-size: 50px;
+ }
+ .subtitle {
+  font-size: 13px;
+  width: 290px;
+ }
+ .cellphones {
+  margin: 0 50px 0 50px;
+ }
+ .cellphone-container.cp1 {
+  margin-left: 5%;
+ }
+ .cellphone-container.cp2 {
+  margin-left: 1%;
+ }
+ .services {
+  margin-left: 80px;
+ }
+ .services2 {
+  margin-left: 80px;
+ }
+ .contacts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+ }
+}
+
+@media only screen and (max-width: 750px) {
+ .title {
+  font-size: 40px;
+ }
+ .subtitle {
+  font-size: 12px;
+  width: 268px;
+ }
+ .content {
+  padding-top: 50px;
+ }
+}
+
+@media only screen and (max-width: 700px) {
+ .cellphones {
+  grid-template-columns: 1fr;
+  margin-left: 30%;
+ }
+ .cellphone-container.cp1 {
+  margin-left: 0;
+ }
+ .cellphone-container.cp2 {
+  margin-left: 0;
+ }
+ .cellphone-container {
+  width: 50%;
+ }
+ .accessories {
+  grid-template-columns: 1fr;
+  margin-left: 20%;
+ }
+ .accessories-container {
+  width: 60%;
+ }
+ .view-more-container {
+  text-align: center;
+  padding-right: 0;
+  padding-left: 40px;
+ }
+ .services, .services2 {
+  width: 70%;
+  margin-left: 40px;
+ }
+}
+
+@media only screen and (max-width: 650px){
+ .content {
+  padding-top: 30px;
+ }
+ .cellphone-txt, .accessories-txt, .services-txt {
+  font-size: 20px;
+ }
+ .cp-new-arrivals, .cp-best-seller, .cp-new-arrivals2, .cp-best-seller2, .acc-new-arrivals, .acc-best-seller, .acc-new-arrivals2, .acc-best-seller2 {
+  font-size: 12px;
+ }
+ .phone-repair-container p, .laptop-repair-container p {
+  font-size: 15px;
+ } 
+ .phone-repair-container li, .laptop-repair-container li {
+  white-space: nowrap;
+ }
+ .services, .services2 {
+  width: 80%;
+  margin-left: 5px;
+ }
+ .phone-repair-container, .laptop-repair-container {
+  padding-right: 50px;
+ }
+}
+
+@media only screen and (max-width: 550px) {
+ .left-header {
+  background-color: #000F22;
+ }
+ .content {
+  padding-top: 30px;
+ }
+ .title {
+  padding-bottom: 15px;
+ }
+ .subtitle {
+  padding-bottom: 30px;
+ }
+ .phone-repair-container, .laptop-repair-container {
+  padding-right: 30px;
+ }
+}
+
+@media only screen and (max-width: 500px) {
+ .right-header {
+  overflow-x: hidden;
+ }
+}
+
+@media only screen and (max-width: 460px) {
+ .left-header {
+  padding-left: 10px;
+ }
+ .content {
+  padding-left: 20px;
+ }
+ .title {
+  font-size: 30px;
+ }
+ .subtitle {
+  padding-bottom: 15px;
+ }
+ .cellphone-container {
+  width: 50%;
+ }
+ .cellphones {
+  margin: 0;
+  padding-left: 15%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+ }
+ .accessories-container {
+  width: 50%;
+ }
+ .accessories {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+ }
+ .cp-container, .cp-container2, .acc-container, .acc-container2 {
+  padding: 0 20px 50px 20px;
+ }
+ .view-more-container {
+  padding-left: 0;
+ }
+ .services-container {
+  padding: 0 20px 50px 20px;
+ }
+ .services, .services2 {
+  padding-right: 20px;
+  width: 45%;
+  margin: 0 auto;
+ }
+ .services img, .services2 img {
+  display: none;
+ }
+ .services {
+  margin-bottom: 40px;
+ }
+}
+
+@media only screen and (max-width: 400px) {
+ .sign-in-btn {
+  padding: 5px;
+  width: 60px;
+  white-space: nowrap;
+ }
+ .bg-img {
+  height: 230%;
+ }
+ .content {
+  padding-left: 25px;
+  padding-top: 20px;
+ }
+ .title {
+  font-size: 25px;
+ }
+ .title, .subtitle {
+  padding-bottom: 20px;
+ }
+ .cp-container, .cp-container2, .acc-container, .acc-container2 {
+  display: grid;
+  grid-template-columns: 1fr;
+ }
+ .cellphone-txt, .accessories-txt {
+  padding-bottom: 30px;
+  font-size: 25px;
+ }
+ .phone-choices a, .accessories-choices a{
+  font-size: 15px;
+ }
+ .cp-new-arrivals::after, .cp-best-seller2::after, .acc-new-arrivals::after, .acc-best-seller2::after{
+  bottom: -10px;
+ }
+ .contacts {
+  grid-template-columns: 1fr;
+ }
+ .right-header {
+  padding-right: 30px;
+ }
+}
+
+@media only screen and (max-width: 360px) {
+ .menu {
+  width: 150px;
+ }
+ .subtitle {
+  width: 80%;
+ }
+ .bg-img {
+  height: 230%;
+ }
+ .services, .services2 {
+  width: 65%;
+ }
+}
+
+@media only screen and (max-width: 324px) {
+ .content {
+  padding-left: 15px;
+ }
+ .left-header p {
+  display: none;
+ }
+ .title {
+  padding-bottom: 10px;
+ }
+ .cp-product-container, .cp-product-container2 {
+  padding-top: 70px;
+ }
+}

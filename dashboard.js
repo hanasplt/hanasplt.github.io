@@ -1,6 +1,6 @@
 /* log out*/
 function handleLogout(){
-    window.location.href = "index.html";
+    window.location.href = "adminLogin.html";
 }
 
     document.getElementById('logoutButton').onclick = handleLogout;

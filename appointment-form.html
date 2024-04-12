@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>CHES Cellphone and Accessories Shop</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!--css-->
+  <link href="appointment-form.css" type="text/css" rel="stylesheet" />
+  <!---->
+
+  <!--fonts-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Krona+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Krona+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+  <!---->
+
+  <!--icons-->
+  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.2.0/uicons-regular-straight/css/uicons-regular-straight.css'>
+  <!---->
+
+  <!--Web-logo-->
+  <link rel="icon" href="icons/logo.svg">
+  <!---->
+
+ </head>
+ <body>
+
+  <!--header-->
+  <div class="left-header">
+   <img src="icons/logo.svg">
+   <p>CHES</p>
+  </div>
+  <!---->
+
+  <!--main container-->
+  <div class="main-container">
+    <!--confirm box//hidden-->
+    <div class="confirm-box-container">
+      <i class="fi fi-rs-triangle-warning"></i><br>
+      <p>Are you sure you want to confirm?</p>
+      <button class="no-btn" id="noBtnID">NO</button>
+      <button class="yes-btn" id="yesBtnID">YES</button>
+    </div>
+    <!---->
+   <div class="left-container">
+    <img src="icons/repair-icon.svg">
+    <p>Book now for device repairs at CHES Cellphone and Accessories Shop</p>
+   </div>
+   <div class="right-container">
+    <div class="title-container">
+     <div class="line"></div>
+     <b>Appointment Form</b><br>
+     <p>You may cancel your appointment on the same day it is scheduled.</p>
+    </div>
+    <div class="form-container">
+     <div class="info-container">
+      <div>
+       <p>First Name</p>
+        <div class="displayInfo" id="firstNameID">Debbie</div>
+       <p>Phone Number</p>
+        <div class="displayInfo" id="phoneNumID">09923316087</div><br>
+      </div>
+      <div class="displayInfo2">
+       <p>Last Name</p>
+        <div class="displayInfo" id="LastNameID">Gerodias</div>
+       <p>Email</p>
+        <div class="displayInfo" id="emailID">debbiegerodias19@gmail.com</div>
+      </div>
+     </div>
+     <i>Fill out the following:</i><br><br>
+    <form id="appointmentForm" action="appointment-receipt.html" method="get">
+      <div class="fill-out-container">
+        <div>
+          <p>Brand & Model Unit</p>
+          <input type="text" name="cpUnit" id="cpUnitID" class="cpUnit">
+          <p>Unit Issue</p>
+          <textarea id="unitIssueID" name="unitIssue" class="unitIssue"></textarea><br><br><br>
+        </div>
+        <div class="inputInfo">
+          <p>Appointment Date</p>
+          <input type="date" name="appointmentDate" id="appointmentDateID" class="appointmentDate">
+          <p>Time</p>
+          <select name="time" id="timeID" class="time">
+            <option>9:00 A.M. - 12:00 P.M.</option>
+            <option>1:00 P.M. - 4:00 P.M.</option>
+            <option>4:00 P.M. - 7:00 P.M.</option>
+          </select><br>
+        </div>
+      </div>
+      <div class="button-container">
+        <button type="button" class="cancel-btn" id="cancelID">CANCEL</button>
+        <button type="submit" class="confirm-btn" id="confirmID">CONFIRM</button>
+      </div>
+    </form>
+    </div>
+   </div>
+  </div>
+  <!---->
+  <!--script-->
+  <script type="text/javascript" src="appointment-form.js"></script>
+ </body>
+</html>

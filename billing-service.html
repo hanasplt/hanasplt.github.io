@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Billing</title>
+ <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="billing.css">
+        <!-- fonts-->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <!-- icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+		<!--Web-logo-->
+		<link rel="icon" href="icons/logo.svg">
+		<!---->
+</head>
+<body>
+<div class="menu">
+            <div class="close-button">
+                <i id="menuIcon" class="fas fa-times icon-white"></i>
+            </div>
+            
+            <div class="admin">
+                <h1>Welcome,</h1>
+                <img src="icons/logo.png"/>
+                <p><b>Admin</b></p>
+            </div>
+
+            <div class="buttons">
+                <input type="button" name="dash" id="dashButton" value="Dashboard">
+                <input type="button" name="app" id="appButton" value="Appointments">
+                <input type="button" name="reserv" id="reservButton" value="Reservations">
+                <input type="button" name="inv" id="invButton" value="Inventory">
+                <input type="button" name="history" id="historyButton" value="History">
+                <input type="button" name="bill" id="billButton" value="Billing">
+            </div>
+
+            <div class="logout">
+                <input type="button" name="logout" id="logoutButton" value="LOG OUT">
+            </div>
+        </div>
+
+        <div class="mainContent">
+         <div class="rightSide" id="dash">
+                <i id="menuIcon" class="fas fa-bars icon-white"></i>
+                <h1>Today's Date:</h1>
+                <p id="date">Date Placeholder</p>
+            </div>
+			<div class="formContainer">
+            <form>
+			<a href="billing.html"><input type="button" name="back" value="BACK"></a>
+			</form>
+			</div>
+			<div class="content">
+			<div class="billing2">
+                <p id="billing-title">Billing</p>
+				<div class="billing-input-container">
+				<div class="billing-input-item">
+				<div class="billing-input-label1">APPOINTMENT ID</div>
+				<div class="billing-input-value1"><input type="text" name="app-id" id="app-id" placeholder="*If the individual had an appointment, please search"></div>
+				<div class="billing-input-value2"><input type="submit" value="SEARCH" id="search-btn"></div>
+				</div>
+				<div class="billing-input-item">
+				<div class="billing-input-label2">NAME</div>
+				<div class="billing-input-value3"><input type="text" name="name"></div>
+				</div>
+				<div class="billing-input-item">
+				<div class="billing-input-label2">CONTACT NUMBER</div>
+				<div class="billing-input-value3"><input type="text" name="contact_number"></div>
+				</div>
+				<div class="billing-input-item">
+				<div class="billing-input-label2">EMAIL</div>
+				<div class="billing-input-value4"><input type="text" name="email" value="*Optional"></div>
+				</div>
+				<div class="billing-input-item">
+				<div class="billing-input-label2">UNIT BRAND & MODEL</div>
+				<div class="billing-input-value3"><input type="text" name="unit"></div>
+				</div>
+				<div class="billing-input-item">
+				<div class="billing-input-label2">UNIT ISSUE</div>
+				<div class="billing-input-value3"><input type="text" name="issue"></div>
+				</div>
+				<div class="billing-input-item">
+				<div class="billing-input-label2">SERVICES RENDERED</div>
+				<div class="billing-input-value3"><input type="text" name="service-render"></div>
+				</div>
+				<div class="billing-input-item">
+				<div class="billing-input-label2">SERVICE FEE</div>
+				<div class="billing-input-value3"><input type="text" name="fee"></div>
+				</div>
+				<div class="billing-input-item">
+				<div class="billing-input-label2">DATE</div>
+				<div class="billing-input-value3"><input type="text" name="date"></div>
+				</div>
+				</div>
+				<a class="btn btn-save">Save</a>
+				</div>
+            </div>
+        </div>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+		<script src="billing1.js"></script>
+</body>
+</html>

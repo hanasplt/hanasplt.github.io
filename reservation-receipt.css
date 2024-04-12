@@ -1,0 +1,265 @@
+* {
+ margin: 0;
+ padding: 0;
+}
+body {
+ height: 100vh;
+ font-family: "Inter", sans-serif;
+ background-color: #2A5181;
+}
+
+/*header*/
+.left-header {
+ font-family: "Krona One", sans-serif;
+ display: flex;
+ align-items: center;
+ column-gap: 15px;
+ font-size: 17px;
+ color: white;
+ padding: 20px;
+ padding-left: 50px;
+}
+/**/
+
+/*main container*/
+.main-container {
+ padding: 50px;
+}
+.main-container img {
+ margin-bottom: 30px;
+}
+.left-container p {
+ font-family: "Itim", cursive;
+ font-size: 30px;
+ color: white;
+ width: 350px;
+ text-align: center;
+}
+.main-container {
+ display: flex;
+ justify-content: center;
+ column-gap: 150px;
+ padding-top: 10%;
+ position: relative;
+}
+.title-container {
+ color: white;
+ text-align: center;
+ padding-bottom: 20px;
+ margin-top: -30%;
+}
+.title-container p {
+ font-weight: bold;
+ font-size: 33px;
+ margin-bottom: 15px;
+}
+.title-container i {
+ font-size: 15px;
+}
+.receipt-container {
+ background-color: white;
+ padding: 40px;
+ border-radius: 30px;
+ margin-top: 30px;
+}
+.brand {
+ font-size: 20px;
+ font-weight: bold;
+}
+.receipt-details {
+ display: flex;
+ justify-content: space-between;
+}
+.left-details {
+ padding-left: 20px;
+}
+.right-details {
+ padding-right: 20px;
+}
+.title {
+ font-size: 17px;
+ color: gray;
+ padding-bottom: 10px;
+ padding-top: 30px;
+}
+.display {
+ font-size: 17px;
+}
+.total-payment {
+ font-weight: bold;
+ font-size: 20px;
+ text-align: right;
+ margin-top: 50px;
+}
+.okay-btn {
+ border: none;
+ border-radius: 10px;
+ background-color: #F79256;
+ color: white;
+ font-size: 15px;
+ font-weight: bold;
+ padding: 10px 30px 10px 30px;
+ cursor: pointer;
+ margin-top: 30px;
+ float: right;
+}
+.okay-btn:hover {
+ background-color: #F2B38D;
+ color: #A4430A;
+ transition: all 0.3s ease;
+}
+
+/*footer*/
+.footer {
+ background-color: #000F22;
+ padding: 30px;
+}
+.location {
+ color: white;
+ text-align: center;
+}
+.contact-details {
+ display: flex;
+ column-gap: 50px;
+ justify-content: center;
+ align-items: flex-start;
+ color: white;
+ margin-top: 30px;
+}
+.phone-number, .email, .facebook {
+ text-align: center;
+}
+.phone-number a {
+ font-size: 14px;
+}
+.email a {
+ font-size: 14px;
+ color: white;
+ text-decoration: none;
+}
+.facebook a {
+ font-size: 14px;
+ color: white;
+ text-decoration: none;
+}
+/**/
+
+/*media*/
+@media only screen and (max-width: 1500px) {
+ .main-container {
+  column-gap: 100px;
+ }
+}
+
+@media only screen and (max-width: 980px) {
+ .main-container {
+  column-gap: 50px;
+ }
+ .receipt-details {
+  flex-direction: column;
+ }
+ .right-details {
+  padding-left: 20px;
+ }
+ .main-container img {
+  margin-top: 100px;
+ }
+ .okay-btn:hover {
+  background-color: #F79256;
+  color: white;
+ }
+}
+
+@media only screen and (max-width: 898px) {
+ .total-payment {
+  font-size: 18px;
+  white-space: nowrap;
+  text-align: left;
+ }
+}
+
+@media only screen and (max-width: 800px) {
+ .left-header {
+  padding-left: 20px;
+ }
+ .main-container {
+  flex-direction: column;
+ }
+ .main-container img {
+  margin-top: 0;
+ }
+ .left-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+ }
+ .receipt-details {
+  flex-direction: row;
+ }
+ .total-payment {
+  text-align: right;
+  font-size: 20px;
+ }
+ .right-container {
+  margin-top: 40%;
+ }
+ .line {
+  height: 1px;
+  background-color: white;
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 20%;
+ }
+}
+
+@media only screen and (max-width: 600px) {
+ .contact-details {
+  flex-direction: column;
+  gap: 50px;
+  align-items: center;
+ }
+ .title-container i {
+  font-size: 14px;
+ }
+}
+
+@media only screen and (max-width: 500px) {
+ .receipt-details {
+  flex-direction: column;
+ }
+ .right-details {
+  padding-left: 20px;
+ }
+}
+
+@media only screen and (max-width: 460px) {
+ .main-container img {
+  width: 80%;
+ }
+ .left-container p {
+  font-size: 20px;
+ }
+ .total-payment {
+  font-size: 17px;
+  text-align: left;
+ }
+ .receipt-container {
+  padding: 40px 30px 40px 30px;
+ }
+ .title-container i {
+  font-size: 13px;
+ }
+}
+
+@media only screen and (max-width: 400px) {
+ .left-details, .right-details {
+  padding-left: 15px;
+ }
+}
+
+@media only screen and (max-width: 360px) {
+ .left-details, .right-details {
+  padding-left: 0;
+ }
+}

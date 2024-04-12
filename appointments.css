@@ -208,8 +208,9 @@ body {
 .content {
     background-color: #ffffff;
     width: 96%;
-    height: 32vw;
+    height: 100%;
     margin: auto;
+    padding-bottom: 3vw;
     border-radius: 1vw;
 }
 
@@ -342,10 +343,6 @@ body {
                 #searchInput {
                     font-size: 16px;
                 }
-            
-            .content {
-                height: 57vw;
-            }
 
                 .UpcomingAppointments p {
                     padding-top: 1.5vw;
@@ -441,10 +438,6 @@ body {
                 #searchInput {
                     font-size: 14px;
                 }
-            
-            .content {
-                height: 78vw;
-            }
 
                 .UpcomingAppointments p {
                     font-size: 3.5vw;
@@ -452,7 +445,7 @@ body {
                 }
 
                 .appoint p {
-                    font-size: 3vw;
+                    font-size: 3.2vw;
                 }
 
                 #deetsButton {
@@ -520,6 +513,40 @@ body {
                     padding-right: 5vw;
                     font-size: 4.1vw;
                 }
+
+            #date-sort {
+                font-size: 3vw;
+                width: 25vw;
+            }
+
+            #searchContainer {
+                border-radius: 4vw;
+            }
+
+                #searchButton {
+                    font-size: 3vw;
+                }
+
+                #searchInput {
+                    font-size: 3vw;
+                    width: 33vw;
+                }
+
+                .UpcomingAppointments p {
+                    font-size: 4vw;
+                    margin-bottom: 1vw;
+                }
+
+                .appoint p {
+                    font-size: 3.6vw;
+                }
+
+                #deetsButton {
+                    margin-top: 1vw;
+                    height: 4.8vw;
+                    width: 25   vw;
+                    font-size: 3.2vw;
+                }
         }
         
         @media screen and (max-width: 360px) {
@@ -571,40 +598,38 @@ body {
             }
 
             #date-sort {
-                font-size: 2.5vw;
-                width: 21vw;
+                font-size: 4vw;
+                width: 27vw;
             }
 
             #searchContainer {
-                border-radius: 4vw;
+                border-radius: 5vw;
             }
 
                 #searchButton {
-                    font-size: 2.3vw;
+                    font-size: 3.5vw;
+                    margin: 1vw;
                 }
 
                 #searchInput {
                     font-size: 14px;
                 }
-            
-            .content {
-                height: 128vw;
-            }
 
                 .UpcomingAppointments p {
-                    font-size: 3.5vw;
+                    font-size: 5vw;
                     margin-bottom: 1vw;
                 }
 
                 .appoint p {
-                    font-size: 3vw;
+                    font-size: 4.3vw;
                 }
 
                 #deetsButton {
                     margin-top: 1vw;
-                    height: 4.5vw;
-                    width: 17vw;
-                    font-size: 2.8vw;
+                    height: 6vw;
+                    width: 40vw;
+                    font-size: 4vw;
+                    border-radius: 5vw;
                 }
         }
             

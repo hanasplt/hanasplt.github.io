@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CHES Cellphone and Accessories Shop</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS -->
+    <link href="my-appointments.css" type="text/css" rel="stylesheet" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Krona+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Krona+One&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.2.0/uicons-bold-rounded/css/uicons-bold-rounded.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.2.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.2.0/uicons-solid-straight/css/uicons-solid-straight.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.2.0/uicons-regular-straight/css/uicons-regular-straight.css'>
+
+
+    <!-- Web logo-->
+    <link rel="icon" href="icons/logo.svg">
+
+</head>
+<body>
+    <div class="header-con">
+        <div class="body-con">
+            <div class="header">
+                <div id="back">
+                    <img class="back" src="icons/backWhite.svg" alt="arrow image"></div>
+                <div id="appoint"><p class="appoint">My Appointments</p></div>
+                <div id="logo"><img class="logo" src="icons/logo.svg" alt="image of Shop's logo"></div>
+                <div id="ches"><p class="ches">CHES</p></div>
+            </div>
+            <br>
+            <div id="upcoming-con">
+                <div class="button-con">
+                    <button id="upcoming" class="upcoming">UPCOMING</button>
+                    <button id="past" class="past">PAST</button>
+                </div>
+                <div class="appoint1">
+                    <div class="upcoming1"><img class="vivo" src="icons/calendar-blue.svg" alt="Calendar"></div>
+                    <div class="upcoming2">
+                        <p class="prod-name">10 April 2024</p>
+                        <p class="prod-dets1">10:00 A.M.</p>
+                    </div>
+                    <div class="upcoming3">
+                        <button id="cancel" class="cancel">CANCEL</button>
+                        <a href="appointment-receipt.html"><button class="receipt">RECEIPT</button></a>
+                    </div>
+                </div>
+                <br>
+                <div class="appoint2">
+                    <div class="upcoming1"><img class="vivo" src="icons/calendar-blue.svg" alt="Calendar"></div>
+                    <div class="upcoming2">
+                        <p class="prod-name">31 March 2024</p>
+                        <p class="prod-dets1">1:00 P.M.</p>
+                    </div>
+                    <div class="upcoming3">
+                        <button id="cancel2" class="cancel">CANCEL</button>
+                        <button class="receipt">RECEIPT</button>
+                    </div>
+                </div>
+                <br>
+            </div>
+            <div id="past-con"> <!-- Corrected the ID here -->
+                <div class="button-con">
+                    <button id="upcoming2" class="upcoming4">UPCOMING</button>
+                    <button id="past2" class="past2">PAST</button>
+                </div>
+                <div class="appoint3">
+                    <div class="past1"><img class="vivo" src="icons/calendar-red.svg" alt="Calendar"></div>
+                    <div class="past4">
+                        <p class="prod-name">20 February 2024</p>
+                        <p class="prod-dets1">3:00 P.M.</p>
+                    </div>
+                    <div class="past3">
+                        <button class="cancelled">CANCELLED</button>
+                    </div>
+                </div>
+                <br>
+                <div class="appoint3">
+                    <div class="past1"><img class="vivo" src="icons/calendar-blue.svg" alt="Calendar"></div>
+                    <div class="past4">
+                        <p class="prod-name">25 February 2024</p>
+                        <p class="prod-dets1">1:00 P.M.</p>
+                    </div>
+                    <div class="past3">
+                        <button class="see">RECEIPT</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--cancel appointment warning//hidden-->
+   <div class="warning">
+    <i class="fi fi-rs-triangle-warning"></i><br>
+    <p>Are you sure you want to cancel this appointment? Your existing data will be lost.</p>
+    <button class="no-btn" id="noBtnID">NO</button>
+    <button class="yes-btn" id="yesBtnID">YES</button>
+   </div>
+   <div class="check">
+    <i class="fi fi-ss-check-circle"></i><br>
+    <p>APPOINTMENT HAS BEEN CANCELLED!</p>
+    <button class="ok-btn" id="okBtnID">OKAY</button>
+   </div>
+   <!---->
+
+    <!-- Script -->
+    <script type="text/javascript" src="my-appointments.js"></script>
+
+</body>
+</html>

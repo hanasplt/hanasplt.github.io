@@ -1,0 +1,569 @@
+* {
+    margin: 0;
+    padding: 0;
+   }
+
+.body-con {
+    height: 100vh;
+    font-family: "Inter", sans-serif;
+    background-color: #2A5181;
+   }
+
+/*fixed part header*/
+.header-con{
+    height:80%;
+    width:100%;
+    background-color:  #2A5181;
+    display:grid;
+    position: fixed;
+}
+
+.header{
+    width:100%;
+    background-color:#2A5181;
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+#back{
+    width:5%;
+    height:100%;
+    background-color: #2A5181;
+    display:flex;
+    align-items: center;
+    justify-content:right;
+    cursor: pointer;
+}
+
+.back{
+    height:50%;
+    width:50%;
+}
+
+#reserve{
+    width:80%;
+    background-color: #2A5181;
+    display:flex;
+    align-items: center;
+    margin:1%;
+}
+
+.reserve{
+    color:white;
+    font-family: "Inter", sans-serif;
+    font-weight: bold;
+    font-size: 28px;
+}
+
+#ches{
+    width:10%;
+    background-color: #2A5181;
+    display:flex;
+    align-items: center;
+    justify-content: left;
+}
+
+.ches{
+    color:white;
+    font-family: "Krona One", sans-serif;
+    font-size: 20px;
+    margin:5%;
+}
+
+#logo{
+    width:5%;
+    height:100%;
+    background-color: #2A5181;
+    display:flex;
+    align-items: center;
+    justify-content: right;
+}
+
+.logo{
+    height:70%;
+    width:70%;
+}
+
+.button-con{
+    width:100%;
+    background-color: #2A5181;
+    display: flex;
+    padding-bottom: 20px;
+}
+
+
+/*upcoming reservations*/
+a {
+    text-decoration: none;
+}
+
+#upcoming{
+    width:50%;
+    background-color: #052355;
+    font-family: arial black;
+    color:white;
+    border: none;
+    border-bottom: 3px solid #C2E8FF;
+    font-size: 110%;
+    padding: 20px;
+}
+
+#past{
+    height:100%;
+    width:50%;
+    background-color: #5381B2;
+    font-family: arial black;
+    color:white;
+    border:none;
+    border-bottom: 3px solid #5381B2;
+    font-size: 110%;
+    cursor: pointer;
+    padding: 20px;
+}
+
+#upcoming-con{
+    height:50%;
+    width:100%;
+    background-color: #2A5181;
+}
+
+.reserve1{
+    height:50%;
+    width:100%;
+    background-color: #5381B2;
+    display:flex;
+}
+
+.reserve2{
+    height:50%;
+    width:100%;
+    background-color: #5381B2;
+    display:flex;
+}
+
+.upcoming1{
+    width: 13%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+
+}
+
+.upcoming2{
+    width: 77%;
+    height: 100%;
+    justify-content: left;
+}
+
+.upcoming3{
+    width: 10%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.cancel{
+    display:block;
+    width:100%;
+    background-color: #8B0000;
+    color:white;
+    font-family:arial black;
+    border-width:0px;
+    padding: 10%;
+    margin:15%;
+    margin-left:-15%;
+    border-radius:10%;
+    cursor: pointer;
+}
+
+.receipt{
+    display:block;
+    width:100%;
+    background-color: #F79256;
+    color:white;
+    font-family:arial black;
+    border-width:0px;
+    padding: 10%;
+    margin:15%;
+    margin-left:-15%;
+    border-radius:10%;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+
+/*past reservations*/
+#upcoming-2 {
+    height:100%;
+    width:50%;
+    background-color: #5381B2;
+    font-family: arial black;
+    color:white;
+    border:none;
+    border-bottom: 3px solid #5381B2;
+    font-size: 110%;
+    cursor: pointer;
+    padding: 20px;
+}
+
+#past-2 {
+    width:50%;
+    background-color: #052355;
+    font-family: arial black;
+    color:white;
+    border: none;
+    border-bottom: 3px solid #C2E8FF;
+    font-size: 110%;
+    padding: 20px;
+}
+
+#past.open {
+    background-color: #052355;
+    border-bottom: 3px solid #C2E8FF;
+}
+
+#past-con{
+    display:none;
+    height:50%;
+    width:100%;
+    background-color: #2A5181;
+}
+
+.reserve3{
+    height:50%;
+    width:100%;
+    background-color: #5381B2;
+    display:flex;
+}
+
+.past1{
+    width: 13%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+
+}
+
+.past2{
+    width: 77%;
+    height: 100%;
+    justify-content: left;
+}
+
+.prod-name{
+    color:white;
+    text-decoration: bold;
+    margin-top:1.8%;
+    margin-left:1%;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.prod-dets1{
+    color:lightgrey;
+    margin-left:1.5%;
+    font-size: small;
+    margin-top:0.5%;
+}
+
+figure{
+    display:flex;
+    margin-top:4%;
+}
+
+.prod-dets2{
+    color:white;
+    font-size: small;
+    margin-top:0.25%;
+}
+
+.calendar{
+    margin-left:1%;
+    margin-right:0.25%;
+}
+
+
+.past3{
+    width: 10%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.cancelled{
+    background-color: #8B0000;
+    color:white;
+    font-family:arial black;
+    border-width:0px;
+    padding:10%;
+    border-radius: 10%;
+    margin-top:40%;
+    margin-left: -10%;
+}
+
+.receipt:hover{
+    background-color: #F2B38D;
+    color: #A4430A;
+}
+
+.cancel:hover{
+    background-color: #fb8e8e;
+    color: #8B0000;
+}
+
+
+.warning {
+    position: absolute;
+    background-color: white;
+    width: 400px;
+    text-align: center;
+    padding: 25px;
+    box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    background-color: #C2E8FF;
+    opacity: 0;
+    transition: opacity 0.5s;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+   }
+   .warning.open {
+    opacity: 1;
+   }
+   .warning i {
+    color: #F24E1E;
+    font-size: 70px;
+    margin-bottom: 20px;
+   }
+   .warning p {
+    font-family: "Inconsolata", monospace;
+    font-size: 20px;
+    margin-bottom: 20px;
+   }
+   .no-btn {
+    background-color: #000F22;
+    border: none;
+    color: white;
+    padding: 5px;
+    width: 80px;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-weight: bold;
+    cursor: pointer;
+   }
+   .no-btn:hover {
+    background-color: #9DB6DE;
+    color: #000F22;
+    transition: all 0.3s ease;
+   }
+   .yes-btn {
+    background-color: #F79256;
+    border: none;
+    color: white;
+    padding: 5px;
+    width: 80px;
+    border-radius: 5px;
+    margin-left: 10px;
+    font-weight: bold;
+    margin-top: 20px;
+    cursor: pointer;
+   }
+   .yes-btn:hover {
+    background-color: #F2B38D;
+    color: #A4430A;
+    transition: all 0.3s ease;
+   }
+   .check {
+    position: absolute;
+    background-color: white;
+    width: 350px;
+    text-align: center;
+    padding: 25px;
+    box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    background-color: #C2E8FF;
+    opacity: 0;
+    transition: opacity 0.5s;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+   }
+   .check.open {
+    opacity: 1;
+   }
+   .check i {
+    color: green;
+    font-size: 70px;
+    margin-bottom: 20px;
+   }
+   .check p {
+    font-family: "Inconsolata", monospace;
+    font-size: 20px;
+    margin-bottom: 20px;
+   }
+   .ok-btn {
+    background-color: #F79256;
+    border: none;
+    color: white;
+    padding: 5px;
+    width: 80px;
+    border-radius: 5px;
+    margin-left: 10px;
+    font-weight: bold;
+    cursor: pointer;
+   }
+   .ok-btn:hover {
+    background-color: #F2B38D;
+    color: #A4430A;
+    transition: all 0.3s ease;
+   }
+   
+/*media*/
+@media only screen and (max-width: 1060px) {
+    .receipt, .cancel, .cancelled, .see {
+        font-size: 10px;
+    }
+    .upcoming3, .past3 {
+        margin-top: 20px
+    }
+    .upcoming2, .past4 {
+        margin-left: 30px;
+    } 
+   }
+
+   @media only screen and (max-width: 950px) {
+    .receipt, .cancel, .cancelled, .see {
+        font-size: 10px;
+    }
+    .upcoming3, .past3 {
+        margin-top: 20px
+    }
+    .upcoming1, .past1 {
+        width: 20%;
+    }
+   }
+
+   @media only screen and (max-width: 880px) {
+    .receipt, .cancel, .cancelled, .see {
+        white-space: normal;
+    }
+    .see {
+        margin-right: 10px;
+    }
+    .cancelled {
+        margin-right: 17px;
+    }
+    .header {
+        width: 97%;
+    }
+   }
+
+   @media only screen and (max-width: 700px) {
+    .upcoming1, .past1 {
+        width: 30%;
+    }
+    .upcoming3, .past3 {
+        margin-top: 30px
+    }
+    .back {
+        width: 80%;
+    }
+   }
+
+   @media only screen and (max-width: 600px) {
+    .upcoming1, .past1 {
+        width: 40%;
+    }
+    .upcoming2, .past4 {
+        margin-left: 10px;
+    }
+    .upcoming3, .past3 {
+        width: 20%;
+        margin-top: 20px;
+    }
+    .header {
+        width: 90%;
+    }
+    .reserve {
+        font-size: 20px;
+    }
+   }
+
+   @media only screen and (max-width: 500px) {
+    .upcoming1, .past1 {
+        width: 50%;
+    }
+    .prod-name {
+        font-size: 20px;
+    }
+    .upcoming2,.past2{
+        margin-top:2%;
+        margin-left:-5%;
+    }
+   }
+
+   @media only screen and (max-width: 400px) {
+    .upcoming1, .past1 {
+        width: 50%;
+    }
+    #ches {
+        display: none;
+    }
+    #logo {
+        width: 15%;
+    }
+    .vivo {
+        width: 90%;
+    }
+    .upcoming3, .past3 {
+        width: 30%;
+        margin-top: 20px;
+    }
+    .prod-name {
+        font-size: 18px;
+        width: 150px;
+        margin-top: 20px;
+    }
+    .body-con {
+        height: 120vh;
+    }
+    .warning {
+        width: 300px;
+    }
+    .check {
+        width: 250px;
+    }
+   }
+
+   @media only screen and (max-width: 360px) {
+    .upcoming1, .past1 {
+        width: 70%;
+    }
+    .back {
+        width: 100%;
+        padding-right: 20px;
+    }
+    .header {
+        padding-left: 20px;
+    }
+    .upcoming3, .past3 {
+        margin-top: 25px;
+    }
+    .warning {
+        width: 250px;
+    }
+    .warning i {
+        font-size: 30px;
+    }
+    .check {
+        width: 200px;
+    }
+    .check i {
+        font-size: 30px;
+    }
+   }

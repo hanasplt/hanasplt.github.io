@@ -1,0 +1,514 @@
+* {
+ margin: 0;
+ padding: 0;
+}
+body {
+ height: 100vh;
+ font-family: "Inter", sans-serif;
+ background-color: #2A5181;
+}
+
+/*header*/
+.left-header {
+ font-family: "Krona One", sans-serif;
+ display: flex;
+ align-items: center;
+ column-gap: 15px;
+ font-size: 17px;
+ color: white;
+ padding: 20px;
+ padding-left: 50px;
+}
+/**/
+
+/*main container*/
+.main-container {
+ padding: 50px;
+}
+.left-container img {
+ margin-bottom: 30px;
+ width: 100%;
+}
+.left-container p {
+ font-family: "Itim", cursive;
+ font-size: 30px;
+ color: white;
+ width: 350px;
+ text-align: center;
+}
+.main-container {
+ display: flex;
+ justify-content: center;
+ column-gap: 150px;
+ padding-top: 10%;
+ position: relative;
+}
+.title-container {
+ color: white;
+ text-align: center;
+ padding-bottom: 30px;
+ line-height: 50px;
+ margin-top: -25%;
+}
+.title-container b {
+ font-size: 33px;
+}
+.title-container p {
+ font-size: 15px;
+ font-style: italic;
+}
+.form-container label {
+ font-size: 15px;
+ margin-bottom: 30px;
+}
+.unit-container {
+ display: flex;
+ column-gap: 80px;
+ color: white;
+}
+.info-container {
+ display: flex;
+ column-gap: 80px;
+ color: white;
+}
+input:focus {
+ outline: none;
+}
+.displayInfo {
+ width: 250px;
+ padding: 7px 0 7px 10px;
+ background-color: white;
+ color: gray;
+ font-size: 15px;
+ margin-bottom: 30px;
+}
+.fill-out-container {
+ display: flex;
+ column-gap: 80px;
+ color: white;
+}
+.form-container p {
+ padding-bottom: 5px;
+}
+.form-container i {
+ color: white;
+ font-size: 20px;
+}
+.unitColor {
+ width: 260px;
+ padding: 7px 0 7px 5px;
+ font-size: 15px;
+ cursor: pointer;
+ margin-bottom: 30px;
+}
+.unitColor option:checked {
+ background-color: #5381B2;
+ color: white;
+}
+.purchaseDate {
+ width: 245px;
+ padding: 7px 5px 7px 7px;
+ font-size: 15px;
+ cursor: pointer;
+ margin-bottom: 30px;
+}
+.quantity {
+ width: 245px;
+ padding: 7px 5px 7px 7px;
+ font-size: 15px;
+ cursor: pointer;
+ margin-bottom: 30px;
+}
+.payment-container {
+ display: flex;
+ column-gap: 60px;
+ align-items: center;
+}
+.total-payment {
+ font-size: 20px;
+ font-weight: bold;
+ color: white;
+ width: 300px;
+}
+.cancel-btn {
+ border: none;
+ border-radius: 10px;
+ background-color: #000F22;
+ color: white;
+ font-size: 15px;
+ font-weight: bold;
+ padding: 10px 30px 10px 30px;
+ cursor: pointer;
+}
+.cancel-btn:hover {
+ background-color: #9DB6DE;
+ color: #000F22;
+ transition: all 0.3s ease;
+}
+.confirm-btn {
+ border: none;
+ border-radius: 10px;
+ background-color: #F79256;
+ color: white;
+ font-size: 15px;
+ font-weight: bold;
+ padding: 10px 30px 10px 30px;
+ cursor: pointer;
+ margin-left: -5%;
+}
+.confirm-btn:hover {
+ background-color: #F2B38D;
+ color: #A4430A;
+ transition: all 0.3s ease;
+}
+.confirm-box-container {
+ position: absolute;
+ background-color: white;
+ width: 350px;
+ text-align: center;
+ padding: 25px;
+ box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.2);
+ line-height: 40px;
+ border-radius: 10px;
+ background-color: #C2E8FF;
+ opacity: 0;
+ transition: opacity 0.5s;
+}
+.confirm-box-container.open {
+ opacity: 1;
+}
+.confirm-box-container i {
+ color: #F24E1E;
+ font-size: 70px;
+}
+.confirm-box-container p {
+ font-family: "Inconsolata", monospace;
+ font-size: 20px;
+}
+.confirm-box-container b {
+ font-size: 20px;
+}
+.no-btn {
+ background-color: #000F22;
+ border: none;
+ color: white;
+ padding: 5px;
+ width: 80px;
+ border-radius: 5px;
+ margin-right: 10px;
+ font-weight: bold;
+ cursor: pointer;
+}
+.no-btn:hover {
+ background-color: #9DB6DE;
+ color: #000F22;
+ transition: all 0.3s ease;
+}
+.yes-btn {
+ background-color: #F79256;
+ border: none;
+ color: white;
+ padding: 5px;
+ width: 80px;
+ border-radius: 5px;
+ margin-left: 10px;
+ font-weight: bold;
+ margin-top: 20px;
+ cursor: pointer;
+}
+.yes-btn:hover {
+ background-color: #F2B38D;
+ color: #A4430A;
+ transition: all 0.3s ease;
+}
+/**/
+
+/*media*/
+@media only screen and (max-width: 1140px) {
+ body {
+  overflow-x: hidden;
+ }
+ .main-container {
+  column-gap: 100px;
+ }
+}
+
+@media only screen and (max-width: 1100px) {
+ .main-container {
+  column-gap: 80px;
+ }
+ .unit-container, .info-container, .fill-out-container {
+  column-gap: 50px;
+ }
+}
+
+@media only screen and (max-width: 1050px) {
+ .main-container {
+  column-gap: 40px;
+ }
+}
+
+@media only screen and (max-width: 1000px) {
+ .unit-container, .info-container, .fill-out-container {
+  column-gap: 30px;
+ }
+ .cancel-btn:hover {
+  background-color: #000F22;
+  color: white;
+ }
+ .confirm-btn:hover {
+  background-color: #F79256;
+  color: white;
+ }
+}
+
+@media only screen and (max-width: 950px) {
+ .left-container {
+  margin-left: 5%;
+ }
+ .right-container {
+  margin-right: 5%;
+ }
+ .unit-container, .info-container, .fill-out-container {
+  column-gap: 20px;
+ }
+ .displayInfo {
+  width: 220px;
+ }
+ .unitColor {
+  width: 230px;
+ }
+ .purchaseDate, .quantity {
+  width: 213px;
+ }
+ .title-container {
+  text-align: left;
+ }
+ .payment-container {
+  display: inline;
+  line-height: 60px;
+ }
+ .cancel-btn {
+  margin-right: 10%;
+ }
+}
+
+@media only screen and (max-width: 900px) {
+ .left-header {
+  padding-left: 10px;
+ }
+ .main-container {
+  display: inline;
+ }
+ .left-container {
+  display: flex;
+  align-items: center;
+  column-gap: 30px;
+  margin-bottom: 5%;
+ }
+ .left-container img {
+  width: 50%;
+ }
+ .right-container {
+  padding-top: 30%;
+  width: 100%;
+  margin-right: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+ }
+ .title-container {
+  text-align: center;
+ }
+ .unit-container, .info-container, .fill-out-container {
+  column-gap: 80px;
+ }
+ .line {
+  height: 1px;
+  background-color: white;
+  width: 100%;
+  margin: 0 auto;
+  margin-bottom: 60px;
+ }
+ .unit-container {
+  margin-bottom: 20px;
+ }
+ .info-container {
+  margin-bottom: 40px;
+ }
+ .displayInfo {
+  width: 250px;
+ }
+ .unitColor {
+  width: 260px;
+ }
+ .purchaseDate, .quantity {
+  width: 245px;
+ }
+ .confirm-box-container {
+  top: 60%;
+  left: 200px;
+ }
+ .payment-container {
+  display: flex;
+ }
+ .total-payment {
+  white-space: nowrap;
+ }
+ .cancel-btn {
+  margin-right: 0;
+ }
+}
+
+@media only screen and (max-width: 650px) {
+ .unit-container, .info-container, .fill-out-container {
+  column-gap: 50px;
+ }
+ .right-container {
+  margin-right: 0;
+  margin-left: 5%;
+ }
+ .payment-container {
+  column-gap: 50px;
+ }
+ .confirm-box-container {
+  left: 130px;
+ }
+}
+
+@media only screen and (max-width: 600px) {
+ .left-container p {
+  font-size: 25px;
+ }
+ .right-container {
+  margin: 0;
+ }
+ .unit-container, .info-container, .fill-out-container {
+  display: inline;
+ }
+ .title-container {
+  text-align: left;
+ }
+ .form-container {
+  margin: 0 auto;
+ }
+ .displayInfo {
+  width: 450px;
+ }
+ .displayInfo2 {
+  margin-top: -3%;
+  margin-bottom: 15%;
+ }
+ .unitColor {
+  width: 460px;
+ }
+ .purchaseDate, .quantity {
+  width: 445px;
+ }
+ .inputInfo {
+  margin-top: -8%;
+ }
+ .payment-container {
+  display: inline;
+  line-height: 60px;
+ }
+ .cancel-btn {
+  margin-right: 10%;
+ }
+ .confirm-box-container {
+  left: 90px;
+ }
+}
+
+@media only screen and (max-width: 530px) {
+ .confirm-box-container {
+  top: 60%;
+  left: 50px;
+ }
+}
+
+@media only screen and (max-width: 500px) {
+ .confirm-box-container {
+  top: 60%;
+  left: 35px;
+ }
+ .title-container {
+  width: 90%;
+ }
+ .title-container p {
+  white-space: normal;
+  font-size: 13px;
+  line-height: 20px;
+ }
+ .form-container {
+  width: 90%;
+  overflow-x: hidden;
+ }
+ .displayInfo {
+  width: 410px;
+ }
+ .unitColor {
+  width: 420px;
+ }
+ .purchaseDate, .quantity {
+  width: 405px;
+ }
+}
+
+@media only screen and (max-width: 400px) {
+ .main-container {
+  overflow-x: hidden;
+ }
+ .confirm-box-container {
+  width: 300px;
+  left: 25px;
+ }
+ .left-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+ }
+ .left-container p {
+  width: 300px;
+ }
+ .title-container b {
+  font-size: 30px;
+ }
+ .unitColor {
+  width: 360px;
+ }
+ .purchaseDate {
+  width: 345px;
+ }
+ .quantity {
+  width: 345px;
+ }
+ .displayInfo2 {
+  margin-top: -5%;
+ }
+ .inputInfo {
+  margin-top: -13%;
+ }
+}
+
+@media only screen and (max-width: 360px) {
+ .confirm-box-container {
+  top: 60%;
+  width: 500%;
+  left: 30px;
+ }
+ .left-container {
+  margin-bottom: 50px;
+ }
+ .unitColor {
+  width: 325px;
+ }
+ .purchaseDate {
+  width: 315px;
+ }
+ .quantity {
+  width: 307px;
+ }
+}

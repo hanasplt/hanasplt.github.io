@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CHES Cellphone and Accessories Shop</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS -->
+    <link href="my-reservations.css" type="text/css" rel="stylesheet" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Krona+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Krona+One&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.2.0/uicons-bold-rounded/css/uicons-bold-rounded.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.2.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.2.0/uicons-solid-straight/css/uicons-solid-straight.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.2.0/uicons-regular-straight/css/uicons-regular-straight.css'>
+
+    <!-- Web logo-->
+    <link rel="icon" href="icons/logo.svg">
+
+</head>
+<body>
+    <div class="header-con">
+        <div class="body-con">
+            <div class="header">
+                <div id="back"><img class="back" src="icons/backWhite.svg" alt="arrow image"></div>
+                <div id="reserve"><p class="reserve">My Reservations</p></div>
+                <div id="logo"><img class="logo" src="icons/logo.svg" alt="image of Shop's logo"></div>
+                <div id="ches"><p class="ches">CHES</p></div>
+            </div>
+            <br>
+            <div id="upcoming-con">
+                <div class="button-con">
+                    <button id="upcoming" class="upcoming">UPCOMING</button>
+                    <button id="past" class="past">PAST</button>
+                </div>
+                <div class="reserve1">
+                    <div class="upcoming1"><img class="vivo" src="product-img/vivo1.svg" alt="Product"></div>
+                    <div class="upcoming2">
+                        <p class="prod-name">Vivo Y02t</p>
+                        <p class="prod-dets1">Php 12,980</p>
+                        <figure>
+                            <img class="calendar" src="icons/calendar.svg" alt="calendar image">
+                            <figcaption class="prod-dets2">28 March 2024</figcaption>
+                        </figure>
+                    </div>
+                    <div class="upcoming3">
+                        <button id="cancel" class="cancel">CANCEL</button>
+                        <button class="receipt">RECEIPT</button>
+                    </div>
+                </div>
+                <br>
+                <div class="reserve2">
+                    <div class="upcoming1"><img class="vivo" src="product-img/vivo2.svg" alt="Product"></div>
+                    <div class="upcoming2">
+                        <p class="prod-name">Vivo V29</p>
+                        <p class="prod-dets1">Php 15,980</p>
+                        <figure>
+                            <img class="calendar" src="icons/calendar.svg" alt="calendar image">
+                            <figcaption class="prod-dets2">31 March 2024</figcaption>
+                        </figure>
+                    </div>
+                    <div class="upcoming3">
+                        <button id="cancel2" class="cancel">CANCEL</button>
+                        <a href="reservation-receipt.html"><button class="receipt">RECEIPT</button></a>
+                    </div>
+                </div>
+                <br>
+            </div>
+            <div id="past-con"> <!-- Corrected the ID here -->
+                <div class="button-con">
+                    <button id="upcoming-2" class="upcoming-2">UPCOMING</button>
+                    <button id="past-2" class="past-2">PAST</button>
+                </div>
+                <div class="reserve3">
+                    <div class="past1"><img class="vivo" src="product-img/vivo3.svg" alt="Product"></div>
+                    <div class="past2">
+                        <p class="prod-name">Vivo V29</p>
+                        <p class="prod-dets1">Php 15,980</p>
+                        <figure>
+                            <img class="calendar" src="icons/calendar.svg" alt="calendar image">
+                            <figcaption class="prod-dets2">20 February 2024</figcaption>
+                        </figure>
+                    </div>
+                    <div class="past3">
+                        <button class="cancelled">CANCELLED</button>
+                    </div>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+
+    <!--delete account warning//hidden-->
+   <div class="warning">
+    <i class="fi fi-rs-triangle-warning"></i><br>
+    <p>Are you sure you want to cancel this reservation? Your existing data will be lost.</p>
+    <button class="no-btn" id="noBtnID">NO</button>
+    <button class="yes-btn" id="yesBtnID">YES</button>
+   </div>
+   <div class="check">
+    <i class="fi fi-ss-check-circle"></i><br>
+    <p>RESERVATION HAS BEEN CANCELLED!</p>
+    <button class="ok-btn" id="okBtnID">OKAY</button>
+   </div>
+   <!---->
+    
+    <!-- Script -->
+    <script type="text/javascript" src="my-reservations.js"></script>
+
+</body>
+</html>

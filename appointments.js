@@ -26,7 +26,27 @@ function handleReservations(){
 
     document.getElementById('reservButton').onclick = handleReservations;
 
-    
+/*reservations*/
+function handleInventory(){
+    window.location.href = "inventory.html";
+}
+
+    document.getElementById('invButton').onclick = handleInventory;
+
+/*history*/
+function handleHistory(){
+    window.location.href = "history.html";
+}
+
+    document.getElementById('historyButton').onclick = handleHistory;
+
+/*billing*/
+function handleBilling(){
+    window.location.href = "billing.html";
+}
+
+    document.getElementById('billButton').onclick = handleBilling;    
+
 /*date*/
 var currentDate = new Date();
 var options = {
