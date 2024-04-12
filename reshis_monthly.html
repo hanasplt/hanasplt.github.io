@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>History</title>
+ <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="history.css">
+        <!-- fonts-->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <!-- icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+		<!--Web-logo-->
+		<link rel="icon" href="icons/logo.svg">
+		<!---->
+</head>
+<body>
+<div class="menu">
+            <div class="close-button">
+                <i id="menuIcon" class="fas fa-times icon-white"></i>
+            </div>
+            
+            <div class="admin">
+                <h1>Welcome,</h1>
+                <img src="icons/logo.png"/>
+                <p><b>Admin</b></p>
+            </div>
+
+            <div class="buttons">
+                <input type="button" name="dash" id="dashButton" value="Dashboard">
+                <input type="button" name="app" id="appButton" value="Appointments">
+                <input type="button" name="reserv" id="reservButton" value="Reservations">
+                <input type="button" name="inv" id="invButton" value="Inventory">
+                <input type="button" name="history" id="historyButton" value="History">
+                <input type="button" name="bill" id="billButton" value="Billing">
+            </div>
+
+            <div class="logout">
+                <input type="button" name="logout" id="logoutButton" value="LOG OUT">
+            </div>
+        </div>
+
+        <div class="mainContent">
+         <div class="rightSide" id="dash">
+                <i id="menuIcon" class="fas fa-bars icon-white"></i>
+                <h1>Today's Date:</h1>
+                <p id="date">Date Placeholder</p>
+            </div>
+			<div class="formContainer">
+            <form>
+			<a href="history.html"><input type="button" name="back" value="BACK"></a>
+			&nbsp&nbsp&nbsp
+                <select id="dropdown" name="dropdown">
+					<option value="Daily" data-href="reshis_daily.html">Daily</option>
+					<option value="Weekly" data-href="reshis_weekly.html">Weekly</option>
+					<option value="Monthly" data-href="#" selected>Monthly</option>
+				</select>
+            </form>
+			</div>
+			<div class="content">
+			<div class="history">
+                <p id="history-title">Reservation History</p>
+				<br />
+				<div class="history-content">
+				<div class="history-content-item">
+				<div class="history-label">HEINZ GUDERIAN | 12-30-23 | 12:44 PM</div>
+				<div class="history-button"><a href="reshis_detail.html" class="btn">View</a></div>
+				</div>
+				<hr class="history-line" />
+				<div class="history-content-item">
+				<div class="history-label">NAME | DATE | TIME</div>
+				<div class="history-button"><a href="#" class="btn">View</a></div>
+				</div>
+				<hr class="history-line" />
+				</div>
+				</div>
+            </div>
+        </div>
+		<script src="history.js"></script>
+</body>
+</html>

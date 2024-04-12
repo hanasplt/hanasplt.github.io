@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>History</title>
+ <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="history.css">
+        <!-- fonts-->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <!-- icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+		<!--Web-logo-->
+		<link rel="icon" href="icons/logo.svg">
+		<!---->
+</head>
+<body>
+<div class="menu">
+            <div class="close-button">
+                <i id="menuIcon" class="fas fa-times icon-white"></i>
+            </div>
+            
+            <div class="admin">
+                <h1>Welcome,</h1>
+                <img src="icons/logo.png"/>
+                <p><b>Admin</b></p>
+            </div>
+
+            <div class="buttons">
+                <input type="button" name="dash" id="dashButton" value="Dashboard">
+                <input type="button" name="app" id="appButton" value="Appointments">
+                <input type="button" name="reserv" id="reservButton" value="Reservations">
+                <input type="button" name="inv" id="invButton" value="Inventory">
+                <input type="button" name="history" id="historyButton" value="History">
+                <input type="button" name="bill" id="billButton" value="Billing">
+            </div>
+
+            <div class="logout">
+                <input type="button" name="logout" id="logoutButton" value="LOG OUT">
+            </div>
+        </div>
+
+        <div class="mainContent">
+         <div class="rightSide" id="dash">
+                <i id="menuIcon" class="fas fa-bars icon-white"></i>
+                <h1>Today's Date:</h1>
+                <p id="date">Date Placeholder</p>
+            </div>
+			<div class="formContainer">
+            <form>
+			<a href="apphis_daily.html"><input type="button" name="back" value="BACK"></a>
+            </form>
+			</div>
+			<div class="content">
+			<div class="history">
+			 <p id="history-title">Appointment Details</p>
+				<br />
+				<div class="history-view-container">
+				<div class="history-view-item">
+				<div class="history-view-label">Appointment ID:</div>
+				<div class="history-view-value">A00002</div>
+				</div>
+				<div class="history-view-item">
+				<div class="history-view-label">Name:</div>
+				<div class="history-view-value">Josef Mengele</div>
+				</div>
+				<div class="history-view-item">
+				<div class="history-view-label">Date:</div>
+				<div class="history-view-value">January 20, 2024</div>
+				</div>
+				<div class="history-view-item">
+				<div class="history-view-label">Time:</div>
+				<div class="history-view-value">1:00PM</div>
+				</div>
+				<div class="history-view-item">
+				<div class="history-view-label">Contact Number:</div>
+				<div class="history-view-value">09123456789</div>
+				</div>
+				<div class="history-view-item">
+				<div class="history-view-label">E-mail:</div>
+				<div class="history-view-value"> </div>
+				</div>
+				<div class="history-view-item">
+				<div class="history-view-label">Unit Model:</div>
+				<div class="history-view-value">Infinix Note 30i</div>
+				</div>
+				<div class="history-view-item">
+				<div class="history-view-label">Gadget Issue:</div>
+				<div class="history-view-value">Non-responsive screen</div>
+				</div>
+				</div>
+            </div>
+        </div>
+		<script src="history.js"></script>
+</body>
+</html>

@@ -1,0 +1,635 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    background-color: #052355;
+}
+
+.menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 20%;
+    height: 100%;
+    background-color: #000F22;
+    transition: right 0.3s ease;
+	z-index:2; 
+}
+
+    .menu p {
+        color: #ffffff;
+    }
+
+.admin {
+    position: relative;
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5vw;
+}
+
+    .admin img {
+        max-width: 8.5vw;
+        max-height:  8.5vw;
+    }
+
+    .admin h1 {
+        color: #C2E8FF;
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-right: 29%;
+        font-size: 1.7vw;
+    }
+
+    .admin p {
+        position: absolute;
+        top: 93%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-image: url('bg-img/Rectangle-2.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 9.5vw;
+        text-align: center;
+        font-size: 1.6vw;
+        padding: 3vw;
+        color: #000F22;
+    }
+
+.buttons, .logout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+    .buttons input {
+        text-align: left;
+        padding: 0.3vw;
+        width: 15vw;
+        background-color: #000F22;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        border-color: #35659f;
+        border-width: 3px;
+        color: #ffffff;
+        font-size: 1.3vw;
+    }
+
+        .buttons input:hover {
+            background-color: #f79256;
+            color: #000F22;
+        }
+
+    .logout input {
+        margin-top: 8vw;
+        text-align: center;
+        padding: 0.5vw;
+        width: 15vw;
+        background-color: #C2E8FF;
+        color: #000F22;
+        font-size: 1vw;
+        font-weight: bold;
+    }
+
+        .logout input:hover {
+            background-color: #f79256;
+            color: #000F22;
+        }
+
+.rightSide h1 {
+    text-align: right;
+    margin-bottom: 0;
+    padding-top: 1.3vw;
+    padding-right: 2vw;
+    color: #C2E8FF;
+    font-weight: 680;
+    font-size: 1.7vw;
+}
+
+    .rightSide p {
+        text-align: right;
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-right: 2vw;
+        color: #C2E8FF;
+        font-weight: 680;
+        font-size: 1.6vw;
+    }
+
+    .icon-white {
+        color: white;
+        margin-top: 1vw;
+        margin-left: 1vw;
+        margin-bottom: 0;
+    }
+    
+    .close-button {
+        margin-left: 16.9vw;
+        margin-bottom: 0;
+    }
+
+    .rightSide #menuIcon {
+        margin-top: 1vw;
+        margin-bottom: 0;
+        margin-left: 2vw;
+    }
+
+        .rightSide h1 {
+            margin: 0;
+        }
+
+
+
+
+
+    @media screen and (max-width: 768px) {
+        .menu {
+            width: 40%;
+        }
+    
+        .admin h1,
+        .admin p,
+        .buttons input,
+        .logout input,
+        .rightSide h1,
+        .rightSide p {
+            font-size: 3vw;
+        }
+
+        .buttons input, .logout input {
+            width: 30vw;
+            padding: 1vw;
+        }
+
+        .admin p {
+            background-size: 16vw;
+        }
+
+        .logout input {
+            margin-top: 20vw;
+        }
+
+        .admin {
+            margin-bottom: 9vw;
+        }
+
+        .admin img {
+            max-width: 15vw;
+            max-height: 15vw;
+        }
+
+        .close-button {
+            margin-left: 36vw;
+        }
+    }
+    
+    @media screen and (max-width: 576px) {
+        .menu {
+            width: 45%;
+        }
+    
+        .admin h1,
+        .admin p,
+        .buttons input,
+        .logout input,
+        .rightSide h1,
+        .rightSide p {
+            font-size: 2.8vw;
+        }
+
+        .buttons input, .logout input {
+            width: 30vw;
+            padding: 1vw;
+        }
+
+        .admin p {
+            background-size: 15vw;
+        }
+
+        .logout input {
+            margin-top: 18vw;
+        }
+
+        .admin {
+            margin-bottom: 9vw;
+        }
+
+        .admin img {
+            max-width: 20vw;
+            max-height: 20vw;
+        }
+        
+        .close-button {
+            margin-left: 40vw;
+        }
+    }
+    
+    @media screen and (max-width: 480px) {
+        .menu {
+            width: 55%;
+        }
+    
+        .admin h1,
+        .admin p,
+        .buttons input,
+        .logout input,
+        .rightSide h1,
+        .rightSide p {
+            font-size: 4.5vw;
+        }
+
+        .buttons input, .logout input {
+            width: 40vw;
+            padding: 1vw;
+        }
+
+        .admin p {
+            background-size: 20vw;
+        }
+
+        .logout input {
+            margin-top: 18vw;
+        }
+
+        .admin {
+            margin-bottom: 17vw;
+        }
+
+        .admin img {
+            max-width: 20vw;
+            max-height: 20vw;
+        }
+        
+        .close-button {
+            margin-left: 50vw;
+        }
+    }
+    
+    @media screen and (max-width: 360px) {
+        .menu {
+            width: 65%;
+        }
+    
+        .admin h1,
+        .admin p,
+        .buttons input,
+        .logout input,
+        .rightSide h1,
+        .rightSide p {
+            font-size: 5.5vw;
+        }
+
+        .buttons input, .logout input {
+            width: 45vw;
+            padding: 1vw;
+        }
+
+        .admin p {
+            background-size: 25vw;
+        }
+
+        .logout input {
+            margin-top: 22vw;
+        }
+
+        .admin {
+            margin-bottom: 20vw;
+        }
+
+        .admin img {
+            max-width: 27vw;
+            max-height: 27vw;
+        }
+        
+        .close-button {
+            margin-left: 59vw;
+        }
+    }
+    
+
+/*inner*/
+
+.content {
+    padding-bottom: 1vw;
+}
+
+.UpcomingAppointments, .UpcomingReservations, .InventoryStock {
+    margin: auto;
+    margin-bottom: 1vw;
+    background-color: rgba(255, 255, 255, 0.837);
+    width: 30vw;
+    height: 12vw;
+    border-radius: 1vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+    #content-title {
+        font-size: 1.8vw;
+        font-weight: 600;
+        color: #052355;
+        margin: 0;
+        padding-top: 2vw;
+    }
+
+    #content-count {
+        font-size: 1.8vw;
+        font-weight: 700;
+        color: #052355;
+        margin: 0;
+    }
+
+    .content input {
+        margin-top: 1vw;
+        text-align: center;
+        padding: 0.5vw;
+        width: 15vw;
+        background-color: #000F22;
+        color: #fff;
+        font-size: 1.3vw;
+        font-weight: bold;
+        border: none;
+        margin-bottom: 2vw;
+    }
+
+
+
+
+        .content input:hover {
+            background-color: #f79256;
+            color: #000F22;
+        }
+		.rightSide {
+		display: inline-block;
+		vertical-align: top; 
+		width: calc(100% - 5.3vw); 
+		}
+
+
+.history{ 
+	margin: auto;
+    margin-bottom: 1vw;
+    background-color: rgba(255, 255, 255, 0.837);
+    width: 96%;
+    height: 76%;
+    border-radius: 1vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-self: flex-end;
+    position: absolute;
+    top: 58%;
+    right: 2%;
+    transform: translateY(-50%);
+}
+
+ #history-title {
+        font-size: 30px;
+        font-weight: 600;
+        color: #052355;
+        margin: 0;
+        padding-top: 1vw;
+		padding-left: 1vw;
+		display: inline-block;
+    }
+	
+
+.history-line {
+    border: none;
+	width: 96%;
+	height: 1px;
+	padding-left: 1vw;
+	margin-top: 1vw;
+	background-color: black;
+}
+
+.btn {
+    display: inline-block;
+    margin: 0;
+    width: 116.64px; 
+    height: 31px; 
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    border-radius: 50px;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    background-color: #000F22;
+    color: #C2E8FF;
+}
+
+.btn:hover {
+    background-color: #f79256;
+    color: #000F22;
+}
+		.formContainer {
+		display: inline-block;
+		vertical-align: top;
+		margin-bottom: 0;
+		margin-left: 2vw;
+		margin-top: -4vw; 
+		}
+		.formContainer select {
+        margin-top: 1vw;
+        text-align: left;
+        padding: 0.5vw;
+        width: 247.17px;
+		height: 45px;
+        background-color: #5381B2;
+        color: #C2E8FF;
+        font-size: 26px;
+        font-weight: 600;
+        border: none;
+        margin-bottom: 2vw;
+		}
+		.formContainer option {
+        margin-top: 1vw;
+        text-align: left;
+        padding: 0.5vw;
+        width: 247.17px;
+		height: 45px;
+        background-color: #5381B2;
+        color: #C2E8FF;
+        font-size: 26px;
+        font-weight: 600;
+        border: none;
+        margin-bottom: 2vw;
+		}
+
+        .formContainer select:hover {
+            background-color: #C2E8FF;
+            color: #052355; 
+			cursor: pointer;
+			}
+		.formContainer select option:hover {
+			background-color: #C2E8FF;
+			color: #052355;
+			cursor: pointer;
+			}
+			
+.formContainer input {
+        margin-top: 1vw;
+        text-align: left;
+        padding: 0.5vw;
+        width: 99px;
+		height: 45px;
+        background-color: #8B0000;
+        color: #C2E8FF;
+        font-size: 26px;
+        font-weight: 600;
+        border: none;
+        margin-bottom: 2vw;
+}
+.formContainer input:hover {
+        background-color: #EF0107;
+        color: #052355; 
+		cursor: pointer;
+}
+ #history-view {
+        font-size: 20px;
+        font-weight: 500;
+        color: #052355;
+        margin: 0;
+		padding-left: 1vw;
+		display: inline-block;
+    }
+.history-view-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.history-view-item {
+	padding-left: 1vw;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0; 
+}
+
+.history-view-label {
+    margin: 0;
+    margin-right: 10px;
+	padding-right: 200px;
+	width: 250px;
+	font-size: 20px;
+    font-weight: 500;
+    color: #052355;/
+}
+
+.history-view-value {
+    margin: 0;
+	font-size: 20px;
+    font-weight: 500;
+    color: #052355;
+}
+ #history-view {
+        font-size: 20px;
+        font-weight: 500;
+        color: #052355;
+        margin: 0;
+		padding-left: 1vw;
+		display: inline-block;
+    }
+
+.history-content {
+    display: flex;
+    flex-direction: column;
+}
+.history-content-item {
+	padding-left: 1vw;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0; 
+}
+
+.history-label {
+    margin: 0;
+    margin-right: 10px;
+	padding-right: 650px;
+	width: 500px;
+	font-size: 25px;
+    font-weight: 500;
+    color: #052355;/
+}
+
+.history-button{
+    margin: 0;
+    color: #052355;
+}
+@media screen and (max-width: 768px) {
+    .history {
+        width: 90%; 
+        height: 75%; 
+        top: 50%;
+        right: 5%; 
+        transform: translateY(-50%); 
+        border-radius: 10px; 
+    }
+
+    #history-title,
+    #history-details,
+    #history-view {
+        font-size: 18px;
+        padding-left: 2%; 
+    }
+
+    .history-line {
+        width: 94%; 
+        margin-top: 10px; 
+    }
+
+    .btn {
+        width:60px; 
+        height: 20px; 
+        font-size: 15px;  
+		padding-right: 1px;
+    }
+
+    .formContainer {
+		
+        margin-left: 5%; 
+    }
+
+    .formContainer input {
+        width: 60px;
+		height: 25px;
+		font-size: 15px;
+    }
+
+    .formContainer select {
+        width: 70px;
+		height: 25px;
+		font-size: 15px;
+    }
+	.formContainer option {
+        width: 70px;
+		height: 25px;
+		font-size: 15px;
+    }
+
+    .history-view-label	{
+		font-size: 16px;
+		width: 120px;
+        padding-right: 5px;
+		padding-left: 1.5%;
+    }
+	.history-view-value {
+		font-size: 16px;
+	}
+	.history-label	{
+		font-size: 16px;
+        padding-right: 10px;
+		width: 350px;
+		padding-left: 1.5%;
+	}
+}
