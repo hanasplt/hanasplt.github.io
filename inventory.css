@@ -17,6 +17,7 @@ body {
     height: 100%;
     background-color: #000F22;
     transition: right 0.3s ease;
+	z-index:2; 
 }
 
     .menu p {
@@ -377,7 +378,7 @@ body {
 		display: inline-block;
 		vertical-align: top;
 		margin-bottom: 0;
-		margin-left: 22vw;
+		margin-left: 2vw;
 		margin-top: -4vw; 
 		}
 		.formContainer select {
@@ -421,7 +422,7 @@ body {
 	margin: auto;
     margin-bottom: 1vw;
     background-color: rgba(255, 255, 255, 0.837);
-    width: 76%;
+    width: 96%;
     height: 76%;
     border-radius: 1vw;
     display: flex;
@@ -543,7 +544,7 @@ body {
 	margin: auto;
     margin-bottom: 1vw;
     background-color: rgba(255, 255, 255, 0.837);
-    width: 76%;
+    width: 96%;
     height: 76%;
     border-radius: 1vw;
     display: flex;
@@ -570,7 +571,7 @@ body {
     margin-bottom: 0;
     background-color: #7DA0CA;
 	top: 12%;
-    width: 1000px;
+    width: 96%;
     height: 420px;
     display: flex;
     align-self: center;
@@ -692,7 +693,7 @@ body {
 	margin: auto;
     margin-bottom: 1vw;
     background-color: rgba(255, 255, 255, 0.837);
-    width: 76%;
+    width: 96%;
     height: 76%;
     border-radius: 1vw;
     display: flex;
