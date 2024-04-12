@@ -205,6 +205,10 @@ body {
             color: #C2E8FF;
         }
 
+        #searchInput:focus {
+            outline: none;
+        }
+
 .content {
     background-color: #ffffff;
     width: 96%;
