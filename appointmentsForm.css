@@ -381,6 +381,11 @@ body {
             width: 12vw;
             font-size: 2.1vw;
         }
+
+        .confirmation-popup {
+            width: 40vw;
+            height: 23vw;
+        }
 }
 
 @media screen and (max-width: 576px) {
@@ -445,7 +450,7 @@ body {
             margin-bottom: 0;
             padding-top: 2vw;
             padding-left: 2.5vw;
-            font-size: 3vw;
+            font-size: 3.5vw;
         }
  
         .UpcomingAppointments hr {
@@ -454,12 +459,12 @@ body {
         }
 
         .appoint-form p, .appoint-deets p{
-            font-size: 2.2vw;
+            font-size: 2.8vw;
             line-height: 3vw;
         }
 
             .appoint-form {
-                width: 30vw;
+                width: 33vw;
             }
 
             .appoint-deets {
@@ -467,8 +472,13 @@ body {
             }
 
         #confirmButton, #backButton {
-            width: 12vw;
-            font-size: 2.1vw;
+            width: 15vw;
+            font-size: 2.8vw;
+        }
+
+        .confirmation-popup {
+            width: 50vw;
+            height: 30vw;
         }
 }
 
@@ -533,7 +543,7 @@ body {
         .UpcomingAppointments p {   
             padding-top: 2.5vw;
             padding-left: 3vw;
-            font-size: 3.5vw;
+            font-size: 4vw;
         }
  
         .UpcomingAppointments hr {
@@ -542,8 +552,8 @@ body {
         }
 
         .appoint-form p, .appoint-deets p{
-            font-size: 2.9vw;
-            line-height: 3vw;
+            font-size: 3.5vw;
+            line-height: 3.7vw;
         }
 
         .appoint-buttons {
@@ -551,7 +561,7 @@ body {
         }
 
             .appoint-form {
-                width: 33vw;
+                width: 37vw;
             }
 
             .appoint-deets {
@@ -559,8 +569,13 @@ body {
             }
 
         #confirmButton, #backButton {
-            width: 16vw;
-            font-size: 2.8vw;
+            width: 17vw;
+            font-size: 3.5vw;
+        }
+
+        .confirmation-popup {
+            width: 50vw;
+            height: 30vw;
         }
 }
 
@@ -636,5 +651,10 @@ body {
             width: 20vw;
             border-radius: 5vw;
             font-size: 3.7vw;
+        }
+
+        .confirmation-popup {
+            width: 60vw;
+            height: 35vw;
         }
 }
