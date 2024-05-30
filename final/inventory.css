@@ -588,7 +588,7 @@ body {
         color: #052355;
         margin: 0;
         padding-top: 1vw;
-		padding-left: 1vw;
+		padding-left: 2vw;
 		display: inline-block;
     }
     .inventory-view-content {
@@ -596,10 +596,10 @@ body {
         flex-direction: column;
     }
     .inventory-view-content-item {
-        padding-left: 1vw;
+        padding-left: 3vw;
         display: flex;
         align-items: center;
-        margin-bottom: 0; 
+        margin-bottom: 0;
     }
 .inventory-view-line {
     border: none;
