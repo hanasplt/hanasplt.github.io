@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>CHES Cellphone and Accessories Shop</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!--css-->
+<link href="sign-up.css" type="text/css" rel="stylesheet" />
+<!---->
+
+<!--fonts-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Krona+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Krona+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<!---->
+
+<!-- Web logo-->
+<link rel="icon" href="icons/logo.svg">
+
+</head>
+<body>
+<div class="maindiv">
+   <div class="leftdiv">
+    <img class="logo" src="icons/logo.svg"/>
+        <br>
+        <p class="new">New Here?</p>
+        <p class="sign">Sign up to continue</p>
+        <p class="already">Already have an account? <a href="sign-in.html">Sign in</a></p>
+   </div>
+   <div class= "rightdiv">
+      <p class="create"><b>Create Account</b></p>
+    <form name="myForm" onsubmit="validate_form(this); checkForm(this); return false;" id="signUp" method="post" action="sign-up.php">
+        <div class="input-con">
+          <input class="firstname" type="text" name="myFirst" id="myFirst" placeholder="First Name" required>
+          <img src="icons/username.svg" alt="Firstname" class="field-image">
+        </div>
+        <div class="input-con">
+          <input class="firstname" type="text" name="myLast" id="myLast" placeholder="Last Name" required>
+          <img src="icons/username.svg" alt="Last name" class="field-image">
+        </div>
+        <div class="input-con">
+          <input class="firstname" type="text" name="username" id="username" placeholder="Username" required>
+          <img src="icons/username.svg" alt="Username" class="field-image">
+        </div>
+        <div class="input-con">
+          <input class="firstname" type="text" name="phone" id="phone" placeholder="Phone Number" required>
+          <img src="icons/phone.svg" alt="phone number" class="field-image">
+        </div>
+        <div class="input-con">
+          <input class="firstname" type="email" name="email" id="email" placeholder="Email (Optional)">
+          <img src="icons/emailSignUp.svg" alt="Email" class="field-image">
+        </div>
+        <div class="password-con">
+          <input class="password" type="password" name="myPass" id="myPass" placeholder="Password" required>
+          <img src="icons/password.svg" alt="Password" class="field-image" >
+          <img src="icons/eye-close.svg" alt="Key" id="eye-close" class="eye-image" onclick="togglePasswordVisibility()">
+        </div>
+        <div class="password-con">
+          <input class="confirmpass" type="password" name="confirm" id="confirm" placeholder="Confirm Password">
+          <img src="icons/password.svg" alt="Confirm" class="field-image">
+          <img src="icons/eye-close.svg" alt="Key" id="eye-close" class="eye-image-confirm" onclick="toggleConfirmPasswordVisibility()">
+        </div>
+        <button type="submit" class="button-signup" name="signup-button">SIGN UP</button>
+    </form>
+   </div>
+</div>
+
+<!--script--->
+<script type="text/javascript" src="sign-up.js"></script>
+<!---->
+</body>
+</html>
