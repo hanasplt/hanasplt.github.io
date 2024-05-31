@@ -648,16 +648,14 @@ body {
     margin-bottom: 1vw;
     background-color: rgba(255, 255, 255, 0.837);
     width: 96%;
-    height: 76%;
     border-radius: 1vw;
     display: flex;
     flex-direction: column;
     justify-content: left;
     align-self: flex-end;
     position: absolute;
-    top: 58%;
     right: 2%;
-    transform: translateY(-50%);
+    transform: translateY(-20%);
 }
  #inventory-aed-title {
         font-size: 30px;
