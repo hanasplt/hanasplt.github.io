@@ -1,122 +1,3 @@
-/* log out*/
-function handleLogout(){
-    window.location.href = "adminLogin.html";
-}
-
-    document.getElementById('logoutButton').onclick = handleLogout;
-
-/*dashboard*/
-function handleDashboard(){
-    window.location.href = "dashboard.html";
-}
-
-    document.getElementById('dashButton').onclick = handleDashboard;
-
-/*appointments*/
-function handleAppointments(){
-    window.location.href = "appointments.html";
-}
-
-    document.getElementById('appButton').onclick = handleAppointments;
-
-/*reservations*/
-function handleReservations(){
-    window.location.href = "reservations.html";
-}
-
-    document.getElementById('reservButton').onclick = handleReservations;
-
-/*reservations*/
-function handleInventory(){
-    window.location.href = "inventory.html";
-}
-
-    document.getElementById('invButton').onclick = handleInventory;
-
-/*history*/
-function handleHistory(){
-    window.location.href = "history.html";
-}
-
-    document.getElementById('historyButton').onclick = handleHistory;
-
-/*billing*/
-function handleBilling(){
-    window.location.href = "billing.html";
-}
-
-    document.getElementById('billButton').onclick = handleBilling;    
-
-    
-    
-/*date*/
-var currentDate = new Date();
-var options = {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-};
-var formattedDate = currentDate.toLocaleDateString('en-US', options);
-document.getElementById('date').innerHTML = formattedDate;
-
-
-document.addEventListener("DOMContentLoaded", function() {
-    var saveBtn = document.querySelector(".btn-save");
-
-    saveBtn.addEventListener("click", function(event) {
-        event.preventDefault(); 
-
-        Swal.fire({
-            title: 'Save Changes?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'Go Back',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                var type = document.querySelector("select[name='type']").value;
-                var prodId = document.querySelector("input[name='prodid']").value;
-                var brand = document.querySelector("input[name='brand']").value;
-                var model = document.querySelector("input[name='model']").value;
-                var color = document.querySelector("input[name='color']").value;
-                var quantity = document.querySelector("input[name='quantity']").value;
-                var price = document.querySelector("input[name='price']").value;
-                var specs = document.querySelector("input[name='specs']").value;
-                var image = document.querySelector("input[name='image']").files[0];
-
-                if (!type || !prodId || !brand || !model || !color || !quantity || !price || !specs || !image) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Details Incomplete!',
-                        confirmButtonText: 'Go Back',
-                    });
-                    return; 
-                }
-
-                console.log("Form data:", {
-                    type: type,
-                    prodId: prodId,
-                    brand: brand,
-                    model: model,
-                    color: color,
-                    quantity: quantity,
-                    price: price,
-                    specs: specs,
-                    image: image.name 
-                });
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Successfully Added!',
-                    confirmButtonText: 'Yes',
-                }).then(function() {
-                    window.location.href = "inventory.html";
-                });
-            }
-        });
-    });
-});
-
 document.addEventListener("DOMContentLoaded", function() {
     const dash = document.getElementById('dash');
     const menu = document.querySelector('.menu');
@@ -142,4 +23,55 @@ document.addEventListener("DOMContentLoaded", function() {
         event.stopPropagation();
         toggleMenu();
     });
-});
+})
+
+function previewImage(event) {
+    var reader = new FileReader();
+    reader.onload = function() {
+        var output = document.getElementById('image-preview');
+        output.src = reader.result;
+        output.style.display = 'block';
+    }
+    reader.readAsDataURL(event.target.files[0]);
+}
+
+function validateForm() {
+    const fileInput = document.getElementById('image-upload');
+    const filePath = fileInput.value;
+    const allowedExtensions = /(\.jpg|\.jpeg)$/i;
+
+    if (!allowedExtensions.exec(filePath)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid file type',
+            text: 'Please upload a JPEG file.',
+            showConfirmButton: true
+        });
+        fileInput.value = '';
+        return false;
+    }
+
+    const fileSize = fileInput.files[0].size;
+    if (fileSize > 1000000) { // 1MB
+        Swal.fire({
+            icon: 'error',
+            title: 'File too large',
+            text: 'Please upload a file smaller than 1MB.',
+            showConfirmButton: true
+        });
+        fileInput.value = '';
+        return false;
+    }
+
+    return true;
+}
+
+
+var currentDate = new Date();
+var options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+};
+var formattedDate = currentDate.toLocaleDateString('en-US', options);
+document.getElementById('date').innerHTML = formattedDate;

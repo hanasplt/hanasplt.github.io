@@ -20,7 +20,6 @@
             <div class="close-button">
                 <i id="menuIcon" class="fas fa-times icon-white"></i>
             </div>
-            
             <div class="admin">
                 <h1>Welcome,</h1>
                 <img src="icons/logo.png"/>
@@ -42,7 +41,7 @@
         </div>
 
         <div class="mainContent">
-            <div class="rightSide" id="dash">
+         <div class="rightSide" id="dash">
                 <i id="menuIcon" class="fas fa-bars icon-white"></i>
                 <h1>Today's Date:</h1>
                 <p id="date">Date Placeholder</p>
@@ -57,18 +56,21 @@
             </form>
 			</div>
 			<div class="content">
-			<div class="inventory">
+			<div class="new-inventory">
                 <p id="inventory-title">Inventory</p>
-				<a href="inventory-add.html" class="btn">Add</a>
+				<a href="inventory-add.html" class="btn-add">Add</a>
 				<br />
-				<p id="inventory-details">VIVO0001 | vivo | PHONE | v29 | 10</p> 
-				<a href="inventory-details-phone.html" class="brn btn-secondary">View</a>
-				<hr class="inventory-line" />
-				<p id="inventory-details">PC10001 | INFINIX NOTE 30 5G SH... | ACCESSORY | 10</p>
-				<a href="inventory-details-access.html" class="brn btn-tertiary">View</a>
-				<hr class="inventory-line" />
+                <div class="inventory-content">
+                    <div class="inventory-content-item">
+                    <div class="inventory-label">P00001 | vivo | PHONE | v29 | 10</div>
+                    <div class="inventory-button"><a href="inventory-details-phone.html" class="btn">View</a></div>
+                    </div>
+                    <hr class="inventory-line" />
+                    <div class="inventory-content-item">
+                    <div class="inventory-label">A00001 | INFINIX NOTE 30 5G SH... | ACCESSORY | 10</div>
+                    <div class="inventory-button"><a href="inventory-details-access.html" class="btn">View</a></div>
+                    </div>
 				</div>
-				
             </div>
         </div>
 		<script src="inventory.js"></script>

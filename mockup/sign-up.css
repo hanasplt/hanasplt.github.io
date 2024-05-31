@@ -12,12 +12,13 @@
     height: 100%;
     width: 100%;
     display: flex;
+    position: fixed;
 }
 
 .leftdiv{
     height: 100%;
     width: 130%;
-    background-image: url('bg-img/background.svg');
+    background-image: url('bg-img/background.png');
     float:left;
     background-repeat: no-repeat;
     object-fit: cover;
@@ -226,6 +227,7 @@ input:focus {
     }
     .maindiv {
         flex-direction: column;
+        position: static;
     }
     .leftdiv {
         width: 100%;

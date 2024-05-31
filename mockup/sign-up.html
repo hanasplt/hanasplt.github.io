@@ -24,9 +24,7 @@
 <body>
 <div class="maindiv">
    <div class="leftdiv">
-    <a href="adminLogin.html">
-        <img class="logo" src="icons/logo.svg"/>
-    </a>
+    <img class="logo" src="icons/logo.svg"/>
         <br>
         <p class="new">New Here?</p>
         <p class="sign">Sign up to continue</p>
@@ -34,26 +32,30 @@
    </div>
    <div class= "rightdiv">
       <p class="create"><b>Create Account</b></p>
-    <form name="myForm" onsubmit="validate_form(this); checkForm(this); return false;" id="signUp">
+    <form name="myForm" onsubmit="validate_form(this); checkForm(this); return false;" id="signUp" method="post" action="sign-up.php">
         <div class="input-con">
-          <input class="firstname" type="text" name="myFirst" id="myFirst" placeholder="First Name">
+          <input class="firstname" type="text" name="myFirst" id="myFirst" placeholder="First Name" required>
           <img src="icons/username.svg" alt="Firstname" class="field-image">
         </div>
         <div class="input-con">
-          <input class="firstname" type="text" name="myLast" id="myLast" placeholder="Last Name">
+          <input class="firstname" type="text" name="myLast" id="myLast" placeholder="Last Name" required>
           <img src="icons/username.svg" alt="Last name" class="field-image">
         </div>
         <div class="input-con">
-          <input class="firstname" type="tel" name="phone" id="phone" placeholder="Phone Number">
+          <input class="firstname" type="text" name="username" id="username" placeholder="Username" required>
+          <img src="icons/username.svg" alt="Username" class="field-image">
+        </div>
+        <div class="input-con">
+          <input class="firstname" type="text" name="phone" id="phone" placeholder="Phone Number" required>
           <img src="icons/phone.svg" alt="phone number" class="field-image">
         </div>
         <div class="input-con">
-          <input class="firstname" type="text" name="email" id="email" placeholder="Email (Optional)">
+          <input class="firstname" type="email" name="email" id="email" placeholder="Email (Optional)">
           <img src="icons/emailSignUp.svg" alt="Email" class="field-image">
         </div>
         <div class="password-con">
-          <input class="password" type="password" name="myPass" id="myPass" placeholder="Password">
-          <img src="icons/password.svg" alt="Password" class="field-image">
+          <input class="password" type="password" name="myPass" id="myPass" placeholder="Password" required>
+          <img src="icons/password.svg" alt="Password" class="field-image" >
           <img src="icons/eye-close.svg" alt="Key" id="eye-close" class="eye-image" onclick="togglePasswordVisibility()">
         </div>
         <div class="password-con">
@@ -61,7 +63,7 @@
           <img src="icons/password.svg" alt="Confirm" class="field-image">
           <img src="icons/eye-close.svg" alt="Key" id="eye-close" class="eye-image-confirm" onclick="toggleConfirmPasswordVisibility()">
         </div>
-        <button type="submit" class="button-signup">SIGN UP</button>
+        <button type="submit" class="button-signup" name="signup-button">SIGN UP</button>
     </form>
    </div>
 </div>
