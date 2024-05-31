@@ -131,7 +131,7 @@ $conn->close();
             </div>
             <div class="button-container">
                 <div class="inventory-view-button"><a href="inventory-phone-edit.html" class="btn">Edit</a></div>
-                <div class="inventory-view-button"><a onclick="confirmDelete()" class="btn-delete">Delete</a></div>
+                <div class="inventory-view-button"><a href="inventory-delete.php?prod_id=<?php echo $row['prod_id']; ?>" class="btn-delete">Delete</a></div>
             </div>
         </div>
     </div>

@@ -38,19 +38,21 @@
 </div>
 
 <div class="mainContent">
-    <div class="rightSide" id="dash">
-        <i id="menuIcon" class="fas fa-bars icon-white"></i>
-        <h1>Today's Date:</h1>
-        <p id="date">Date Placeholder</p>
-    </div>
-    <div class="formContainer">
-        <form>
-            <select id="dropdown" name="dropdown">
-                <option value="All Types" data-href="#">All Types</option>
-                <option value="Phone" data-href="inventory_phone.html">Phone</option>
-                <option value="Accessories" data-href="inventory_access.html">Accessories</option>
-            </select>
-        </form>
+    <div class="top-bar">
+        <div class="rightSide" id="dash">
+            <i id="menuIcon" class="fas fa-bars icon-white"></i>
+            <h1>Today's Date:</h1>
+            <p id="date">Date Placeholder</p>
+        </div>
+        <div class="formContainer">
+            <form>
+                <select id="dropdown" name="dropdown">
+                    <option value="All Types" data-href="#">All Types</option>
+                    <option value="Phone" data-href="inventory_phone.html">Phone</option>
+                    <option value="Accessories" data-href="inventory_access.html">Accessories</option>
+                </select>
+            </form>
+        </div>
     </div>
     <div class="content">
         <div class="new-inventory">

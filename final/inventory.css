@@ -316,8 +316,12 @@ body {
 
 /*inner*/
 
+.top-bar {
+    margin-bottom: 17%;
+}
+
 .content {
-    padding-bottom: 1vw;
+    margin-top: 10vw;
 }
 
 .UpcomingAppointments, .UpcomingReservations, .InventoryStock {
@@ -440,19 +444,16 @@ body {
 
 /*new css*/
 
-.new-inventory{ 
-	margin: auto;
+.new-inventory{
     margin-bottom: 1vw;
     background-color: rgba(255, 255, 255, 0.837);
     width: 96%;
-    height: 76%;
     border-radius: 1vw;
     display: flex;
     flex-direction: column;
     justify-content: left;
     align-self: flex-end;
     position: absolute;
-    top: 58%;
     right: 2%;
     transform: translateY(-50%);
 }
@@ -571,17 +572,13 @@ body {
     margin-bottom: 1vw;
     background-color: rgba(255, 255, 255, 0.837);
     width: 96%;
-    height: 76%;
     border-radius: 1vw;
-    display: flex;
-    flex-direction: column;
-    justify-content: left;
-    align-self: flex-end;
     position: absolute;
-    top: 58%;
+    margin-top: 8vw;
     right: 2%;
     transform: translateY(-50%);
 }
+
  #inventory-view-title {
         font-size: 30px;
         font-weight: 600;
@@ -620,13 +617,17 @@ body {
 .inventory-view-value {
     margin: 0;
 	font-size: 16px;
-    font-weight: 200;
+    font-weight: 600;
     color: #052355;
 }
 .images-wrapper {
     display: flex;
     align-items: center;
 }
+
+    .images-wrapper img {
+        width: 10vw;
+    }
 .inventory-image {
     margin-right: 10px; 
 	height:80px;
@@ -636,6 +637,7 @@ body {
     display: flex;
     justify-content: center;
     margin-top: 12px;
+    padding-bottom: 1vw;
 }
 .inventory-view-button{
     padding-right: 20px;

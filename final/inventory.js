@@ -72,3 +72,12 @@ document.addEventListener("DOMContentLoaded", function() {
         toggleMenu();
     });
 })
+
+var currentDate = new Date();
+var options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+};
+var formattedDate = currentDate.toLocaleDateString('en-US', options);
+document.getElementById('date').innerHTML = formattedDate;

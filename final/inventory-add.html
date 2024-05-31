@@ -72,7 +72,7 @@
                                 <div class="inventory-aed-value2"><input type="text" name="model"></div>
                             </div>
                             <div class="inventory-aed-content-item">
-                                <div class="inventory-aed-label">COLOR/S:</div>
+                                <div class="inventory-aed-label">COLOR:</div>
                                 <div class="inventory-aed-value2"><input type="text" name="color"></div>
                             </div>
                             <div class="inventory-aed-content-item">
@@ -90,10 +90,10 @@
                             <div class="inventory-aed-content-item">
                                 <div class="inventory-aed-label">IMAGE:</div>
                                 <div class="inventory-aed-value2">
-                                        <input id="image-upload" type="file" name="image" accept="image/*" onchange="uploadImage()" style="display: none;" />
-                                        <label for="image-upload" class="file-upload">
-                                            <i class="fa fa-cloud-upload"></i>CHOOSE IMAGE
-                                        </label>
+                                    <input id="image-upload" type="file" name="image" accept=".jpeg, .jpg" onchange="previewImage(event)" style="display: none;" />
+                                    <label for="image-upload" class="file-upload">
+                                        <i class="fa fa-cloud-upload"></i>CHOOSE IMAGE
+                                    </label>
                                     <img id="image-preview" src="#" alt="Image Preview" style="display: none; max-width: 200px; max-height: 200px;" />
                                 </div>
                             </div>
