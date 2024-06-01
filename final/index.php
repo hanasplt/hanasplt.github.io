@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
- <head>
+<head>
   <title>CHES Cellphone and Accessories Shop</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,10 +23,8 @@
   <!--Web-logo-->
   <link rel="icon" href="icons/logo.svg">
   <!---->
-  
- </head>
- <body>
-
+</head>
+<body>
   <!--header-->
   <div class="header-container">
    <div class="left-header">
@@ -41,7 +39,7 @@
      <a href="sign-up.html"><button class="menu-btn">About Us</button></a>
     </div>
     <div class="right-header">
-     <a href="sign-in.html"><button class="sign-in-btn">SIGN IN</button></a>
+     <a href="sign-in.php"><button class="sign-in-btn">SIGN IN</button></a>
      <div id="menu-icon">
       <i class="fi fi-br-bars-staggered"></i>
      </div>
@@ -76,24 +74,44 @@
     </div>
    </div>
    <div class="cellphones">
-    <div class="cellphone-container cp1">
-     <p class="cp-title">Tecno POVA 6 Pro 5G</p><br>
-     <img src="product-img/tecno-pova.svg" alt="tecno cp">
-     <p style="font-size: 13px;">Php 10,499</p><br><br>
-     <a href="sign-up.html"><button class="pre-order-btn">Pre Order Now</button></a>
-    </div>
-    <div class="cellphone-container cp2">
-     <p class="cp-title">realme 12 Pro+ 5G</p><br>
-     <img src="product-img/realme-12.svg" alt="realme cp">
-     <p style="font-size: 13px;">Php 24,999</p><br><br>
-     <a href="sign-up.html"><button class="pre-order-btn">Pre Order Now</button></a>
-    </div>
-    <div class="cellphone-container cp1">
-     <p class="cp-title">Tecno POVA 6 Pro 5G</p><br>
-     <img src="product-img/tecno-pova.svg" alt="tecno cp">
-     <p style="font-size: 13px;">Php 10,499</p><br><br>
-     <a href="sign-up.html"><button class="pre-order-btn">Pre Order Now</button></a>
-    </div>
+    <?php
+    // Database connection details
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "chestechshopdb";
+
+    // Create connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Fetch products from the database
+    $sql = "SELECT prod_brand, prod_model, prod_images, prod_unit_price 
+        FROM inventory 
+        WHERE prod_type = 'Phone' 
+        ORDER BY prod_id DESC 
+        LIMIT 3";
+
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        // Output data of each row
+        while($row = $result->fetch_assoc()) {
+            echo '<div class="cellphone-container">';
+            echo '<p class="cp-title">' . $row["prod_brand"] . ' ' . $row["prod_model"] . '</p><br>';
+            echo '<img width="150" src="data:image/jpeg;base64,' . base64_encode($row["prod_images"]) . '" alt="' . $row["prod_brand"] . ' ' . $row["prod_model"] . '">';
+            echo '<p style="font-size: 13px;">Php ' . $row["prod_unit_price"] . '</p><br><br>';
+            echo '<a href="sign-up.html"><button class="pre-order-btn">Pre Order Now</button></a>';
+            echo '</div>';
+        }
+    } else {
+        echo "0 results";
+    }
+    ?>
    </div>
    <div class="view-more-container">
     <a href="sign-up.html"><button class="view-more-btn">View More</button></a>
@@ -111,24 +129,7 @@
     </div>
    </div>
    <div class="cellphones">
-    <div class="cellphone-container cp1">
-     <p class="cp-title">realme 12 Pro+ 5G</p><br>
-     <img src="product-img/realme-12.svg" alt="realme cp">
-     <p style="font-size: 13px;">Php 24,999</p><br><br>
-     <a href="sign-up.html"><button class="pre-order-btn">Pre Order Now</button></a>
-    </div>
-    <div class="cellphone-container cp2">
-     <p class="cp-title">realme 12 Pro+ 5G</p><br>
-     <img src="product-img/realme-12.svg" alt="realme cp">
-     <p style="font-size: 13px;">Php 24,999</p><br><br>
-     <a href="sign-up.html"><button class="pre-order-btn">Pre Order Now</button></a>
-    </div>
-    <div class="cellphone-container cp1">
-     <p class="cp-title">Tecno POVA 6 Pro 5G</p><br>
-     <img src="product-img/tecno-pova.svg" alt="tecno cp">
-     <p style="font-size: 13px;">Php 10,499</p><br><br>
-     <a href="sign-up.html"><button class="pre-order-btn">Pre Order Now</button></a>
-    </div>
+    <!-- Similar PHP code can be used here to fetch and display best sellers -->
    </div>
    <div class="view-more-container">
     <a href="sign-up.html"><button class="view-more-btn">View More</button></a>
@@ -146,24 +147,30 @@
     </div>
    </div>
    <div class="accessories">
-    <div class="accessories-container">
-     <p class="acc-title">Infinix Note 30 5G Shockproof Case</p><br>
-     <img src="product-img/phonecase.svg" alt="phonecase">
-     <p style="font-size: 13px;">Php 200</p><br><br>
-     <a href="sign-up.html"><button class="pre-order-btn">Pre Order Now</button></a>
-    </div>
-    <div class="accessories-container">
-     <p class="acc-title">Infinix Note 30 5G Shockproof Case</p><br>
-     <img src="product-img/phonecase.svg" alt="phonecase">
-     <p style="font-size: 13px;">Php 200</p><br><br>
-     <a href="sign-up.html"><button class="pre-order-btn">Pre Order Now</button></a>
-    </div>
-    <div class="accessories-container">
-     <p class="acc-title">Infinix Note 30 5G Shockproof Case</p><br>
-     <img src="product-img/phonecase.svg" alt="phonecase">
-     <p style="font-size: 13px;">Php 200</p><br><br>
-     <a href="sign-up.html"><button class="pre-order-btn">Pre Order Now</button></a>
-    </div>
+    <?php
+    // Fetch accessories from the database
+    $sql = "SELECT prod_brand, prod_model, prod_images, prod_unit_price 
+        FROM inventory 
+        WHERE prod_type = 'Accessory' 
+        ORDER BY prod_id DESC 
+        LIMIT 3";
+
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        // Output data of each row
+        while($row = $result->fetch_assoc()) {
+            echo '<div class="accessories-container">';
+            echo '<p class="cp-title">' . $row["prod_brand"] . ' ' . $row["prod_model"] . '</p><br>';
+            echo '<img width="150" src="data:image/jpeg;base64,' . base64_encode($row["prod_images"]) . '" alt="' . $row["prod_brand"] . ' ' . $row["prod_model"] . '">';
+            echo '<p style="font-size: 13px;">Php ' . $row["prod_unit_price"] . '</p><br><br>';
+            echo '<a href="sign-up.html"><button class="pre-order-btn">Pre Order Now</button></a>';
+            echo '</div>';
+        }
+    } else {
+        echo "0 results";
+    }
+    ?>
    </div>
    <div class="view-more-container">
     <a href="sign-up.html"><button class="view-more-btn">View More</button></a>
@@ -181,24 +188,7 @@
     </div>
    </div>
    <div class="accessories">
-    <div class="accessories-container">
-     <p class="acc-title">Realme C33 Type C Charger</p><br>
-     <img src="product-img/charger.svg" alt="charger">
-     <p style="font-size: 13px;">Php 200</p><br><br>
-     <a href="sign-up.html"><button class="pre-order-btn">Pre Order Now</button></a>
-    </div>
-    <div class="accessories-container">
-     <p class="acc-title">Realme C33 Type C Charger</p><br>
-     <img src="product-img/charger.svg" alt="charger">
-     <p style="font-size: 13px;">Php 200</p><br><br>
-     <a href="sign-up.html"><button class="pre-order-btn">Pre Order Now</button></a>
-    </div>
-    <div class="accessories-container">
-     <p class="acc-title">Realme C33 Type C Charger</p><br>
-     <img src="product-img/charger.svg" alt="charger">
-     <p style="font-size: 13px;">Php 200</p><br><br>
-     <a href="sign-up.html"><button class="pre-order-btn">Pre Order Now</button></a>
-    </div>
+    <!-- Similar PHP code can be used here to fetch and display best sellers -->
    </div>
    <div class="view-more-container">
     <a href="sign-up.html"><button class="view-more-btn">View More</button></a>
@@ -273,7 +263,7 @@
    </div>
   </div>
   <!---->
-  <!--script-->
-  <script type="text/javascript" src="landing-page.js"></script>
- </body>
+<!--script-->
+<script type="text/javascript" src="landing-page.js"></script>
+</body>
 </html>

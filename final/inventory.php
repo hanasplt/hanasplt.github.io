@@ -50,7 +50,10 @@ if(isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
 }
 
 // Insert data into the database
-$sql = "INSERT INTO inventory (prod_type, prod_brand, prod_model, prod_color, prod_quantity, prod_unit_price, prod_specs, prod_images) VALUES ('$type', '$brand', '$model', '$color', '$quantity', '$price', '$specs', '$imageData')";
+$sql = "INSERT INTO inventory (prod_type, prod_brand, prod_model, prod_color, 
+                            prod_quantity, prod_unit_price, prod_specs, prod_images) 
+        VALUES ('$type', '$brand', '$model', '$color', '$quantity', 
+                            '$price', '$specs', '$imageData')";
 
 if ($conn->query($sql) === TRUE) {
     // Record inserted successfully, display SweetAlert and then redirect

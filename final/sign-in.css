@@ -22,6 +22,7 @@
     float:left;
     background-repeat: no-repeat;
     object-fit: cover;
+    
 }
 
 
@@ -30,7 +31,7 @@
     width: 100%; 
     float: right;
     background-color: white;
-    padding: 30px 50px 0 50px;
+    padding: 0 50px 0 50px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -43,13 +44,14 @@
     margin-left: 4%;
 }
 
-.new{
+.welcome{
     font-family: "Montserrat", sans-serif;
     color:white;
-    font-size: 64px;
+    font-weight: bold;
+    width: auto;
+    font-size: 62px;
     margin-top: 20%;
     margin-left: 10%;
-    font-weight: bold;
 }
 
 .sign{
@@ -57,10 +59,10 @@
     color:white;
     font-size: 3vh;
     margin-top: 3%;
-    margin-left: 10%;
+    margin-left: 12%;
 }
 
-.already{
+.dont{
     font-family: sans-serif;
     color: black;
     font-size: 2.5vh;
@@ -68,7 +70,7 @@
     text-align: center;
 }
 
-.create{
+.sign2{
     font-family:'Inter', sans-serif;
     color:midnightblue;
     font-size: 35px;
@@ -77,12 +79,16 @@
     margin-bottom: 7%;
 }
 
+input:focus {
+    outline: none;
+}
+
 .input-con {
     display: flex;
     align-items: center;
 }
 
-.firstname{
+.username{
     border: 0px;
     border-bottom: 1px solid black;
     margin-left:8%;
@@ -93,17 +99,6 @@
     text-indent:7%;
     margin-top:1%;
     margin-bottom: 2%;
-}
-
-input:focus {
-    outline: none;
-}
-
-.field-image{
-    margin-left:-83%;
-    width:3%;
-    height:3%;
-    margin-bottom: 1%;
 }
 
 .password-con {
@@ -115,20 +110,7 @@ input:focus {
 .password{
     border: 0px;
     border-bottom: 1px solid black;
-    width: 83%;
-    margin-left: -2%;
-    margin-top:1%;
-    height: 5vh;
-    font-size:100%;
-    background: transparent;
-    text-indent:7%;
-    margin-bottom: 2%;
-}
-
-.confirmpass{
-    border: 0px;
-    border-bottom: 1px solid black;
-    margin-left: -2%;
+    margin-left:-2%;
     width: 83%;
     margin-top:1%;
     height: 5vh;
@@ -138,21 +120,7 @@ input:focus {
     margin-bottom: 2%;
 }
 
-.eye-image{
-    margin-left:76%;
-    margin-bottom: 1%;
-    width:3%;
-    height:3%;
-}
-
-.eye-image-confirm{
-    margin-left:76%;
-    margin-bottom: 1%;
-    width:3%;
-    height:3%;
-}
-
-.button-signup{
+.button-signin{
     height: 7vh;
     width: 84%;
     margin-top:3%;
@@ -162,61 +130,80 @@ input:focus {
     background-color: midnightblue;
     color: white;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.5s ease;
 }
 
-.button-signup:hover{
+.button-signin:hover{
     background-color:royalblue;
+}
+
+.forgpass{
+    font-family: sans-serif;
+    color: black;
+    font-size: 2.5vh;
+    margin-top: 3%;
+    margin-left:8%;
+}
+
+.field-image{
+    margin-left:-83%;
+    width:3%;
+    height:3%;
+    margin-bottom: 1%;
+}
+
+.eye-image{
+    margin-left:76%;
+    margin-bottom: 1%;
+    width:3%;
+    height:3%;
 }
 
 /*media*/
 @media only screen and (max-width: 1100px) {
-    .field-image, .eye-image, .eye-image-confirm {
+
+    .field-image, .eye-image {
         width: 4%;
         height: 4vh;
     }
-    .password, .confirmpass {
+    .password {
         margin-left: -1%;
-    }
-    .already {
-        margin-top: 40%;
     }
 }
 
 @media only screen and (max-width: 1000px) {
-    .already{
-        margin-top: 45%;
+    .dont {
+        margin-top: 30%;
     }
-    .button-signup:hover {
+    .button-signin:hover {
         background-color: midnightblue;
         color: white;
     }
 }
 
 @media only screen and (max-width: 900px) {
-    .new{
+    .welcome{
         font-size: 60px;
         margin-top: 30%;
     }
 }
 
 @media only screen and (max-width: 800px) {
-    .new{
+    .welcome{
         font-size: 50px;
-        margin-top: 35%;
     }
-    .already {
-        margin-top: 50%;
-    }
-    .field-image, .eye-image, .eye-image-confirm {
+    .field-image, .eye-image {
         width: 5%;
         height: 5vh;
     }
-    .password, .confirmpass {
+    .password {
         margin-left: -1%;
     }
-    .eye-image, .eye-image-confirm {
+    .eye-image {
         margin-left: 73%;
+    }
+    .dont {
+        margin-top: 40%;
     }
 }
 
@@ -232,11 +219,11 @@ input:focus {
     .leftdiv {
         width: 100%;
     }
-    .new {
+    .welcome {
         margin-top: 20%;
         margin-bottom: 0;
     }
-    .already {
+    .dont {
         margin-top: 30%;
         margin-bottom: 10%;
     }
@@ -245,36 +232,34 @@ input:focus {
         padding-bottom: 50px;
         margin-top: 10%;
     }
-    .field-image, .eye-image, .eye-image-confirm {
+    .field-image, .eye-image {
         width: 3%;
         height: 3vh;
     }
-    .eye-image, .eye-image-confirm {
+    .eye-image {
         margin-left: 76%;
     }
-    .password, .confirmpass {
+    .password {
         margin-left: -2%;
     }
 }
 
-@media only screen and (max-width: 550px) {
-    .new {
-        margin-top: 25%;
-    }
-    .already {
+@media only screen and (max-width: 500px) {
+    .dont {
+        margin-top: 30%;
         margin-bottom: 5%;
     }
 }
 
 @media only screen and (max-width: 360px) {
-    .already {
+    .dont {
         font-size: 2vh;
     }
     .sign {
         font-size: 2vh;
     }
-    .new {
-        font-size: 40px;
+    .welcome {
+        font-size: 35px;
         margin-top: 20%;
     }
     .logo {
@@ -283,12 +268,12 @@ input:focus {
         margin-top: 0;
         margin-left: 5%;
     }
-    .eye-image, .eye-image-confirm {
+    .eye-image {
         width: 5%;
         height: 5vh;
         margin-left: 74%;
     }
-    .password, .confirmpass {
+    .password {
         margin-left: -1%;
     }
     .field-image {
