@@ -66,7 +66,9 @@ $conn->close();
 <body>
 <div class="maindiv">
    <div class="leftdiv">
-    <img class="logo" src="icons/logo.svg"/>
+   <a href="adminLogin.html">
+        <img class="logo" src="icons/logo.svg"/>
+    </a>
     <br>
     <p class="welcome">Welcome Back!</p>
     <p class="sign">Sign in to continue</p>

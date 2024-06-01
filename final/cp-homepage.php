@@ -84,7 +84,7 @@
                             $brandFilter = ''; // Reset brand filter to "All Brands" when search is executed
                         }
 
-                        $sql = "SELECT prod_brand, prod_model, prod_images, prod_unit_price, prod_specs FROM inventory WHERE prod_type = 'Phone'";
+                        $sql = "SELECT prod_id, prod_brand, prod_model, prod_images, prod_unit_price, prod_specs FROM inventory WHERE prod_type = 'Phone'";
 
                         $conditions = [];
                         if ($brandFilter !== '') {
@@ -116,7 +116,7 @@
                                 echo '<img width="150" src="data:image/jpeg;base64,' . base64_encode($row["prod_images"]) . '" alt="' . htmlspecialchars($row["prod_brand"]) . ' ' . htmlspecialchars($row["prod_model"]) . '">';
                                 echo '</div>';
                                 echo '</div>';
-                                echo '<a href="#">See full specs</a><br><br>';
+                                echo '<a href="cp-overview.php?prod_id=' . $row["prod_id"] . '">See full specs</a><br><br>';
                                 echo '<button class="pre-order-btn">Pre Order Now</button>';
                                 echo '</div>';
                             }

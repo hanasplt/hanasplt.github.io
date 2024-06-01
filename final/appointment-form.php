@@ -133,7 +133,7 @@ $conn->close();
                         </div>
                         <div class="inputInfo">
                             <label for="appointmentDate">Date:</label><br>
-                            <input type="date" name="appt_date" id="date" class="appointmentDate" min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>" max="<?php echo date('Y-m-d', strtotime('+1 month')); ?>"  onchange="fetchAvailableTimeSlots()" required><br>
+                            <input type="date" name="appt_date" id="date" class="appointmentDate" min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>" max="<?php echo date('Y-m-d', strtotime('+3 month')); ?>"  onchange="fetchAvailableTimeSlots()" required><br>
                             <label for="appointment-time">Time</label><br>
                             <select name="appt_time" id="timeID" class="time" required>
                                 <option>9:00 A.M. - 12:00 P.M.</option>
@@ -152,6 +152,11 @@ $conn->close();
     </div>
     <!--script-->
     <script type="text/javascript">
+        let backbtn = document.getElementById('cancelID');
+
+        backbtn.onclick = () => {
+            window.location.href = "services-homepage.php";
+        }
         function fetchAvailableTimeSlots() {
             var selectedDate = document.getElementById("date").value;
             var xhr = new XMLHttpRequest();
@@ -161,15 +166,12 @@ $conn->close();
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     var availableTimeSlots = JSON.parse(xhr.responseText);
                     var timeSelect = document.getElementById("timeID");
-                    // Clear previous options
                     timeSelect.innerHTML = "";
                     if (availableTimeSlots.length === 0) {
-                        // No available time slots
                         var option = document.createElement("option");
                         option.text = "No time slots available";
                         timeSelect.add(option);
                     } else {
-                        // Add new options
                         availableTimeSlots.forEach(function(timeSlot) {
                             var option = document.createElement("option");
                             option.text = timeSlot;

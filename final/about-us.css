@@ -1,0 +1,332 @@
+* {
+    margin: 0;
+    padding: 0;
+   }
+   body {
+    height: 100vh;
+    font-family: "Inter", sans-serif;
+    overflow-x: hidden;
+   }
+
+      /**/
+      .shop-bg{
+        width:100%;
+        height:100%;
+        background-image: url('bg-img/shop.svg'); 
+        background-size: cover; 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .getintouch{
+        width:100%;
+        height:45%;
+        background-color: #00B2CA;
+      }
+
+      .main-aboutus{
+        width: 95%;
+        height: 75%;
+        background-image: linear-gradient(to bottom, rgb(10, 23, 79), rgb(133, 199, 230)); 
+        opacity: 0.9;
+        margin-top:7%;
+        display:flex;
+        border-radius: 10px;
+      }
+      
+      .text-aboutus{
+        font-family: "Krona One", sans-serif;
+        color:white;
+        font-size: 7vh;
+        margin-top: 5%;
+        margin-right: 5%;
+        margin-left: 5%;
+        margin-bottom: 5%;
+      }
+
+      .text-aboutus2{
+        font-family: sans-serif;
+        color:white;
+        font-size: 3vh;
+        margin-top: 3%;
+        margin-left: 5%;
+        text-indent: 10%;
+        line-height:1.5;
+        text-align: justify;
+        text-indent: 2em;
+      }
+
+      .text-after-br {
+        margin-left: 2em;
+      }
+
+      .team{
+        height: 100%;
+        width:50%;
+      }
+
+
+/*get in touch*/
+.contacts-container {
+ background-color: #00B2CA;
+ color: white;
+ padding-bottom: 70px;
+}
+.get-in-touch {
+ font-size: 32px;
+ font-weight: bold;
+ text-align: center;
+ padding-top: 50px;
+ padding-bottom: 70px;
+}
+.contacts {
+ display: flex;
+ column-gap: 50px;
+ justify-content: center;
+ align-items: flex-start;
+}
+.location {
+ text-align: center;
+}
+.phone-number {
+ text-align: center;
+}
+.email {
+ text-align: center;
+}
+.facebook {
+ text-align: center;
+}
+.location a, .phone-number a {
+ font-size: 14px;
+}
+.email a {
+ font-size: 14px;
+ color: white;
+ text-decoration: none;
+}
+.facebook a {
+ font-size: 14px;
+ color: white;
+ text-decoration: none;
+}
+/**/
+
+   
+   /*media*/
+   @media only screen and (max-width: 1230px) {
+    .account-container {
+      left: 73%;
+    }
+   }
+
+  @media only screen and (max-width: 1150px) {
+    .account-container {
+      left: 70%;
+    }
+  }
+
+   @media only screen and (max-width: 1040px) {
+    .main-aboutus{
+      margin-top:10%;
+    }
+    .text-aboutus{
+      font-size: 6vh;
+    }
+    .text-aboutus2{
+      font-size: 2.9vh;
+    }
+   }
+ 
+  @media only screen and (max-width: 1050px) {
+    .account-container {
+      left: 67%;
+    }
+  }
+
+ 
+   @media only screen and (max-width: 1000px) {
+    #menu-icon {
+     display: block;
+    }
+    .left-header {
+     font-size: 15px;
+     padding-left: 30px;
+    }
+    .menu {
+     position: absolute;
+     top: 100%;
+     right: -100%;
+     width: 200px;
+     height: 100vh;
+     background-color: #000F22;
+     display: flex;
+     flex-direction: column;
+     justify-content: flex-start;
+     transition: all 0.5s ease;
+    }
+    .menu a {
+     text-decoration: none;
+    }
+    .menu-btn {
+     display: block;
+     margin-left: 50px;
+     margin-bottom: 20px;
+    }
+
+    .menu-btn-aboutus {
+        display: block;
+        margin-left: 50px;
+        margin-bottom: 20px;
+        width: 180px;
+        border-radius: 0;
+       }
+
+       .menu-btn:hover {
+        background-color: #000F22;
+       }
+    .menu.open {
+     right: 0;
+     transition: all 0.5s ease;
+    }
+    .account-container {
+      left: 59%;
+    }
+    #account-btn:hover {
+      background-color: #000F22;
+    }
+   }
+
+   @media only screen and (max-width: 960px) {
+    .main-aboutus{
+      margin-top:10%;
+    }
+    .account-container {
+      left: 57%;
+    }
+    .text-aboutus{
+      font-size: 5vh;
+    }
+    .text-aboutus2{
+      font-size: 2.4vh;
+      margin-top: 7%;
+    }
+   }
+
+   @media only screen and (max-width: 850px) {
+    .get-in-touch {
+      font-size: 28px;
+     }
+    .contacts {
+     column-gap: 25px;
+    }
+    .account-container {
+      left: 52%;
+    }
+   }
+
+   @media only screen and (max-width: 770px) {
+    .get-in-touch {
+      font-size: 28px;
+     }
+    .contacts {
+     column-gap: 25px;
+    }
+    .contacts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+    }
+    .account-container {
+      left: 45%;
+    }
+   }
+   
+   @media only screen and (max-width: 700px) {
+    .team {
+      display: none;
+    }
+    .text-aboutus2 {
+      width: 90%;
+      font-size: 3vh;
+    }
+    .main-aboutus {
+      opacity: 0.8;
+    }
+   }
+   
+   @media only screen and (max-width: 650px) {
+    .account-container {
+     left: 37%;
+    }
+   }
+
+   @media only screen and (max-width: 600px) {
+    .account-container {
+      left: 36%;
+      width: 250px;
+    }
+   }
+
+   @media only screen and (max-width: 560px) {
+    .main-aboutus {
+      height: 80%;
+      margin-top: 15%;
+    }
+    .left-header {
+      background-color: #000F22;
+    }
+    .account-container {
+      left: 30%;
+    }
+   }
+
+   @media only screen and (max-width: 500px) {
+    .right-header {
+     overflow-x: hidden;
+    }
+    .account-container {
+      left: 34%;
+      width: 200px;
+     }
+     .accounts-menu {
+      font-size: 15px;
+     }
+   }
+   
+   @media only screen and (max-width: 460px) {
+    .left-header {
+      padding-left: 10px;
+    }
+
+    .main-aboutus {
+      margin-top: 20%;
+    }
+    .contacts {
+      grid-template-columns: 1fr;
+    }
+   }
+
+   @media only screen and (max-width: 400px) {
+    .right-header {
+      column-gap: 20px;
+      padding-right: 30px;
+    }
+    .account-container {
+      top: 13%;
+    }
+   }
+
+   @media only screen and (max-width: 360px) {
+    .menu {
+      width: 150px;
+    }
+    .text-aboutus2 {
+      font-size: 2.3vh;
+    }
+    .text-aboutus {
+      font-size: 4vh;
+    }
+   }
+
