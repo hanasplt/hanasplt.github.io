@@ -1,0 +1,660 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    background-color: #052355;
+}
+
+.menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 20%;
+    height: 100%;
+    background-color: #000F22;
+    transition: right 0.3s ease;
+}
+
+    .menu p {
+        color: #ffffff;
+    }
+
+.admin {
+    position: relative;
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5vw;
+}
+
+    .admin img {
+        max-width: 8.5vw;
+        max-height:  8.5vw;
+    }
+
+    .admin h1 {
+        color: #C2E8FF;
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-right: 29%;
+        font-size: 1.7vw;
+    }
+
+    .admin p {
+        position: absolute;
+        top: 93%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-image: url('bg-img/Rectangle-2.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 9.5vw;
+        text-align: center;
+        font-size: 1.6vw;
+        padding: 3vw;
+        color: #000F22;
+    }
+
+.buttons, .logout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+    .buttons input {
+        text-align: left;
+        padding: 0.3vw;
+        width: 15vw;
+        background-color: #000F22;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        border-color: #35659f;
+        border-width: 3px;
+        color: #ffffff;
+        font-size: 1.3vw;
+    }
+
+        .buttons input:hover {
+            background-color: #f79256;
+            color: #000F22;
+        }
+
+    .logout input {
+        margin-top: 8vw;
+        text-align: center;
+        padding: 0.5vw;
+        width: 15vw;
+        background-color: #C2E8FF;
+        color: #000F22;
+        font-size: 1vw;
+        font-weight: bold;
+    }
+
+        .logout input:hover {
+            background-color: #f79256;
+            color: #000F22;
+        }
+
+.rightSide h1 {
+    text-align: right;
+    margin-bottom: 0;
+    padding-top: 1.3vw;
+    padding-right: 2vw;
+    color: #C2E8FF;
+    font-weight: 680;
+    font-size: 1.7vw;
+}
+
+    .rightSide p {
+        text-align: right;
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-right: 2vw;
+        color: #C2E8FF;
+        font-weight: 680;
+        font-size: 1.6vw;
+    }
+
+    .icon-white {
+        color: white;
+        margin-top: 1vw;
+        margin-left: 1vw;
+        margin-bottom: 0;
+    }
+    
+    .close-button {
+        margin-left: 16.9vw;
+        margin-bottom: 0;
+    }
+
+    .rightSide #menuIcon {
+        margin-top: 1vw;
+        margin-bottom: 0;
+        margin-left: 2vw;
+    }
+
+        .rightSide h1 {
+            margin: 0;
+        }
+
+  
+/*inner code*/
+.inputs {
+    display: flex;
+}
+
+    #date-sort {
+        background-color: #5381B2;
+        color: #C2E8FF;
+        font-size: 1.2vw;
+        font-weight: 600;
+        padding: 0.5vw;
+        width: 12vw;
+        margin-left: 2vw;
+        margin-right: 1vw;
+        border: none;
+    }
+
+    #searchContainer {
+        display: flex;
+        align-items: center;
+        background-color: #5381B2;
+        border-radius: 2vw;
+    }
+
+
+    #searchButton {
+        width: 40px;
+        height: 40px;
+        border: none;
+        color: #000F22;
+        background-color: transparent;
+    }
+
+    .divider {
+        width: 1px;
+        height: 30px;
+        background-color: #C2E8FF;
+    }
+
+
+    #searchInput {
+        padding: 10px;
+        font-size: 16px;
+        font-size: 1.2vw;
+        width: 200px;
+        background-color: transparent;
+        border: none;
+        color: #C2E8FF;
+        font-weight: 600;
+    }
+
+        #searchInput::placeholder {
+            color: #C2E8FF;
+        }
+
+.content {
+    background-color: #ffffff;
+    width: 96%;
+    min-height: auto;
+    margin: auto;
+    border-radius: 1vw;
+}
+
+.UpcomingAppointments {
+    margin: 0;
+}
+
+.UpcomingAppointments p {
+    padding-top: 1vw;
+    padding-left: 1.5vw;
+    font-size: 1.7vw;
+    font-weight: 600;
+    padding-bottom: 0;
+}
+
+.appoint {
+    display: flex;
+    justify-content: space-between;
+}
+
+    .appoint-form {
+        width: 15vw;
+        text-align: right;
+        padding-left: 2vw;
+        line-height: 2vw;
+    }
+
+    .appoint-deets {
+        width: 90vw;
+        margin-right: 10vw;
+        line-height: 2vw;
+    }
+
+    .appoint p {
+        margin: 0;
+        padding: 0;
+        padding-left: 3vw;
+        font-size: 1.3vw;
+        color: #052355;
+    }
+
+    .UpcomingAppointments hr {
+        background-color: #052355;
+        height: 1px;
+        width: 75vw;
+    }
+
+.appoint-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 4vw;
+    padding-bottom: 2vw;
+}
+
+    #confirmButton{
+        font-size: 1.1vw;
+        background-color: #052355;
+        color: #ffffff;
+        border: none;
+        border-radius: 2vw;
+        width: 7vw;
+        padding-top: 0.3vw;
+        padding-bottom: 0.3vw;
+        font-weight: 500;
+    }
+
+    #backButton{
+        margin-left: 1vw;
+        margin-right: 1vw;
+        font-size: 1.1vw;
+        background-color: #8B0000;
+        color: #ffffff;
+        border: none;
+        border-radius: 2vw;
+        width: 7vw;
+        padding-top: 0.3vw;
+        padding-bottom: 0.3vw;
+        font-weight: 500;
+    }
+
+.confirmation-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20vw;
+    height: 12vw;
+}
+
+@media screen and (max-width: 768px) {
+    .menu {
+        width: 40%;
+    }
+
+    .admin h1,
+    .admin p,
+    .buttons input,
+    .logout input,
+    .rightSide h1,
+    .rightSide p {
+        font-size: 2.2vw;
+    }
+
+    .buttons input, .logout input {
+        width: 30vw;
+        padding: 0.7vw;
+    }
+
+    .admin p {
+        background-size: 13vw;
+    }
+
+    .logout input {
+        margin-top: 17vw;
+    }
+
+    .admin {
+        margin-bottom: 7vw;
+    }
+
+    .admin img {
+        max-width: 14vw;
+        max-height: 14vw;
+    }
+
+    .close-button {
+        margin-left: 35vw;
+        margin-top: 1vw;
+        font-size: 2.5vw;
+    }
+
+    .rightSide #menuIcon {
+        margin-left: 1.8vw;
+        margin-top: 1.8vw;
+        font-size: 2.5vw;
+    }
+
+    .rightSide h1 {
+        padding-right: 4vw;
+        font-size: 3vw;
+    }
+    
+        .rightSide p {
+            padding-right: 4vw;
+            font-size: 3.1vw;
+        }
+    
+        .UpcomingAppointments p {
+            margin-bottom: 0;
+            padding-top: 1.5vw;
+            padding-left: 2vw;
+            font-size: 2.5vw;
+        }
+
+        .UpcomingAppointments hr {
+            margin-top: 3vw;
+            width: 60vw;
+        }
+
+        .appoint-form p, .appoint-deets p{
+            font-size: 2.2vw;
+            line-height: 3vw;
+        }
+
+            .appoint-form {
+                width: 30vw;
+            }
+
+            .appoint-deets {
+                width: 70vw;
+            }
+
+        #confirmButton, #backButton {
+            width: 12vw;
+            font-size: 2.1vw;
+        }
+
+        .confirmation-popup {
+            width: 40vw;
+            height: 23vw;
+        }
+}
+
+@media screen and (max-width: 576px) {
+    .menu {
+        width: 45%;
+    }
+
+    .admin h1,
+    .admin p,
+    .buttons input,
+    .logout input,
+    .rightSide h1,
+    .rightSide p {
+        font-size: 2.8vw;
+    }
+
+    .buttons input, .logout input {
+        width: 30vw;
+        padding: 1vw;
+    }
+
+    .admin p {
+        background-size: 15vw;
+    }
+
+    .logout input {
+        margin-top: 18vw;
+    }
+
+    .admin {
+        margin-bottom: 9vw;
+    }
+
+    .admin img {
+        max-width: 20vw;
+        max-height: 20vw;
+    }
+    
+    .close-button {
+        margin-left: 39vw;
+        margin-top: 1vw;
+        font-size: 3.5vw;
+    }
+
+    .rightSide #menuIcon {
+        margin-left: 1.8vw;
+        margin-top: 1.8vw;
+        font-size: 3.5vw;
+    }
+
+    .rightSide h1 {
+        padding-right: 5vw;
+        font-size: 3.5vw;
+    }
+    
+        .rightSide p {
+            padding-right: 5vw;
+            font-size: 3.6vw;
+        }
+
+        .UpcomingAppointments p {
+            margin-bottom: 0;
+            padding-top: 2vw;
+            padding-left: 2.5vw;
+            font-size: 3.5vw;
+        }
+ 
+        .UpcomingAppointments hr {
+            margin-top: 3vw;
+            width: 60vw;
+        }
+
+        .appoint-form p, .appoint-deets p{
+            font-size: 2.8vw;
+            line-height: 3vw;
+        }
+
+            .appoint-form {
+                width: 33vw;
+            }
+
+            .appoint-deets {
+                width: 70vw;
+            }
+
+        #confirmButton, #backButton {
+            width: 15vw;
+            font-size: 2.8vw;
+        }
+
+        .confirmation-popup {
+            width: 50vw;
+            height: 30vw;
+        }
+}
+
+@media screen and (max-width: 480px) {
+    .menu {
+        width: 55%;
+    }
+
+    .admin h1,
+    .admin p,
+    .buttons input,
+    .logout input,
+    .rightSide h1,
+    .rightSide p {
+        font-size: 4.5vw;
+    }
+
+    .buttons input, .logout input {
+        width: 40vw;
+        padding: 1vw;
+    }
+
+    .admin p {
+        background-size: 20vw;
+    }
+
+    .logout input {
+        margin-top: 18vw;
+    }
+
+    .admin {
+        margin-bottom: 17vw;
+    }
+
+    .admin img {
+        max-width: 20vw;
+        max-height: 20vw;
+    }
+    
+    .close-button {
+        margin-left: 48vw;
+        margin-top: 1vw;
+        font-size: 4.5vw;
+    }
+
+    .rightSide #menuIcon {
+        margin-left: 1.8vw;
+        margin-top: 1.8vw;
+        font-size: 4.5vw;
+    }
+
+    .rightSide h1 {
+        padding-right: 5vw;
+        font-size: 4vw;
+    }
+    
+        .rightSide p {
+            padding-right: 5vw;
+            font-size: 4.1vw;
+        }
+        
+        .UpcomingAppointments p {   
+            padding-top: 2.5vw;
+            padding-left: 3vw;
+            font-size: 4vw;
+        }
+ 
+        .UpcomingAppointments hr {
+            margin-top: 4vw;
+            width: 50vw;
+        }
+
+        .appoint-form p, .appoint-deets p{
+            font-size: 3.5vw;
+            line-height: 3.7vw;
+        }
+
+        .appoint-buttons {
+            margin-top: 6vw;
+        }
+
+            .appoint-form {
+                width: 37vw;
+            }
+
+            .appoint-deets {
+                width: 63vw;
+            }
+
+        #confirmButton, #backButton {
+            width: 17vw;
+            font-size: 3.5vw;
+        }
+
+        .confirmation-popup {
+            width: 50vw;
+            height: 30vw;
+        }
+}
+
+@media screen and (max-width: 360px) {
+    .menu {
+        width: 65%;
+    }
+
+    .admin h1,
+    .admin p,
+    .buttons input,
+    .logout input,
+    .rightSide h1,
+    .rightSide p {
+        font-size: 5.5vw;
+    }
+
+    .buttons input, .logout input {
+        width: 45vw;
+        padding: 1vw;
+    }
+
+    .admin p {
+        background-size: 25vw;
+    }
+
+    .logout input {
+        margin-top: 22vw;
+    }
+
+    .admin {
+        margin-bottom: 20vw;
+    }
+
+    .admin img {
+        max-width: 27vw;
+        max-height: 27vw;
+    }
+    
+    .close-button {
+        margin-left: 57vw;
+    }
+        
+        .UpcomingAppointments p {   
+            padding-top: 3vw;
+            padding-left: 3.5vw;
+            font-size: 4vw;
+        }
+ 
+        .UpcomingAppointments hr {
+            margin-top: 5vw;
+            width: 49vw;
+        }
+
+        .appoint-form p, .appoint-deets p{
+            font-size: 3.8vw;
+            line-height: 4vw;
+        }
+
+        .appoint-buttons {
+            margin-top: 7vw;
+        }
+
+            .appoint-form {
+                width: 40vw;
+            }
+
+            .appoint-deets {
+                width: 50vw;
+            }
+
+        #confirmButton, #backButton {
+            width: 20vw;
+            border-radius: 5vw;
+            font-size: 3.7vw;
+        }
+
+        .confirmation-popup {
+            width: 60vw;
+            height: 35vw;
+        }
+}

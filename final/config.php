@@ -95,7 +95,7 @@ foreach ($tables as $table) {
                     appt_brand_model varchar(50) NOT NULL,
                     appt_unit_issue varchar(255) NOT NULL,
                     appt_date date NOT NULL,
-                    appt_time time NOT NULL,
+                    appt_time varchar(30) NOT NULL,
                     PRIMARY KEY (appt_id),
                     UNIQUE KEY (appt_id, appt_first_name, appt_last_name, appt_phone_number, appt_email, appt_brand_model, appt_unit_issue)
                 )";
@@ -140,7 +140,7 @@ foreach ($tables as $table) {
                     appt_id int NOT NULL,
                     appt_first_name varchar(50) NOT NULL,
                     appt_last_name varchar(50) NOT NULL,
-                    appt_phone_number bigint                     (11) NOT NULL,
+                    appt_phone_number bigint (11) NOT NULL,
                     appt_email varchar(50),
                     appt_brand_model varchar(50) NOT NULL,
                     appt_unit_issue varchar(255) NOT NULL,

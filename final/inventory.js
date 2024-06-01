@@ -22,6 +22,8 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 });
+
+
 document.addEventListener("DOMContentLoaded", function() {
     var dropdowns = ["dropdown2"];
 
@@ -46,6 +48,8 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 });
+
+
 document.addEventListener("DOMContentLoaded", function() {
     const dash = document.getElementById('dash');
     const menu = document.querySelector('.menu');
@@ -81,3 +85,55 @@ var options = {
 };
 var formattedDate = currentDate.toLocaleDateString('en-US', options);
 document.getElementById('date').innerHTML = formattedDate;
+
+/* log out*/
+function handleLogout(){
+    window.location.href = "adminLogin.html";
+}
+
+    document.getElementById('logoutButton').onclick = handleLogout;
+
+/*dashboard*/
+function handleDashboard(){
+    window.location.href = "dashboard.html";
+}
+
+    document.getElementById('dashButton').onclick = handleDashboard;
+
+/*appointments*/
+function handleAppointments(){
+    window.location.href = "appointments.html";
+}
+
+    document.getElementById('appButton').onclick = handleAppointments;
+    document.getElementById('appts').onclick = handleAppointments;
+
+/*reservations*/
+function handleReservations(){
+    window.location.href = "reservations.html";
+}
+
+    document.getElementById('reservButton').onclick = handleReservations;
+    document.getElementById('resv').onclick = handleReservations;
+
+/*reservations*/
+function handleInventory(){
+    window.location.href = "inventory-land.php";
+}
+
+    document.getElementById('invButton').onclick = handleInventory;
+    document.getElementById('stcks').onclick = handleInventory;
+
+/*history*/
+function handleHistory(){
+    window.location.href = "history.html";
+}
+
+    document.getElementById('historyButton').onclick = handleHistory;
+
+/*billing*/
+function handleBilling(){
+    window.location.href = "billing.html";
+}
+
+    document.getElementById('billButton').onclick = handleBilling;    
