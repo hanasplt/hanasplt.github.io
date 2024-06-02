@@ -96,9 +96,11 @@ foreach ($tables as $table) {
                     appt_unit_issue varchar(255) NOT NULL,
                     appt_date date NOT NULL,
                     appt_time varchar(30) NOT NULL,
+                    appt_status enum('active', 'confirmed') NOT NULL DEFAULT 'active',
+                    confirmed_at TIMESTAMP NULL DEFAULT NULL,
                     PRIMARY KEY (appt_id),
                     UNIQUE KEY (appt_id, appt_first_name, appt_last_name, appt_phone_number, appt_email, appt_brand_model, appt_unit_issue)
-                )";
+                );";
 
                 if (mysqli_query($conn, $tbAppt)) {
                     echo "Table appts created successfully<br>";

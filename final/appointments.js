@@ -14,7 +14,7 @@ function handleDashboard(){
 
 /*appointments*/
 function handleAppointments(){
-    window.location.href = "appointments.html";
+    window.location.href = "appointments.php";
 }
 
     document.getElementById('appButton').onclick = handleAppointments;
@@ -28,7 +28,7 @@ function handleReservations(){
 
 /*reservations*/
 function handleInventory(){
-    window.location.href = "inventory.html";
+    window.location.href = "inventory-land.php";
 }
 
     document.getElementById('invButton').onclick = handleInventory;

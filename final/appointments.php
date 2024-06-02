@@ -9,8 +9,8 @@ if (!isset($_SESSION['username'])) {
 $username = $_SESSION['username'];
 include "db-connection.php";
 
-// Fetch appointments from the database
-$sql = "SELECT * FROM appointments ORDER BY appt_date ASC, STR_TO_DATE(SUBSTRING_INDEX(appt_time, ' - ', 1), '%h:%i %p') ASC";
+// Fetch appointments from the database excluding confirmed ones
+$sql = "SELECT * FROM appointments WHERE appt_status = 'active' ORDER BY appt_date ASC, STR_TO_DATE(SUBSTRING_INDEX(appt_time, ' - ', 1), '%h:%i %p') ASC";
 $result = $conn->query($sql);
 
 $appointments = [];
@@ -20,6 +20,7 @@ if ($result->num_rows > 0) {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html>

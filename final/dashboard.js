@@ -14,7 +14,7 @@ function handleDashboard(){
 
 /*appointments*/
 function handleAppointments(){
-    window.location.href = "appointments.html";
+    window.location.href = "appointments.php";
 }
 
     document.getElementById('appButton').onclick = handleAppointments;
