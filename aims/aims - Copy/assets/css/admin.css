@@ -1,0 +1,229 @@
+body {
+    font-family: 'Poppins';
+    background-color: #EFF0F4;
+    margin: 0;
+}
+
+.nav-bar {
+    height: 5vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.logo-img {
+    padding-left: 2vw;
+}
+
+    .logo-bar {
+        line-height: 0.1;
+        margin-top: 0.4vw;
+    }
+
+        .logo-bar p {
+            font-size: 1vw;
+            font-weight: bold;
+        }
+
+        #administrator {
+            color: #4B8946;
+        }
+
+    .links {
+        display: flex;  
+        margin-left: auto; 
+    }
+
+        .links p {
+            margin-right: 2.5vw;
+            color: #4B8946;
+            cursor: pointer;
+        }
+
+        .plus-icon {
+            width: 3vw;
+            height: 3vw;
+            border-radius: 50%;
+            background-color: #B1F0AB;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+        }
+        
+        .plus-icon i {
+            color: #4B8946;
+            font-size: 1.5vw;
+        }
+        
+    .menu-icon {
+        cursor: pointer;
+        color: #4B8946;
+        font-size: 1.5vw;
+        margin-right: 3vw;
+    }
+
+.dash {
+    display: flex;
+    margin: auto;
+    width: 90%;
+    margin-top: 5vw;
+    padding-top: 2%;
+}
+
+    .new-account, .new-team, .new-event {
+        margin: auto;
+        margin-top: 0.5vw;
+        background-color: #ffffff;
+        border-radius: 1vw;
+        display: flex;
+        align-items: center;
+        width: 50vw;
+        line-height: 0.1vw;
+        padding: 1vw;
+        margin-bottom: 1.3vw;
+        margin-right: 2vw;
+        box-shadow: 0px 0px 10px 0px rgba(48, 48, 48, 0.222);
+        cursor: pointer;
+    }
+
+    #create {
+        font-size: 1vw;
+        font-weight: bold;
+    }
+
+    #add {
+        font-size: 0.9vw;
+    }
+
+    .info {
+        background-color: #B1F0AB;
+        border-radius: 1vw;
+        display: flex;
+        width: 35vw;
+        height: 16vw;
+        line-height: 1.4vw;
+        margin: auto;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1vw;
+    }
+
+        .info img {
+            width: 13vw;
+        }
+
+        #comp {
+            font-size: 1.5vw;
+            font-family: 'Montserrat';
+            font-weight: 700;
+        }
+
+        #tagline {
+            font-size: 1.3vw;
+            font-family: 'Montserrat';
+            font-weight: 600;
+        }
+
+.accounts-title, .teams-title, .events-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 5vw;
+    margin-right: 5vw;
+}
+
+    #accs, #team, #event{
+        font-weight: 700;
+        color: #466543;
+        font-size: 1.3vw;
+    }
+
+    #vwall {
+        color: #557752;
+        cursor: pointer;
+    }
+
+    .account, .tim, .ebent {
+        display: flex;
+        background-color: #ffffff;
+        width: 88%;
+        align-items: center;
+        margin: auto;
+        padding: 1vw;
+        border-radius: 1vw;
+        box-shadow: 0px 0px 10px 0px rgba(48, 48, 48, 0.222);
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.3vw;
+    }
+
+        .left-deets {
+            display: flex;
+        }
+
+        .acc-img, .tim-img, .ebent-img {
+            width: 3vw;
+            height: 3vw;
+            border-radius: 50%;
+            background-color: #B1F0AB;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+            .acc-img i, .tim-img i, .ebent-img i {
+                font-size: 1.5vw;
+                color: #2D4D2A;
+            }
+
+        .acc-deets {
+            line-height: 0.1vw;
+        }
+
+        .tim-deets, .event-deets {
+            line-height: 0.1vw;
+            margin: auto;
+        }
+
+            #name {
+                font-weight: 700;
+            }
+        
+        .acc-ellips {
+            margin-right: 1vw;
+        }
+            .acc-ellips i {
+                color: #2D4D2A;
+            }
+
+
+
+
+
+            .iframe-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5); 
+                z-index: 9999;
+                display: none;
+            }
+            
+            #popupFrame {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 100%;
+                height: 100%;
+                border: none;
+            }

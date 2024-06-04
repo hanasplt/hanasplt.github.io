@@ -1,0 +1,94 @@
+body {
+    font-family: 'Poppins';
+    background-color: #EFF0F4;
+    margin: 0;
+    height: 100vh;
+}
+
+.nav-bar {
+    height: 5vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.logo-img {
+    padding-left: 2vw;
+}
+
+    .logo-bar {
+        line-height: 0.1;
+        margin-top: 0.4vw;
+    }
+
+        .logo-bar p {
+            font-size: 1vw;
+            font-weight: bold;
+        }
+
+        #administrator {
+            color: #4B8946;
+        }
+
+    .links {
+        display: flex;  
+        margin-left: auto; 
+    }
+
+        .links p {
+            margin-right: 2.5vw;
+            color: #4B8946;
+        }
+
+        .plus-icon {
+            width: 3vw;
+            height: 3vw;
+            border-radius: 50%;
+            background-color: #B1F0AB;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+        }
+        
+        .plus-icon i {
+            color: #4B8946;
+            font-size: 1.5vw;
+        }
+        
+    .menu-icon {
+        color: #4B8946;
+        font-size: 1.5vw;
+        margin-right: 3vw;
+    }
+
+
+/*End of Navbar*/
+
+.eventsDropdown{
+    display: flex;
+    margin-top: 70px;
+    padding: 50px;
+    height: auto;
+    color: black;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.eventsDropdown h4{
+    font-size: 20px;
+}
+.dropdownEvents{
+    height: 45px;
+    width: 250px;
+    margin-left: 20px;
+    border-radius: 7px;
+    text-align: center;
+    font-size: 15px;
+    color: #4B8946;
+}
