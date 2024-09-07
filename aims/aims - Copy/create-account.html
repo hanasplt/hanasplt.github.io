@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Add Account Form</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/css/create-account.css">
+
+    <!--font-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+
+    <!--Web-logo-->
+    <link rel="icon" href="logo.svg">
+
+    <!-- icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+
+    <!-- SweetAlert CSS and JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="container">
+        <form id="accountForm" method="post">
+            <div class="title">
+                <p>Add Account</p>
+            </div>
+    
+            <div class="add-form">
+                <div class="add-deets">
+                    <div class="add-left">
+                        <div class="labels">
+                            <label for="firstName">First Name:</label>
+                            <label for="middleName">Middle Name:</label>
+                            <label for="lastName">Last Name:</label>
+                            <label for="suffix">Suffix:</label>
+                        </div>
+    
+                        <div class="fields">
+                            <input type="text" id="firstName" name="firstName" required oninput="validateInput(event)">
+                            <input type="text" id="middleName" name="middleName" oninput="validateInput(event)">
+                            <input type="text" id="lastName" name="lastName" required oninput="validateInput(event)">
+                            <input type="text" id="suffix" name="suffix" oninput="validateInput(event)">
+                        </div>
+                    </div>
+    
+                    <div class="add-right">
+                        <div class="labels">
+                            <label for="email">Email:</label>
+                            <label for="password">Password:</label>
+                            <label for="confpassword">Confirm Password:</label>
+                            <label for="type">Type:</label>
+                        </div>
+    
+                        <div class="fields">
+                            <input type="email" id="email" name="email" required>
+                            
+                            <div class="password-container">
+                                <input type="password" id="password" name="password" required>
+                                <span id="togglePassword" class="eye-icon" style="cursor: pointer;">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
+    
+                            <div class="password-container">
+                                <input type="password" id="conpassword" name="conpassword" required>
+                                <span id="toggleConPassword" class="eye-icon" style="cursor: pointer;">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
+                            
+                            <select id="sort" name="sort">
+                                <option value="Committee">Committee</option>
+                                <option value="Judge">Judge</option>
+                            </select>
+    
+                            <div class="button-group">
+                                <button type="button" id="cancelBtn">Cancel</button>
+                                <button type="submit" id="saveBtn">SAVE</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+
+    <script>
+        document.getElementById('cancelBtn').addEventListener('click', function() {
+            window.parent.postMessage('closePopup', '*');
+        });
+        
+        document.getElementById('accountForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var password = document.getElementById('password').value;
+            var confirmPassword = document.getElementById('conpassword').value;
+
+            if (password !== confirmPassword) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Passwords do not match!',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            var formData = new FormData(this);
+    
+            fetch('create-account.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: data.message,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.parent.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: data.message,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error occurred during form submission:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred while submitting the form.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            });
+        });
+
+        function validateInput(event) {
+            // Allow only letters (both lowercase and uppercase) and spaces
+            const regex = /^[a-zA-Z\s]*$/;
+            const inputField = event.target;
+
+            if (!regex.test(inputField.value)) {
+                inputField.value = inputField.value.replace(/[^a-zA-Z\s]/g, '');
+            }
+        }
+
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordField = document.getElementById('password');
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        });
+
+        document.getElementById('toggleConPassword').addEventListener('click', function() {
+            const conPasswordField = document.getElementById('conpassword');
+            const type = conPasswordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            conPasswordField.setAttribute('type', type);
+
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        });
+
+
+    </script>
+    
+</body>
+</html>
