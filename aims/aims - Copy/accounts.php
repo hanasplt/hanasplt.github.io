@@ -162,6 +162,45 @@
     </div>
 
     <script>
+        // Search functionality
+        document.getElementById('searchBox').addEventListener('input', function() {
+            var searchValue = this.value.toLowerCase();
+            var accounts = document.querySelectorAll('.account');
+
+            accounts.forEach(function(account) {
+                var name = account.getAttribute('data-name');
+                if (name.includes(searchValue)) {
+                    account.style.display = 'flex';
+                } else {
+                    account.style.display = 'none';
+                }
+            });
+        });
+
+        // Edit functionality
+        document.querySelectorAll('.edit-icon').forEach(function(editIcon) {
+            editIcon.addEventListener('click', function() {
+                var userId = this.getAttribute('data-user-id');
+                var iframe = document.getElementById('editIframe');
+                iframe.src = 'edit-account.html?userId=' + userId;
+                document.getElementById('popupEdit').style.display = 'block';
+            });
+        });
+
+        window.addEventListener("message", function(event) {
+            if (event.data === "closePopup") {
+                document.getElementById("popupEdit").style.display = "none";
+            }
+        });
+
+        function confirmDelete(userId) {
+            if (confirm("Are you sure you want to delete this account?")) {
+                document.getElementById('deleteForm_' + userId).submit();
+            }
+        }
+    </script>
+
+    <script>
         function confirmDelete(userId) {
             Swal.fire({
                 title: 'Confirm',
