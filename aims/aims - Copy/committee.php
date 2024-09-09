@@ -1,12 +1,7 @@
 <?php
     session_start();
 
-    $servername = "localhost"; 
-    $username = "root"; 
-    $password = "";
-    $dbname = "ilps";
-
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $conn = include 'db.php';
 
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
@@ -43,15 +38,15 @@
 <head>
     <meta charset="UTF-8">
     <title>ILPS</title>
-    <link rel="stylesheet" href="/assets/css/faci.css">
+    <link rel="stylesheet" href="assets/css/faci.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/assets/icons/logo-1.png">
+    <link rel="icon" href="assets/icons/logo-1.png">
 </head>
 
 <body>
     <div class="nav-bar">
-        <img class="logo-img" src="/assets/icons/logoo.png">
+        <img class="logo-img" src="assets/icons/logoo.png">
         <div class="logo-bar">
             <p>Intramural Leaderboard</p>
             <p>and Points System</p>
@@ -70,28 +65,35 @@
     
     <div class="eventsDropdown">
         <h4><i>Events: </i></h4>
-        <select class="dropdownEvents" id="dropdownMenuEvents" onchange="showSelectedForm()">
-            <option value="" selected disabled>Select an event</option>
+        <ul>
             <?php
-                $sql = "CALL sp_getAComt(?)";
+                $sql = $sql = "CALL sp_getAComt(?)";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("s", $id);
+                $stmt->bind_param("i", $id);
                 $stmt->execute();
                 $retval = $stmt->get_result();
         
                 if ($retval->num_rows > 0) {
                     while($row = $retval->fetch_assoc()) {
                         ?>
-                        echo "<option value="<?php echo $row['eventId']; ?>"><?php echo $row['eventName']; ?></option>";
+                        <li>
+                            <a href="Sevents.php?event=<?php echo $row['eventId']; ?>"&name=<?php echo $row['eventName']; ?>>
+                                <?php echo $row['eventName']; ?>
+                            </a>
+                        </li>
                         <?php
                     }
                     $retval->free();
                     $stmt->close();
                 } else {
-                    echo "error: ".mysqli_error($conn);
+                    ?>
+                    <li>
+                        No event/s.
+                    </li>
+                    <?php
                 }
             ?>
-        </select>
+        </ul>
     </div>
 
     <script>
