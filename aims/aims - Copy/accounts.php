@@ -25,7 +25,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-    <link rel="icon" href="/assets/icons/logo.svg">
+    <link rel="icon" href="assets/icons/logo.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -33,7 +33,7 @@
 
 <body>
     <div class="nav-bar">
-        <img class="logo-img" src="/assets/icons/logoo.png">
+        <img class="logo-img" src="assets/icons/logoo.png">
         <div class="logo-bar">
             <p>Intramural Leaderboard</p>
             <p>and Points System</p>
@@ -79,11 +79,12 @@
     <div class="accounts">
         <div class="accounts-title">
             <p id="accs">Accounts</p>
+            <input type="text" id="searchBox" name="SearchBox" placeholder="Search Account...">
             <div class="dropdowns">
                 <div class="sort-by">
                     <select id="sort-type" name="sort-type">
                         <option value="all">All</option>
-                        <option value="Facilitator">Facilitator</option>
+                        <option value="Committee">Committee</option>
                         <option value="Judge">Judge</option>
                     </select>
                 </div>
@@ -100,8 +101,16 @@
         <?php
         if (!empty($accounts)) {
             foreach ($accounts as $row) {
+                $fullName = $row['firstName'];
+                if (!empty($row['middleName'])) {
+                    $fullName .= " " . $row['middleName'];
+                }
+                $fullName .= " " . $row['lastName'];
+                if (!empty($row['suffix'])) {
+                    $fullName .= " " . $row['suffix'];
+                }
                 ?>
-                <div class="account">
+                <div class="account" data-name="<?php echo strtolower($fullName); ?>">
                     <div class="left-deets">
                         <div class="acc-img">
                             <i class="fas fa-user"></i>
