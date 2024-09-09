@@ -128,7 +128,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-left: 5vw;
+    margin-left: 7vw; /*gi adjust ra nako ang posisyon*/
     margin-right: 5vw;
 }
 
@@ -148,7 +148,7 @@ body {
 .tim,
 .ebent {
     display: flex;
-    background-color: #ffffff;
+    background-color: #498636; /*change the color*/
     width: 87%;
     align-items: center;
     margin: auto;
@@ -236,6 +236,7 @@ body {
 .acc-deets {
     line-height: 0.1vw;
     width: 55vw;
+    color: white;
 }
 
 .tim-deets,
