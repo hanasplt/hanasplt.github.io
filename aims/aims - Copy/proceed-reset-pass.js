@@ -39,9 +39,9 @@ document.getElementById('changePasswordForm').addEventListener('submit', functio
 document.querySelector('.save-btn').addEventListener('click', function(event) {
     event.preventDefault();  // Prevent default form submission
 
-    var formData = new FormData(document.querySelector('#addEvForm'));
+    var formData = new FormData(document.querySelector('#changePasswordForm'));
 
-    fetch('EventTeamProcess.php', {
+    fetch('process.php', {
         method: 'POST',
         body: formData,
     })
@@ -54,7 +54,7 @@ document.querySelector('.save-btn').addEventListener('click', function(event) {
                 icon: 'success',
                 confirmButtonText: 'OK'
             }).then(() => {
-                location.reload();  // Reload the page or handle success
+                window.location.href = 'login.php';  // Reload the page or handle success
             }); 
         } else {
             Swal.fire({

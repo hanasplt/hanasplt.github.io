@@ -49,7 +49,7 @@ if(isset($_GET['token'])) {
         <div class="form-container">
             <h2>Change Password</h2>
             <p>You are required to change your password.</p>
-            <form id="changePasswordForm" method="post" action="process.php">
+            <form id="changePasswordForm" method="post">
                 <input type="text" name="id" id="id" value="<?php echo $id; ?>" hidden>
                 <div class="input-group">
                     <label for="newpass">Enter new password:</label>

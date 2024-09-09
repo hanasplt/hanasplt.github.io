@@ -106,11 +106,23 @@
         $newpass = encrypt($_POST['newpass'], $encryption_key);
         $token = "NULL";
 
-        $sql = "CALL sp_resetAccPass('$id', '$newpass', '$token')"; // user password reset
+        $sql = "CALL sp_resetAccPass($id, '$newpass', '$token')"; // user password reset
         if(mysqli_query($conn, $sql)) {
-            echo "<script>alert('Password Changed Successfully!'); window.location.href = 'login.php'; </script>";
+            // Return success response as JSON
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Password Changed Successfully!'
+            ]);
         } else {
+            // Return error response as JSON
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Error: ' . $sql . "<br>" . $conn->error
+            ]);
         }
+
+        $stmt->close();
+        exit;
     }
 
     $conn->close();
