@@ -1268,6 +1268,27 @@ if ($conn->query($sqlF) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+
+
+
+
+
+
+
+#ADD DAY (SCHEDULE) --------------------------------------------------------------------------------
+
+$sqlDAYS = "CREATE TABLE days (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    day_number INT NOT NULL,
+    day_date DATE NOT NULL
+    );";
+
+if ($conn->query($sqlDAYS) === TRUE) {
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
 $conn->close();
 
 ?>
