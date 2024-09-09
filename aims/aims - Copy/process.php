@@ -104,9 +104,8 @@
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
         $id = $_POST['id'];
         $newpass = encrypt($_POST['newpass'], $encryption_key);
-        $token = "NULL";
 
-        $sql = "CALL sp_resetAccPass($id, '$newpass', '$token')"; // user password reset
+        $sql = "CALL sp_resetAccPass($id, '$newpass', NULL)"; // user password reset
         if(mysqli_query($conn, $sql)) {
             // Return success response as JSON
             echo json_encode([
@@ -114,11 +113,6 @@
                 'message' => 'Password Changed Successfully!'
             ]);
         } else {
-            // Return error response as JSON
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Error: ' . $sql . "<br>" . $conn->error
-            ]);
         }
 
         $stmt->close();

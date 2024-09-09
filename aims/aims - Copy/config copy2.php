@@ -713,7 +713,7 @@ if ($conn->query($sqlT) === TRUE) {
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_resetAccPass(IN id INT, IN pass VARCHAR(255),
         IN token VARCHAR(64))
         BEGIN
-            UPDATE vw_accounts SET password = pass, reset_token = token WHERE userId = id;
+            UPDATE vw_accounts SET password = pass, reset_token = token WHERE userId = id && reset_token = token;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {

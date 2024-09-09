@@ -17,11 +17,14 @@ document.getElementById('toggleConfPass').addEventListener('click', function() {
 });
 
 
-// Form validation before submitting (password and confirm password must match)
+// Form validation and submission
 document.getElementById('changePasswordForm').addEventListener('submit', function(event) {
+    event.preventDefault();  // Prevent default form submission
+
     var password = document.getElementById('newpass').value;
     var confirmPassword = document.getElementById('confpass').value;
 
+    // Validate password and confirm password--they must match
     if (password !== confirmPassword) {
         Swal.fire({
             title: 'Error!',
@@ -31,14 +34,8 @@ document.getElementById('changePasswordForm').addEventListener('submit', functio
         });
         return;
     }
-});
 
-
-
-// Form submission for submitting change password
-document.querySelector('.save-btn').addEventListener('click', function(event) {
-    event.preventDefault();  // Prevent default form submission
-
+    // When password matches, proceed to form submission
     var formData = new FormData(document.querySelector('#changePasswordForm'));
 
     fetch('process.php', {
@@ -54,7 +51,7 @@ document.querySelector('.save-btn').addEventListener('click', function(event) {
                 icon: 'success',
                 confirmButtonText: 'OK'
             }).then(() => {
-                window.location.href = 'login.php';  // Reload the page or handle success
+                window.location.href = 'login.php';  // Redirect to Login page
             }); 
         } else {
             Swal.fire({
@@ -66,6 +63,11 @@ document.querySelector('.save-btn').addEventListener('click', function(event) {
         }
     })
     .catch(error => {
-        alert('An error occurred: ' + error.message);
+        Swal.fire({
+            title: 'Oops!',
+            text: 'An error occurred: ' + error.message,
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
     });
 });
