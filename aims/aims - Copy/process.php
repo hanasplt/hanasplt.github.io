@@ -101,5 +101,17 @@
         }
     }
 
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
+        $id = $_POST['id'];
+        $newpass = encrypt($_POST['newpass'], $encryption_key);
+        $token = "NULL";
+
+        $sql = "CALL sp_resetAccPass('$id', '$newpass', '$token')"; // user password reset
+        if(mysqli_query($conn, $sql)) {
+            echo "<script>alert('Password Changed Successfully!'); window.location.href = 'login.php'; </script>";
+        } else {
+        }
+    }
+
     $conn->close();
 ?>

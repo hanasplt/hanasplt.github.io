@@ -710,6 +710,16 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_resetAccPass(IN id INT, IN pass VARCHAR(255),
+        IN token VARCHAR(64))
+        BEGIN
+            UPDATE vw_accounts SET password = pass, reset_token = token WHERE userId = id;
+        END ;";
+if ($conn->query($sqlT) === TRUE) {
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_delAcc(IN id VARCHAR(255))
         BEGIN
             DELETE FROM vw_accounts WHERE userId = id;
