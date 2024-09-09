@@ -154,17 +154,35 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     const { dayNumber, dayDate } = result.value;
-                    const formattedDate = formatDate(dayDate);
-                    document.getElementById('dayName').textContent = `Day ${dayNumber}`;
-                    document.getElementById('dayDate').textContent = formattedDate;
 
-                    Swal.fire({
-                        title: 'Success!',
-                        text: 'New day added successfully.',
-                        icon: 'success',
-                        confirmButtonColor: '#7FD278',
-                        confirmButtonText: 'OK'
-                    });
+                    // Send data to the PHP script via AJAX
+                    const xhr = new XMLHttpRequest();
+                    xhr.open("POST", "add_day.php", true); // Path to your PHP file
+                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            const response = JSON.parse(xhr.responseText);
+                            if (response.success) {
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text: 'New day added successfully.',
+                                    icon: 'success',
+                                    confirmButtonColor: '#7FD278',
+                                    confirmButtonText: 'OK'
+                                });
+                                // Update the page (if needed) to reflect the new schedule
+                            } else {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: response.message,
+                                    icon: 'error',
+                                    confirmButtonColor: '#d33',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        }
+                    };
+                    xhr.send(`day_number=${dayNumber}&day_date=${dayDate}`);
                 }
             });
         });
