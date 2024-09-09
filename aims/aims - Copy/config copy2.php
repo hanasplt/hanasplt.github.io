@@ -1278,13 +1278,31 @@ if ($conn->query($sqlF) === TRUE) {
 
 #ADD DAY (SCHEDULE) --------------------------------------------------------------------------------
 
-$sqlDAYS = "CREATE TABLE days (
+$sqlDAYS = "CREATE TABLE IF NOT EXISTS scheduled_days (
     id INT AUTO_INCREMENT PRIMARY KEY,
     day_number INT NOT NULL,
     day_date DATE NOT NULL
     );";
 
 if ($conn->query($sqlDAYS) === TRUE) {
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
+#ADD EVENT TO DAY (SCHEDULE) --------------------------------------------------------------------------------
+
+$sqlEvDay = "CREATE TABLE IF NOT EXISTS scheduled_eventstoday (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    day_id INT,
+    time TIME NOT NULL,
+    activity VARCHAR(255) NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    status ENUM('Pending', 'Ongoing', 'Ended', 'Cancelled', 'Moved') DEFAULT 'Pending',
+    FOREIGN KEY (day_id) REFERENCES scheduled_days(id) ON DELETE CASCADE
+    );";
+    #if the day is deleted, all the events linked to the day is also deleted
+
+if ($conn->query($sqlEvDay) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
