@@ -79,7 +79,7 @@ if(isset($_POST['changeScore'])) {
             <p onclick="window.location.href = 'EventTeam.html';" hidden>Events</p>
         </div>
         <div class="menu-icon">
-            <i class="fas fa-sign-out-alt" onclick="window.location.href = 'index.html';"></i>
+            <i class="fas fa-sign-out-alt" id="logoutIcon"></i>
         </div>
     </div>
 
@@ -310,6 +310,26 @@ if(isset($_POST['changeScore'])) {
         </table>
     </div>
 
+    <!-- logout confirmation -->
+    <script>
+        document.getElementById('logoutIcon').addEventListener('click', function() {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You will be logged out!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#7FD278',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, log me out',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // mag redirect siya to the login page
+                    window.location.href = 'index.html';
+                }
+            });
+        });
+    </script>
 
     <script>
         function displayForm() {
