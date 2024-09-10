@@ -51,7 +51,7 @@ if ($conn->query($sqlT) === TRUE) {
 }
 
 $sqlT = "CREATE TABLE IF NOT EXISTS accounts (
-    userId INT AUTO_INCREMENT PRIMARY KEY NOT NULL, #new change
+    userId INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     firstName VARCHAR(255) NOT NULL,
     middleName VARCHAR(255),
     lastName VARCHAR(255) NOT NULL,
@@ -60,7 +60,8 @@ $sqlT = "CREATE TABLE IF NOT EXISTS accounts (
     email VARCHAR(255) NOT NULL,
     type VARCHAR(50) NOT NULL,
     log_status VARCHAR(50),
-    reset_token VARCHAR(64)
+    reset_token VARCHAR(64),
+    reset_token_expiration DATETIME
     );";
 
 if ($conn->query($sqlT) === TRUE) {

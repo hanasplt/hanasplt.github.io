@@ -37,7 +37,7 @@
                         <label for="show-password">Show Password</label>
                     </span>
                     
-                    <a href="resetpass.php"><u>Forgot Password?</u></a>
+                    <a href="forgotpass/resetpass.php"><u>Forgot Password?</u></a>
                 </div>
                 <button type="submit" name="login">Login</button>
             </form>
