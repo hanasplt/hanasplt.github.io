@@ -20,7 +20,7 @@
         <title>Admin</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/assets/css/admin.css">
+        <link rel="stylesheet" href="assets/css/admin.css">
 
         <!--font-->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,7 +31,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
         <!--Web-logo-->
-        <link rel="icon" href="/assets/icons/logo.svg">
+        <link rel="icon" href="assets/icons/logo.svg">
 
         <!-- icons -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -40,7 +40,7 @@
 
     <body>
         <div class="nav-bar">
-            <img class="logo-img" src="/assets/icons/logoo.png">
+            <img class="logo-img" src="assets/icons/logoo.png">
             <div class="logo-bar">
                 <p>Intramural Leaderboard</p>
                 <p>and Points System</p>

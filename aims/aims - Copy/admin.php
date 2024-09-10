@@ -14,7 +14,7 @@
         <title>Admin</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/assets/css/admin.css">
+        <link rel="stylesheet" href="assets/css/admin.css">
 
         <!--font-->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,7 +25,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
         <!--Web-logo-->
-        <link rel="icon" href="/assets/icons/logo.svg">
+        <link rel="icon" href="assets/icons/logo.svg">
 
         <!-- icons -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -34,7 +34,7 @@
 
     <body>
         <div class="nav-bar">
-            <img class="logo-img" src="/assets/icons/logoo.png">
+            <img class="logo-img" src="assets/icons/logoo.png">
             <div class="logo-bar">
                 <p>Intramural Leaderboard</p>
                 <p>and Points System</p>
@@ -116,7 +116,7 @@
                         Meets Friendly Competition!
                     </p>
                 </div>
-                <img src="/assets/icons/ILPS LOGO 2.png">
+                <img src="assets/icons/ILPS LOGO 2.png">
             </div>
         </div>
 
@@ -221,25 +221,25 @@
         </div>
 
         <!-- logout confirmation -->
-    <script>
-        document.getElementById('logoutIcon').addEventListener('click', function() {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You will be logged out!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#7FD278',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, log me out',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // mag redirect siya to the login page
-                    window.location.href = 'index.html';
-                }
+        <script>
+            document.getElementById('logoutIcon').addEventListener('click', function() {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You will be logged out!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#7FD278',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, log me out',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // mag redirect siya to the login page
+                        window.location.href = 'index.html';
+                    }
+                });
             });
-        });
-    </script>
+        </script>
 
     </body>
 </html>
