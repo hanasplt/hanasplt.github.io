@@ -1,0 +1,156 @@
+body {
+    font-family: 'Poppins';
+    background-color: #EFF0F4;
+    margin: 0;
+    height: 100vh;
+}
+
+.nav-bar {
+    height: 5vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.logo-img {
+    padding-left: 2vw;
+}
+
+    .logo-bar {
+        line-height: 0.1;
+        margin-top: 0.4vw;
+    }
+
+        .logo-bar p {
+            font-size: 1vw;
+            font-weight: bold;
+        }
+
+        #administrator {
+            color: #4B8946;
+        }
+
+    .links {
+        display: flex;  
+        margin-left: auto; 
+    }
+
+        .links p {
+            margin-right: 2.5vw;
+            color: #4B8946;
+        }
+
+        .plus-icon {
+            width: 3vw;
+            height: 3vw;
+            border-radius: 50%;
+            background-color: #B1F0AB;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+        }
+        
+        .plus-icon i {
+            color: #4B8946;
+            font-size: 1.5vw;
+        }
+        
+    .menu-icon {
+        color: #4B8946;
+        font-size: 1.5vw;
+        margin-right: 3vw;
+    }
+
+
+/*End of Navbar*/
+
+.Scoreform{
+    text-align: center;
+    padding: 100px;
+}
+.Teams{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.Team1a2{
+    padding-left: 70px;
+    padding-right: 70px;
+    border: 2px solid black;
+    margin: 30px;
+}
+.SButton{
+    font-size: 15px;
+    height: 30px;
+    width: 30px;
+    border-radius: 5px;
+}
+.addSbutton{
+    display: grid;
+}
+.SButton:hover{
+    background-color: #4B8946;
+    transition: ease-in 0.2s;
+}
+.teamSelected{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.Team1a2Scores{
+    padding-left: 50px;
+    padding-right: 50px;
+    border: 2px solid black;
+    margin: 30px;
+    font-size: 25px;
+}
+.quarter{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.GameQuarter h4{
+    height: 40px;
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border: 2px solid black;
+    margin: 15px;
+    font-size: 25px;
+}
+.team{
+    display: flex;
+}
+
+.buttonGo{
+    display: flex;
+    text-align: center;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 30px;
+}
+.GoButton{
+    height: 40px;
+    width: 100px;
+    border-radius: 20px;
+    background-color: #4B8946;
+    border: none;
+    font-size: 15px;
+    color: white;
+    margin: 10px;
+}
+.GoButton:hover{
+    color: #4B8946;
+    background-color: white;
+    border: 1px solid;
+    transition: ease-in 0.2s;
+}
