@@ -52,7 +52,7 @@ if($result -> num_rows > 0) {
         $mail->isHTML(true);                                  //Set email format to HTML
         $mail->Subject = 'Password Reset Code';
         $mail->Body    = '<h2>DO NOT REPLY TO THIS.</h2>
-                            Click <a href="http://localhost:3000/proceed-reset-pass.php?token='.$token.'">here</a> 
+                            Click <a href="http://localhost:3000/forgotpass/proceed-reset-pass.php?token='.$token.'">here</a> 
                             to reset your password :) ';
 
 

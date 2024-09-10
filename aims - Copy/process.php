@@ -77,7 +77,7 @@
 
     header('Content-Type: text/html');
 
-    if (isset($_POST['changepass'])) { // mandatory change password 
+    if (isset($_POST['changepass'])) { // mandatory change password (judge) 
         $id = $_POST['jid'];
         $newpass = encrypt($_POST['newpass'], $encryption_key);
         $logstat = "finish";
@@ -89,7 +89,7 @@
         }
     }
 
-    if (isset($_POST['changepassfaci'])) { // mandatory change password 
+    if (isset($_POST['changepassfaci'])) { // mandatory change password (committee)
         $id = $_POST['fid'];
         $newpass = encrypt($_POST['newpass'], $encryption_key);
         $logstat = "finish";
@@ -99,24 +99,6 @@
             echo "<script>alert('Password Changed Successfully!'); window.location.href = 'committee.php?id=$id'; </script>";
         } else {
         }
-    }
-
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
-        $id = $_POST['id'];
-        $newpass = encrypt($_POST['newpass'], $encryption_key);
-
-        $sql = "CALL sp_resetAccPass($id, '$newpass', NULL)"; // user password reset
-        if(mysqli_query($conn, $sql)) {
-            // Return success response as JSON
-            echo json_encode([
-                'status' => 'success',
-                'message' => 'Password Changed Successfully!'
-            ]);
-        } else {
-        }
-
-        $stmt->close();
-        exit;
     }
 
     $conn->close();

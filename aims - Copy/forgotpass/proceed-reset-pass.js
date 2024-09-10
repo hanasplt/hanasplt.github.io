@@ -18,7 +18,7 @@ document.getElementById('toggleConfPass').addEventListener('click', function() {
 
 
 // Form validation and submission
-document.getElementById('changePasswordForm').addEventListener('submit', function(event) {
+document.querySelector('.save-btn').addEventListener('click', function(event) {
     event.preventDefault();  // Prevent default form submission
 
     var password = document.getElementById('newpass').value;
@@ -35,10 +35,41 @@ document.getElementById('changePasswordForm').addEventListener('submit', functio
         return;
     }
 
-    // When password matches, proceed to form submission
+    var myInput = document.getElementById("newpass");
+    var passwordMsg = "";
+
+    // Password Input Validation
+    var lowerCaseLetters = /[a-z]/g;
+    var upperCaseLetters = /[A-Z]/g;
+    var numbers = /[0-9]/g;
+
+    if (!myInput.value.match(lowerCaseLetters)) {
+        passwordMsg += "Password must contain a lowercase letter.";
+    }
+    if (!myInput.value.match(upperCaseLetters)) {
+        passwordMsg += "Password must contain an uppercase letter.";
+    }
+    if (!myInput.value.match(numbers)) {
+        passwordMsg += "Password must contain a number.";
+    }
+    if (myInput.value.length < 8) {
+        passwordMsg += "Password must be at least 8 characters long.";
+    }
+
+    if (passwordMsg) {
+        Swal.fire({
+            title: 'Message',
+            text: passwordMsg,
+            icon: 'info',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+
+    // When password is valid and matches, proceed to form submission
     var formData = new FormData(document.querySelector('#changePasswordForm'));
 
-    fetch('process.php', {
+    fetch('proceed-reset-pass.php', {
         method: 'POST',
         body: formData,
     })
@@ -51,7 +82,7 @@ document.getElementById('changePasswordForm').addEventListener('submit', functio
                 icon: 'success',
                 confirmButtonText: 'OK'
             }).then(() => {
-                window.location.href = 'login.php';  // Redirect to Login page
+                window.location.href = '../login.php';  // Redirect to Login page
             }); 
         } else {
             Swal.fire({

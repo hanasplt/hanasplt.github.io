@@ -1,47 +1,84 @@
 <?php
 session_start();
+include '../encryption.php';
+$conn = include '../db.php';
 
-$conn = include 'db.php';
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
 
+
+// Get token and validate
 if(isset($_GET['token'])) {
     $token = $_GET['token'];
 
-    $sql = "SELECT userId FROM accounts WHERE reset_token = ?";
-
-    $stmt = $conn -> prepare($sql);
-    $stmt -> bind_param("s", $token);
-    $stmt -> execute();
+    $sql = "SELECT userId, reset_token_expiration FROM accounts WHERE reset_token = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $token);
+    $stmt->execute();
     $result = $stmt->get_result();
 
-    if($result -> num_rows > 0) {
+    if($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-
         $id = $row['userId'];
-        //fetch ang userId para ma update ang password
-        // update token to null
-        // create form for change password
+
+        date_default_timezone_set('Asia/Manila');
+
+        if(strtotime($row['reset_token_expiration']) <= time()) {
+            $_SESSION['validate'] = "Token has expired!";
+            header("Location: proceed-reset-pass.php");
+            exit;
+        }
     } else {
-        echo "Token not found";
+        $_SESSION['validate'] = "Token not found!";
+        header("Location: proceed-reset-pass.php");
+        exit;
     }
 }
 
-// update new password here {}
+// Check for POST request to update the password
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
 
+    $id = $_POST['id'];
+    $newpass = encrypt($_POST['newpass'], $encryption_key);
+
+    $sql = "CALL sp_resetAccPass(?, ?, NULL)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("is", $id, $newpass);
+
+    if($stmt->execute()) {
+        // Return success response as JSON
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Password Changed Successfully!'
+        ]);
+    } else {
+        // Handle SQL error
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Failed to update password!'
+        ]);
+    }
+
+    $stmt->close();
+    exit;
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ILPS</title>
-    <link rel="icon" href="assets/icons/logo-1.png">
+    <link rel="icon" href="../assets/icons/logo-1.png">
 
     <!-- icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
 
     <!-- SweetAlert CSS and JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -49,8 +86,15 @@ if(isset($_GET['token'])) {
 <body>
     <div class="container">
         <div class="form-container">
-            <h2>Change Password</h2>
-            <p>You are required to change your password.</p>
+            <h2>Reset Your Password</h2>
+            <p>
+                Create a strong password. <br>
+                <b>Password must contain the following:</b><br>
+                <span id="letter" class="invalid">- <i>Lowercase</i> letter</span><br>
+                <span id="capital" class="invalid">- <i>Capital</i> letter</span><br>
+                <span id="number" class="invalid">- A <i>Number</i></span><br>
+                <span id="length" class="invalid">- A Minimum of <i>8 characters</i></span><br>
+            </p>
             <form id="changePasswordForm" method="post">
                 <input type="text" name="id" id="id" value="<?php echo $id; ?>" hidden>
                 <div class="input-group">
@@ -67,6 +111,20 @@ if(isset($_GET['token'])) {
             </form>
         </div>
     </div>
+    <script>
+        var msg = "<?= $_SESSION['validate'] ?? ''; ?>";
+
+        if(msg != '') {
+            Swal.fire({
+                title: "Oops..",
+                text: msg,
+                icon: "error"
+            }).then(() => {
+                window.location.href = '../login.php';  // Redirect to Login page
+            }); 
+            <?php unset($_SESSION['validate']); ?>
+        }
+    </script>
 
     <script src="proceed-reset-pass.js"></script>
 </body>
