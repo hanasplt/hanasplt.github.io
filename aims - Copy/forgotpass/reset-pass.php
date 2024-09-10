@@ -4,15 +4,19 @@ session_start();
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'PHPMailer/src/Exception.php';
-require 'PHPMailer/src/PHPMailer.php';
-require 'PHPMailer/src/SMTP.php';
+require '../PHPMailer/src/Exception.php';
+require '../PHPMailer/src/PHPMailer.php';
+require '../PHPMailer/src/SMTP.php';
 
-$conn = include 'db.php';
+$conn = include '../db.php';
+
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
 
 $email = $_POST['email'];
 $token = bin2hex(random_bytes(16));
-$expiry = date("Y-m-d H:i:s", time() + 60 * 30);
+$expiry = "";
 
 $sql = "SELECT userId
         FROM accounts
@@ -26,11 +30,11 @@ $result = $stmt->get_result();
 if($result -> num_rows > 0) {
     $sql = "UPDATE accounts
             SET reset_token = ?,
-                reset_toke_expiration = ?
+                reset_token_expiration = NOW() + INTERVAL 10 MINUTE
             WHERE email = ?";
     
     $stmt = $conn -> prepare($sql);
-    $stmt->bind_param("sss", $token, $expiry, $email);
+    $stmt->bind_param("ss", $token, $email);
     $stmt->execute();
 
     $mail = new PHPMailer(true);
@@ -52,13 +56,15 @@ if($result -> num_rows > 0) {
         $mail->isHTML(true);                                  //Set email format to HTML
         $mail->Subject = 'Password Reset Code';
         $mail->Body    = '<h2>DO NOT REPLY TO THIS.</h2>
-                            Click <a href="http://localhost:3000/proceed-reset-pass.php?token='.$token.'">here</a> 
-                            to reset your password :) ';
+                            Click <a href="http://localhost:3000/aims%20-%20Copy/forgotpass/proceed-reset-pass.php?token='.$token.'">here</a> 
+                            to reset your password :) 
+                            </br>
+                            <b>REMINDER: <i>The token will expire in 10 minutes.</i></b>';
 
 
         if($mail->send()) {
             $_SESSION['status'] = "Thank you! Please check your email.";
-            header("Location: login.php");
+            header("Location: ../login.php");
             exit;
         }
     } catch (Exception $e) {
