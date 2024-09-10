@@ -42,6 +42,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="assets/icons/logo-1.png">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body>
@@ -59,41 +61,35 @@
             <p onclick="window.location.href = 'EventTeam.html';" hidden>Events</p>
         </div>
         <div class="menu-icon">
-            <i class="fas fa-sign-out-alt" style="cursor: pointer;" onclick="window.location.href = 'index.html';"></i>
+            <i class="fas fa-sign-out-alt" id="logoutIcon"></i>
         </div>
     </div>
     
     <div class="eventsDropdown">
-        <h4><i>Events: </i></h4>
-        <ul>
-            <?php
-                $sql = $sql = "CALL sp_getAComt(?)";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("i", $id);
-                $stmt->execute();
-                $retval = $stmt->get_result();
+        <h4>Events</h4>
+        <?php
+            $sql = $sql = "CALL sp_getAComt(?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $retval = $stmt->get_result();
         
-                if ($retval->num_rows > 0) {
-                    while($row = $retval->fetch_assoc()) {
-                        ?>
-                        <li>
-                            <a href="Sevents.php?event=<?php echo $row['eventId']; ?>"&name=<?php echo $row['eventName']; ?>>
+            if ($retval->num_rows > 0) {
+                while($row = $retval->fetch_assoc()) {
+                    ?>
+                        <div class="event-item">
+                            <a href="Sevents.php?event=<?php echo $row['eventId']; ?>&name=<?php echo $row['eventName']; ?>">
                                 <?php echo $row['eventName']; ?>
                             </a>
-                        </li>
-                        <?php
-                    }
-                    $retval->free();
-                    $stmt->close();
-                } else {
-                    ?>
-                    <li>
-                        No event/s.
-                    </li>
+                        </div>
                     <?php
                 }
-            ?>
-        </ul>
+                $retval->free();
+                $stmt->close();
+            } else {
+                echo "<div class='no-event'>No event/s.</div>";
+            }
+        ?>
     </div>
 
     <script>
@@ -106,6 +102,27 @@
                 window.location.href = "Sevents.php?event="+selectedEvent+"&name="+evName;
             }
         }
+    </script>
+
+    <!-- logout confirmation -->
+    <script>
+            document.getElementById('logoutIcon').addEventListener('click', function() {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You will be logged out!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#7FD278',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, log me out',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // mag redirect siya to the login page
+                        window.location.href = 'index.html';
+                    }
+                });
+            });
     </script>
 
     <?php $conn->close(); ?>

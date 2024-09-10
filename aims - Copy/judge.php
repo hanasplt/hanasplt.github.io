@@ -43,8 +43,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ILPS</title>
-    <link rel="stylesheet" href="/assets/css/judge.css">
-    <link rel="icon" href="/assets/icons/logo-1.png">
+    <link rel="stylesheet" href="assets/css/judge.css">
+    <link rel="icon" href="assets/icons/logo-1.png">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -53,29 +54,25 @@
 
 <body>
     <div class="nav-bar">
-        <img class="logo-img" src="/assets/icons/logoo.png" alt="Logo">
+        <img class="logo-img" src="assets/icons/logoo.png">
         <div class="logo-bar">
             <p>Intramural Leaderboard</p>
             <p>and Points System</p>
             <p id="administrator"><i>JUDGE</i></p>
         </div>
-
         <div class="links">
-            <p onclick="window.location.href = 'admin.php';" hidden>Home</p>
-            <p onclick="window.location.href = 'accounts.php';" hidden>Accounts</p>
-            <p onclick="window.location.href = 'teams.php';" hidden>Teams</p>
-            <p onclick="window.location.href = 'EventTeam.php';" class="active-link" hidden>Events</p>
+            <p onclick="window.location.href = 'admin.html';" hidden>Home</p>
+            <p onclick="window.location.href = 'accounts.html';" hidden>Accounts</p>
+            <p onclick="window.location.href = 'create-team.html';" hidden>Teams</p>
+            <p onclick="window.location.href = 'EventTeam.html';" hidden>Events</p>
         </div>
-
         <div class="menu-icon">
             <i class="fas fa-sign-out-alt" id="logoutIcon"></i>
         </div>
     </div>
 
     <div class="eventsDropdown">
-        <h4><i>Events: </i></h4>
-        <select class="dropdownEvents" id="dropdownMenuEvents" onchange="showSelectedForm()">
-            <option value="" selected disabled>Select an event</option>
+        <h4>Events </h4>
             <?php
                 $sql = "CALL sp_getAJudge(?)";
                 $stmt = $conn->prepare($sql);
@@ -86,7 +83,11 @@
                 if ($retval->num_rows > 0) {
                     while($row = $retval->fetch_assoc()) {
                         ?>
-                        echo "<option value="<?php echo $row['eventId']; ?>"><?php echo $row['eventName']; ?></option>";
+                        <div class="event-item">
+                            <a href="SCevents.php?event=<?php echo $row['eventId']; ?>&name=<?php echo $row['eventName']; ?>">
+                                <?php echo $row['eventName']; ?>
+                            </a>
+                        </div>
                         <?php
                     }
                     $retval->free();
@@ -95,7 +96,6 @@
                     echo "error: ".mysqli_error($conn);
                 }
             ?>
-        </select>
     </div>
 
     <script>
