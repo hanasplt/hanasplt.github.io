@@ -264,12 +264,15 @@
             Swal.fire({
                 title: 'Add New Event',
                 html: `
-                    <input id="event-time" class="swal2-input" placeholder="Time">
+                    <input id="event-time" class="swal2-input" placeholder="Time" type="time">
                     <input id="event-activity" class="swal2-input" placeholder="Activity">
                     <input id="event-location" class="swal2-input" placeholder="Location">
                     <select id="event-status" class="swal2-input">
-                        <option value="Not Done">Not Done</option>
-                        <option value="Done">Done</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Ongoing">Ongoing</option>
+                        <option value="Ended">Ended</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="Moved">Moved</option>
                     </select>
                 `,
                 confirmButtonText: 'Add',
@@ -284,29 +287,36 @@
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const { time, activity, location, status } = result.value;
-                    const table = document.getElementById('scheduleTable').getElementsByTagName('tbody')[0];
-                    const newRow = table.insertRow();
+                    const eventData = result.value;
                     
-                    newRow.innerHTML = `
-                        <td>${time}</td>
-                        <td>${activity}</td>
-                        <td>${location}</td>
-                        <td>${status}</td>
-                        <td>
-                            <button class="edit-btn">Edit</button>
-                            <button class="delete-btn">Delete</button>
-                        </td>
-                    `;
-                    
-                    reattachEventListeners();
-
-                    Swal.fire({
-                        title: 'Success!',
-                        text: 'Event added successfully.',
-                        icon: 'success',
-                        confirmButtonColor: '#7FD278',
-                        confirmButtonText: 'OK'
+                    // Send event data via AJAX to PHP
+                    fetch('add_event.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `day_number=1&time=${eventData.time}&activity=${eventData.activity}&location=${eventData.location}&status=${eventData.status}`  // Send day_number as well
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Event added successfully.',
+                                icon: 'success',
+                                confirmButtonColor: '#7FD278',
+                                confirmButtonText: 'OK'
+                            });
+                            // Update the frontend or refresh the schedule table to reflect the new event
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: data.message,
+                                icon: 'error',
+                                confirmButtonColor: '#d33',
+                                confirmButtonText: 'OK'
+                            });
+                        }
                     });
                 }
             });
