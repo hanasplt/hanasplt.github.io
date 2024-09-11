@@ -58,19 +58,20 @@ if(isset($_POST['changeScore'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ILPS</title>
-    <link rel="stylesheet" href="/assets/css/Sevents.css">
-    <link rel="icon" href="/assets/icons/logo-1.png">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="assets/css/Sevents.css">
+    <link rel="icon" href="assets/icons/logo-1.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
 </head>
 <body>
 
     <div class="nav-bar">
-        <img class="logo-img" src="/assets/icons/logoo.png">
+        <img class="logo-img" src="assets/icons/logoo.png">
         <div class="logo-bar">
             <p>Intramural Leaderboard</p>
             <p>and Points System</p>
-            <p id="administrator"><i>FACILITATOR</i></p>
+            <p id="administrator"><i>COMMMITTEE</i></p>
         </div>
         <div class="links">
             <p onclick="window.location.href = 'admin.html';" hidden>Home</p>
@@ -86,54 +87,10 @@ if(isset($_POST['changeScore'])) {
 
     <div class="sub-head" style="margin-top: 8%;">
         <button id="backbtn-faci" onclick="window.location.href='committee.php?id=<?php echo $id; ?>'">
-            <img src="/assets/icons/back.png" alt="back arrow button" width="20" style="margin-right: 5px;">  
+            <img src="assets/icons/back.png" alt="back arrow button" width="20" style="margin-right: 5px;">  
             Back
         </button>
         <h1 style="text-align: center;"><?php echo $evname; ?></h1>
-        <div class="scoring-container">
-            <table>
-                <tr>
-                    <th colspan="3">Event Scoring Guide:</th>
-                </tr>
-            <?php
-                $sql = "CALL sp_getEvent(?)";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("i", $evId);
-                $stmt->execute();
-                $retval = $stmt->get_result();
-
-                if ($retval->num_rows > 0) {
-                    $row = $retval->fetch_assoc();
-                    $catg = $row['eventCategory'];
-                }
-                $retval->free();
-                $stmt->close();
-
-                $sql = "CALL sp_getScoringDets(?)";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("s", $catg);
-                $stmt->execute();
-                $retval = $stmt->get_result();
-
-                if ($retval->num_rows > 0) {
-                    while($row = $retval->fetch_assoc()) {
-                        $num = $row['rankNo'];
-                        $rkname = $row['rank'];
-                        $rkpts = $row['points'];
-                        ?>
-                        <tr>
-                            <td>Rank: <?php echo $num?></td>
-                            <td>- <?php echo $rkname?></td>
-                            <td style="padding-left: 15px;">Points: <?php echo $rkpts?></td>
-                        </tr>
-                        <?php
-                    }
-                }
-                $retval->free();
-                $stmt->close();
-            ?>
-            </table>
-        </div>
     </div>
 
 
@@ -288,15 +245,15 @@ if(isset($_POST['changeScore'])) {
                     $retval = $stmt->get_result();
 
                     if ($retval->num_rows > 0) {
-                        $rank = 1;
                         while($row = $retval->fetch_assoc()) {
                             $tmname = $row['name'];
                             $tscore = $row['total_score'];
+                            $rank = $row['rank'];
                             ?>
                             <tr style="text-align: left;" id="tabletr">
                                 <th><?php echo $tmname; ?></th>
                                 <td id="scoreCol"><?php echo $tscore; ?></td>
-                                <th><?php echo $rank++; ?></th>
+                                <th><?php echo $rank; ?></th>
                             </tr>
                             <?php
                         }

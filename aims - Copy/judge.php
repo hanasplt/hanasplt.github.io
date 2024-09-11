@@ -1,12 +1,6 @@
 <?php
     session_start();
-
-    $servername = "localhost"; 
-    $username = "root"; 
-    $password = "";
-    $dbname = "ilps";
-
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $conn = include 'db.php';
 
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
@@ -93,7 +87,7 @@
                     $retval->free();
                     $stmt->close();
                 } else {
-                    echo "error: ".mysqli_error($conn);
+                    echo "<div class='no-event'>No event/s.</div>";
                 }
             ?>
     </div>

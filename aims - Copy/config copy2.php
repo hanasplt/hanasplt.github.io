@@ -1,4 +1,3 @@
-@ -1,1314 +0,0 @@
 <?php
     $servername = "localhost";
     $username = "root";
@@ -1233,10 +1232,22 @@ if ($conn->query($sqlT) === TRUE) {
 
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getScoreSport(IN evid INT)
         BEGIN
-            SELECT t.teamName as name, sb.total_score as total_score from vw_subresult sb
-            inner join vw_eventParti c on c.contId = sb.contestantId
-            inner join vw_teams t on c.teamId = t.teamId
-            where sb.eventId = evid GROUP BY sb.contestantId ORDER BY sb.total_score DESC;
+            SELECT 
+                t.teamName as name, 
+                sb.total_score as total_score,
+                DENSE_RANK() OVER (ORDER BY sb.total_score DESC) as rank
+            FROM 
+                vw_subresult sb
+            INNER JOIN 
+                vw_eventParti c on c.contId = sb.contestantId
+            INNER JOIN 
+                vw_teams t on c.teamId = t.teamId
+            WHERE 
+                sb.eventId = evid
+            GROUP BY 
+                sb.contestantId, t.teamName, sb.total_score
+            ORDER BY 
+                sb.total_score DESC;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
