@@ -1,85 +1,136 @@
 <?php
-  $conn = include 'db.php';
+$conn = include 'db.php';
 
-  //add team
-  if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'add') {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
+
+  // Enters here when adding a team
+  if ($_POST['action'] == 'add') {
     $teamName = ucfirst($_POST['teamName']);
-    $teamImage = $_FILES['teamImage']['tmp_name'];
-    $teamImageContent = addslashes(file_get_contents($teamImage));
-    
-    $sql = "CALL sp_insertTeam(?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ss", $teamName, $teamImageContent);
-    if ($stmt->execute()) {
-        echo '<script>alert("New team added successfully!");</script>';
-    } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
-    }
+    $teamImage = $_FILES['teamImage'];
 
-    $stmt->close();
+    // Upload the file (image)
+    $imagePath = 'uploads/' . uniqid() . '-' . basename($teamImage['name']);
+
+    if (move_uploaded_file($teamImage['tmp_name'], $imagePath)) {
+      $sql = "CALL sp_insertTeam(?, ?)";
+      $stmt = $conn->prepare($sql);
+      $stmt->bind_param("ss", $teamName, $imagePath);
+
+      if ($stmt->execute()) {
+        echo json_encode(['status' => 'success', 'message' => 'New Team added successfully!']);
+      } else {
+        echo json_encode(['status' => 'error', 'message' => 'Error adding team: ' . $sql . "<br>" . $conn->error]);
+      }
+      $stmt->close();
+    } else {
+      echo json_encode(['status' => 'error', 'message' => 'File upload failed!']);
+    }
   }
 
-  //edit team
-  if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'edit') {
+
+  // Enters here when editing a team
+  if ($_POST['action'] == 'edit') {
     $teamID = $_POST['teamID'];
     $teamName = ucfirst($_POST['teamName']);
+    $teamImage = $_FILES['teamImage'];
 
-    if (isset($_FILES['teamImage']) && $_FILES['teamImage']['tmp_name']) {
-        $teamImage = $_FILES['teamImage']['tmp_name'];
-        $teamImageContent = addslashes(file_get_contents($teamImage));
+    // Updating image
+    if ($teamImage['tmp_name']) {
+      $imagePath = 'uploads/' . uniqid() . '-' . basename($teamImage['name']);
+
+      if (move_uploaded_file($teamImage['tmp_name'], $imagePath)) {
         $sql = "CALL sp_editTeam(?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("iss", $teamID, $teamImageContent, $teamName);
-    } else {
-        $sql = "CALL sp_editTeamName(?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("is", $teamID, $teamName);
+        $stmt->bind_param("iss", $teamID, $imagePath, $teamName);
+      } else {
+        
+      }
     }
-
-    if ($stmt->execute()) {
-        echo json_encode(['status' => 'success', 'message' => 'Team updated successfully!']);
-    } else {
-        echo json_encode(['status' => 'error', 'message' => "Error: " . $sql . "<br>" . $conn->error]);
-    }
-    $stmt->close();
-    exit;
   }
+}
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
+    if ($_POST['action'] == 'add') {
+        $teamName = ucfirst($_POST['teamName']);
+        $teamImage = $_FILES['teamImage'];
 
-  //delete team
-  if (isset($_GET['teamid'])) {
+        //uploaded file
+        $imagePath = 'uploads/' . uniqid() . '-' . basename($teamImage['name']);
+        if (move_uploaded_file($teamImage['tmp_name'], $imagePath)) {
+            $sql = "CALL sp_insertTeam(?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ss", $teamName, $imagePath);
+            if ($stmt->execute()) {
+                echo "<script>alert('New Team added successfully!'); window.location.href = 'teams.php';</script>";
+            } else {
+                echo "<script>alert('Error adding team: " . $conn->error . "'); window.location.href = 'teams.php';</script>";
+            }
+            $stmt->close();
+        } else {
+            echo "<script>alert('File upload failed.'); window.location.href = 'teams.php';</script>";
+        }
+        exit;
+      }
+
+    //edit
+    if ($_POST['action'] == 'edit') {
+        $teamID = $_POST['teamID'];
+        $teamName = ucfirst($_POST['teamName']);
+        $teamImage = $_FILES['teamImage'];
+
+        //update image
+        if ($teamImage['tmp_name']) {
+            $imagePath = 'uploads/' . uniqid() . '-' . basename($teamImage['name']);
+            if (move_uploaded_file($teamImage['tmp_name'], $imagePath)) {
+                $sql = "CALL sp_editTeam(?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("iss", $teamID, $imagePath, $teamName);
+            } else {
+                echo "File upload failed.";
+                exit;
+            }
+        } else {
+            $sql = "CALL sp_editTeamName(?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("is", $teamID, $teamName);
+        }
+
+        if ($stmt->execute()) {
+            echo json_encode(['status' => 'success', 'message' => 'Team updated successfully!']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => "Error: " . $sql . "<br>" . $conn->error]);
+        }
+        $stmt->close();
+        exit;
+    }
+}
+
+// Handle team deletion
+if (isset($_GET['teamid'])) {
     $teamID = $_GET['teamid'];
-    
     $sql = "CALL sp_delTeam(?)"; 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $teamID);
-
     if ($stmt->execute()) {
-      echo "<script>alert('Team deleted successfully!'); window.location.href='teams.php';</script>";
+        echo "<script>alert('Team deleted successfully!'); window.location.href='teams.php';</script>";
     }
     $stmt->close();
-  }
+}
 
-  $recordsPerPage = 3;
+// Pagination setup
+$recordsPerPage = 3;
+$currentPage = isset($_GET['page']) && is_numeric($_GET['page']) ? $_GET['page'] : 1;
+$offset = ($currentPage - 1) * $recordsPerPage;
 
-  if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $currentPage = $_GET['page'];
-  } else {
-    $currentPage = 1;
-  }
-
-  $offset = ($currentPage - 1) * $recordsPerPage;
-
-  //retrieve teams
-  $sql = "CALL sp_getTeam(?, ?)";
-  $stmt = $conn->prepare($sql);
-  $stmt->bind_param("ii", $recordsPerPage, $offset);
-  $stmt->execute();
-  $result = $stmt->get_result();
+// Retrieve teams
+$sql = "CALL sp_getTeam(?, ?)";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ii", $recordsPerPage, $offset);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-
 <head>
   <meta charset="UTF-8">
   <title>Teams</title>
@@ -88,7 +139,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="assets/icons/logo.png">
 </head>
-
 <body>
   <div class="nav-bar">
     <img class="logo-img" src="assets/icons/logoo.png">
@@ -116,13 +166,12 @@
       <div class="cards" id="cardContainer">
         <?php
         if ($result->num_rows > 0) {
-        $teamCount = 0;
           while ($row = $result->fetch_assoc()) {
-            $teamCount++;
-            echo "<div class='card' data-id='" . $row['teamId'] . "' data-name='" . $row['teamName'] . "' data-image='data:image/jpeg;base64," . base64_encode($row['image']) . "'>";
+            $teamImageSrc = $row['image']; 
+            echo "<div class='card' data-id='" . $row['teamId'] . "' data-name='" . $row['teamName'] . "' data-image='" . $teamImageSrc . "'>";
             echo "<div class='content'>";
             echo "<div class='img'>";
-            echo "<img src='data:image/jpeg;base64," . base64_encode($row['image']) . "' alt='Team Image'>";
+            echo "<img src='" . $teamImageSrc . "' alt='Team Image'>"; 
             echo "</div>";
             echo "<div class='details'>";
             echo "<div class='name'>" . $row['teamName'] . "</div>";
@@ -167,7 +216,7 @@
     <div class="modal-content-add">
       <span class="close" onclick="closeModal('addModal')">&times;</span>
       <h2 class="addnew">Add New Team</h2>
-      <form id="teamForm" method="post" enctype="multipart/form-data">
+      <form action="" id="teamForm" method="post" enctype="multipart/form-data">
         <input type="hidden" name="action" value="add">
         <label for="teamImage">Team Image:</label>
         <input type="file" id="teamImage" name="teamImage" accept="image/*" required><br><br>
@@ -190,99 +239,78 @@
         <label for="editTeamImage">Team Image:</label>
         <input type="file" id="editTeamImage" name="teamImage" accept="image/*"><br><br>
         <label for="editTeamName">Team Name:</label>
-        <input type="text" id="editTeamName" name="teamName" maxlength="20" required><br><br> <!-- length ani ug sa add -->
-        <button type="button" onclick="submitEditForm()">Save Changes</button>
+        <input type="text" id="editTeamName" name="teamName" maxlength="20" required><br><br>
+        <button type="submit">Save Changes</button>
         <button type="button" onclick="closeModal('editModal')">Cancel</button>
       </form>
     </div>
   </div>
 
-  <!-- logout confirmation -->
-  <script>
-        document.getElementById('logoutIcon').addEventListener('click', function() {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You will be logged out!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#7FD278',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, log me out',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // mag redirect siya to the login page
-                    window.location.href = 'index.html';
-                }
-            });
-        });
-    </script>
-
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-    function openAddModal() {
-      var modal = document.getElementById("addModal");
-      modal.style.display = "block";
-    }
+    // Open Add Modal
+function openAddModal() {
+  document.getElementById('addModal').style.display = 'block';
+}
 
-    function openEditModal(element) {
-      var card = element.closest('.card');
-      var teamID = card.getAttribute('data-id');
-      var teamName = card.getAttribute('data-name');
-      var teamImage = card.getAttribute('data-image');
+// Open Edit Modal
+function openEditModal(element) {
+  var card = element.closest('.card');
+  var teamID = card.getAttribute('data-id');
+  var teamName = card.getAttribute('data-name');
+  var teamImage = card.getAttribute('data-image');
+  
+  document.getElementById('editTeamID').value = teamID;
+  document.getElementById('editTeamName').value = teamName;
+  document.getElementById('editTeamImage').value = ''; // Reset file input
+  document.getElementById('editModal').style.display = 'block';
+}
 
-      document.getElementById('editTeamID').value = teamID;
-      document.getElementById('editTeamName').value = teamName;
-      document.getElementById('editTeamImage').value = '';
-      console.log(teamID);
+// Close Modal
+function closeModal(modalID) {
+  document.getElementById(modalID).style.display = 'none';
+}
 
-      var modal = document.getElementById("editModal");
-      modal.style.display = "block";
-    }
+// Delete Team
+function deleteThis(teamID) {
+  if (confirm('Are you sure you want to delete this team?')) {
+    window.location.href = 'teams.php?teamid=' + teamID;
+  }
+}
 
-    function closeModal(modalId) {
-      var modal = document.getElementById(modalId);
-      modal.style.display = "none";
-    }
+// Handle Form Submission for Add/Edit
+document.getElementById('teamForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var formData = new FormData(this);
 
-    window.onclick = function(event) {
-      var addModal = document.getElementById("addModal");
-      var editModal = document.getElementById("editModal");
-      if (event.target == addModal) {
-        addModal.style.display = "none";
-      } else if (event.target == editModal) {
-        editModal.style.display = "none";
+  fetch('teams.php', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.text()) 
+  .then(data => {
+    document.open(); 
+    document.write(data);  
+    document.close();  
+  })
+  .catch(error => console.error('Error:', error));
+});
+
+
+document.getElementById('editTeamForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var formData = new FormData(this);
+  fetch('teams.php', {
+    method: 'POST',
+    body: formData
+  }).then(response => response.json())
+    .then(data => {
+      alert(data.message);
+      if (data.status === 'success') {
+        location.reload();
       }
-    };
-
-    function submitEditForm() {
-      var formData = new FormData(document.getElementById('editTeamForm'));
-      var xhr = new XMLHttpRequest();
-
-      xhr.open('POST', '', true);
-
-      xhr.onload = function () {
-          if (xhr.status === 200) {
-              try {
-                  var response = JSON.parse(xhr.responseText);
-
-                  if (response.status === 'success') {
-                      alert(response.message);
-                      location.reload();
-                  } else {
-                      alert('Error: ' + response.message);
-                  }
-              } catch (e) {
-                  console.log('An error occurred while processing the response: ' + e.message);
-              }
-          } else {
-              // Server returned a status other than 200
-              alert('Server error: ' + xhr.status + ' ' + xhr.statusText);
-          }
-      };
-
-      xhr.send(formData);
-    }
+    });
+});
 
 
     function deleteThis(id) {
@@ -301,7 +329,7 @@
           }
       });
     }
+
   </script>
 </body>
-
 </html>
