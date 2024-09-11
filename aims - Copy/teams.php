@@ -43,65 +43,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("iss", $teamID, $imagePath, $teamName);
       } else {
-        
+        echo json_encode(['status' => 'error', 'message' => 'File upload failed!']);
       }
+    } else {
+      $sql = "CALL sp_editTeamName(?, ?)";
+      $stmt = $conn->prepare($sql);
+      $stmt->bind_param("is", $teamID, $teamName);
     }
+
+    if ($stmt->execute()) {
+      echo json_encode(['status' => 'success', 'message' => 'Team updated successfully!']);
+    } else {
+      echo json_encode(['status' => 'error', 'message' => "Error: " . $sql . "<br>" . $conn->error]);
+    }
+
+    $stmt->close();
+    exit;
   }
-}
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
-    if ($_POST['action'] == 'add') {
-        $teamName = ucfirst($_POST['teamName']);
-        $teamImage = $_FILES['teamImage'];
-
-        //uploaded file
-        $imagePath = 'uploads/' . uniqid() . '-' . basename($teamImage['name']);
-        if (move_uploaded_file($teamImage['tmp_name'], $imagePath)) {
-            $sql = "CALL sp_insertTeam(?, ?)";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ss", $teamName, $imagePath);
-            if ($stmt->execute()) {
-                echo "<script>alert('New Team added successfully!'); window.location.href = 'teams.php';</script>";
-            } else {
-                echo "<script>alert('Error adding team: " . $conn->error . "'); window.location.href = 'teams.php';</script>";
-            }
-            $stmt->close();
-        } else {
-            echo "<script>alert('File upload failed.'); window.location.href = 'teams.php';</script>";
-        }
-        exit;
-      }
-
-    //edit
-    if ($_POST['action'] == 'edit') {
-        $teamID = $_POST['teamID'];
-        $teamName = ucfirst($_POST['teamName']);
-        $teamImage = $_FILES['teamImage'];
-
-        //update image
-        if ($teamImage['tmp_name']) {
-            $imagePath = 'uploads/' . uniqid() . '-' . basename($teamImage['name']);
-            if (move_uploaded_file($teamImage['tmp_name'], $imagePath)) {
-                $sql = "CALL sp_editTeam(?, ?, ?)";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("iss", $teamID, $imagePath, $teamName);
-            } else {
-                echo "File upload failed.";
-                exit;
-            }
-        } else {
-            $sql = "CALL sp_editTeamName(?, ?)";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("is", $teamID, $teamName);
-        }
-
-        if ($stmt->execute()) {
-            echo json_encode(['status' => 'success', 'message' => 'Team updated successfully!']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => "Error: " . $sql . "<br>" . $conn->error]);
-        }
-        $stmt->close();
-        exit;
-    }
 }
 
 // Handle team deletion
@@ -111,7 +69,7 @@ if (isset($_GET['teamid'])) {
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $teamID);
     if ($stmt->execute()) {
-        echo "<script>alert('Team deleted successfully!'); window.location.href='teams.php';</script>";
+      echo json_encode(['status' => 'success', 'message' => 'Team deleted successfully!']);
     }
     $stmt->close();
 }
@@ -278,7 +236,7 @@ function deleteThis(teamID) {
   }
 }
 
-// Handle Form Submission for Add/Edit
+// Handle Form Submission for Add Team
 document.getElementById('teamForm').addEventListener('submit', function(e) {
   e.preventDefault();
   var formData = new FormData(this);
@@ -289,14 +247,32 @@ document.getElementById('teamForm').addEventListener('submit', function(e) {
   })
   .then(response => response.text()) 
   .then(data => {
-    document.open(); 
-    document.write(data);  
-    document.close();  
+    if (data.status === 'success') {
+      Swal.fire({
+        title: 'Success',
+        text: data.message,
+        icon: 'success',
+        confirmButtonText: 'Yes'
+      }).then((result) => {
+          if (result.isConfirmed) {
+            location.reload();
+          }
+      });
+    } else {
+      Swal.fire({
+        title: 'Oops!',
+        text: data.message,
+        icon: 'error',
+        confirmButtonText: 'Yes'
+      });
+    }
+    
   })
   .catch(error => console.error('Error:', error));
 });
 
 
+// Handle Form Submission for Edit Team
 document.getElementById('editTeamForm').addEventListener('submit', function(e) {
   e.preventDefault();
   var formData = new FormData(this);
@@ -305,29 +281,72 @@ document.getElementById('editTeamForm').addEventListener('submit', function(e) {
     body: formData
   }).then(response => response.json())
     .then(data => {
-      alert(data.message);
       if (data.status === 'success') {
-        location.reload();
+        Swal.fire({
+          title: 'Success!',
+          text: data.message,
+          icon: 'success',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          location.reload();
+        });
+      } else {
+        Swal.fire({
+          title: 'Oops!',
+          text: data.message,
+          icon: 'error',
+          confirmButtonText: 'OK'
+        })
       }
     });
 });
 
 
     function deleteThis(id) {
-      Swal.fire({
-          title: 'Confirm',
-          text: "Do you want to delete this team?",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#8F8B8B',
-          cancelButtonColor: '#7FD278',
-          confirmButtonText: 'Yes'
-      }).then((result) => {
-          if (result.isConfirmed) {
-              // Redirect to delete the team
-              window.location.href = 'teams.php?teamid=' + id;
-          }
-      });
+      try {
+        Swal.fire({
+            title: 'Confirm',
+            text: "Do you want to delete this team?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#8F8B8B',
+            cancelButtonColor: '#7FD278',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+              fetch('teams.php?teamid='+id, {
+                method: POST,
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              }).then(response => response.json())
+                .then(data => {
+
+                });
+              
+              if (data.status === 'success') {
+                Swal.fire({
+                  title: 'Success',
+                  text: data.message,
+                  icon: 'success',
+                  confirmButtonText: 'OK'
+                }).then(() => {
+                  location.reload();
+                })
+              } else {
+                Swal.fire({
+                  title: 'Oops',
+                  text: data.message,
+                  icon: 'error',
+                  confirmButtonText: 'OK'
+                });
+              }
+            }
+        });
+      } catch (error) {
+        console.error("An error occurred: " + error);
+      }
     }
 
   </script>
