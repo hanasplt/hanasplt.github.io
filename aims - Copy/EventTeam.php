@@ -112,7 +112,7 @@
                                 <div class="acc-img">
                                     <i class="fas fa-user"></i>
                                 </div>
-                                <div class="acc-deets">
+                                <div class="acc-deetss">
                                     <p id="name"><?php echo $eventName; ?></p>
                                 </div>
                             </div>
@@ -259,7 +259,7 @@
                         <div class="acc-img">
                             <i class="fas fa-user"></i>
                         </div>
-                        <div class="acc-deets">
+                        <div class="acc-deetss">
                             <p id="name"><?php echo $row['eventName']?></p>
                         </div>
                     </div>

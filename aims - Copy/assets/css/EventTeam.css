@@ -239,6 +239,12 @@ body {
     color: white;
 }
 
+.acc-deetss {
+    line-height: 0.1vw;
+    width: 55vw;
+    color: #2D4D2A;
+}
+
 .tim-deets,
 .event-deets {
     line-height: 0.1vw;
