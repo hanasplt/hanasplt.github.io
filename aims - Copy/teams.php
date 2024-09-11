@@ -83,15 +83,15 @@
 <head>
   <meta charset="UTF-8">
   <title>Teams</title>
-  <link rel="stylesheet" href="/assets/css/teams.css">
+  <link rel="stylesheet" href="assets/css/teams.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="/assets/icons/logo.png">
+  <link rel="icon" href="assets/icons/logo.png">
 </head>
 
 <body>
   <div class="nav-bar">
-    <img class="logo-img" src="/assets/icons/logoo.png">
+    <img class="logo-img" src="assets/icons/logoo.png">
     <div class="logo-bar">
       <p>Intramural Leaderboard</p>
       <p>and Points System</p>
