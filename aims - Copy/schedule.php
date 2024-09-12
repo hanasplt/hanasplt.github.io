@@ -122,13 +122,13 @@ usort($scheduled_days, function($a, $b) {
                                 </tr>
                             <?php else: ?>
                                 <?php foreach ($day['events'] as $event): ?>
-                                    <tr>
+                                    <tr data-event-id="<?php echo $event['id']; ?>">
                                         <td><?php echo $event['time']; ?></td>
                                         <td><?php echo $event['activity']; ?></td>
                                         <td><?php echo $event['location']; ?></td>
                                         <td><?php echo $event['status']; ?></td>
                                         <td>
-                                            <button class="edit-btn">Edit</button>
+                                            <button class="edit-btn" data-event-id="<?php echo $event['id']; ?>">Edit</button>
                                             <button class="delete-btn">Delete</button>
                                         </td>
                                     </tr>
@@ -377,15 +377,172 @@ usort($scheduled_days, function($a, $b) {
         });
 
         function reattachEventListeners() {
-            // Reattach event listeners to new buttons
             document.querySelectorAll('.edit-btn').forEach(button => {
-                // Add edit functionality
+                button.addEventListener('click', function() {
+                    const eventId = this.getAttribute('data-event-id');
+                    const eventRow = this.closest('tr');
+                    const time = eventRow.children[0].innerText;
+                    const activity = eventRow.children[1].innerText;
+                    const location = eventRow.children[2].innerText;
+                    const status = eventRow.children[3].innerText;
+
+                    // Populate the modal with the current event data
+                    document.getElementById('edit-event-id').value = eventId;
+                    document.getElementById('edit-event-time').value = time;
+                    document.getElementById('edit-event-activity').value = activity;
+                    document.getElementById('edit-event-location').value = location;
+                    document.getElementById('edit-event-status').value = status;
+
+                    // Display the modal
+                    document.getElementById('editEventModal').style.display = 'block';
+                });
             });
 
+            document.getElementById('saveEditBtn').addEventListener('click', function() {
+                const eventId = document.getElementById('edit-event-id').value;
+                const time = document.getElementById('edit-event-time').value;
+                const activity = document.getElementById('edit-event-activity').value;
+                const location = document.getElementById('edit-event-location').value;
+                const status = document.getElementById('edit-event-status').value;
+
+                // Send AJAX request to update the event
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'edit_event.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Event updated successfully.',
+                                icon: 'success',
+                                confirmButtonColor: '#7FD278',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                location.reload(); // Reload page to reflect the changes
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: response.message,
+                                icon: 'error',
+                                confirmButtonColor: '#d33',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    }
+                };
+
+                xhr.send(`event_id=${eventId}&time=${time}&activity=${activity}&location=${location}&status=${status}`);
+            });
+
+
+            // Add delete functionality to each delete button
             document.querySelectorAll('.delete-btn').forEach(button => {
-                // Add delete functionality
+                button.addEventListener('click', function() {
+                    const eventRow = this.closest('tr');
+                    const eventId = eventRow.getAttribute('data-event-id');
+
+                    if (!eventId) {
+                        console.error("No event ID found");
+                        return;
+                    }
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#7FD278',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const xhr = new XMLHttpRequest();
+                            xhr.open("POST", "delete_event.php", true);
+                            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+                            xhr.onload = function () {
+                                if (xhr.status === 200) {
+                                    const response = JSON.parse(xhr.responseText);
+                                    if (response.success) {
+                                        Swal.fire({
+                                            title: 'Deleted!',
+                                            text: 'Event has been deleted.',
+                                            icon: 'success',
+                                            confirmButtonColor: '#7FD278',
+                                            confirmButtonText: 'OK'
+                                        }).then(() => {
+                                            // Remove the row from the table
+                                            eventRow.parentNode.removeChild(eventRow);
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: 'Error!',
+                                            text: response.message,
+                                            icon: 'error',
+                                            confirmButtonColor: '#d33',
+                                            confirmButtonText: 'OK'
+                                        });
+                                    }
+                                } else {
+                                    console.error("Error with XMLHttpRequest", xhr.status);
+                                }
+                            };
+
+                            xhr.send(`event_id=${eventId}`);
+                        }
+                    });
+                });
             });
         }
+
+        reattachEventListeners();
+
     </script>
+
+    <!-- Edit Event Modal -->
+    <div id="editEventModal" style="display:none;">
+        <div class="modal-content">
+            <h2>Edit Event</h2>
+            <input type="hidden" id="edit-event-id">
+            <input id="edit-event-time" class="swal2-input" placeholder="Time" type="time">
+            <input id="edit-event-activity" class="swal2-input" placeholder="Activity">
+            <input id="edit-event-location" class="swal2-input" placeholder="Location">
+            <select id="edit-event-status" class="swal2-input">
+                <option value="Pending">Pending</option>
+                <option value="Ongoing">On-going</option>
+                <option value="Ended">Ended</option>
+                <option value="Cancelled">Cancelled</option>
+                <option value="Moved">Moved</option>
+            </select>
+            <button id="saveEditBtn">Save Changes</button>
+        </div>
+    </div>
+
+    <style>
+    /* Add basic styles for the modal */
+    #editEventModal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        border: 1px solid #ccc;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+
+    .swal2-input {
+        margin-bottom: 10px;
+        width: 100%;
+    }
+    </style>
+
 </body>
 </html>
