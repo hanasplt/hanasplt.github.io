@@ -2,14 +2,32 @@
 
 include 'db.php';
 
-$query = "SELECT * FROM scheduled_days";
-$result = $conn->query($query);
+// Fetch scheduled days
+$query_days = "SELECT * FROM scheduled_days";
+$result_days = $conn->query($query_days);
 
 $scheduled_days = [];
 
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $scheduled_days[] = $row;
+if ($result_days->num_rows > 0) {
+    while ($row_day = $result_days->fetch_assoc()) {
+        $day_id = $row_day['id'];
+        
+        // Fetch events for each day
+        $query_events = "SELECT * FROM scheduled_eventstoday WHERE day_id = ?";
+        $stmt_events = $conn->prepare($query_events);
+        $stmt_events->bind_param("i", $day_id);
+        $stmt_events->execute();
+        $result_events = $stmt_events->get_result();
+        
+        $events = [];
+        if ($result_events->num_rows > 0) {
+            while ($row_event = $result_events->fetch_assoc()) {
+                $events[] = $row_event;
+            }
+        }
+
+        $row_day['events'] = $events;
+        $scheduled_days[] = $row_day;
     }
 }
 
@@ -86,7 +104,7 @@ usort($scheduled_days, function($a, $b) {
                         </div>
                     </div>
 
-                    <!-- Empty table -->
+                    <!-- Events table -->
                     <table id="scheduleTable-<?php echo $day['id']; ?>">
                         <thead>
                             <tr>
@@ -98,10 +116,26 @@ usort($scheduled_days, function($a, $b) {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td colspan="5" style="text-align: center;">No events scheduled for this day.</td>
-                            </tr>
+                            <?php if (count($day['events']) > 0): ?>
+                                <?php foreach ($day['events'] as $event): ?>
+                                    <tr>
+                                        <td><?php echo $event['time']; ?></td>
+                                        <td><?php echo $event['activity']; ?></td>
+                                        <td><?php echo $event['location']; ?></td>
+                                        <td><?php echo $event['status']; ?></td>
+                                        <td>
+                                            <button class="edit-btn">Edit</button>
+                                            <button class="delete-btn">Delete</button>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="5" style="text-align: center;">No events scheduled for this day.</td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
+
                     </table>
                     <button class="addEventBtn" id="addEventBtn" data-day-id="<?php echo $day['id']; ?>">Add Event</button>
                 <?php endforeach; ?>
@@ -164,32 +198,33 @@ usort($scheduled_days, function($a, $b) {
                     const { dayDate } = result.value;
 
                     const xhr = new XMLHttpRequest();
-                    xhr.open("POST", "add_day.php", true);
-                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                    xhr.onload = function () {
-                        if (xhr.status === 200) {
-                            const response = JSON.parse(xhr.responseText);
-                            if (response.success) {
-                                Swal.fire({
-                                    title: 'Success!',
-                                    text: 'New day added successfully.',
-                                    icon: 'success',
-                                    confirmButtonColor: '#7FD278',
-                                    confirmButtonText: 'OK'
-                                });
-                                location.reload();
-                            } else {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: response.message,
-                                    icon: 'error',
-                                    confirmButtonColor: '#d33',
-                                    confirmButtonText: 'OK'
-                                });
+                        xhr.open("POST", "add_day.php", true);
+                        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                        xhr.onload = function () {
+                            if (xhr.status === 200) {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.success) {
+                                    Swal.fire({
+                                        title: 'Success!',
+                                        text: 'New day added successfully.',
+                                        icon: 'success',
+                                        confirmButtonColor: '#7FD278',
+                                        confirmButtonText: 'OK'
+                                    }).then(() => {
+                                        location.reload(); // Reload the page to reflect new data
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: response.message,
+                                        icon: 'error',
+                                        confirmButtonColor: '#d33',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
                             }
-                        }
-                    };
-                    xhr.send(`day_date=${dayDate}`);
+                        };
+                        xhr.send(`day_date=${dayDate}`);
                 }
             });
         });
@@ -336,6 +371,17 @@ usort($scheduled_days, function($a, $b) {
                 });
             });
         });
+
+        function reattachEventListeners() {
+            // Reattach event listeners to new buttons
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                // Add edit functionality
+            });
+
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                // Add delete functionality
+            });
+        }
     </script>
 </body>
 </html>
