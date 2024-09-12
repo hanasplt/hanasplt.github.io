@@ -89,10 +89,10 @@ usort($scheduled_days, function($a, $b) {
         </div>
         <div class="schedule-history">
             <?php if (count($scheduled_days) > 0): ?>
-                <?php $dayCounter = 1; // Initialize day counter ?>
+                <?php $dayCounter = 1;?>
                 <?php foreach ($scheduled_days as $day): ?>
                     <div class="day-header">
-                        <h3>Day <?php echo $dayCounter++; ?></h3> <!-- Day header -->
+                        <h3>Day <?php echo $dayCounter++; ?></h3>
                     </div>
                     <div class="title-schedule">
                         <div class="header-left">
@@ -116,7 +116,11 @@ usort($scheduled_days, function($a, $b) {
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if (count($day['events']) > 0): ?>
+                            <?php if (count($day['events']) == 0): ?>
+                                <tr>
+                                    <td colspan="5" style="text-align: center;">No events scheduled for this day.</td>
+                                </tr>
+                            <?php else: ?>
                                 <?php foreach ($day['events'] as $event): ?>
                                     <tr>
                                         <td><?php echo $event['time']; ?></td>
@@ -129,11 +133,8 @@ usort($scheduled_days, function($a, $b) {
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
-                            <?php else: ?>
-                                <tr>
-                                    <td colspan="5" style="text-align: center;">No events scheduled for this day.</td>
-                                </tr>
                             <?php endif; ?>
+
                         </tbody>
 
                     </table>
@@ -323,7 +324,6 @@ usort($scheduled_days, function($a, $b) {
                     if (result.isConfirmed) {
                         const { time, activity, location, status } = result.value;
                         
-                        // Send the event data to the server
                         const xhr = new XMLHttpRequest();
                         xhr.open("POST", "add_event.php", true);
                         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -331,10 +331,14 @@ usort($scheduled_days, function($a, $b) {
                             if (xhr.status === 200) {
                                 const response = JSON.parse(xhr.responseText);
                                 if (response.success) {
-                                    // Append the new row to the specific day's table
                                     const table = document.querySelector(`#scheduleTable-${dayId} tbody`);
-                                    const newRow = table.insertRow();
                                     
+                                    const noEventsRow = table.querySelector('tr td[colspan="5"]');
+                                    if (noEventsRow) {
+                                        noEventsRow.parentNode.removeChild(noEventsRow);
+                                    }
+                                    
+                                    const newRow = table.insertRow();
                                     newRow.innerHTML = `
                                         <td>${time}</td>
                                         <td>${activity}</td>
@@ -365,7 +369,7 @@ usort($scheduled_days, function($a, $b) {
                                     });
                                 }
                             }
-                        };
+                            };
                         xhr.send(`day_id=${dayId}&time=${time}&activity=${activity}&location=${location}&status=${status}`);
                     }
                 });
