@@ -1,41 +1,29 @@
 <?php
-// Include your database connection
-include 'db_connect.php'; // Adjust this path as necessary
+include 'db.php';
 
-// Check if the request method is POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get the input data
-    $day_number = isset($_POST['day_number']) ? intval($_POST['day_number']) : null;
-    $time = isset($_POST['time']) ? $_POST['time'] : null;
-    $activity = isset($_POST['activity']) ? $_POST['activity'] : null;
-    $location = isset($_POST['location']) ? $_POST['location'] : null;
-    $status = isset($_POST['status']) ? $_POST['status'] : 'Pending';
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $day_id = $_POST['day_id'];
+    $time = $_POST['time'];
+    $activity = $_POST['activity'];
+    $location = $_POST['location'];
+    $status = $_POST['status'];
 
-    // Check if all required fields are provided
-    if ($day_number && $time && $activity && $location) {
-        // Prepare and execute the query
-        $stmt = $conn->prepare("INSERT INTO scheduled_eventstoday (day_id, time, activity, location, status) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("issss", $day_number, $time, $activity, $location, $status);
-
-        if ($stmt->execute()) {
-            // Success response
-            echo json_encode(['success' => true]);
-        } else {
-            // Error response in case of SQL failure
-            echo json_encode(['success' => false, 'message' => 'Failed to add the event.']);
-        }
-
-        $stmt->close();
-    } else {
-        // Error response if some data is missing
+    if (empty($day_id) || empty($time) || empty($activity) || empty($location) || empty($status)) {
         echo json_encode(['success' => false, 'message' => 'All fields are required.']);
+        exit;
     }
-} else {
-    // Error response for invalid request method
-    echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
+
+    $query = "INSERT INTO scheduled_eventstoday (day_id, time, activity, location, status) VALUES (?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("issss", $day_id, $time, $activity, $location, $status);
+
+    if ($stmt->execute()) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to add event.']);
+    }
+
+    $stmt->close();
+    $conn->close();
 }
-
-// Close the database connection
-$conn->close();
 ?>
-

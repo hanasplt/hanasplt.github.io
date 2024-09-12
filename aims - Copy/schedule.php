@@ -257,8 +257,11 @@ usort($scheduled_days, function($a, $b) {
                         <input id="event-activity" class="swal2-input" placeholder="Activity">
                         <input id="event-location" class="swal2-input" placeholder="Location">
                         <select id="event-status" class="swal2-input">
-                            <option value="Not Done">Not Done</option>
-                            <option value="Done">Done</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Ongoing">On-going</option>
+                            <option value="Ended">Ended</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="Moved">Moved</option>
                         </select>
                     `,
                     confirmButtonText: 'Add',
@@ -285,30 +288,50 @@ usort($scheduled_days, function($a, $b) {
                     if (result.isConfirmed) {
                         const { time, activity, location, status } = result.value;
                         
-                        // Append the new row to the specific day's table
-                        const table = document.querySelector(`#scheduleTable-${dayId} tbody`);
-                        const newRow = table.insertRow();
-                        
-                        newRow.innerHTML = `
-                            <td>${time}</td>
-                            <td>${activity}</td>
-                            <td>${location}</td>
-                            <td>${status}</td>
-                            <td>
-                                <button class="edit-btn">Edit</button>
-                                <button class="delete-btn">Delete</button>
-                            </td>
-                        `;
+                        // Send the event data to the server
+                        const xhr = new XMLHttpRequest();
+                        xhr.open("POST", "add_event.php", true);
+                        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                        xhr.onload = function () {
+                            if (xhr.status === 200) {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.success) {
+                                    // Append the new row to the specific day's table
+                                    const table = document.querySelector(`#scheduleTable-${dayId} tbody`);
+                                    const newRow = table.insertRow();
+                                    
+                                    newRow.innerHTML = `
+                                        <td>${time}</td>
+                                        <td>${activity}</td>
+                                        <td>${location}</td>
+                                        <td>${status}</td>
+                                        <td>
+                                            <button class="edit-btn">Edit</button>
+                                            <button class="delete-btn">Delete</button>
+                                        </td>
+                                    `;
 
-                        Swal.fire({
-                            title: 'Success!',
-                            text: 'Event added successfully.',
-                            icon: 'success',
-                            confirmButtonColor: '#7FD278',
-                            confirmButtonText: 'OK'
-                        });
+                                    Swal.fire({
+                                        title: 'Success!',
+                                        text: 'Event added successfully.',
+                                        icon: 'success',
+                                        confirmButtonColor: '#7FD278',
+                                        confirmButtonText: 'OK'
+                                    });
 
-                        reattachEventListeners();
+                                    reattachEventListeners();
+                                } else {
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: response.message,
+                                        icon: 'error',
+                                        confirmButtonColor: '#d33',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
+                            }
+                        };
+                        xhr.send(`day_id=${dayId}&time=${time}&activity=${activity}&location=${location}&status=${status}`);
                     }
                 });
             });
