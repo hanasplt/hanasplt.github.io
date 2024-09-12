@@ -1294,7 +1294,6 @@ if ($conn->query($sqlF) === TRUE) {
 
 $sqlDAYS = "CREATE TABLE IF NOT EXISTS scheduled_days (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    day_number INT NOT NULL,
     day_date DATE NOT NULL
     );";
 

@@ -9,19 +9,26 @@ $dbname = 'ilps';
 
 $conn = new mysqli($host, $username, $password, $dbname);
 
+// Check if connection is successful
 if ($conn->connect_error) {
     die(json_encode(['success' => false, 'message' => 'Database connection failed: ' . $conn->connect_error]));
 }
 
-// Get data from POST request
-$day_number = intval($_POST['day_number']);
+// Check if day_date is set in the POST request
+if (!isset($_POST['day_date'])) {
+    die(json_encode(['success' => false, 'message' => 'Day date is not provided.']));
+}
+
 $day_date = $_POST['day_date'];
 
-// Insert the new day into the database
-$sql = "INSERT INTO scheduled_days (day_number, day_date) VALUES (?, ?)";
+// Prepare the SQL statement
+$sql = "INSERT INTO scheduled_days (day_date) VALUES (?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("is", $day_number, $day_date);
 
+// Bind the day_date as a string ("s" for string)
+$stmt->bind_param("s", $day_date);
+
+// Execute the statement and check for success
 if ($stmt->execute()) {
     echo json_encode(['success' => true]);
 } else {
