@@ -122,7 +122,7 @@
     </script>
 
     <script>
-        document.getElementById('addDayBtn').addEventListener('click', function() {
+        document.getElementById('openPopup').addEventListener('click', function() {
             Swal.fire({
                 title: 'Add New Day',
                 html: `
