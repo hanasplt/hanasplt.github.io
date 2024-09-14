@@ -2,6 +2,10 @@
   include 'encryption.php';
   $conn = include 'db.php';
 
+  if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+  }
+
   //add event
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'add') {
     $eventName = $_POST['eventName'];

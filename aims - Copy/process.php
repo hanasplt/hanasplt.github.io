@@ -36,13 +36,17 @@
                 if ($account['type'] == "Committee") {
                     header('Location: committee.php?id='.$account['rilId']); // sent to committee's ui
                     exit;
-                } else {
+                } else if ($account['type'] == "Judge") {
                     header('Location: judge.php?id='.$account['rilId']); // sent to judges' ui
+                    exit;
+                } else {
+                    header('Location: admin.php'); // sent to admin page
                     exit;
                 }
             }
         }
 
+        /*
         if (!$found) { // no credential matches, then checks admin credentials
             $admin = array();
             $sql = "CALL sp_getAdmin()";
@@ -73,6 +77,10 @@
             header('Location: login.php'); // no credential matches! sent to login page
             exit();
         }
+        */
+        $_SESSION['error'] = 'Wrong credential!';
+        header('Location: login.php'); // no credential matches! sent to login page
+        exit();
     }
 
     header('Content-Type: text/html');

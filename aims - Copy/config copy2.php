@@ -24,7 +24,12 @@
 
 <?php 
 
+include 'encryption.php';
 $conn = include 'db.php';
+
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
 
 $sqlT = "CREATE TABLE IF NOT EXISTS teams (
     teamId INT AUTO_INCREMENT PRIMARY KEY,
@@ -68,6 +73,42 @@ if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
+
+
+// Method to avoid admin account duplication and error
+$adminW = "Admin";
+$adminPass = encrypt("us3p@admin", $encryption_key);
+$adminEmail = "hughlenecabanatan101@gmail.com";
+
+try {
+    $chkAdminAccExist = "SELECT * FROM accounts WHERE email = ?";
+    $stmt = $conn->prepare($chkAdminAccExist);
+    $stmt->bind_param("s", $adminEmail);
+    $stmt->execute();
+    $retval = $stmt->get_result();
+
+    if($retval->num_rows > 0) {
+        // Then don't insert admin's account
+    } else {
+        $stmt->close();
+
+        // Insert Admin's Account
+        $sqlInsertAdminAcc = "INSERT INTO vw_accounts 
+                        VALUES 
+                            (NULL, ?, ?, ?, NULL, ?, ?, ?, NULL, NULL, NULL)";
+        $stmt = $conn->prepare($sqlInsertAdminAcc);
+        $stmt->bind_param("ssssss", $adminW, $adminW, $adminW, $adminPass, $adminEmail, $adminW);
+        if($stmt->execute()) {
+            // Account added
+        } else {
+            echo 'Error: ' . $sql . "<br>" . $conn->error;
+        }
+        $stmt->close();
+    }
+} catch (Exception $e) {
+    echo "Error: " . $e->getMessage();
+}
+
 
 $sqlT = "CREATE TABLE IF NOT EXISTS contestant (
     contId INT AUTO_INCREMENT PRIMARY KEY,
@@ -158,60 +199,6 @@ $sqlT = "CREATE TABLE IF NOT EXISTS sub_results (
 if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
-}
-
-$sqlT = "CREATE TABLE IF NOT EXISTS admin (
-    username VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    PRIMARY KEY (username, password)
-    );";
-
-if ($conn->query($sqlT) === TRUE) {
-} else {
-    echo "Error creating table: " . $conn->error;
-}
-
-include 'encryption.php';
-
-#sensitive info, need encryption
-$admin = array();
-$sqlS = "SELECT * FROM admin;";
-if ($retval = mysqli_query($conn, $sqlS)) {
-    if (mysqli_num_rows($retval) > 0) {
-        while ($row = mysqli_fetch_assoc($retval)) {
-            $user = $row['username'];
-            $pass = $row['password'];
-
-            $admin[] = array("username" => $user, "password" => $pass);
-        }
-    }
-} else {
-    echo "Error executing SELECT query: " . $conn->error;
-}
-
-$adminUsername = 'admin123';
-$adminPass = 'us3p@admin';
-$adminExists = false;
-
-foreach ($admin as $acc) {
-    $decryptedname = decrypt($acc['username'], $encryption_key);
-    $decryptedpass = decrypt($acc['password'], $encryption_key);
-
-    if ($decryptedname == $adminUsername && $decryptedpass == $adminPass) {
-        $adminExists = true;
-        break;
-    }
-}
-
-if (!$adminExists) {
-    $encryptedUsername = encrypt($adminUsername, $encryption_key);
-    $encryptedPass = encrypt($adminPass, $encryption_key);
-
-    $sqlAdd = "INSERT INTO admin (username, password) VALUES ('$encryptedUsername', '$encryptedPass')";
-    if ($conn->query($sqlAdd) === TRUE) {
-    } else {
-        echo "Error inserting new admin user: " . $conn->error;
-    }
 }
 
 $sqlT = "CREATE TABLE IF NOT EXISTS adminlogs (
@@ -531,13 +518,6 @@ if ($conn->query($sqlF) === TRUE) {
 }
 
 $sqlF = "CREATE OR REPLACE VIEW vw_accounts AS SELECT * FROM accounts";
-if ($conn->query($sqlF) === TRUE) {
-} else {
-    echo "Error creating table: " . $conn->error;
-}
-
-$sqlF = "CREATE OR REPLACE VIEW vw_admin AS SELECT * FROM admin";
-
 if ($conn->query($sqlF) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
