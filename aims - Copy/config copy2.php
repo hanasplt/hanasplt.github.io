@@ -1,4 +1,6 @@
 <?php
+
+    // Creating Database ilps
     $servername = "localhost";
     $username = "root";
     $password = "";
@@ -24,6 +26,8 @@
 
 <?php 
 
+// Database Created, tables and others will be created
+
 include 'encryption.php';
 $conn = include 'db.php';
 
@@ -34,6 +38,7 @@ if (!$conn) {
 $sqlT = "CREATE TABLE IF NOT EXISTS teams (
     teamId INT AUTO_INCREMENT PRIMARY KEY,
     teamName VARCHAR(255) NOT NULL,
+    members VARCHAR(255) NOT NULL,
     image LONGBLOB NOT NULL
 )";
 
@@ -632,7 +637,7 @@ if ($conn->query($sqlT) === TRUE) {
 
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAllAcc()
         BEGIN
-            SELECT * FROM vw_accounts;
+            SELECT * FROM accounts;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {

@@ -32,52 +32,44 @@
         $found = false;
         foreach ($acc as $account) {
             if ($account['email'] == $uzr && $account['password'] == $paz) {
+
                 $found = true; // if user input matches a credential
+
                 if ($account['type'] == "Committee") {
+                    // Insert into logs. This user logged in.
+                    $insLog = "INSERT INTO adminlogs
+                                VALUES (NULL, NOW(), 'Committee $account[rilId] logged in.')";
+                    $stmt = $conn->prepare($insLog);
+                    $stmt->execute();
+
                     header('Location: committee.php?id='.$account['rilId']); // sent to committee's ui
                     exit;
-                } else if ($account['type'] == "Judge") {
+                } 
+                
+                else if ($account['type'] == "Judge") {
+                    // Insert into logs. This user logged in.
+                    $insLog = "INSERT INTO adminlogs
+                                VALUES (NULL, NOW(), 'Judge $account[rilId] logged in.')";
+                    $stmt = $conn->prepare($insLog);
+                    $stmt->execute();
+
                     header('Location: judge.php?id='.$account['rilId']); // sent to judges' ui
                     exit;
-                } else {
+                } 
+                
+                else {
+                    // Insert into logs. This user logged in.
+                    $insLog = "INSERT INTO adminlogs
+                                VALUES (NULL, NOW(), 'Admin logged in.')";
+                    $stmt = $conn->prepare($insLog);
+                    $stmt->execute();
+
                     header('Location: admin.php'); // sent to admin page
                     exit;
                 }
             }
         }
-
-        /*
-        if (!$found) { // no credential matches, then checks admin credentials
-            $admin = array();
-            $sql = "CALL sp_getAdmin()";
-
-            if ($retval = mysqli_query($conn, $sql)) {
-                if (mysqli_num_rows($retval) > 0) {
-                    while ($row = mysqli_fetch_assoc($retval)) {
-                        $username = decrypt($row['username'], $encryption_key);
-                        $pass = decrypt($row['password'], $encryption_key);
-
-                        $admin[] = array("username" => $username, "password" => $pass);
-                    }
-                }
-                mysqli_free_result($retval); 
-                while (mysqli_more_results($conn) && mysqli_next_result($conn)); 
-            } else {
-                echo "Error fetching admin accounts: " . $conn->error;
-            }
-
-            foreach ($admin as $account) {
-                if ($account['username'] == $uzr && $account['password'] == $paz) {
-                    header('Location: admin.php'); // sent to admin ui
-                    exit;
-                }
-            }
-
-            $_SESSION['error'] = 'Wrong credential!';
-            header('Location: login.php'); // no credential matches! sent to login page
-            exit();
-        }
-        */
+        
         $_SESSION['error'] = 'Wrong credential!';
         header('Location: login.php'); // no credential matches! sent to login page
         exit();

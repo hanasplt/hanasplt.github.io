@@ -11,11 +11,18 @@ $currentPage = isset($_GET['page']) && is_numeric($_GET['page']) ? $_GET['page']
 $offset = ($currentPage - 1) * $recordsPerPage;
 
 // Retrieve teams
-$sql = "CALL sp_getTeam(?, ?)";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("ii", $recordsPerPage, $offset);
-$stmt->execute();
-$result = $stmt->get_result();
+try {
+
+  $sql = "CALL sp_getTeam(?, ?)"; // Limit team display
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("ii", $recordsPerPage, $offset);
+  $stmt->execute();
+  $result = $stmt->get_result();
+
+} catch (Exception $e) {
+  "Error: " . $e->getMessage();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -113,6 +120,9 @@ $result = $stmt->get_result();
         <label for="teamName">Team Name:</label>
         <input type="text" id="teamName" name="teamName" maxlength="20" required><br><br>
         <button type="submit">Add Team</button>
+        
+        <!-- COURSES OPTION HERE -->
+
         <button type="button" onclick="closeModal('addModal')">Cancel</button>
       </form>
     </div>
@@ -130,6 +140,9 @@ $result = $stmt->get_result();
         <input type="file" id="editTeamImage" name="teamImage" accept="image/*"><br><br>
         <label for="editTeamName">Team Name:</label>
         <input type="text" id="editTeamName" name="teamName" maxlength="20" required><br><br>
+
+        <!-- COURSES OPTION HERE -->
+
         <button type="submit">Save Changes</button>
         <button type="button" onclick="closeModal('editModal')">Cancel</button>
       </form>

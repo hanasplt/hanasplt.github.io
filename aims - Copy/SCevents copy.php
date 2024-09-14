@@ -1,15 +1,21 @@
 <?php
 session_start();
 
-$conn = include 'db.php';
+$conn = include 'db.php'; // Include Database Connection
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
 $id = $_SESSION['judgeId'];
 
+
+// Record the Score Sheet (tbc)
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'record') {
-    $event = $_POST['evName'];
-    $parti = $_POST['nameSelect'];
-    $jid = $_SESSION['judgeId'];
-    $total = $_POST['totalScore'];
+
+    $event = $_POST['evName']; // Event Name
+    $parti = $_POST['nameSelect']; // Another pending, should be the same as criteria is inserted
+    $total = $_POST['totalScore']; // So is the totalScore
     $criteria_scores = $_POST['criteria'];
 
     $criteria_values = array_fill(0, 10, 0);
@@ -25,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     $sql = "CALL sp_insertResult(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     
-    $params = array_merge([$event, $parti, $jid, $total], $criteria_values);
+    $params = array_merge([$event, $parti, $id, $total], $criteria_values);
     $types = "iisd" . str_repeat("d", count($criteria_values));
     
     $stmt->bind_param($types, ...$params);
@@ -47,6 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     }
     $stmt->close();
 }
+
 $conn->close();
 ?>
 <!DOCTYPE html>
@@ -58,6 +65,7 @@ $conn->close();
     <title>ILPS</title>
     <link rel="stylesheet" href="assets/css/SCevents.css">
     <link rel="icon" href="assets/icons/logo.svg">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
 </head>
@@ -98,13 +106,13 @@ $conn->close();
                     //addCriteriaFormEventListener();
                 }
             };
-            xhttp.open("POST", "get_eventFrom.php", true);
+            xhttp.open("POST", "get_eventFrom copy.php", true);
             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             xhttp.send("evid=" + eventId);
         }
 
-        function calculateTotal() {
-            var criteriaInputs = document.getElementsByClassName('criteriaInput');
+        function calculateTotal(criInput) {
+            var criteriaInputs = document.getElementsByClassName('criteriaInput'+criInput);
             var totalScore = 0;
 
             for (var i = 0; i < criteriaInputs.length; i++) {
@@ -117,14 +125,19 @@ $conn->close();
 
                 if (score > max) {
                     input.value = "";
-                    alert("You have exceeded the maximum score.");
+                    Swal.fire({
+                        title: "Oops!",
+                        text: "You have exceeded the maximum score.",
+                        icon: "warning",
+                        confirmButtonText: "OK"
+                    });
                     return;
                 }
 
                 totalScore += score;
             }
 
-            document.getElementById('totalScore').value = totalScore;
+            document.getElementById('totalScore'+criInput).value = totalScore;
         }
 
         document.getElementById('criteriaForm').addEventListener('submit', function(event) {
@@ -160,7 +173,7 @@ $conn->close();
 
 
     <?php
-        if(isset($_GET['event'])) {
+        if(isset($_GET['event'])) { // When 'event' is set, criteria will be loaded
             $evId = $_GET['event'];
             echo "<script>loadEventCriteria($evId)</script>";
         }
