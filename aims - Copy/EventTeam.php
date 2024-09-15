@@ -86,9 +86,7 @@
             </div>
 
             <div class="accounts" id="sportsSubEvents" style="display: none;">
-                <div class="accounts-title">
-                    <p id="event">Events</p>
-                </div>
+                
 
                 <?php
                 //retrieve event (sports)
@@ -236,10 +234,7 @@
             </div>
 
             <div class="accounts" id="socioSubEvents" style="display: none;">
-                <div class="accounts-title">
-                    <p id="event">Events</p>
-                </div>
-
+               
 <?php
     //retrieve event (socio)
     $sql = "CALL sp_getEventFrom(?)";

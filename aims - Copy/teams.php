@@ -52,6 +52,9 @@ $result = $stmt->get_result();
 
   <div class="container">
     <div class="main-card" style="padding: 5%;">
+    <div class="titlename">
+        <b>INTRAMURALS 2024</b>
+        </div>
       <button class="addteam" onclick="openAddModal()">ADD TEAM</button>
       <div class="cards" id="cardContainer">
         <?php
