@@ -161,7 +161,12 @@
                                     </tbody>
                                 </table>
                                 <div class="buttons">
-                                    <button type="button" class="addcon-btn" onclick="openContiModal(this)" data-type="<?php echo $sport; ?>" data-name="<?php echo $eventName; ?>" data-event="<?php echo $ID; ?>">Add Contestant</button>
+                                    <button type="button" class="addcon-btn" onclick="openContiModal(this)" 
+                                            data-type="<?php echo $sport; ?>" 
+                                            data-name="<?php echo $eventName; ?>" 
+                                            data-event="<?php echo $ID; ?>">
+                                                Add Contestant
+                                    </button>
                                 </div>
                             </div>
 
@@ -449,7 +454,7 @@
         </div>
     </div>
 
-    <!--FOR ADDING CONTESTANT MODAL-->
+    <!--FOR ADDING CONTESTANT MODAL -->
     <div id="contestandtModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('contestandtModal')">&times;</span>
@@ -460,9 +465,8 @@
                         <p class="addevent">Add Contestant</p>
 
                         <div class="form-group">
-                            <!--<input type="number" name="contno" id="contno" required>-->
                             <label for="contestantId">Contestant Name:</label>
-                            <select id="contestantId" name="contestantId">
+                            <select id="contestantId" name="contestantId" required>
                                 <?php
                                     $sql = "CALL sp_getAllTeam;";
                                     $stmt = $conn->prepare($sql);
@@ -491,6 +495,57 @@
                         
                         <div class="modal-footer">
                             <button type="button" class="cancel-btn" onclick="closeModal('contestandtModal')">Cancel</button>
+                            <button type="submit" class="save-btn-contestant">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--FOR ADDING CONTESTANT MODAL in Socio -->
+    <div id="contestantModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('contestantModal')">&times;</span>
+            <div class="modal-body">
+                <div class="form-section">
+                    <form method="post" id="addContForm" enctype="multipart/form-data" onsubmit="updateNameField()">
+                        <input type="hidden" name="action" value="addContestant">
+                        <p class="addevent">Add Contestant</p>
+
+                        <div class="form-group">
+                            <label for="contno">Contestant No.:</label>
+                            <input type="number" name="contno" id="contno" required>
+                            <label for="contestantId">Contestant Name:</label>
+                            <select id="contestantId" name="contestantId" required>
+                                <?php
+                                    $sql = "CALL sp_getAllTeam;";
+                                    $stmt = $conn->prepare($sql);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+                                    
+                                    if($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            $teamval = $row['teamId'];
+                                            $teamname = $row['teamName'];
+                                            ?>
+                                            <option value="<?php echo $teamval; ?>"><?php echo $teamname; ?></option>
+                                            <?php
+                                        }
+                                    }
+                                    $result->free();
+                                    $stmt->close();
+                                ?>
+                            </select>
+                        </div>
+
+                        <input type="text" id="conEvId" name="conEvId" hidden>
+                        <input type="text" id="contestantName" name="contestantName" hidden>
+                        <input type="text" id="contestantType" name="contestantType" hidden>
+                        <input type="text" id="contestantEVName" name="contestantEVName" hidden>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="cancel-btn" onclick="closeModal('contestantModal')">Cancel</button>
                             <button type="submit" class="save-btn-contestant">Save</button>
                         </div>
                     </form>

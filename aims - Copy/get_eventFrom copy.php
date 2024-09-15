@@ -81,6 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $teamCount = 1;
 
                     foreach ($teams as $team) {
+                        echo '<input type="hidden" name="contestant" id="contestant" value="'.$team['contId'].'"/>';
                         echo '<tr>
                                 <td>' . $teamCount++ . '</td>'; // Display Contestant No.
                                 

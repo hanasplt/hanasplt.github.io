@@ -97,7 +97,7 @@
                   $pernum = 0;
                   echo "<td>";
                   echo "<a href='viewScoresheet.php?event=$eventId
-                          &&evname=$evName' target='_blank'>View Tally
+                          &&evname=$evName' target='_blank'>View Summary
                         </a>";
                   echo "</td>";
                 }

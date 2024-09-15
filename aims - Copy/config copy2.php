@@ -117,6 +117,7 @@ try {
 
 $sqlT = "CREATE TABLE IF NOT EXISTS contestant (
     contId INT AUTO_INCREMENT PRIMARY KEY,
+    contNo INT,
     teamId INT NOT NULL,
     eventId INT NOT NULL,
     status VARCHAR(255), #finish when done judging
@@ -886,7 +887,7 @@ if ($conn->query($sqlT) === TRUE) {
 
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEventContestant(IN id VARCHAR(255))
         BEGIN
-            SELECT contId, vw_eventParti.teamId, vw_teams.teamName as team FROM vw_eventParti 
+            SELECT contId, contNo, vw_eventParti.teamId, vw_teams.teamName as team FROM vw_eventParti 
             INNER JOIN vw_teams on vw_eventParti.teamId = vw_teams.teamId WHERE eventId = id;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
@@ -906,9 +907,9 @@ if ($conn->query($sqlT) === TRUE) {
 }
 
 
-$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertEventContestant(IN id INT, IN evid INT)
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertEventContestant(IN id INT, IN evid INT, IN num INT)
         BEGIN
-            INSERT INTO vw_eventParti (teamId, eventId) VALUES (id, evid);
+            INSERT INTO vw_eventParti (contNo, teamId, eventId) VALUES (num, id, evid);
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {

@@ -41,6 +41,7 @@
     $team = $_POST['contestantId'];
     $name = $_POST['contestantName'];
     $event = $_POST['conEvId'];
+    $contNo = $_POST['contno'];
 
     $sql = "CALL sp_getContestant(?, ?)";
     $stmt = $conn->prepare($sql);
@@ -48,24 +49,28 @@
     $stmt->execute();
     $retval = $stmt->get_result();
 
-    if ($retval->num_rows > 0) {
-        echo json_encode(['status' => 'error', 'message' => 'Contestant already exists!']);
-    } else {
-        $retval->free();
-        $stmt->close();
-
-        $sql = "CALL sp_insertEventContestant(?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ii", $team, $event);
-    
-        if ($stmt->execute()) {
-            echo json_encode(['status' => 'success', 'message' => 'Contestant added successfully!']);
+    try {
+        if ($retval->num_rows > 0) {
+            echo json_encode(['status' => 'error', 'message' => 'Contestant already exists!']);
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Error: ' . $sql . '<br>' . $conn->error]);
+            $retval->free();
+            $stmt->close();
+    
+            $sql = "CALL sp_insertEventContestant(?, ?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("iii", $contNo, $team, $event);
+        
+            if ($stmt->execute()) {
+                echo json_encode(['status' => 'success', 'message' => 'Contestant added successfully!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Error: ' . $sql . '<br>' . $conn->error]);
+            }
         }
+        $stmt->close();
+        exit;
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => 'Error:'. $e->getMessage()]);
     }
-    $stmt->close();
-    exit;
   }
 
   //add event Committee
