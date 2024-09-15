@@ -62,8 +62,36 @@ body {
 .container{
   max-width: 100%;
   overflow: hidden;
-  padding: 80px 0;
+  padding: 30px 0;
 }
+.titlename {
+  font-size: 6vw; 
+  color: #23721d;
+  font-style: italic;
+  margin-left: 13rem;
+  text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.4);
+}
+
+@media (max-width: 1200px) {
+  .titlename {
+    font-size: 5vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .titlename {
+    font-size: 4vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .titlename {
+    font-size: 3vw;
+  }
+}
+
+
+
 .container .main-card{
   justify-content: space-evenly;
   width: 180%;
@@ -150,13 +178,16 @@ body {
 }
 .addteam{
     padding: 10px 10px;
-    background-color: #4B8946;
+    background-color: #3a7735;
     color: #fff;
-    border-radius: 10px;
+    border-radius: 20px;
     font-size: 20px;
+    font-family: 'Poppins';
+    border-style: outset;
 }
 .addteam:hover{
-    background-color: #67aa61;
+    background-color: #5da357;
+    
 }
 
 @media (max-width: 768px) {
@@ -166,7 +197,7 @@ body {
   }
 }
 @media (max-width: 600px) {
-  .main-card .cards .card{
+  .main-card .cards .card {
     /* margin: 20px 0 10px 0; */
     width: 100%;
   }

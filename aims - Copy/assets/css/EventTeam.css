@@ -148,7 +148,7 @@ body {
 .tim,
 .ebent {
     display: flex;
-    background-color: #498636; /*change the color*/
+    background-color: #4a6b3f; /*change the color*/
     width: 87%;
     align-items: center;
     margin: auto;
@@ -637,7 +637,7 @@ select {
 }
 
 
-.save-btn {
+.save-btn, .save-btn-event {
     background-color: #45a049;
     color: #fff;
     padding: 8px 16px;
@@ -647,6 +647,7 @@ select {
 }
 
 .save-btn:hover,
+.save-btn-event:hover,
 .cancel-btn:hover {
     opacity: 0.8;
 }
