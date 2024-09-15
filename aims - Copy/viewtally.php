@@ -1,10 +1,6 @@
 <?php
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $database = "ilps";
   
-    $conn = new mysqli($servername, $username, $password, $database);
+    $conn = include 'db.php';
   
     if ($conn->connect_error) {
       die("Connection failed: " . $conn->connect_error);
@@ -20,16 +16,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ILPS</title>
-    <link rel="stylesheet" href="/assets/css/tally.css">
+    <link rel="stylesheet" href="assets/css/tally.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/assets/icons/logo-1.png">
+    <link rel="icon" href="assets/icons/logo-1.png">
 </head>
 <body>
     
     <div class="header-container">
         <div class="heading1">
-            <img src="/assets/icons/logo-1.png" alt="ILPS logo" width="80"><br>
+            <img src="assets/icons/logo-1.png" alt="ILPS logo" width="80"><br>
             <b>Intramural Leaderboard and Points System</b><br>
             123 Street Barangay Apokon, Tagum City, Davao Del Norte <br>
             (555) 123-4567 . <span style="color: #4B8946;">Dreamy Inc</span> . john.doe@example.com
@@ -58,15 +54,15 @@
                     $retval = $stmt->get_result();
 
                     if ($retval->num_rows > 0) {
-                        $rank = 1;
                         while($row = $retval->fetch_assoc()) {
                             $tmname = $row['name'];
                             $tscore = $row['total_score'];
+                            $rank = $row['rank'];
                             ?>
                             <tr style="text-align: left;" id="tabletr">
                                 <td><?php echo $tmname; ?></td>
                                 <td id="scoreCol"><?php echo $tscore; ?></td>
-                                <td><?php echo $rank++; ?></td>
+                                <td><?php echo $rank; ?></td>
                             </tr>
                             <?php
                         }
@@ -79,7 +75,7 @@
 
     <div class="facilitators-container">
         <?php
-            $sql = "CALL sp_getEventFaci(?)";
+            $sql = "CALL sp_getEventComt(?)";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("i", $evId);
             $stmt->execute();
@@ -87,11 +83,11 @@
 
             if ($retval->num_rows > 0) {
                 while($row = $retval->fetch_assoc()) {
-                    $faci = $row['faciName'];
+                    $faci = $row['firstName'];
                     ?>
                     <div class="col">
                         <b><?php echo $faci ?></b><br>
-                        Event Facilitator
+                        Event Committee
                     </div>
                     <?php
                 }

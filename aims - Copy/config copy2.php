@@ -1191,7 +1191,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
-$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getScoreJudge(IN evid INT, IN evid1 INT, IN perid VARCHAR(255))
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getScoreJudge(IN evid INT, IN evid1 INT, IN perid INT)
         BEGIN
             select *, (select DISTINCT t.teamName from vw_eventParti p 
             inner join vw_teams t on p.teamId = t.teamId

@@ -7,7 +7,6 @@
 
     $evId = $_GET['event'];
     $evname = $_GET['evname'];
-    $perId = $_GET['personnel'];
 ?>
 
 <!DOCTYPE html>
@@ -36,68 +35,84 @@
     </div>
 
 
-
-
     <div class="tally-container" id="TallyTable">
         <table id="tallyTable">
-            <tr id="tabletr">
-                <td id="headCol">Contest Name</td>
+
+            <tr id="tabletr"> <!-- TABLE COLUMN HEADER -->
+                <td id="headCol">Contest No.</td>
                 <?php
-                    $get = "CALL sp_getCriteria(?)";
+                    $get = "SELECT DISTINCT personnelId FROM vw_subresult WHERE eventId = ?";
+
                     $stmt = $conn->prepare($get);
                     $stmt->bind_param("i", $evId);
                     $stmt->execute();
                     $retval = $stmt->get_result();
 
-                    $criCount = 0;
-                    if ($retval->num_rows > 0) {
-                        while($row = $retval->fetch_assoc()) {
-                            $criCount++;
-                            $cri = $row['criteria'];
-                            ?>
-                            <td id="headCol"><?php echo $cri; ?></td>
-                            <?php
-                        }
-                    }
-                    $retval->free();
-                    $stmt->close();
-                ?>
-                <td id="headCol">Total Score</td>
-            </tr>
-            
-                <?php
-                    $get = "CALL sp_getScoreJudge(?,?,?);";
-                    $stmt = $conn->prepare($get);
-                    $stmt->bind_param("iii", $evId, $evId, $perId);
-                    $stmt->execute();
-                    $retval = $stmt->get_result();
+                    $judges = array(); // Store personnelId
+
+                    $judgeCount = 0;
+                    $judgeColumns = [];
 
                     if ($retval->num_rows > 0) {
-                        $rank = 1;
                         while($row = $retval->fetch_assoc()) {
-                            $tmname = $row['teamname'];
-                            $tscore = $row['total_score'];
+                            $judgeCount++;
+                            $judges[] = $row;
+
+                            // Store Judge IDs for Conditional Statement Later
+                            $judgeColumns[] = 'MAX(CASE WHEN personnelId = '.$row['personnelId'].' 
+                                            THEN total_score END) AS judge_'.$row['personnelId'];
                             ?>
-                            <tr style="text-align: left;" id="tabletr">
-                                <td><?php echo $tmname; ?></td>
-                                <?php
-                                    for($x = 1; $x <= $criCount; $x++) {
-                                        ?>
-                                        <td id="scoreCol"><?php echo $row['criteria'.$x]; ?></td>
-                                        <?php
-                                    }
-                                ?>
-                                <td><?php echo $tscore; ?></td>
-                            </tr>
+                            <td id="headCol">JUDGE <?php echo $judgeCount; ?></td>
                             <?php
                         }
                     }
                     $retval->free();
                     $stmt->close();
+
+                    // Combine judge columns into one SQL string
+                    $judgeColumnsSql = implode(', ', $judgeColumns);
                 ?>
+
+                <td id="headCol">Total Score</td>
+                <td id="headCol">Rank</td>
+            </tr>
+
+            <?php // Data Row
+
+                // The final SQL query
+                $getRowData = "SELECT contestantId, $judgeColumnsSql,
+                                    SUM(total_score) AS Total,
+                                    RANK() OVER (ORDER BY SUM(total_score) DESC) AS rank
+                            FROM vw_subresult 
+                            WHERE eventId = ?
+                            GROUP BY contestantId";
+
+                $stmt = $conn->prepare($getRowData);
+                $stmt->bind_param("i", $evId);
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                if ($result->num_rows > 0) {
+                    // Table Data
+                    while ($row = $result->fetch_assoc()) {
+                        echo '<tr style="text-align: left;" id="tabletr">';
+                        echo '<td>'.$row['contestantId'].'</td>';
+                        
+                        foreach ($judges as $judge) {
+                            echo '<td>'.$row['judge_'.$judge['personnelId']].'</td>';
+                        }
+                        echo '<td>'.$row['Total'].'</td>';
+                        echo '<td>'.$row['rank'].'</td>';
+                        
+                        echo '</tr>';
+                    }
+                } 
+            ?>
+
         </table>
     </div>
 
+    <!--
     <div class="facilitators-container">
         <?php
             $sql = "CALL sp_getJudge(?,?)";
@@ -121,6 +136,6 @@
             $stmt->close();
         ?>
     </div>
-
+    -->
 </body>
 </html>

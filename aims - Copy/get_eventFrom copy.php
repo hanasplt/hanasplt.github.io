@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->close();
 
 
-    // Condition for displaying criteria or informa end-user whether no criteria is added
+    // Condition for displaying criteria or inform end-user whether no criteria
     if (!empty($teams) && !empty($eventCriterias)) {
         echo '<input type="text" name="evName" id="evName" value="'.$evid.'" hidden>';
         echo '<input type="text" name="action" value="record" hidden>';
@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <tr>
                         <td>Contestant No.</td>';
                         $totalPercentage = 0;
-                        foreach ($eventCriterias as $cri) {
+                        foreach ($eventCriterias as $cri) { // Display Criteria
                             $totalPercentage += $cri['percentage'];
                             echo "<td>$cri[criteria] ($cri[percentage]%)</td>";
                         }
@@ -82,9 +82,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                     foreach ($teams as $team) {
                         echo '<tr>
-                                <td>' . $teamCount++ . '</td>';
+                                <td>' . $teamCount++ . '</td>'; // Display Contestant No.
                                 
-                        foreach ($eventCriterias as $cri) {
+                        foreach ($eventCriterias as $cri) { // Display Criteria Score input
                             echo '<td>
                                     <input class="criteriaInput'.$teamCount.'" type="number" 
                                     name="criteria[' . $cri['criteriaId'] . ']" 
@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         echo '<td>
                                 <input type="number" name="totalScore'. $teamCount . '" 
                                 id="totalScore'. $teamCount . '" readonly />
-                              </td>';
+                              </td>'; // Display Calculated Total Score
                         echo '</tr>';
                     }
 

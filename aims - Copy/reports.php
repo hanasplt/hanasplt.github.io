@@ -1,10 +1,5 @@
 <?php
-  $servername = "localhost";
-  $username = "root";
-  $password = "";
-  $database = "ilps";
-
-  $conn = new mysqli($servername, $username, $password, $database);
+  $conn = include 'db.php';
 
   if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -17,15 +12,16 @@
 <head>
   <meta charset="UTF-8">
   <title>Teams</title>
-  <link rel="stylesheet" href="/assets/css/report.css">
+  <link rel="stylesheet" href="assets/css/report.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="/assets/icons/logo.png">
+  <link rel="icon" href="assets/icons/logo.png">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
   <div class="nav-bar">
-    <img class="logo-img" src="/assets/icons/logoo.png">
+    <img class="logo-img" src="assets/icons/logoo.png">
     <div class="logo-bar">
       <p>Intramural Leaderboard</p>
       <p>and Points System</p>
@@ -100,18 +96,9 @@
                 if ($retval->num_rows > 0) {
                   $pernum = 0;
                   echo "<td>";
-                  while($row = $retval->fetch_assoc()) {
-                    $pernum++;
-                    $perid = $row['perId'];
-                    $pername = $row['perName'];
-                    ?>
-                      <a href="judge_scoresheet.php?event=<?php echo $eventId ?>
-                        &evname=<?php echo $evName ?>&personnel=<?php echo $perid ?>" 
-                        target="_blank" style="margin-right: 10px;">
-                        <?php echo "$pernum. $pername" ?>
-                      </a>
-                    <?php
-                  }
+                  echo "<a href='viewScoresheet.php?event=$eventId
+                          &&evname=$evName' target='_blank'>View Tally
+                        </a>";
                   echo "</td>";
                 }
                 $retval->free();
