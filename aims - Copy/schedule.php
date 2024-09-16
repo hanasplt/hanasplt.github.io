@@ -379,103 +379,56 @@ usort($scheduled_days, function($a, $b) {
         function reattachEventListeners() {
             document.querySelectorAll('.edit-btn').forEach(button => {
                 button.addEventListener('click', function() {
-                    const eventId = this.getAttribute('data-event-id');
-                    const eventRow = this.closest('tr');
-                    const time = eventRow.children[0].innerText;
-                    const activity = eventRow.children[1].innerText;
-                    const location = eventRow.children[2].innerText;
-                    const status = eventRow.children[3].innerText;
-
-                    // Populate the modal with the current event data
-                    document.getElementById('edit-event-id').value = eventId;
-                    document.getElementById('edit-event-time').value = time;
-                    document.getElementById('edit-event-activity').value = activity;
-                    document.getElementById('edit-event-location').value = location;
-                    document.getElementById('edit-event-status').value = status;
-
-                    // Display the modal
-                    document.getElementById('editEventModal').style.display = 'block';
-                });
-            });
-
-            document.getElementById('saveEditBtn').addEventListener('click', function() {
-                const eventId = document.getElementById('edit-event-id').value;
-                const time = document.getElementById('edit-event-time').value;
-                const activity = document.getElementById('edit-event-activity').value;
-                const location = document.getElementById('edit-event-location').value;
-                const status = document.getElementById('edit-event-status').value;
-
-                // Send AJAX request to update the event
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', 'edit_event.php', true);
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        const response = JSON.parse(xhr.responseText);
-                        if (response.success) {
-                            Swal.fire({
-                                title: 'Success!',
-                                text: 'Event updated successfully.',
-                                icon: 'success',
-                                confirmButtonColor: '#7FD278',
-                                confirmButtonText: 'OK'
-                            }).then(() => {
-                                location.reload(); // Reload page to reflect the changes
-                            });
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: response.message,
-                                icon: 'error',
-                                confirmButtonColor: '#d33',
-                                confirmButtonText: 'OK'
-                            });
-                        }
-                    }
-                };
-
-                xhr.send(`event_id=${eventId}&time=${time}&activity=${activity}&location=${location}&status=${status}`);
-            });
-
-
-            // Add delete functionality to each delete button
-            document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const eventRow = this.closest('tr');
-                    const eventId = eventRow.getAttribute('data-event-id');
-
-                    if (!eventId) {
-                        console.error("No event ID found");
-                        return;
-                    }
+                    const row = this.closest('tr');
+                    const cells = row.getElementsByTagName('td');
+                    const eventId = row.getAttribute('data-event-id');
 
                     Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
-                        icon: 'warning',
+                        title: 'Edit Event',
+                        html: `
+                            <input id="edit-time" class="swal2-input" placeholder="Time" value="${cells[0].textContent}">
+                            <input id="edit-activity" class="swal2-input" placeholder="Activity" value="${cells[1].textContent}">
+                            <input id="edit-location" class="swal2-input" placeholder="Location" value="${cells[2].textContent}">
+                            <select id="edit-status" class="swal2-input">
+                                <option value="Pending" ${cells[3].textContent === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="Ongoing" ${cells[3].textContent === 'Ongoing' ? 'selected' : ''}>On-going</option>
+                                <option value="Ended" ${cells[3].textContent === 'Ended' ? 'selected' : ''}>Ended</option>
+                                <option value="Cancelled" ${cells[3].textContent === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                                <option value="Moved" ${cells[3].textContent === 'Moved' ? 'selected' : ''}>Moved</option>
+                            </select>
+                        `,
+                        confirmButtonText: 'Save',
                         showCancelButton: true,
-                        confirmButtonColor: '#7FD278',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
+                        preConfirm: () => {
+                            return {
+                                time: document.getElementById('edit-time').value,
+                                activity: document.getElementById('edit-activity').value,
+                                location: document.getElementById('edit-location').value,
+                                status: document.getElementById('edit-status').value
+                            };
+                        }
                     }).then((result) => {
                         if (result.isConfirmed) {
+                            const { time, activity, location, status } = result.value;
+                            
                             const xhr = new XMLHttpRequest();
-                            xhr.open("POST", "delete_event.php", true);
-                            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
+                            xhr.open('POST', 'edit_event.php', true);
+                            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                             xhr.onload = function () {
                                 if (xhr.status === 200) {
                                     const response = JSON.parse(xhr.responseText);
                                     if (response.success) {
+                                        cells[0].textContent = time;
+                                        cells[1].textContent = activity;
+                                        cells[2].textContent = location;
+                                        cells[3].textContent = status;
+
                                         Swal.fire({
-                                            title: 'Deleted!',
-                                            text: 'Event has been deleted.',
+                                            title: 'Success!',
+                                            text: 'Event updated successfully.',
                                             icon: 'success',
                                             confirmButtonColor: '#7FD278',
                                             confirmButtonText: 'OK'
-                                        }).then(() => {
-                                            // Remove the row from the table
-                                            eventRow.parentNode.removeChild(eventRow);
                                         });
                                     } else {
                                         Swal.fire({
@@ -486,16 +439,66 @@ usort($scheduled_days, function($a, $b) {
                                             confirmButtonText: 'OK'
                                         });
                                     }
-                                } else {
-                                    console.error("Error with XMLHttpRequest", xhr.status);
                                 }
                             };
 
-                            xhr.send(`event_id=${eventId}`);
+                            xhr.send(`event_id=${eventId}&time=${time}&activity=${activity}&location=${location}&status=${status}`);
                         }
                     });
                 });
             });
+
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const eventId = row.getAttribute('data-event-id'); // Assuming event ID is stored in row
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#7FD278',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Send AJAX request to delete the event from the database
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('POST', 'delete_event.php', true);
+                        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                        xhr.onload = function () {
+                            if (xhr.status === 200) {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.success) {
+                                    row.remove(); // Remove the row from the table
+
+                                    Swal.fire({
+                                        title: 'Deleted!',
+                                        text: 'Your event has been deleted.',
+                                        icon: 'success',
+                                        confirmButtonColor: '#7FD278',
+                                        confirmButtonText: 'OK'
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: response.message,
+                                        icon: 'error',
+                                        confirmButtonColor: '#d33',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
+                            }
+                        };
+
+                        // Send event ID to PHP script
+                        xhr.send(`event_id=${eventId}`);
+                    }
+                });
+            });
+        });
+
         }
 
         reattachEventListeners();
