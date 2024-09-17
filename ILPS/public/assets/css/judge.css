@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins',sans-serif;
+}
+body{
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background: #f2f2f2;
+  position: relative;
+}
+
+.nav-bar {
+  height: 5vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.logo-img {
+    padding-left: 2vw;
+}
+
+    .logo-bar {
+        margin-top: 0.4vw;
+    }
+
+        .logo-bar p {
+            font-size: 1vw;
+            font-weight: bold;
+        }
+
+        #administrator {
+            color: #4B8946;
+        }
+
+    .links {
+        display: flex;  
+        margin-left: auto; 
+    }
+
+        .links p {
+            margin-right: 2.5vw;
+            color: #4B8946;
+        }
+
+        .plus-icon {
+            width: 3vw;
+            height: 3vw;
+            border-radius: 50%;
+            background-color: #B1F0AB;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+        }
+        
+        .plus-icon i {
+            color: #4B8946;
+            font-size: 1.5vw;
+        }
+        
+    .menu-icon {
+        color: #4B8946;
+        font-size: 1.5vw;
+        margin-right: 3vw;
+    }
+/*End pf navbar*/
+
+.eventsDropdown {
+  margin-top: 30px;
+  position: absolute;
+  top: 10%;
+  width: 90%;
+  transition: all 0.3s ease-in-out;
+}
+
+.eventsDropdown h4 {
+  font-size: 2em;
+  font-weight: bold;
+  color: #4B8946;
+  margin-bottom: 20px;
+}
+
+.event-item {
+  padding: 10px;
+  background-color: #e3e3e3;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  width: 100%;
+  font-size: 1.2em;
+  font-weight: 500;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.event-item a {
+  text-decoration: none;
+  color: #333;
+  display: block;
+  margin-left: 10px;
+}
+
+.event-item:hover {
+  background-color: #4B8946;
+}
+
+.event-item:hover a {
+  color: #fff;
+}
+
+.no-event {
+  text-align: center;
+}
