@@ -14,7 +14,7 @@ $id = $_SESSION['judgeId'];
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'record') {
 
     $event = $_POST['evName']; // Event Name
-    $parti = $_POST['nameSelect']; // Another pending, should be the same as criteria is inserted
+    $parti = $_POST['contestant']; // Another pending, should be the same as criteria is inserted
     $total = $_POST['totalScore']; // So is the totalScore
     $criteria_scores = $_POST['criteria'];
 
@@ -138,6 +138,42 @@ $conn->close();
             }
 
             document.getElementById('totalScore'+criInput).value = totalScore;
+
+            // After calculating the total, check if all scores are equal
+            var areScoresEqual = checkIfScoresAreEqual();
+            if (areScoresEqual) {
+                Swal.fire({
+                    title: "Oops!",
+                    text: "There's a tie! Please break the tie by changing the score.",
+                    icon: "warning",
+                    confirmButtonText: "OK"
+                });
+                return;
+            }
+        }
+
+        // Validate if there is a tie in the total score
+        function checkIfScoresAreEqual() {
+            var totalScoreElements = document.querySelectorAll('[id^="totalScore"]');
+            
+            if (totalScoreElements.length === 0) {
+                return; // No totalScore inputs found
+            }
+            
+            // Get the first total score to compare with the others
+            var firstScore = parseInt(totalScoreElements[0].value);
+            
+            // Iterate through all total scores and compare them
+            for (var i = 1; i < totalScoreElements.length; i++) {
+                var currentScore = parseInt(totalScoreElements[i].value);
+                
+                // If the current score is not equal to the first one, return false
+                if (currentScore !== firstScore) {
+                    return false;
+                } else {
+                    return true; // If a score are similar, return true
+                }
+            }
         }
 
         document.getElementById('criteriaForm').addEventListener('submit', function(event) {
@@ -169,6 +205,7 @@ $conn->close();
                 }
             });
         });
+
     </script>
 
 
