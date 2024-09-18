@@ -1,11 +1,12 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 'On');
+
 $conn = include 'db.php';
 
 if (!$conn) {
   die("Connection failed: " . mysqli_connect_error());
 }
-
-
 
 // FOR DATABASE INSERT, UPDATE, DELETE QUERIES
 
@@ -15,14 +16,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
   if ($_POST['action'] == 'add') {
     $teamName = ucfirst($_POST['teamName']);
     $teamImage = $_FILES['teamImage'];
+    $courses = ""; // Temporary
 
     // Upload the file (image)
     $imagePath = 'uploads/' . uniqid() . '-' . basename($teamImage['name']);
 
     if (move_uploaded_file($teamImage['tmp_name'], $imagePath)) {
-      $sql = "CALL sp_insertTeam(?, ?)";
+      $sql = "CALL sp_insertTeam(?, ?, ?)";
       $stmt = $conn->prepare($sql);
-      $stmt->bind_param("ss", $teamName, $imagePath);
+      $stmt->bind_param("sss", $teamName, $imagePath, $courses);
 
       if ($stmt->execute()) {
         echo json_encode(['status' => 'success', 'message' => 'New Team added successfully!']);

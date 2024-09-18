@@ -46,6 +46,7 @@ $sqlT = "CREATE TABLE IF NOT EXISTS accounts (
     email VARCHAR(255) NOT NULL,
     type VARCHAR(50) NOT NULL,
     log_status VARCHAR(50),
+    status INT,
     reset_token VARCHAR(64),
     reset_token_expiration DATETIME
     );";
@@ -74,9 +75,9 @@ try {
         $stmt->close();
 
         // Insert Admin's Account
-        $sqlInsertAdminAcc = "INSERT INTO vw_accounts 
+        $sqlInsertAdminAcc = "INSERT INTO accounts 
                         VALUES 
-                            (NULL, ?, ?, ?, NULL, ?, ?, ?, NULL, NULL, NULL)";
+                            (NULL, ?, ?, ?, NULL, ?, ?, ?, NULL, NULL, NULL, NULL)";
         $stmt = $conn->prepare($sqlInsertAdminAcc);
         $stmt->bind_param("ssssss", $adminW, $adminW, $adminW, $adminPass, $adminEmail, $adminW);
         if($stmt->execute()) {
@@ -188,9 +189,9 @@ if ($conn->query($sqlT) === TRUE) {
 $sqlT = "CREATE TABLE IF NOT EXISTS adminlogs (
     logId INT AUTO_INCREMENT PRIMARY KEY,
     date_on DATETIME NOT NULL,
-    userId INT NOT NULL, #to be implemented
+    userId INT NOT NULL,
     actions VARCHAR(255) NOT NULL,
-    FOREIGN KEY (userId) REFERENCES accounts(userId) #to be implemented
+    FOREIGN KEY (userId) REFERENCES accounts(userId)
     );";
 
 if ($conn->query($sqlT) === TRUE) {
@@ -219,7 +220,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }*/
 
-
+/*
 $sqlT = "CREATE TRIGGER IF NOT EXISTS tr_log_delCriteria
         AFTER DELETE ON criteria 
         FOR EACH ROW
@@ -511,7 +512,7 @@ $sqlT = "CREATE TRIGGER IF NOT EXISTS tr_log_delEvent
 if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
-}
+}*/
 
 
 
@@ -764,9 +765,10 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
-$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertTeam(IN name VARCHAR(255), IN img LONGBLOB)
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertTeam(IN name VARCHAR(255), IN img LONGBLOB,
+        IN mem VARCHAR(255))
         BEGIN
-            INSERT INTO vw_teams (teamName, image) VALUES (name, img);
+            INSERT INTO vw_teams (teamName, image, members) VALUES (name, img, mem);
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {

@@ -1,3 +1,38 @@
+<?php
+$conn = include 'db.php'; // Ensure db.php securely returns $conn
+
+if (!$conn) {
+  die("Connection failed: " . mysqli_connect_error());
+}
+
+// Pagination setup
+$recordsPerPage = 3;
+$currentPage = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+$currentPage = max(1, $currentPage); // Ensure the page is always >= 1
+$offset = ($currentPage - 1) * $recordsPerPage;
+
+// Retrieve teams with error handling
+try {
+  // Use prepared statements with the stored procedure
+  $sql = "CALL sp_getTeam(?, ?)"; // Limit team display
+  $stmt = $conn->prepare($sql);
+  if (!$stmt) {
+    throw new Exception("Prepare failed: " . $conn->error);
+  }
+  
+  $stmt->bind_param("ii", $recordsPerPage, $offset);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  
+  if (!$result) {
+    throw new Exception("Execute failed: " . $stmt->error);
+  }
+
+} catch (Exception $e) {
+  die("Error: " . $e->getMessage());
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
@@ -37,14 +72,58 @@
         </div>
       <button class="addteam" onclick="openAddModal()">ADD TEAM</button>
       <div class="cards" id="cardContainer">
-        <input type="hidden" name="action" id="action" value="displayTeam">
-        <!-- TEAM CARDS HERE -->
+        <?php
+        if ($result->num_rows > 0) {
+          while ($row = $result->fetch_assoc()) {
+            // Escape the output to prevent XSS attacks
+            $teamImageSrc = htmlspecialchars($row['image']);
+            $teamName = htmlspecialchars($row['teamName']);
+            $teamId = (int)$row['teamId'];
+
+            echo "<div class='card' data-id='$teamId' data-name='$teamName' data-image='uploads/$teamImageSrc'>";
+            echo "<div class='content'>";
+            echo "<div class='img'><img src='$teamImageSrc' alt='Team Image'></div>";
+            echo "<div class='details'><div class='name'>$teamName</div></div>";
+            echo "<div class='media-icons'>";
+            echo "<a href='#' onclick='deleteThis($teamId)'><i class='fas fa-trash'></i></a>";
+            echo "<a href='#' onclick='openEditModal(this)'><i class='fas fa-pen'></i></a>";
+            echo "</div></div></div>";
+          }
+        } else {
+          echo "<p>No teams found.</p>";
+        }
+        
+        // Clean up result and statement
+        $result->free();
+        $stmt->close();
+        ?>
       </div>
     </div>
 
-    <!-- Pagination -->
-    <div class="pagination" id="teamPagination">
-    </div>
+    <?php
+      try {
+        // Get the total number of records
+        $stmt = $conn->prepare("CALL sp_getTeamCount()");
+        $stmt->execute();
+        $resultCount = $stmt->get_result();
+        $rowCount = $resultCount->fetch_assoc()['total'];
+        $totalPages = ceil($rowCount / $recordsPerPage);
+
+        // Generate pagination links
+        for ($i = 1; $i <= $totalPages; $i++) {
+          echo "<a href='?page=" . htmlspecialchars($i) . "'>$i</a> ";
+        }
+
+        $resultCount->free();
+        $stmt->close();
+
+      } catch (Exception $e) {
+        die("Error: " . $e->getMessage());
+      }
+
+      // Close the database connection
+      $conn->close();
+      ?>
   </div>
 
   <!-- Add Modal -->

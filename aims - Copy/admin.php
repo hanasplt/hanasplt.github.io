@@ -52,6 +52,7 @@
                 <p onclick="window.location.href = 'EventTeam.php';">Events</p>
                 <p onclick="window.location.href = 'schedule.php';">Schedule</p>
                 <p onclick="window.location.href = 'reports.php';">Reports</p>
+                <p onclick="window.location.href = 'accesslog.html';">Logs</p>
             </div>
 
             <div class="menu-icon">
