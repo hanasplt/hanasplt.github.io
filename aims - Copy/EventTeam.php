@@ -44,7 +44,7 @@
             <p onclick="window.location.href = 'admin.php';">Home</p>
             <p onclick="window.location.href = 'accounts.php';">Accounts</p>
             <p onclick="window.location.href = 'teams.php';">Teams</p>
-            <p onclick="window.location.href = 'EventTeam.php';" class="active-link">Events</p>
+            <p onclick="window.location.href = 'EventTeam.php';"><b>Events</b></p>
             <p onclick="window.location.href = '#';">Schedule</p>
             <p onclick="window.location.href = 'reports.php';">Reports</p>
         </div>
@@ -545,7 +545,7 @@
                         <input type="text" id="contestantEVName" name="contestantEVName" hidden>
                         
                         <div class="modal-footer">
-                            <button type="button" class="cancel-btn" onclick="closeModal('contestantModal')">Cancel</button>
+                            <button type="button" class="cancel-btn" onclick="closeModal('contestandtModal')">Cancel</button>
                             <button type="submit" class="save-btn-contestant">Save</button>
                         </div>
                     </form>

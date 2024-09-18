@@ -17,12 +17,6 @@ body {
     z-index: 1000;
 }
 
-.active-link {
-    font-family: Montserrat, sans-serif;
-    font-weight: 700;
-    color: #60A85A;
-}
-
 .logo-img {
     padding-left: 2vw;
 }

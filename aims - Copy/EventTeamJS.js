@@ -290,7 +290,7 @@ function deleteCont(id) {
                 console.error('Error:', error);
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Error deleting contestant.',
+                    text: 'Error deleting contestant.'+ error,
                     icon: 'error',
                     confirmButtonColor: '#d33',
                     confirmButtonText: 'OK'
@@ -672,9 +672,6 @@ function openEditEvModal(element) { // Open modal for editing event
                         confirmButtonText: 'OK'
                     });
                 }
-            })
-            .catch(error => {
-                alert('An error occurred: ' + error.message);
             });
         });
 

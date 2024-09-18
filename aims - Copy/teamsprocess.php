@@ -5,6 +5,10 @@ if (!$conn) {
   die("Connection failed: " . mysqli_connect_error());
 }
 
+
+
+// FOR DATABASE INSERT, UPDATE, DELETE QUERIES
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
 
   // Enters here when adding a team

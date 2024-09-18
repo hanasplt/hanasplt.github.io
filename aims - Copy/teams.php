@@ -1,30 +1,3 @@
-<?php
-$conn = include 'db.php';
-
-if (!$conn) {
-  die("Connection failed: " . mysqli_connect_error());
-}
-
-// Pagination setup
-$recordsPerPage = 3;
-$currentPage = isset($_GET['page']) && is_numeric($_GET['page']) ? $_GET['page'] : 1;
-$offset = ($currentPage - 1) * $recordsPerPage;
-
-// Retrieve teams
-try {
-
-  $sql = "CALL sp_getTeam(?, ?)"; // Limit team display
-  $stmt = $conn->prepare($sql);
-  $stmt->bind_param("ii", $recordsPerPage, $offset);
-  $stmt->execute();
-  $result = $stmt->get_result();
-
-} catch (Exception $e) {
-  "Error: " . $e->getMessage();
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
@@ -64,50 +37,13 @@ try {
         </div>
       <button class="addteam" onclick="openAddModal()">ADD TEAM</button>
       <div class="cards" id="cardContainer">
-        <?php
-        if ($result->num_rows > 0) {
-          while ($row = $result->fetch_assoc()) {
-            $teamImageSrc = $row['image']; 
-            echo "<div class='card' data-id='" . $row['teamId'] . "' data-name='" . $row['teamName'] . "' data-image='" . $teamImageSrc . "'>";
-            echo "<div class='content'>";
-            echo "<div class='img'>";
-            echo "<img src='" . $teamImageSrc . "' alt='Team Image'>"; 
-            echo "</div>";
-            echo "<div class='details'>";
-            echo "<div class='name'>" . $row['teamName'] . "</div>";
-            echo "</div>";
-            echo "<div class='media-icons'>";
-            echo "<a href='#' onclick='deleteThis(" . $row['teamId'] . ")'><i class='fas fa-trash'></i></a>";
-            echo "<a href='#' onclick='openEditModal(this)'><i class='fas fa-pen'></i></a>";
-            echo "</div>";
-            echo "</div>";
-            echo "</div>";
-          }
-        } else {
-          echo "0 results";
-        }
-        $result->free();
-        $stmt->close();
-        ?>
+        <input type="hidden" name="action" id="action" value="displayTeam">
+        <!-- TEAM CARDS HERE -->
       </div>
     </div>
 
     <!-- Pagination -->
-    <div class="pagination">
-      <?php
-      $stmt = $conn->prepare("CALL sp_getTeamCount");
-      $stmt->execute();
-      $resultCount = $stmt->get_result();
-      $rowCount = $resultCount->fetch_assoc()['total'];
-      $totalPages = ceil($rowCount / $recordsPerPage);
-      for ($i = 1; $i <= $totalPages; $i++) {
-        echo "<a href='?page=$i'>$i</a>";
-      }
-      
-      $resultCount->free();
-      $stmt->close();
-      $conn->close();
-      ?>
+    <div class="pagination" id="teamPagination">
     </div>
   </div>
 

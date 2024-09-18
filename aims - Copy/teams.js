@@ -1,3 +1,43 @@
+// Display teams on load
+window.onload = function() {
+  loadTeams();
+  loadPagination();
+}
+
+function loadTeams() {
+  var cardDiv = document.getElementById("cardContainer");
+  var action = document.getElementById("cardContainer");
+
+  var xhttp = new XMLHttpRequest();
+
+  xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+          document.querySelector("#" + cardDiv.id + "").innerHTML = this.responseText;
+      }
+  };
+  
+  xhttp.open("POST", "get_teams.php", true);
+  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  
+  xhttp.send();
+}
+
+function loadPagination() {
+  var page = document.getElementById("teamPagination");
+
+  var xhttp = new XMLHttpRequest();
+
+  xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+          document.querySelector("#" + page.id + "").innerHTML = this.responseText;
+      }
+  };
+  
+  xhttp.open("POST", "get_teams.php", true);
+  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhttp.send();
+}
+
 // Logout Confirmation
 document.getElementById('logoutIcon').addEventListener('click', function() {
     Swal.fire({

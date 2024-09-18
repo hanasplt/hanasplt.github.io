@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 'On');
+
   include 'encryption.php';
   $conn = include 'db.php';
 
@@ -41,7 +44,7 @@
     $team = $_POST['contestantId'];
     $name = $_POST['contestantName'];
     $event = $_POST['conEvId'];
-    $contNo = $_POST['contno'];
+    //$contNo = $_POST['contno'];
 
     $sql = "CALL sp_getContestant(?, ?)";
     $stmt = $conn->prepare($sql);
@@ -56,9 +59,9 @@
             $retval->free();
             $stmt->close();
     
-            $sql = "CALL sp_insertEventContestant(?, ?, ?)";
+            $sql = "CALL sp_insertEventContestant(?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("iii", $contNo, $team, $event);
+            $stmt->bind_param("ii", $team, $event);
         
             if ($stmt->execute()) {
                 echo json_encode(['status' => 'success', 'message' => 'Contestant added successfully!']);

@@ -1,30 +1,6 @@
-<?php
-
-    // Creating Database ilps
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-
-    $conn = mysqli_connect($servername, $username, $password);
-
-    if (!$conn) {
-        die("Connection failed: " . mysqli_connect_error());
-    }
-
-    $sql = "CREATE DATABASE IF NOT EXISTS ilps";
-    
-    if (mysqli_query($conn, $sql)) {}
-
-    else {
-        echo "Error creating database: " . mysqli_error($conn);
-    }
-
-    mysqli_close($conn);
-
-
-?>
-
 <?php 
+
+include 'database.php';
 
 // Database Created, tables and others will be created
 
@@ -207,10 +183,14 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// Table for access log or audit log
 $sqlT = "CREATE TABLE IF NOT EXISTS adminlogs (
     logId INT AUTO_INCREMENT PRIMARY KEY,
     date_on DATETIME NOT NULL,
-    actions VARCHAR(255) NOT NULL
+    userId INT NOT NULL, #to be implemented
+    actions VARCHAR(255) NOT NULL,
+    FOREIGN KEY (userId) REFERENCES accounts(userId) #to be implemented
     );";
 
 if ($conn->query($sqlT) === TRUE) {
@@ -220,6 +200,25 @@ if ($conn->query($sqlT) === TRUE) {
 
 
 #TRIGGERS (ADMIN ALL) --------------------------------------------------------------------------------------------------------
+
+/*
+// FINAL TRIGGERS IN ADMIN
+$sqlT = "CREATE TRIGGER IF NOT EXISTS tr_log_delCriteria
+        AFTER DELETE ON criteria 
+        FOR EACH ROW
+        BEGIN
+            DECLARE actions VARCHAR(255);
+            SET actions = CONCAT('Admin Deleted the criteria: ', OLD.criteria);
+
+            INSERT INTO adminlogs (date_on, userId, actions)
+            VALUES (NOW(), OLD., 'Deleted criteria ', OLD.criteria);
+        END ;";
+
+if ($conn->query($sqlT) === TRUE) {
+} else {
+    echo "Error creating table: " . $conn->error;
+}*/
+
 
 $sqlT = "CREATE TRIGGER IF NOT EXISTS tr_log_delCriteria
         AFTER DELETE ON criteria 
@@ -907,9 +906,9 @@ if ($conn->query($sqlT) === TRUE) {
 }
 
 
-$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertEventContestant(IN id INT, IN evid INT, IN num INT)
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertEventContestant(IN id INT, IN evid INT)
         BEGIN
-            INSERT INTO vw_eventParti (contNo, teamId, eventId) VALUES (num, id, evid);
+            INSERT INTO vw_eventParti (teamId, eventId) VALUES (id, evid);
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -1248,6 +1247,18 @@ $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_chckJudge(IN evid INT, IN perId VARCH
             LEFT JOIN vw_subresult ON vw_subresult.contestantId = vw_eventParti.teamId
             WHERE vw_subresult.eventId = evid AND vw_subresult.personnelId = perId 
             GROUP BY vw_eventParti.teamId;
+        END ;";
+if ($conn->query($sqlT) === TRUE) {
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
+
+
+// Stored Procedure for displaying logs
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_displayLog()
+        BEGIN
+            SELECT * FROM adminlogs;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
