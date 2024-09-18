@@ -575,6 +575,17 @@ if ($conn->query($sqlF) === TRUE) {
 
 #PROCEDURES (ADMIN ALL) --------------------------------------------------------------------------------------------------------
 
+#new (for account count)
+
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAccountCount()
+        BEGIN
+            SELECT COUNT(*) AS total FROM accounts;
+        END ;";
+if ($conn->query($sqlT) === TRUE) {
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
 #newwwww
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_delLead()
         BEGIN
