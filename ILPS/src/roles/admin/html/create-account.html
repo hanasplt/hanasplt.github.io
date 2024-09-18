@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Add Account Form</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/create-account.css">
+
+    <!--font-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+
+    <!--Web-logo-->
+    <link rel="icon" href="../../../../public/assets/icons/logo.svg">
+
+    <!-- icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+
+    <!-- SweetAlert CSS and JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="container">
+        <form id="accountForm" method="post">
+            <div class="title">
+                <p>Add Account</p>
+            </div>
+    
+            <div class="add-form">
+                <div class="add-deets">
+                    <div class="add-left">
+                        <div class="labels">
+                            <label for="firstName">First Name:</label>
+                            <label for="middleName">Middle Name:</label>
+                            <label for="lastName">Last Name:</label>
+                            <label for="suffix">Suffix:</label>
+                        </div>
+    
+                        <div class="fields">
+                            <input type="text" id="firstName" name="firstName" required oninput="validateInput(event)">
+                            <input type="text" id="middleName" name="middleName" oninput="validateInput(event)">
+                            <input type="text" id="lastName" name="lastName" required oninput="validateInput(event)">
+                            <input type="text" id="suffix" name="suffix" oninput="validateInput(event)">
+                        </div>
+                    </div>
+    
+                    <div class="add-right">
+                        <div class="labels">
+                            <label for="email">Email:</label>
+                            <label for="password">Password:</label>
+                            <label for="confpassword">Confirm Password:</label>
+                            <label for="sort">Type:</label>
+                        </div>
+    
+                        <div class="fields">
+                            <input type="email" id="email" name="email" autocomplete="off" required>
+                            
+                            <div class="password-container">
+                                <input type="password" id="password" name="password" required>
+                                <span id="togglePassword" class="eye-icon" style="cursor: pointer;">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
+    
+                            <div class="password-container">
+                                <input type="password" id="confpassword" name="confpassword" required>
+                                <span id="toggleConPassword" class="eye-icon" style="cursor: pointer;">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
+                            
+                            <select id="sort" name="sort">
+                                <option value="Committee">Committee</option>
+                                <option value="Judge">Judge</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+    
+                            <div class="button-group">
+                                <button type="button" id="cancelBtn">Cancel</button>
+                                <button type="submit" id="saveBtn">SAVE</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+
+    <script src="../js/create-account.js"></script>
+    
+</body>
+</html>

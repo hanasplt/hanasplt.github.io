@@ -85,6 +85,19 @@
                         <iframe id="popupFrame"></iframe>
                     </div>
 
+                    <script>
+                        document.getElementById("openPopup").addEventListener("click", function() {
+                            document.getElementById("popupFrame").src = "create-account.html";
+                            document.getElementById("iframeOverlay").style.display = "block";
+                        });
+    
+                        window.addEventListener("message", function(event) {
+                            if (event.data === "closePopup") {
+                                document.getElementById("iframeOverlay").style.display = "none";
+                            }
+                        });
+                    </script>
+
                 <div class="new-team" onclick="location.href = 'teams.php'">
                     <div class="plus-icon">
                         <i class="fas fa-plus"></i>
@@ -116,7 +129,7 @@
                         Meets Friendly Competition!
                     </p>
                 </div>
-                <img src="../../../public/assets/icons/ILPS LOGO 2.png">
+                <img src="assets/icons/ILPS LOGO 2.png">
             </div>
         </div>
 
@@ -156,7 +169,6 @@
             </div>
 
             <?php 
-            try {
                 $sql = "CALL sp_getTeam(?, ?)"; // retrieving 3 teams for display
                 $opsit = 0;
                 $stmt = $conn->prepare($sql);
@@ -183,9 +195,6 @@
                 }
                 $result->free();
                 $stmt->close();
-            } catch (Exception $e) {
-                die("Error: " . $e->getMessage());
-            }
             ?>
         </div>
         
@@ -196,7 +205,6 @@
             </div>
 
             <?php 
-            try {
                 $sql = "CALL sp_getEventLimit(?)"; // retrieve 3 events for display
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("i", $limit);
@@ -222,14 +230,29 @@
                 }
                 $result->free();
                 $stmt->close();
-            } catch (Exception $e) {
-                die("Error: " . $e->getMessage());
-            }
             ?>
         </div>
 
         <!-- logout confirmation -->
-    <script src="../admin/js/admin.js"></script>
+    <script>
+        document.getElementById('logoutIcon').addEventListener('click', function() {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You will be logged out!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#7FD278',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, log me out',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // mag redirect siya to the login page
+                    window.location.href = 'index.html';
+                }
+            });
+        });
+    </script>
 
     </body>
 </html>

@@ -42,7 +42,7 @@
                     $stmt = $conn->prepare($insLog);
                     $stmt->execute();
 
-                    header('Location: committee.php?id='.$account['rilId']); // sent to committee's ui
+                    header('Location: ../src/roles/committee/committee.php?id='.$account['rilId']); // sent to committee's ui
                     exit;
                 } 
                 
@@ -53,7 +53,7 @@
                     $stmt = $conn->prepare($insLog);
                     $stmt->execute();
 
-                    header('Location: judge.php?id='.$account['rilId']); // sent to judges' ui
+                    header('Location: ../src/roles/judge/judge.php?id='.$account['rilId']); // sent to judges' ui
                     exit;
                 } 
                 
@@ -64,7 +64,7 @@
                     $stmt = $conn->prepare($insLog);
                     $stmt->execute();
 
-                    header('Location: admin.php'); // sent to admin page
+                    header('Location: ../src/roles/admin/admin.php?id='.$account['rilId']); // sent to admin page
                     exit;
                 }
             }
