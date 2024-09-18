@@ -82,7 +82,7 @@ function calculateTotal(criInput) { // Automatic total calculation
 }
 
 
-// Validate if there is a tie in the total score
+/*
 function checkIfScoresAreEqual() {
     var totalScoreElements = document.querySelectorAll('[id^="totalScore"]');
     
@@ -104,7 +104,7 @@ function checkIfScoresAreEqual() {
             return true; // If score/s is/are similar, return true
         }
     }
-}
+}*/
 
 
 // LOGOUT CONFIRMATION
@@ -130,19 +130,40 @@ document.getElementById('logoutIcon').addEventListener('click', function() {
 document.getElementById('criteriaForm').addEventListener('submit', function(event) {
     event.preventDefault();
     
-    // TBC unsaon ang pag ingon na tie
-    let txt = "";totalScoreArr.find(myFunction);
-    console.log(txt);
 
-    var count = 0;
+    // Validate the total score for tie
+    let txt = "";
+    let tieDetected = false;
+    const scoreCount = {}; // Object to track the frequency of each score
 
-    function myFunction(value, index, array) {
-        if (index < array.length - 1) {
-            if (value == array[index + 1]) {
-                return txt = value;
-            }
+    // Iterate through the scores and count the occurrences
+    totalScoreArr.forEach(value => {
+        scoreCount[value] = (scoreCount[value] || 0) + 1;
+    });
+
+    // Check if any score occurs more than once, indicating a tie
+    for (let score in scoreCount) {
+        if (scoreCount[score] > 1) {
+            tieDetected = true;
+            txt = `There is a tie with score: ${score}`;
+
+            totalScoreArr.length = 0; // Empty the array to validate again
+            break; // Exit the loop once a tie is found
         }
     }
+
+    if (tieDetected) {
+        Swal.fire({
+            title: 'Oops...',
+            text: "There is a tie! Break the tie by changing the score.",
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    } else {
+        //TBC
+        fetch ('')
+    }
+
 
     /*var inputs = document.querySelectorAll('.criteriaInput');
     var total = 0;
