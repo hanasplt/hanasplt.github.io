@@ -31,7 +31,6 @@ if ($result_days->num_rows > 0) {
     }
 }
 
-// Sort the array by 'day_date' in ascending order
 usort($scheduled_days, function($a, $b) {
     return strtotime($a['day_date']) - strtotime($b['day_date']);
 });
@@ -123,7 +122,7 @@ usort($scheduled_days, function($a, $b) {
                             <?php else: ?>
                                 <?php foreach ($day['events'] as $event): ?>
                                     <tr data-event-id="<?php echo $event['id']; ?>">
-                                        <td><?php echo $event['time']; ?></td>
+                                        <td><?php echo date('h:i A', strtotime($event['time'])); ?></td>
                                         <td><?php echo $event['activity']; ?></td>
                                         <td><?php echo $event['location']; ?></td>
                                         <td><?php echo $event['status']; ?></td>
@@ -212,7 +211,7 @@ usort($scheduled_days, function($a, $b) {
                                         confirmButtonColor: '#7FD278',
                                         confirmButtonText: 'OK'
                                     }).then(() => {
-                                        location.reload(); // Reload the page to reflect new data
+                                        location.reload();
                                     });
                                 } else {
                                     Swal.fire({
@@ -303,18 +302,25 @@ usort($scheduled_days, function($a, $b) {
                     confirmButtonText: 'Add',
                     showCancelButton: true,
                     preConfirm: () => {
-                        const time = document.getElementById('event-time').value;
+                        const time24 = document.getElementById('event-time').value;
                         const activity = document.getElementById('event-activity').value;
                         const location = document.getElementById('event-location').value;
                         const status = document.getElementById('event-status').value;
 
-                        if (!time || !activity || !location) {
+                        if (!time24 || !activity || !location) {
                             Swal.showValidationMessage('Please fill in all fields');
                             return false;
                         }
 
+                        // Convert 24-hour time to 12-hour format
+                        const [hour, minute] = time24.split(':');
+                        const hours = parseInt(hour);
+                        const period = hours >= 12 ? 'PM' : 'AM';
+                        const hour12 = (hours % 12) || 12;  // Convert 0 to 12 for midnight/noon
+                        const time12 = `${hour12}:${minute} ${period}`;
+
                         return {
-                            time,
+                            time: time12,
                             activity,
                             location,
                             status
@@ -369,7 +375,7 @@ usort($scheduled_days, function($a, $b) {
                                     });
                                 }
                             }
-                            };
+                        };
                         xhr.send(`day_id=${dayId}&time=${time}&activity=${activity}&location=${location}&status=${status}`);
                     }
                 });
@@ -382,6 +388,20 @@ usort($scheduled_days, function($a, $b) {
                     const row = this.closest('tr');
                     const cells = row.getElementsByTagName('td');
                     const eventId = row.getAttribute('data-event-id');
+
+                    let time24hr = cells[0].textContent.trim();
+                    let [hour, minute] = time24hr.split(':');
+                    hour = parseInt(hour, 10);
+
+                    let period = 'AM';
+                    if (hour >= 12) {
+                        period = 'PM';
+                        hour = hour > 12 ? hour - 12 : hour;
+                    } else if (hour === 0) {
+                        hour = 12;
+                    }
+
+                    const time12hr = `${hour}:${minute} ${period}`;
 
                     Swal.fire({
                         title: 'Edit Event',
@@ -410,6 +430,18 @@ usort($scheduled_days, function($a, $b) {
                     }).then((result) => {
                         if (result.isConfirmed) {
                             const { time, activity, location, status } = result.value;
+
+                            const [timePart, ampm] = time.split(' ');
+                            let [hour, minute] = timePart.split(':');
+                            hour = parseInt(hour, 10);
+
+                            if (ampm === 'PM' && hour !== 12) {
+                                hour += 12;
+                            } else if (ampm === 'AM' && hour === 12) {
+                                hour = 0;
+                            }
+                            
+                            const time24hr = `${hour.toString().padStart(2, '0')}:${minute}`;
                             
                             const xhr = new XMLHttpRequest();
                             xhr.open('POST', 'edit_event.php', true);
@@ -418,7 +450,7 @@ usort($scheduled_days, function($a, $b) {
                                 if (xhr.status === 200) {
                                     const response = JSON.parse(xhr.responseText);
                                     if (response.success) {
-                                        cells[0].textContent = time;
+                                        cells[0].textContent = time24hr;
                                         cells[1].textContent = activity;
                                         cells[2].textContent = location;
                                         cells[3].textContent = status;
@@ -442,7 +474,7 @@ usort($scheduled_days, function($a, $b) {
                                 }
                             };
 
-                            xhr.send(`event_id=${eventId}&time=${time}&activity=${activity}&location=${location}&status=${status}`);
+                            xhr.send(`event_id=${eventId}&time=${time24hr}&activity=${activity}&location=${location}&status=${status}`);
                         }
                     });
                 });
@@ -451,7 +483,7 @@ usort($scheduled_days, function($a, $b) {
         document.querySelectorAll('.delete-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const row = this.closest('tr');
-                const eventId = row.getAttribute('data-event-id'); // Assuming event ID is stored in row
+                const eventId = row.getAttribute('data-event-id');
 
                 Swal.fire({
                     title: 'Are you sure?',
@@ -463,7 +495,6 @@ usort($scheduled_days, function($a, $b) {
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Send AJAX request to delete the event from the database
                         const xhr = new XMLHttpRequest();
                         xhr.open('POST', 'delete_event.php', true);
                         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -471,7 +502,7 @@ usort($scheduled_days, function($a, $b) {
                             if (xhr.status === 200) {
                                 const response = JSON.parse(xhr.responseText);
                                 if (response.success) {
-                                    row.remove(); // Remove the row from the table
+                                    row.remove();
 
                                     Swal.fire({
                                         title: 'Deleted!',
@@ -525,7 +556,6 @@ usort($scheduled_days, function($a, $b) {
     </div>
 
     <style>
-    /* Add basic styles for the modal */
     #editEventModal {
         position: fixed;
         top: 50%;
