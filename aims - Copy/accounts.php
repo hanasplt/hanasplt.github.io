@@ -1,19 +1,75 @@
 <?php
     $conn = include 'db.php';
 
-    $sql = "CALL sp_getAllAcc()"; // retrieving all accounts
-    $result = $conn->query($sql);
+    if (!$conn) {
+        die("Connection failed: " . mysqli_connect_error());
+    }
 
-    $accounts = [];
-    if ($result->num_rows > 0) {
+    // Pagination setup
+    $recordsPerPage = 5;
+    $currentPage = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+    $currentPage = max(1, $currentPage);
+    $offset = ($currentPage - 1) * $recordsPerPage;
+
+    // Get the search query
+    $searchQuery = isset($_GET['search']) ? "%" . $_GET['search'] . "%" : "%%";  // If no search term, use '%%' (matches everything)
+
+    try {
+        // Count accounts
+        $countSql = "CALL sp_getAccountCount(?)";
+        $countStmt = $conn->prepare($countSql);
+        if (!$countStmt) {
+            throw new Exception("Prepare failed: " . $conn->error);
+        }
+
+        $countStmt->bind_param("s", $searchQuery);
+        $countStmt->execute();
+        $countResult = $countStmt->get_result();
+        if (!$countResult) {
+            throw new Exception("Error retrieving account count: " . $countStmt->error);
+        }
+
+        $totalAccounts = $countResult->fetch_assoc()['total'];
+        $totalPages = ceil($totalAccounts / $recordsPerPage);
+
+        $countResult->free_result();
+        $conn->next_result();
+
+    } catch (Exception $e) {
+        die("Error: " . $e->getMessage());
+    }
+
+    try {
+        // Fetch accounts
+        $sql = "CALL sp_getAccount(?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Prepare failed: " . $conn->error);
+        }
+
+        $stmt->bind_param("ssi", $searchQuery, $recordsPerPage, $offset);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if (!$result) {
+            throw new Exception("Execute failed: " . $stmt->error);
+        }
+
+        $accounts = [];
         while ($row = $result->fetch_assoc()) {
             $accounts[] = $row;
         }
-    }
-    $result->free_result();
-    $conn->next_result();
 
+        $result->free_result();
+        $stmt->close();
+
+    } catch (Exception $e) {
+        die("Error: " . $e->getMessage());
+    }
+
+    $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -164,11 +220,37 @@
                 <?php
             }
         } else {
-            echo "0 results"; // no users were added yet.
+            ?>
+            <div class="no-results">
+                <i class="fas fa-search"></i>
+                <p>No accounts found matching your search.</p>
+            </div>
+            <?php
         }
-        $conn->close();
         ?>
     </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination">
+        <?php if ($currentPage > 1): ?>
+            <a href="?page=<?php echo $currentPage - 1; ?>" class="arrow">&laquo; Previous</a>
+        <?php else: ?>
+            <a href="#" class="arrow disabled">&laquo; Previous</a>
+        <?php endif; ?>
+
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <a href="?page=<?php echo $i; ?>" class="<?php echo ($i == $currentPage) ? 'active' : ''; ?>">
+                <?php echo $i; ?>
+            </a>
+        <?php endfor; ?>
+
+        <?php if ($currentPage < $totalPages): ?>
+            <a href="?page=<?php echo $currentPage + 1; ?>" class="arrow">Next &raquo;</a>
+        <?php else: ?>
+            <a href="#" class="arrow disabled">Next &raquo;</a>
+        <?php endif; ?>
+    </div>
+
 
     <!-- logout confirmation -->
     <script>
@@ -191,21 +273,22 @@
         });
     </script>
 
+    
     <script>
+        function debounce(func, delay) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
         // Search functionality
-        document.getElementById('searchBox').addEventListener('input', function() {
-            var searchValue = this.value.toLowerCase();
-            var accounts = document.querySelectorAll('.account');
-
-            accounts.forEach(function(account) {
-                var name = account.getAttribute('data-name');
-                if (name.includes(searchValue)) {
-                    account.style.display = 'flex';
-                } else {
-                    account.style.display = 'none';
-                }
-            });
-        });
+        document.getElementById('searchBox').addEventListener('input', debounce(function() {
+            var searchValue = this.value;
+            if (searchValue.length > 0) {
+                window.location.href = '?search=' + encodeURIComponent(searchValue) + '&page=1';
+            }
+        }, 500)); 
 
         // Edit functionality
         document.querySelectorAll('.edit-icon').forEach(function(editIcon) {
