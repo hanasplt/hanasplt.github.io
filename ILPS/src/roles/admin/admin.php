@@ -1,15 +1,31 @@
 <?php
-    session_start();
+    require_once '../../../config/sessionConfig.php'; // Session Cookie
+    $conn = require_once '../../../config/db.php'; // Database connection
 
-    $user_id = isset($_GET['id']) && is_numeric($_GET['id']) ? (int)$_GET['id'] : '';
-
-    $conn = include '../../../config/db.php';
-    
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $sql = "CALL sp_getAcc(?);"; // display 3 accounts for display
+    if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+        $user_id = isset($_GET['id']);
+        $_SESSION['userId'] = $user_id;
+    }
+
+    // Unsent and destory all session stored for security purposes
+    if (isset($_GET['logout'])) {
+        session_unset();
+        session_destroy();
+        header('Location: ../../../public/login.php');
+        exit;
+    }
+
+    // Check if the user is logged in
+    if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+        header('Location: ../../../public/login.php'); // Redirect to login page if not logged in
+        exit;
+    }
+
+    $sql = "CALL sp_getAcc(?);"; // display only 3 accounts for display
     $limit = 3;
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $limit);
@@ -126,8 +142,8 @@
                 <p id="vwall" onclick="window.location.href = 'accounts.php';">View All</p>
             </div>
                 <?php
-                    if ($result->num_rows > 0) {
-                        while ($row = $result->fetch_assoc()) {
+                    if ($result->num_rows > 0) { // fetch and display the results from database
+                        while ($row = $result->fetch_assoc()) { 
                             ?>
             <div class="account">
                 <div class="left-deets">
@@ -228,7 +244,6 @@
             ?>
         </div>
 
-        <!-- logout confirmation -->
     <script src="../admin/js/admin.js"></script>
 
     </body>

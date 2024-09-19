@@ -1,13 +1,19 @@
 <?php
-    include '../config/encryption.php';
+    require_once '../config/sessionConfig.php';
+    require_once '../config/encryption.php';
+    $conn = require_once '../config/db.php';
 
-    $conn = include '../config/db.php';
-
-    session_start();
+    
 
     if (isset($_POST['login'])) {
-        $uzr = $_POST['email']; // user input--username
+        $uzr = $_POST['email']; // user input--username (this is email)
         $paz = $_POST['password']; // user input--password
+
+        if (empty($uzr) && empty($paz)) { // empty field, no input
+            $_SESSION['error'] = 'Enter your email and password!';
+            header('Location: ../public/login.php');
+            exit();
+        }
 
         $acc = array();
         $sql = "CALL sp_getAllAcc()"; // retrieving all accounts
@@ -42,6 +48,9 @@
                     $stmt = $conn->prepare($insLog);
                     $stmt->execute();
 
+                    $_SESSION['role'] = 'Committee';
+
+                    $_SESSION['loggedin'] = true;
                     header('Location: ../src/roles/committee/committee.php?id='.$account['rilId']); // sent to committee's ui
                     exit;
                 } 
@@ -53,6 +62,9 @@
                     $stmt = $conn->prepare($insLog);
                     $stmt->execute();
 
+                    $_SESSION['role'] = 'Judge';
+
+                    $_SESSION['loggedin'] = true;
                     header('Location: ../src/roles/judge/judge.php?id='.$account['rilId']); // sent to judges' ui
                     exit;
                 } 
@@ -64,9 +76,13 @@
                     $stmt = $conn->prepare($insLog);
                     $stmt->execute();
 
+                    $_SESSION['role'] = 'Admin';
+
+                    $_SESSION['loggedin'] = true;
                     header('Location: ../src/roles/admin/admin.php?id='.$account['rilId']); // sent to admin page
                     exit;
                 }
+                
             }
         }
         

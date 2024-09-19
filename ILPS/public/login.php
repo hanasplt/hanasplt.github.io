@@ -1,4 +1,24 @@
-<?php session_start(); ?>
+<?php 
+
+require_once '../config/sessionConfig.php';
+
+if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+    // If already logged in, redirect the user based on their role
+    $role = $_SESSION['role'];
+
+    if ($role == "Committee") {
+        header('Location: ../src/roles/committee/committee.php?id='.$_SESSION['userId']); // sent to committee's ui
+        exit;
+    } else if ($role == "Judge") {
+        header('Location: ../src/roles/judge/judge.php?id='.$_SESSION['userId']); // sent to judges' ui
+        exit;
+    } else {
+        header('Location: ../src/roles/admin/admin.php?id='.$_SESSION['userId']); // sent to admin page
+        exit;
+    }
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

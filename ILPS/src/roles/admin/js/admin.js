@@ -24,7 +24,7 @@ document.getElementById('logoutIcon').addEventListener('click', function() {
     }).then((result) => {
         if (result.isConfirmed) {
             // mag redirect siya to the login page
-            window.location.href = 'index.html';
+            window.location.href = '../admin/admin.php?logout';
         }
     });
 });

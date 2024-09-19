@@ -1,11 +1,15 @@
 <?php 
 
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+error_reporting(E_ALL);
+
 // Create database
-include 'database.php';
+require_once 'database.php';
 
 // Database Created, tables and others will be created
-include 'encryption.php';
-$conn = include 'db.php';
+require_once 'encryption.php';
+$conn = require_once 'db.php';
 
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
@@ -321,9 +325,11 @@ if ($conn->query($sqlT) === TRUE) {
 }
 #end new
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAllAcc()
         BEGIN
-            SELECT * FROM accounts;
+            SELECT * FROM accounts WHERE status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -348,6 +354,8 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertAcc(IN fn VARCHAR(255),
         IN mn VARCHAR(255), IN ln VARCHAR(255), IN sfx VARCHAR(50), IN em VARCHAR(255), IN pass VARCHAR(255),
         IN typ VARCHAR(50))
@@ -360,6 +368,8 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_editAcc(IN id INT, IN fn VARCHAR(255),
         IN mn VARCHAR(255), IN ln VARCHAR(255), IN sfx VARCHAR(50), IN em VARCHAR(255), IN pass VARCHAR(255),
         IN acctype VARCHAR(50))
@@ -393,9 +403,10 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_delAcc(IN id VARCHAR(255))
         BEGIN
-            DELETE FROM vw_accounts WHERE userId = id;
+            UPDATE vw_accounts SET status = 0 WHERE userId = id;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -421,6 +432,8 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getTeam(IN limit_num INT, IN offset INT)
         BEGIN
             SELECT * FROM vw_teams LIMIT limit_num OFFSET offset;
