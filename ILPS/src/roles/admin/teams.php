@@ -44,7 +44,7 @@ try {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link rel="icon" href="assets/icons/logo.png">
+  <link rel="icon" href="../../../public/assets/icons/logo.png">
 </head>
 <body>
   <div class="nav-bar">
@@ -82,7 +82,7 @@ try {
             $teamName = htmlspecialchars($row['teamName']);
             $teamId = (int)$row['teamId'];
 
-            echo "<div class='card' data-id='$teamId' data-name='$teamName' data-image='../../../public/$teamImageSrc'>";
+            echo "<div class='card' data-id='$teamId' data-name='$teamName' data-image='../../../public/uploads/$teamImageSrc'>";
             echo "<div class='content'>";
             echo "<div class='img'><img src='$teamImageSrc' alt='Team Image'></div>";
             echo "<div class='details'><div class='name'>$teamName</div></div>";
@@ -102,6 +102,8 @@ try {
       </div>
     </div>
 
+    <!-- Pagination -->
+    <div class="pagination" id="teamPagination">
     <?php
       try {
         // Get the total number of records
@@ -122,10 +124,9 @@ try {
       } catch (Exception $e) {
         die("Error: " . $e->getMessage());
       }
-
-      // Close the database connection
-      $conn->close();
       ?>
+    </div>
+
   </div>
 
   <!-- Add Modal -->
@@ -174,6 +175,10 @@ try {
           <input type="checkbox" name="course[]" id="course8" value="BTVTED">
           Bachelor of Technical-Vocational Teacher Education
         </span>
+        <span>
+          <input type="checkbox" name="course[]" id="course9" value="BSABE">
+          Bachelor of Science in Agricultural and Biosystems Engineering
+        </span>
         
 
         <button type="submit">Add Team</button>
@@ -182,6 +187,7 @@ try {
       </form>
     </div>
   </div>
+
 
   <!-- Edit Modal -->
   <div id="editModal" class="modal-edit">
@@ -194,9 +200,46 @@ try {
         <label for="editTeamImage">Team Image:</label>
         <input type="file" id="editTeamImage" name="teamImage" accept="image/*"><br><br>
         <label for="editTeamName">Team Name:</label>
-        <input type="text" id="editTeamName" name="teamName" maxlength="20" required><br><br>
+        <input type="text" id="editTeamName" name="teamName" maxlength="20" required><br>
 
+        <label for="course1">Courses that comprises the team:</label>
         <!-- COURSES OPTION HERE -->
+        <span>
+          <input type="checkbox" name="course[]" id="course1" value="BSIT">
+          Bachelor of Science in Information Technology
+        </span>
+        <span>
+          <input type="checkbox" name="course[]" id="course2" value="BEED">
+          Bachelor of Elementary Education
+        </span>
+        <span>
+          <input type="checkbox" name="course[]" id="course3" value="BSNED">
+          Bachelor of Special Needs Education
+        </span>
+        <span>
+          <input type="checkbox" name="course[]" id="course4" value="BECED">
+          Bachelor of Early Childhood
+        </span>
+        <span>
+          <input type="checkbox" name="course[]" id="course5" value="BSED-English">
+          Bachelor of Secondary Education - English
+        </span>
+        <span>
+          <input type="checkbox" name="course[]" id="course6" value="BSED-Mathematics">
+          Bachelor of Secondary Education - Mathematics
+        </span>
+        <span>
+          <input type="checkbox" name="course[]" id="course7" value="BSED-Filipino">
+          Bachelor of Secondary Education - Filipino
+        </span>
+        <span>
+          <input type="checkbox" name="course[]" id="course8" value="BTVTED">
+          Bachelor of Technical-Vocational Teacher Education
+        </span>
+        <span>
+          <input type="checkbox" name="course[]" id="course9" value="BSABE">
+          Bachelor of Science in Agricultural and Biosystems Engineering
+        </span>
 
         <button type="submit">Save Changes</button>
         <button type="button" onclick="closeModal('editModal')">Cancel</button>

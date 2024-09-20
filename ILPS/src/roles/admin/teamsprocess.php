@@ -1,6 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-ini_set('display_errors', 'On');
 
 $conn = require_once '../../../config/db.php'; // Database connection
 
@@ -16,29 +17,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
     if ($_POST['action'] == 'add') {
       $teamName = ucfirst($_POST['teamName']);
       $teamImage = $_FILES['teamImage'];
-      $courses = $_POST['courses'];
+      $courses = $_POST['course'];
 
-      echo $teamName, $teamImage;
-  
       // Upload the file (image)
-      $imagePath = 'uploads/' . uniqid() . '-' . basename($teamImage['name']);
+      $imagePath = '../../../public/uploads/' . uniqid() . '-' . basename($teamImage['name']);
   
       if (move_uploaded_file($teamImage['tmp_name'], $imagePath)) {
   
         $values = [];
         foreach ($courses as $course) {
           $values[] = $conn->real_escape_string($course); // Prevent SQL injection
-          echo $course;
         }
+
+        $courseValues = implode(", ", $values);
   
         $sql = "CALL sp_insertTeam(?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sss", $teamName, $imagePath, implode(", ", $values));
+        $stmt->bind_param("sss", $teamName, $courseValues, $imagePath);
   
         if ($stmt->execute()) {
           echo json_encode(['status' => 'success', 'message' => 'New Team added successfully!']);
         } else {
-          echo json_encode(['status' => 'error', 'message' => 'Error adding team: ' . $sql . "<br>" . $conn->error]);
+          echo json_encode(['status' => 'error', 'message' => 'Error adding team!']);
         }
       } else {
         echo json_encode(['status' => 'error', 'message' => 'File upload failed!']);
@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
         if (move_uploaded_file($teamImage['tmp_name'], $imagePath)) {
           $sql = "CALL sp_editTeam(?, ?, ?)";
           $stmt = $conn->prepare($sql);
-          $stmt->bind_param("iss", $teamID, $imagePath, $teamName);
+          $stmt->bind_param("iss", $teamID, $teamName, $imagePath);
         } else {
           echo json_encode(['status' => 'error', 'message' => 'File upload failed!']);
         }
@@ -106,6 +106,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['teamid'])) {
     $stmt->close();
     header('Content-Type: application/json');
     echo json_encode($response);
+}
+
+// Retrieve team to edit
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_GET['editID'])) {
+  $teamid = $_GET['editID'];
+
+  try {
+    // Retrieve the courses in the database
+    $getCourses = "CALL sp_getATeam(?)";
+    $courses = []; // Initialize an array where the courses value be inserted
+
+    $stmt = $conn->prepare($getCourses);
+    $stmt->bind_param("i", $teamid);
+    $stmt->execute();
+
+    $retval = $stmt->get_result();
+
+    $row = $retval->fetch_assoc();
+    $courses = $row['members'];
+
+    echo json_encode(['courses' => $courses]);
+
+  } catch (Exception $e) {
+    die("Error: " . $e->getMessage());
+  }
 }
 
 ?>

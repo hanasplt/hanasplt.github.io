@@ -463,9 +463,11 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
-$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertTeam(IN name VARCHAR(255), IN img LONGBLOB)
+
+// NAGAMIT
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertTeam(IN name VARCHAR(255), IN mem VARCHAR(255), IN img LONGBLOB)
         BEGIN
-            INSERT INTO vw_teams (teamName, image) VALUES (name, img);
+            INSERT INTO vw_teams (teamName, members, image) VALUES (name, mem, img);
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {

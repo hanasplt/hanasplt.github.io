@@ -31,7 +31,7 @@ function deleteThis(id) {
         showCancelButton: true
     }).then((result) => {
         if (result.isConfirmed) {
-            fetch('teamsprocess.php', {
+            fetch('../admin/teamsprocess.php', {
                 method: 'POST',
                 body: new URLSearchParams({
                     teamid: id
@@ -76,11 +76,30 @@ function openAddModal() {
     var card = element.closest('.card');
     var teamID = card.getAttribute('data-id');
     var teamName = card.getAttribute('data-name');
-    var teamImage = card.getAttribute('data-image');
     
     document.getElementById('editTeamID').value = teamID;
     document.getElementById('editTeamName').value = teamName;
     document.getElementById('editTeamImage').value = ''; // Reset file input
+
+    fetch(`../admin/teamsprocess.php?editID=` + teamID)
+    .then(response => response.json())
+    .then(data => {
+        // Reset all checkboxes
+        var checkboxes = document.querySelectorAll('input[name="course[]"]');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = false; // Uncheck all checkboxes
+        });
+
+        // Check the checkboxes that match the team's courses
+        data.courses.forEach(function(course) {
+            var checkbox = document.querySelector('input[name="course[]"][value="' + course + '"]');
+            if (checkbox) {
+                checkbox.checked = true; // Check the matching checkbox
+            }
+        });
+    })
+    .catch(error => console.error('Error fetching course data:', error));
+
     document.getElementById('editModal').style.display = 'block';
   }
 
