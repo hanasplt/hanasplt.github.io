@@ -30,19 +30,22 @@ document.getElementById('logoutIcon').addEventListener('click', function() {
 
 
 // Search functionality
-document.getElementById('searchBox').addEventListener('input', function() {
-    var searchValue = this.value.toLowerCase();
-    var accounts = document.querySelectorAll('.account');
-
-    accounts.forEach(function(account) {
-        var name = account.getAttribute('data-name');
-        if (name.includes(searchValue)) {
-            account.style.display = 'flex';
-        } else {
-            account.style.display = 'none';
-        }
-    });
-});
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+// Search functionality
+document.getElementById('searchBox').addEventListener('input', debounce(function() {
+    var searchValue = this.value;
+    if (searchValue.length > 0) {
+        window.location.href = '?search=' + encodeURIComponent(searchValue) + '&page=1';
+    } else {
+        window.location.href = '?page=1';
+    }
+}, 500));
 
 // Display edit account form
 document.querySelectorAll('.edit-icon').forEach(function(editIcon) {
@@ -125,30 +128,30 @@ document.getElementById('sort-type').addEventListener('change', function() {
 });
 
 
+var accountsContainer = document.querySelector('.accounts');
+var originalAccounts = Array.from(accountsContainer.querySelectorAll('.account'));
+
 // sort alphabetically
 document.getElementById('abc').addEventListener('change', function() { 
     var sortOrder = this.value;
-    var accountsContainer = document.querySelector('.accounts');
-    var accounts = Array.from(accountsContainer.querySelectorAll('.account'));
+    var accounts = Array.from(originalAccounts);
 
     if (sortOrder === 'a-z') {
         accounts.sort(function(a, b) {
             var nameA = a.querySelector('#name').textContent.trim().toUpperCase();
             var nameB = b.querySelector('#name').textContent.trim().toUpperCase();
-            if (nameB < nameA) return 1;
-            if (nameB > nameA) return -1;
-            return 0;
+            return nameA.localeCompare(nameB); // sort A-Z
         });
-    } else if(sortOrder === 'z-a') {
+    } else if (sortOrder === 'z-a') {
         accounts.sort(function(a, b) {
             var nameA = a.querySelector('#name').textContent.trim().toUpperCase();
             var nameB = b.querySelector('#name').textContent.trim().toUpperCase();
-            if (nameB < nameA) return -1;
-            if (nameA > nameB) return 1;
-            return 0;
+            return nameB.localeCompare(nameA); // sort Z-A
         });
+    } else {
+        accounts = originalAccounts; // show original order
     }
-
+    
     accounts.forEach(function(account) {
         accountsContainer.appendChild(account);
     });

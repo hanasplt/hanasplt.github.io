@@ -99,9 +99,11 @@ body {
     align-items: center;
     margin-left: 5vw;
     margin-right: 5vw;
+    margin-bottom: 35px;
 }
 
     #accs {
+        margin-left: 5vw;
         font-weight: 700;
         color: #466543;
         font-size: 1.3vw;
@@ -112,16 +114,17 @@ body {
     }
 
         .dropdowns select {
-            width: 9vw;
+            font-family: Poppins, sans-serif;
+            width: 15vw;
             background-color: #B1F0AB;
             color: #2D4D2A;
             font-weight: 600;
-            font-size: 1vw;
-            padding: 0.5vw;
-            padding-left: 1vw;
-            margin-left: 1vw;
+            font-size: 15px;
+            padding: 0.7vw;
+            padding-left: 10px;
+            margin-left: 20px;
             border: none;
-            border-radius: 0.8vw;
+            border-radius: 10px;
         }
 
     .account {
@@ -163,7 +166,7 @@ body {
         }
 
             #name {
-                font-weight: 700;
+                font-weight: 600;
             }
         
         .acc-buttons {
@@ -234,3 +237,89 @@ body {
                 .edit-icon {
                     cursor: pointer;
                 }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 2vw auto;
+}
+
+.pagination a {
+    display: inline-block;
+    margin: 0 0.5vw;
+    padding: 0.5vw 1vw;
+    font-size: 1vw;
+    color: #ffffff;
+    background-color: #4B8946;
+    border-radius: 0.5vw;
+    text-decoration: none;
+    text-align: center;
+}
+
+.pagination a.active {
+    background-color: #2D4D2A;
+    font-weight: 700;
+}
+
+
+.pagination a.disabled {
+    background-color: #c2c2c2;
+    color: #6c6c6c;
+    pointer-events: none;
+}
+
+.pagination a:hover:not(.disabled) {
+    background-color: #7FD278;
+    transition: background-color 0.3s ease;
+}
+
+.pagination a.arrow {
+    font-size: 1.2vw;
+    font-weight: 600;
+}
+
+.no-results {
+    text-align: center;
+    margin-top: 50px;
+    color: #8f8f8f;
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+}
+
+.no-results i {
+    font-size: 50px;
+    margin-bottom: 20px;
+    color: #cccccc;
+}
+
+
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+    border: 2px solid #7fd278;
+    border-radius: 25px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+#searchBox {
+    width: 60%;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+}
+
+#searchBox::placeholder {
+    color: #aaa;
+}
+
+
