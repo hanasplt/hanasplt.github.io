@@ -334,6 +334,37 @@ if ($conn->query($sqlT) === TRUE) {
 }
 #end new
 
+//NAGAMIT
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAccount(
+        IN search_query VARCHAR(255), 
+        IN limit_num INT, 
+        IN offset_num INT)
+    BEGIN
+        SELECT * FROM vw_accounts
+        WHERE CONCAT(firstName, ' ', lastName) LIKE search_query
+        OR CONCAT(firstName, ' ', middleName, ' ', lastName) LIKE search_query
+        LIMIT limit_num OFFSET offset_num;
+    END ;";
+
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+    echo "Error creating procedure: " . $conn->error;
+}
+
+//NAGAMIT
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAccountCount(
+        IN search_query VARCHAR(255))
+    BEGIN
+        SELECT COUNT(*) AS total FROM accounts
+        WHERE CONCAT(firstName, ' ', lastName) LIKE search_query
+        OR CONCAT(firstName, ' ', middleName, ' ', lastName) LIKE search_query;
+    END ;";
+
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+    echo "Error creating procedure: " . $conn->error;
+}
+
 
 // NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAllAcc()
