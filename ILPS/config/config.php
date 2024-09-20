@@ -82,7 +82,7 @@ try {
         // Insert Admin's Account
         $sqlInsertAdminAcc = "INSERT INTO vw_accounts 
                         VALUES 
-                            (NULL, ?, ?, ?, NULL, ?, ?, ?, NULL, NULL, NULL)";
+                            (NULL, ?, ?, ?, NULL, ?, ?, ?, NULL, NULL, NULL, NULL)";
         $stmt = $conn->prepare($sqlInsertAdminAcc);
         $stmt->bind_param("ssssss", $adminW, $adminW, $adminW, $adminPass, $adminEmail, $adminW);
         if($stmt->execute()) {

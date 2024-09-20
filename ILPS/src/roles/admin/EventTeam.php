@@ -71,6 +71,80 @@
 
     <div class="accounts">
         <div class="accounts-title">
+            <p id="event">Events</p>
+        </div>
+
+        <div>
+
+            <?php
+
+            try {
+                // Retrieve All Events
+                $getAllEvents = "CALL sp_getEvents()";
+
+                $stmt = $conn->prepare($getAllEvents);
+                $stmt->execute();
+
+                $retval = $stmt->get_result();
+
+                if ($retval->num_rows > 0) {
+                    while ($row = $retval->fetch_assoc()) {
+                        // Display Event information
+                        $db_evID = $row['eventID'];
+                        $db_evName = $row['eventName'];
+                        $db_evType = $row['eventType'];
+                        $db_evCatg = $row['eventCategory'];
+
+                        ?>
+                        <div class="account" onclick="toggleEvent()">
+                            <div class="left-deets">
+                                <div class="acc-img">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="acc-deets">
+                                    <p id="name">
+                                        <?php echo $db_evName; ?>
+                                        <span style="font-weight: 100;">
+                                            (<?php echo $db_evType; ?>)
+                                        </span>
+                                    </p>
+                                    <p id="add"><?php echo $db_evCatg; ?></p>
+                                </div>
+                            </div>
+
+                            <div class="right-deets">
+                                <div class="acc-buttons">
+                                    <div class="subtrash-icon" onclick="deleteThis(<?php echo $db_evID; ?>)">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </div>
+
+                                    <div class="subedit-icon" onclick="openEditEvModal(this)">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accounts" id="eventSubTable" style="display: none;"></div>
+                        <?php
+
+                    }
+                }
+
+                $retval->free();
+                $stmt->close();
+
+            } catch (Exception $e) {
+                die("Error: " . $e->getMessage());
+            }
+
+            ?>
+
+        </div>
+    </div>
+
+    <div class="accounts">
+        <div class="accounts-title">
             <p id="event">Event Type</p>
         </div>
 
