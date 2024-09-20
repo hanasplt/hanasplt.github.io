@@ -1,6 +1,12 @@
 <?php
 // Unsent and destory all session stored for security purposes
 if (isset($_GET['logout'])) {
+    // Insert into logs. This user logged in.
+    $insLog = "INSERT INTO adminlogs
+    VALUES (NULL, NOW(), $_SESSION[userId], 'Logged out.')";
+    $stmt = $conn->prepare($insLog);
+    $stmt->execute();
+
     session_unset();
     session_destroy();
     header('Location: ../../../public/login.php');

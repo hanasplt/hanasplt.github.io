@@ -44,7 +44,7 @@
                 if ($account['type'] == "Committee") {
                     // Insert into logs. This user logged in.
                     $insLog = "INSERT INTO adminlogs
-                                VALUES (NULL, NOW(), $account[rilId], 'Committee $account[rilId] logged in.')";
+                                VALUES (NULL, NOW(), $account[rilId], 'Logged in.')";
                     $stmt = $conn->prepare($insLog);
                     $stmt->execute();
 
@@ -58,7 +58,7 @@
                 else if ($account['type'] == "Judge") {
                     // Insert into logs. This user logged in.
                     $insLog = "INSERT INTO adminlogs
-                                VALUES (NULL, NOW(), $account[rilId], 'Judge $account[rilId] logged in.')";
+                                VALUES (NULL, NOW(), $account[rilId], 'Logged in.')";
                     $stmt = $conn->prepare($insLog);
                     $stmt->execute();
 
@@ -72,7 +72,7 @@
                 else {
                     // Insert into logs. This user logged in.
                     $insLog = "INSERT INTO adminlogs
-                                VALUES (NULL, NOW(), $account[rilId], 'Admin $account[rilId] logged in.')";
+                                VALUES (NULL, NOW(), $account[rilId], 'Logged in.')";
                     $stmt = $conn->prepare($insLog);
                     $stmt->execute();
 

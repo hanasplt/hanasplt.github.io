@@ -1,6 +1,7 @@
 <?php
     require_once '../../../config/sessionConfig.php'; // Session Cookie
     $conn = require_once '../../../config/db.php'; // Database connection
+    require_once '../admin/verifyLoginSession.php'; // Logged in or not
 
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
@@ -9,20 +10,6 @@
     if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         $user_id = isset($_GET['id']);
         $_SESSION['userId'] = $user_id;
-    }
-
-    // Unsent and destory all session stored for security purposes
-    if (isset($_GET['logout'])) {
-        session_unset();
-        session_destroy();
-        header('Location: ../../../public/login.php');
-        exit;
-    }
-
-    // Check if the user is logged in
-    if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-        header('Location: ../../../public/login.php'); // Redirect to login page if not logged in
-        exit;
     }
 
     $sql = "CALL sp_getAcc(?);"; // display only 3 accounts for display
@@ -76,7 +63,7 @@
                 <p onclick="window.location.href = 'EventTeam.php';">Events</p>
                 <p onclick="window.location.href = 'schedule.php';">Schedule</p>
                 <p onclick="window.location.href = 'reports.php';">Reports</p>
-                <p onclick="window.location.href = 'accesslog.php';">Logs</p>
+                <p onclick="window.location.href = '../admin/logs/accesslog.html';">Logs</p>
             </div>
 
             <div class="menu-icon">

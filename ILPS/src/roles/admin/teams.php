@@ -1,7 +1,7 @@
 <?php
 require_once '../../../config/sessionConfig.php'; // Session Cookie
-require_once '../admin/verifyLoginSession.php'; // Logged in or not
 $conn = require_once '../../../config/db.php'; // Database connection
+require_once '../admin/verifyLoginSession.php'; // Logged in or not
 
 if (!$conn) {
   die("Connection failed: " . mysqli_connect_error());
@@ -59,8 +59,9 @@ try {
       <p onclick="window.location.href = 'accounts.php';">Accounts</p>
       <p onclick="window.location.href = 'teams.php';"><b>Teams</b></p>
       <p onclick="window.location.href = 'EventTeam.php';">Events</p>
-      <p onclick="window.location.href = '#';">Schedule</p>
+      <p onclick="window.location.href = 'schedule.php';">Schedule</p>
       <p onclick="window.location.href = 'reports.php';">Reports</p>
+      <p onclick="window.location.href = '../admin/logs/accesslog.html';">Logs</p>
     </div>
     <div class="menu-icon">
       <i class="fas fa-sign-out-alt" id="logoutIcon"></i>

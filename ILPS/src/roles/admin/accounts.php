@@ -1,7 +1,7 @@
 <?php
     require_once '../../../config/sessionConfig.php'; // Session Cookie
-    require_once '../admin/verifyLoginSession.php'; // Logged in or not
     $conn = require_once '../../../config/db.php'; // Database connection
+    require_once '../admin/verifyLoginSession.php'; // Logged in or not
 
     $sql = "CALL sp_getAllAcc()"; // retrieving all accounts
     $result = $conn->query($sql);
@@ -53,6 +53,7 @@
             <p onclick="window.location.href = 'EventTeam.php';">Events</p>
             <p onclick="window.location.href = 'schedule.php';">Schedule</p>
             <p onclick="window.location.href = 'reports.php';">Reports</p>
+            <p onclick="window.location.href = '../admin/logs/accesslog.html';">Logs</p>
         </div>
         <div class="menu-icon">
             <i class="fas fa-sign-out-alt" id="logoutIcon"></i>

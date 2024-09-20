@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Access Log</title>
 
-    <link rel="stylesheet" href="assets/css/accesslog.css">
+    <link rel="stylesheet" href="../css/accesslog.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 
-    <link rel="icon" href="assets/icons/logo.svg">
+    <link rel="icon" href="../../../../public/assets/icons/logo.svg">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
@@ -20,19 +20,19 @@
 </head>
 <body>
     <div class="nav-bar">
-        <img class="logo-img" src="assets/icons/logoo.png">
+        <img class="logo-img" src="../../../../public/assets/icons/logoo.png">
         <div class="logo-bar">
             <p>Intramural Leaderboard</p>
             <p>and Points System</p>
             <p id="administrator"><i>ADMINISTRATOR</i></p>
         </div>
         <div class="links">
-            <p onclick="window.location.href = 'admin.php';">Home</p>
-            <p onclick="window.location.href = 'accounts.php';">Accounts</p>
-            <p onclick="window.location.href = 'teams.php';">Teams</p>
-            <p onclick="window.location.href = 'EventTeam.php';">Events</p>
-            <p onclick="window.location.href = '#';">Schedule</p>
-            <p onclick="window.location.href = 'reports.php';">Reports</p>
+            <p onclick="window.location.href = '../admin.php';">Home</p>
+            <p onclick="window.location.href = '../accounts.php';">Accounts</p>
+            <p onclick="window.location.href = '../teams.php';">Teams</p>
+            <p onclick="window.location.href = '../EventTeam.php';">Events</p>
+            <p onclick="window.location.href = '../schedule.php';">Schedule</p>
+            <p onclick="window.location.href = '../reports.php';">Reports</p>
             <p onclick="window.location.href = 'accesslog.html';"><b>Logs</b></p>
         </div>
         <div class="menu-icon">
@@ -42,11 +42,26 @@
 
 
     <div class="div-table">
+        <div class="filter-dropdown">
+            <!-- Filter Dropdown -->
+            <label for="yearFilter">Filter by Year:</label>
+            <select id="yearFilter">
+                <option value="">--Select Year--</option>
+                <script>
+                    // Generate year options dynamically (e.g., from 2000 to current year)
+                    let currentYear = new Date().getFullYear();
+                    for (let i = 2000; i <= currentYear; i++) {
+                        document.write(`<option value="${i}">${i}</option>`);
+                    }
+                </script>
+            </select>
+        </div>
         <table id="tableLog">
             <thead>
                 <tr>
                     <td>ID</td>
                     <td>Date</td>
+                    <td>Name</td>
                     <td>Action</td>
                 </tr>
             </thead>
@@ -56,6 +71,6 @@
         </table>
     </div>
 
-    <script src="log.js"></script>
+    <script src="../js/log.js"></script>
 </body>
 </html>

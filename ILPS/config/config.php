@@ -32,7 +32,8 @@ $sqlT = "CREATE TABLE IF NOT EXISTS events (
     eventID INT AUTO_INCREMENT PRIMARY KEY,
     eventName VARCHAR(255) NOT NULL,
     eventType VARCHAR(255) NOT NULL,
-    eventCategory VARCHAR(255) NOT NULL
+    eventCategory VARCHAR(255) NOT NULL,
+    eventElimination VARCHAR(255)
 )";
 
 if ($conn->query($sqlT) === TRUE) {
@@ -255,6 +256,13 @@ if ($conn->query($sqlF) === TRUE) {
 }
 
 $sqlF = "CREATE OR REPLACE VIEW vw_eventScore AS SELECT * FROM eventScoring";
+
+if ($conn->query($sqlF) === TRUE) {
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
+$sqlF = "CREATE OR REPLACE VIEW vw_logs AS SELECT * FROM adminlogs";
 
 if ($conn->query($sqlF) === TRUE) {
 } else {
@@ -557,10 +565,12 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertEvent(IN id INT, IN name VARCHAR(255), 
-        IN evtype VARCHAR(255), IN category VARCHAR(255))
+        IN evtype VARCHAR(255), IN category VARCHAR(255), IN elim VARCHAR(255))
         BEGIN
-            INSERT INTO vw_events VALUES (id, name, evtype, category);
+            INSERT INTO vw_events VALUES (id, name, evtype, category, elim);
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -967,10 +977,13 @@ if ($conn->query($sqlT) === TRUE) {
 
 
 
+// NAGAMIT
 // Stored Procedure for displaying logs
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_displayLog()
         BEGIN
-            SELECT * FROM adminlogs;
+            SELECT vl.*, CONCAT(va.firstName, ' ', va.lastName) AS fullname
+            FROM vw_logs vl
+            INNER JOIN vw_accounts va ON vl.userId = va.userId;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
