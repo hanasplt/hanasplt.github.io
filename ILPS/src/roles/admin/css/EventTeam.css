@@ -142,7 +142,7 @@ body {
 .tim,
 .ebent {
     display: flex;
-    background-color: #4a6b3f; /*change the color*/
+    background-color: #ffffff; /*change the color*/
     width: 87%;
     align-items: center;
     margin: auto;
@@ -152,6 +152,21 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.3vw;
+}
+
+.account-header {
+    display: flex;
+    background-color: #466543; /*change the color*/
+    width: 87%;
+    align-items: center;
+    margin: auto;
+    padding: 1vw;
+    border-radius: 1vw;
+    box-shadow: 0px 0px 10px 0px rgba(48, 48, 48, 0.222);
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.3vw;
+    color: #ffffff;
 }
 
 .account {

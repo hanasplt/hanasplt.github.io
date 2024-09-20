@@ -1,3 +1,54 @@
+// TOGGLE EVENT TABLES (NAGAMIT)
+function toggleEvent(divId) {
+    console.log("Toggling table:", divId);
+    const table = document.getElementById(divId);
+    const tables = document.querySelectorAll('.container');
+    tables.forEach(t => {
+        if (t.id !== divId) {
+            t.style.display = 'none';
+        }
+    });
+
+    loadContestant(divId);
+    table.style.display = table.style.display === 'none' ? 'block' : 'none';
+}
+
+// DISPLAYING TABLE
+function loadContestant(button) {
+    var id = button.getAttribute('data-event-id');
+    var tableId = button.getAttribute('data-table-id')
+    
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            document.querySelector("#" + tableId + " tbody").innerHTML = this.responseText;
+        }
+    };
+    xhttp.open("POST", "get_contestants.php", true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("evId=" + id);
+}
+
+
+// DISPLAYING CONTESTANT MODAL
+function openContestantModal() {
+    var modal = document.getElementById("contModal");
+    modal.style.display = "block";
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // SHOW TABLES //
 
 document.addEventListener('DOMContentLoaded', function() {
