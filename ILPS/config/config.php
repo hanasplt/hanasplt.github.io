@@ -342,8 +342,8 @@ $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAccount(
         IN offset_num INT)
     BEGIN
         SELECT * FROM vw_accounts
-        WHERE status IS NULL OR CONCAT(firstName, ' ', lastName) LIKE search_query
-        OR CONCAT(firstName, ' ', middleName, ' ', lastName) LIKE search_query
+        WHERE status IS NULL AND (CONCAT(firstName, ' ', lastName) LIKE search_query
+        OR CONCAT(firstName, ' ', middleName, ' ', lastName) LIKE search_query)
         LIMIT limit_num OFFSET offset_num;
     END ;";
 
@@ -357,8 +357,8 @@ $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAccountCount(
         IN search_query VARCHAR(255))
     BEGIN
         SELECT COUNT(*) AS total FROM vw_accounts
-        WHERE status IS NULL OR CONCAT(firstName, ' ', lastName) LIKE search_query
-        OR CONCAT(firstName, ' ', middleName, ' ', lastName) LIKE search_query;
+        WHERE status IS NULL AND (CONCAT(firstName, ' ', lastName) LIKE search_query
+        OR CONCAT(firstName, ' ', middleName, ' ', lastName) LIKE search_query);
     END ;";
 
     if ($conn->query($sqlT) === TRUE) {
