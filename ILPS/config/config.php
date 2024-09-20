@@ -19,7 +19,8 @@ $sqlT = "CREATE TABLE IF NOT EXISTS teams (
     teamId INT AUTO_INCREMENT PRIMARY KEY,
     teamName VARCHAR(255) NOT NULL,
     members VARCHAR(255) NOT NULL,
-    image LONGBLOB NOT NULL
+    image LONGBLOB NOT NULL,
+    status VARCHAR(255)
 )";
 
 if ($conn->query($sqlT) === TRUE) {
@@ -345,9 +346,11 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAcc(IN limit_num INT)
         BEGIN
-            SELECT * FROM vw_accounts LIMIT limit_num;
+            SELECT * FROM vw_accounts WHERE status IS NULL LIMIT limit_num;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -436,7 +439,7 @@ if ($conn->query($sqlT) === TRUE) {
 // NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getTeam(IN limit_num INT, IN offset INT)
         BEGIN
-            SELECT * FROM vw_teams LIMIT limit_num OFFSET offset;
+            SELECT * FROM vw_teams WHERE status IS NULL LIMIT limit_num OFFSET offset;
         END ;";
 
 if ($conn->query($sqlT) === TRUE) {
@@ -444,9 +447,11 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getTeamCount()
         BEGIN
-            SELECT COUNT(*) AS total FROM vw_teams;
+            SELECT COUNT(*) AS total FROM vw_teams WHERE status IS NULL;
         END ;";
 
 if ($conn->query($sqlT) === TRUE) {
@@ -474,27 +479,33 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
-$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_editTeam(IN id INT, IN img BLOB, IN name VARCHAR(255))
+
+// NAGAMIT
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_editTeam(IN id INT, IN name VARCHAR(255), IN mem VARCHAR(255), IN img BLOB)
         BEGIN
-            UPDATE vw_teams SET teamName = name, image = img WHERE teamId = id;
+            UPDATE vw_teams SET teamName = name, members = mem, image = img WHERE teamId = id;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
 
-$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_editTeamName(IN id INT, IN name VARCHAR(255))
+
+// NAGAMIT
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_editTeamName(IN id INT, IN name VARCHAR(255), IN mem VARCHAR(255))
         BEGIN
-            UPDATE vw_teams SET teamName = name WHERE teamId = id;
+            UPDATE vw_teams SET teamName = name, members = mem WHERE teamId = id;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_delTeam(IN id INT)
         BEGIN
-            DELETE FROM vw_teams WHERE teamId = id;
+            UPDATE vw_teams SET status = 0 WHERE teamId = id;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {

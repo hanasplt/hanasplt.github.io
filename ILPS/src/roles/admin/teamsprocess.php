@@ -9,7 +9,7 @@ if (!$conn) {
   die("Connection failed: " . mysqli_connect_error());
 }
 
-// FOR DATABASE INSERT, UPDATE, DELETE QUERIES
+// HANDLE TEAM INSERTION AND/OR UPDATE
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
 
   // Enters here when adding a team
@@ -18,6 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
       $teamName = ucfirst($_POST['teamName']);
       $teamImage = $_FILES['teamImage'];
       $courses = $_POST['course'];
+
 
       // Upload the file (image)
       $imagePath = '../../../public/uploads/' . uniqid() . '-' . basename($teamImage['name']);
@@ -53,28 +54,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
       $teamID = $_POST['teamID'];
       $teamName = ucfirst($_POST['teamName']);
       $teamImage = $_FILES['teamImage'];
+      $courses = $_POST['course'];
   
       // Updating image
       if ($teamImage['tmp_name']) {
-        $imagePath = 'uploads/' . uniqid() . '-' . basename($teamImage['name']);
-  
+        $imagePath = '../../../public/uploads/' . uniqid() . '-' . basename($teamImage['name']);
+
         if (move_uploaded_file($teamImage['tmp_name'], $imagePath)) {
-          $sql = "CALL sp_editTeam(?, ?, ?)";
+          // Image is changed
+
+          $values = [];
+          foreach ($courses as $course) {
+            $values[] = $conn->real_escape_string($course); // Prevent SQL injection
+          }
+
+          $courseValues = implode(", ", $values);
+
+          $sql = "CALL sp_editTeam(?, ?, ?, ?)";
           $stmt = $conn->prepare($sql);
-          $stmt->bind_param("iss", $teamID, $teamName, $imagePath);
+          $stmt->bind_param("isss", $teamID, $teamName, $courseValues, $imagePath);
         } else {
           echo json_encode(['status' => 'error', 'message' => 'File upload failed!']);
         }
       } else {
-        $sql = "CALL sp_editTeamName(?, ?)";
+        // Only name and/or members changed, no image
+        
+        $values = [];
+        foreach ($courses as $course) {
+          $values[] = $conn->real_escape_string($course); // Prevent SQL injection
+        }
+
+        $courseValues = implode(", ", $values);
+
+        $sql = "CALL sp_editTeamName(?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("is", $teamID, $teamName);
+        $stmt->bind_param("iss", $teamID, $teamName, $courseValues);
       }
   
       if ($stmt->execute()) {
         echo json_encode(['status' => 'success', 'message' => 'Team updated successfully!']);
       } else {
-        echo json_encode(['status' => 'error', 'message' => "Error: " . $sql . "<br>" . $conn->error]);
+        echo json_encode(['status' => 'error', 'message' => "Unable to update team."]);
       }
   
       $stmt->close();
@@ -90,7 +110,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['teamid'])) {
     $teamID = $_POST['teamid'];
 
-    $sql = "CALL sp_delTeam(?)"; 
+    $sql = "CALL sp_delTeam(?)"; // This doesn't really delete the team (FK constraint)
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $teamID);
 
@@ -109,13 +129,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['teamid'])) {
 }
 
 // Retrieve team to edit
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_GET['editID'])) {
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['editID'])) {
   $teamid = $_GET['editID'];
 
   try {
     // Retrieve the courses in the database
     $getCourses = "CALL sp_getATeam(?)";
-    $courses = []; // Initialize an array where the courses value be inserted
 
     $stmt = $conn->prepare($getCourses);
     $stmt->bind_param("i", $teamid);
@@ -124,7 +143,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_GET['editID'])) {
     $retval = $stmt->get_result();
 
     $row = $retval->fetch_assoc();
-    $courses = $row['members'];
+    $courses = explode(', ', $row['members']); // Separate comma-separated string
 
     echo json_encode(['courses' => $courses]);
 

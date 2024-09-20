@@ -81,9 +81,13 @@ function openAddModal() {
     document.getElementById('editTeamName').value = teamName;
     document.getElementById('editTeamImage').value = ''; // Reset file input
 
+
     fetch(`../admin/teamsprocess.php?editID=` + teamID)
     .then(response => response.json())
     .then(data => {
+        // Get only checkboxes inside the Edit Modal
+        var modal = document.getElementById('editModal');
+
         // Reset all checkboxes
         var checkboxes = document.querySelectorAll('input[name="course[]"]');
         checkboxes.forEach(function(checkbox) {
@@ -92,7 +96,7 @@ function openAddModal() {
 
         // Check the checkboxes that match the team's courses
         data.courses.forEach(function(course) {
-            var checkbox = document.querySelector('input[name="course[]"][value="' + course + '"]');
+            var checkbox = modal.querySelector('input[name="course[]"][value="' + course + '"]');
             if (checkbox) {
                 checkbox.checked = true; // Check the matching checkbox
             }
@@ -111,53 +115,27 @@ function openAddModal() {
   // Handle Form Submission for Add Team
   document.getElementById('teamForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    var formData = new FormData(this);
 
-    fetch('../admin/teamsprocess.php', {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => response.json()) 
-    .then(data => {
-      if (data.status === 'success') {
-        Swal.fire({
-          title: 'Success',
-          text: data.message,
-          icon: 'success',
-          confirmButtonText: 'Yes'
-        }).then((result) => {
-          location.reload();
-        });
-      } else {
-        Swal.fire({
-          title: 'Oops!',
-          text: data.message,
-          icon: 'error',
-          confirmButtonText: 'Yes'
-        });
-      }
-      
-    })
-    .catch(error => console.error('Error:', error));
-  });
+    var modal = document.getElementById('teamForm');
+    
+    var proceedSubmit = validateCheckboxSelection(modal);
 
+    if (proceedSubmit) {
+      var formData = new FormData(this);
 
-  // Handle Form Submission for Edit Team
-  document.getElementById('editTeamForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    var formData = new FormData(this);
-    fetch('../teamsprocess.php', {
-      method: 'POST',
-      body: formData
-    }).then(response => response.json())
+      fetch('../admin/teamsprocess.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json()) 
       .then(data => {
         if (data.status === 'success') {
           Swal.fire({
-            title: 'Success!',
+            title: 'Success',
             text: data.message,
             icon: 'success',
-            confirmButtonText: 'OK'
-          }).then(() => {
+            confirmButtonText: 'Yes'
+          }).then((result) => {
             location.reload();
           });
         } else {
@@ -165,8 +143,71 @@ function openAddModal() {
             title: 'Oops!',
             text: data.message,
             icon: 'error',
-            confirmButtonText: 'OK'
-          })
+            confirmButtonText: 'Yes'
+          });
         }
-      });
+        
+      })
+      .catch(error => console.error('Error:', error));
+    }
   });
+
+
+  // Handle Form Submission for Edit Team
+  document.getElementById('editTeamForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    var modal = document.getElementById('editTeamForm');
+    
+    var proceedSubmit = validateCheckboxSelection(modal);
+
+    if (proceedSubmit) {
+      var formData = new FormData(this);
+    
+      fetch('../admin/teamsprocess.php', {
+        method: 'POST',
+        body: formData
+      }).then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            Swal.fire({
+              title: 'Success!',
+              text: data.message,
+              icon: 'success',
+              confirmButtonText: 'OK'
+            }).then(() => {
+              location.reload();
+            });
+          } else {
+            Swal.fire({
+              title: 'Oops!',
+              text: data.message,
+              icon: 'error',
+              confirmButtonText: 'OK'
+            })
+          }
+        });
+    }
+  });
+
+
+  // Validate if user selected a course(s)
+  function validateCheckboxSelection(modal) {
+    // Get all checkboxes inside the Edit Modal
+    var checkboxes = modal.querySelectorAll('input[name="course[]"]');
+
+    // Check if at least one checkbox is selected
+    var atLeastOneChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+
+    if (!atLeastOneChecked) {
+        Swal.fire({
+          title: 'Oops..',
+          text: 'Select a course(s)!',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        })
+        return false; // Prevent form submission
+    }
+
+    return true; // Allow form submission if validation passes
+}
