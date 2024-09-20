@@ -67,6 +67,19 @@ body {
     color: #4caf50;
 }
 
+.status {
+    color: black; /* Default color for dashes */
+}
+
+.valid {
+    color: green; /* Color for valid status */
+}
+
+.invalid {
+    color: red; /* Color for invalid status */
+}
+
+
 button {
     width: 100%;
     padding: 10px;

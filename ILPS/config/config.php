@@ -33,7 +33,8 @@ $sqlT = "CREATE TABLE IF NOT EXISTS events (
     eventName VARCHAR(255) NOT NULL,
     eventType VARCHAR(255) NOT NULL,
     eventCategory VARCHAR(255) NOT NULL,
-    eventElimination VARCHAR(255)
+    eventElimination VARCHAR(255),
+    status VARCHAR(255)
 )";
 
 if ($conn->query($sqlT) === TRUE) {
@@ -551,9 +552,11 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAllTeam()
         BEGIN
-            SELECT * FROM vw_teams;
+            SELECT * FROM vw_teams WHERE status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -562,7 +565,7 @@ if ($conn->query($sqlT) === TRUE) {
 
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEvents()
         BEGIN
-            SELECT * FROM vw_events;
+            SELECT * FROM vw_events WHERE status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {

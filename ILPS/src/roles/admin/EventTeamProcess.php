@@ -13,10 +13,14 @@
 
   //add event
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'add') {
-    $eventName = $_POST['eventName'];
+    $eventName = ucwords($_POST['eventName']);
     $eventType = $_POST['eventType'];
     $eventCategory = $_POST['eventCategory'];
-    $eventElimination = $_POST['eventBracket'];
+    $eventElimination = $_POST['eventBracket'] ?? NULL;
+
+    if (empty($eventElimination)) {
+        $eventElimination = NULL;
+    }
 
     $sql = "CALL sp_insertEvent(?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
@@ -33,7 +37,7 @@
         // Return error response as JSON
         echo json_encode([
             'status' => 'error',
-            'message' => 'Error: ' . $sql . "<br>" . $conn->error
+            'message' => 'Unable to insert event!'
         ]);
     }
 

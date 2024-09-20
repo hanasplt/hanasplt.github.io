@@ -71,10 +71,25 @@
 
     <div class="accounts">
         <div class="accounts-title">
-            <p id="event">Events</p>
+            <div>
+                <p id="event">Events</p>
+            </div>
+
+            <div>
+                <button onclick="openContestantModal(this)">Add Contestant</button>
+                <button>Add Committee</button>
+                <button>Add Judge</button>
+                <button onclick="">Scoring</button>
+            </div>
         </div>
 
         <div>
+            <div class="account-header">
+                <div>Event Name</div>
+                <div>Type</div>
+                <div>Category</div>
+                <div>Action</div>
+            </div>
 
             <?php
 
@@ -96,36 +111,42 @@
                         $db_evCatg = $row['eventCategory'];
 
                         ?>
-                        <div class="account" onclick="toggleEvent()">
-                            <div class="left-deets">
-                                <div class="acc-img">
-                                    <i class="fas fa-user"></i>
+                        <div class="account" 
+                        onclick="toggleEvent('eventTable<?php echo $db_evName; ?>')" 
+                        data-event-id="<?php echo $ID; ?>"
+                        data-table-id="<?php echo $evName; ?>Table">
+                            <div><?php echo $db_evName; ?></div>
+                            <div><?php echo $db_evType; ?></div>
+                            <div><?php echo $db_evCatg; ?></div>
+                            <div class="acc-buttons">
+                                <div class="subtrash-icon" onclick="deleteThis(<?php echo $ID; ?>)">
+                                    <i class="fa-solid fa-trash-can"></i>
                                 </div>
-                                <div class="acc-deets">
-                                    <p id="name">
-                                        <?php echo $db_evName; ?>
-                                        <span style="font-weight: 100;">
-                                            (<?php echo $db_evType; ?>)
-                                        </span>
-                                    </p>
-                                    <p id="add"><?php echo $db_evCatg; ?></p>
-                                </div>
-                            </div>
 
-                            <div class="right-deets">
-                                <div class="acc-buttons">
-                                    <div class="subtrash-icon" onclick="deleteThis(<?php echo $db_evID; ?>)">
-                                        <i class="fa-solid fa-trash-can"></i>
-                                    </div>
-
-                                    <div class="subedit-icon" onclick="openEditEvModal(this)">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </div>
+                                <div class="subedit-icon" onclick="openEditEvModal(this)">
+                                    <i class="fa-solid fa-pen-to-square"></i>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="accounts" id="eventSubTable" style="display: none;"></div>
+                        <div class="container" id="eventTable<?php echo $db_evName; ?>" style="display: none;">
+                            <div class="accounts-title" style="margin-left: 0vw;">
+                                <p id="event">Contestant Table</p>
+                            </div>
+
+                            <table id="<?php echo $evName; ?>Table" class="contestantTable">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Name</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- CONTESTANT TABLE -->
+                                </tbody>
+                            </table>
+                        </div>
                         <?php
 
                     }
@@ -142,6 +163,101 @@
 
         </div>
     </div>
+
+
+    <!--FOR ADDING CONTESTANT MODAL -->
+    <div id="contModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('contModal')">&times;</span>
+            <div class="modal-body">
+                <div class="form-section">
+                    <form method="post" id="addContForm" enctype="multipart/form-data" onsubmit="updateNameField()">
+                        <input type="hidden" name="action" value="addContestant">
+                        <p class="addevent">Add Contestant</p>
+
+                        <div class="form-group">
+                            <label for="contestantId">Contestant Name:</label>
+                            <select id="contestantId" name="contestantId" required>
+                                <?php
+                                    $sql = "CALL sp_getAllTeam;";
+                                    $stmt = $conn->prepare($sql);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+                                    
+                                    if($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            $teamval = $row['teamId'];
+                                            $teamname = $row['teamName'];
+                                            ?>
+                                            <option value="<?php echo $teamval; ?>"><?php echo $teamname; ?></option>
+                                            <?php
+                                        }
+                                    }
+                                    $result->free();
+                                    $stmt->close();
+                                ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contestantId">Contestant Name:</label>
+                            <select id="contestantId" name="contestantId" required>
+                                <?php
+                                    $sql = "CALL sp_getAllTeam;";
+                                    $stmt = $conn->prepare($sql);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+                                    
+                                    if($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            $teamval = $row['teamId'];
+                                            $teamname = $row['teamName'];
+                                            ?>
+                                            <option value="<?php echo $teamval; ?>"><?php echo $teamname; ?></option>
+                                            <?php
+                                        }
+                                    }
+                                    $result->free();
+                                    $stmt->close();
+                                ?>
+                            </select>
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="cancel-btn" onclick="closeModal('contModal')">Cancel</button>
+                            <button type="submit" class="save-btn-contestant">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     <div class="accounts">
         <div class="accounts-title">
