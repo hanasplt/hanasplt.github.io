@@ -228,7 +228,7 @@
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'editEvent') {
     $eventid = $_POST['editeventId'];
     $eventtype = $_POST['editeventType'];
-    $eventname = $_POST['editeventName'];
+    $eventname = ucwords($_POST['editeventName']);
     $eventcat = $_POST['editeventCategory'];
     
     $sql = "CALL sp_editEvent(?, ?, ?, ?)";
@@ -236,6 +236,14 @@
         $stmt->bind_param("isss", $eventid, $eventtype, $eventname, $eventcat);
 
     if ($stmt->execute()) {
+        // Insert in the logs
+        $action = "Updated event $eventname";
+        $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+        $stmt = $conn->prepare($insertLogAct);
+        $stmt->bind_param("is", $accId, $action);
+        $stmt->execute();
+
         echo json_encode(['status' => 'success', 'message' => 'Event updated successfully!']);
     }
     $stmt->close();

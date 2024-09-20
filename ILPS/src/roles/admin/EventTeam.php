@@ -114,16 +114,19 @@
                         <div class="account" 
                         onclick="toggleEvent('eventTable<?php echo $db_evName; ?>')" 
                         data-event-id="<?php echo $db_evID; ?>"
-                        data-table-id="<?php echo $db_evName; ?>Table">
+                        data-name="<?php echo $db_evName; ?>"
+                        data-table-id="<?php echo $db_evName; ?>Table"
+                        data-type="<?php echo $db_evType; ?>"
+                        data-category="<?php echo $db_evCatg; ?>">
                             <div style="float: left; width: 25%;"><?php echo $db_evName; ?></div>
                             <div style="float: left; width: 15%;"><?php echo $db_evType; ?></div>
                             <div style="float: left; width: 10%;"><?php echo $db_evCatg; ?></div>
                             <div class="acc-buttons">
-                                <div class="subtrash-icon" onclick="deleteThis(<?php echo $db_evID; ?>, <?php echo $db_evName; ?>)">
+                                <div class="subtrash-icon" onclick="deleteThis(<?php echo $db_evID; ?>, '<?php echo $db_evName; ?>')">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </div>
 
-                                <div class="subedit-icon" onclick="openEditEvModal(this)">
+                                <div class="subedit-icon" onclick="openEditEventModal(this)">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </div>
                             </div>
@@ -166,6 +169,97 @@
         </div>
     </div>
 
+    <!--FOR ADDING AN EVENT MODAL-->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('myModal')">&times;</span>
+            <div class="modal-body">
+                <div class="form-section">
+                    <form method="post" id="addEvForm" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="add">
+                        <p class="addevent">Add Event</p>
+
+                        <div class="form-group">
+                            <label for="eventType">Type:</label>
+                            <select id="eventType" name="eventType">
+                                <option value="Socio-Cultural">Socio-Cultural</option>
+                                <option value="Sports">Sports</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="eventName">Event Name:</label>
+                            <input type="text" id="eventName" name="eventName">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="eventCategory">Category:</label>
+                            <select id="eventCategory" name="eventCategory">
+                                <option value="Individual/Dual">Individual/Dual</option>
+                                <option value="Team">Team</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="checkbox" name="eventBracket" id="eventBracket" value="Single">
+                            Single Elimination
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="cancel-btn" onclick="closeModal('myModal')">Cancel</button>
+                            <button type="submit" class="save-btn-event">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--FOR EDITING AN EVENT MODAL-->
+    <div id="editEventModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editEventModal')">&times;</span>
+            <div class="modal-body">
+                <div class="form-section">
+                    <form id="editeventForm" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="editEvent">
+                        <p class="addevent">Edit Event</p>
+                        <input type="text" id="editeventId" name="editeventId" hidden>
+
+                        <div class="form-group">
+                            <label for="editeventType">Type:</label>
+                            <select id="editeventType" name="editeventType">
+                                <option value="Socio-Cultural">Socio-Cultural</option>
+                                <option value="Sports">Sports</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editeventName">Event Name:</label>
+                            <input type="text" id="editeventName" name="editeventName">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editeventCategory">Category:</label>
+                            <select id="editeventCategory" name="editeventCategory">
+                                <option value="Individual/Dual">Individual/Dual</option>
+                                <option value="Team">Team</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="checkbox" name="eventBracket" id="eventBracket" value="Single">
+                            Single Elimination
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="cancel-btn" onclick="closeModal('editEventModal')">Cancel</button>
+                            <button type="submit" class="save-btn-editev">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!--FOR ADDING CONTESTANT MODAL -->
     <div id="contModal" class="modal">
@@ -176,6 +270,39 @@
                     <form method="post" id="addContForm" enctype="multipart/form-data" onsubmit="updateNameField()">
                         <input type="hidden" name="action" value="addContestant">
                         <p class="addevent">Add Contestant</p>
+
+                        <div class="form-group">
+                            <label for="eventId">Event Name:</label>
+                            <select id="eventId" name="eventId" required>
+                                <?php
+                                    $sql = "CALL sp_getEvents();";
+                                    $stmt = $conn->prepare($sql);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+                                    
+                                    if($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            $db_evval = $row['eventID'];
+                                            $db_evname = $row['eventName'];
+                                            $db_evType = $row['eventType'];
+
+                                            ?>
+                                            <option value="<?php echo $db_evval; ?>" data-type="<?php echo $db_evType; ?>">
+                                                <?php echo $db_evname; ?>
+                                            </option>
+                                            <?php
+                                        }
+                                    }
+                                    $result->free();
+                                    $stmt->close();
+                                ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="contestantNumField" style="display: none;">
+                            <label for="contNum">Contestant No.:</label>
+                            <input type="number" name="contNum" id="contNum" required>
+                        </div>
 
                         <div class="form-group">
                             <label for="contestantId">Contestant Name:</label>
@@ -192,30 +319,6 @@
                                             $teamname = $row['teamName'];
                                             ?>
                                             <option value="<?php echo $teamval; ?>"><?php echo $teamname; ?></option>
-                                            <?php
-                                        }
-                                    }
-                                    $result->free();
-                                    $stmt->close();
-                                ?>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="eventId">Event Name:</label>
-                            <select id="eventId" name="eventId" required>
-                                <?php
-                                    $sql = "CALL sp_getEvents();";
-                                    $stmt = $conn->prepare($sql);
-                                    $stmt->execute();
-                                    $result = $stmt->get_result();
-                                    
-                                    if($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            $db_evval = $row['eventID'];
-                                            $db_evname = $row['eventName'];
-                                            ?>
-                                            <option value="<?php echo $db_evval; ?>"><?php echo $db_evname; ?></option>
                                             <?php
                                         }
                                     }
@@ -566,91 +669,7 @@
     </div>
 
 
-    <!--FOR ADDING AN EVENT MODAL-->
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('myModal')">&times;</span>
-            <div class="modal-body">
-                <div class="form-section">
-                    <form method="post" id="addEvForm" enctype="multipart/form-data">
-                        <input type="hidden" name="action" value="add">
-                        <p class="addevent">Add Event</p>
 
-                        <div class="form-group">
-                            <label for="eventType">Type:</label>
-                            <select id="eventType" name="eventType">
-                                <option value="Socio-Cultural">Socio-Cultural</option>
-                                <option value="Sports">Sports</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="eventName">Event Name:</label>
-                            <input type="text" id="eventName" name="eventName">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="eventCategory">Category:</label>
-                            <select id="eventCategory" name="eventCategory">
-                                <option value="Individual/Dual">Individual/Dual</option>
-                                <option value="Team">Team</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <input type="checkbox" name="eventBracket" id="eventBracket" value="Single">
-                            Single Elimination
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="cancel-btn" onclick="closeModal('myModal')">Cancel</button>
-                            <button type="submit" class="save-btn-event">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!--FOR EDITING AN EVENT MODAL-->
-    <div id="editEventModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('editEventModal')">&times;</span>
-            <div class="modal-body">
-                <div class="form-section">
-                    <form id="editeventForm" method="post" enctype="multipart/form-data">
-                        <input type="hidden" name="action" value="editEvent">
-                        <p class="addevent">Edit Event</p>
-                        <input type="text" id="editeventId" name="editeventId" hidden>
-
-                        <div class="form-group">
-                            <label for="editeventType">Type:</label>
-                            <select id="editeventType" name="editeventType">
-                                <option value="Socio-Cultural">Socio-Cultural</option>
-                                <option value="Sports">Sports</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="editeventName">Event Name:</label>
-                            <input type="text" id="editeventName" name="editeventName">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="editeventCategory">Category:</label>
-                            <select id="editeventCategory" name="editeventCategory">
-                                <option value="Individual/Dual">Individual/Dual</option>
-                                <option value="Team">Team</option>
-                            </select>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="cancel-btn" onclick="closeModal('editEventModal')">Cancel</button>
-                            <button type="submit" class="save-btn-editev">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!--FOR ADDING CONTESTANT MODAL -->
     <div id="contestandtModal" class="modal">

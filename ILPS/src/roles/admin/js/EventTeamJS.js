@@ -36,9 +36,156 @@ function openContestantModal() {
 }
 
 
+// Deletes the event
+function deleteThis(userId, name) { // Don't totally delete it
+    Swal.fire({
+        title: 'Confirm',
+        text: "Do you want to delete this event?",
+        icon: 'warning',
+        cancelButtonColor: '#8F8B8B',
+        confirmButtonColor: '#7FD278',
+        confirmButtonText: 'Confirm',
+        showCancelButton: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('EventTeamProcess.php', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    eventid: userId,
+                    eventname: name
+                })
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            }).then(data => {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Event deleted successfully!',
+                    icon: 'success',
+                    confirmButtonColor: '#7FD278',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    location.reload();
+                });
+            }).catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error deleting event.',
+                    icon: 'error',
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'OK'
+                });
+            });
+        }
+    });
+}
+
+
+// Open edit event modal
+function openEditEventModal(element) { // Open modal for editing event
+    var card = element.closest('.account');
+    var eventID = card.getAttribute('data-event-id');
+    var eventType = card.getAttribute('data-type');
+    var eventName = card.getAttribute('data-name');
+    var eventCat= card.getAttribute('data-category');
+
+    document.getElementById('editeventId').value = eventID;
+    document.getElementById('editeventType').value = eventType;          
+    document.getElementById('editeventName').value = eventName;
+    document.getElementById('editeventCategory').value = eventCat;          
+
+    var modal = document.getElementById("editEventModal");
+    modal.style.display = "block";
+}
 
 
 
+        // Form submission for editing event
+        document.querySelector('.save-btn-editev').addEventListener('click', function(event) {
+            event.preventDefault();  // Prevent default form submission
+
+            var formData = new FormData(document.querySelector('#editeventForm'));
+
+            fetch('EventTeamProcess.php', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: data.message,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        location.reload();  // Reload the page or handle success
+                    }); 
+                } else {
+                    Swal.fire({
+                        title: 'Oops!',
+                        text: data.message,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+            .catch(error => {
+                alert('An error occurred: ' + error.message);
+            });
+        });
+
+
+        // Form submission for adding contestant
+        document.querySelector('.save-btn-contestant').addEventListener('click', function(event) {
+            event.preventDefault();  // Prevent default form submission
+
+            var formData = new FormData(document.querySelector('#addContForm'));
+
+            fetch('EventTeamProcess.php', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: data.message,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        location.reload();  // Reload the page or handle success
+                    }); 
+                } else {
+                    Swal.fire({
+                        title: 'Oops!',
+                        text: data.message,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+
+
+        // Display contestant no. input field when event type = 'Socio-Cultural'
+        document.getElementById('eventId').addEventListener('change', function() {
+            var selectedOption = this.options[this.selectedIndex];
+            var eventType = selectedOption.getAttribute('data-type');
+            
+            // Get the input field element
+            var contestantNumField = document.getElementById('contestantNumField');
+            
+            if (eventType === 'Socio-Cultural') {
+                contestantNumField.style.display = 'block';
+            } else {
+                contestantNumField.style.display = 'none';
+            }
+        });
 
 
 
@@ -257,53 +404,6 @@ function updateJudgeField() {
 
 
 // DELETES //
-
-
-function deleteThis(userId, name) { // Don't totally delete it
-    Swal.fire({
-        title: 'Confirm',
-        text: "Do you want to delete this event?",
-        icon: 'warning',
-        cancelButtonColor: '#8F8B8B',
-        confirmButtonColor: '#7FD278',
-        confirmButtonText: 'Confirm',
-        showCancelButton: true
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch('EventTeamProcess.php', {
-                method: 'POST',
-                body: new URLSearchParams({
-                    eventid: userId,
-                    eventname: name
-                })
-            }).then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Network response was not ok.');
-            }).then(data => {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Event deleted successfully!',
-                    icon: 'success',
-                    confirmButtonColor: '#7FD278',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    location.reload();
-                });
-            }).catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Error deleting event.',
-                    icon: 'error',
-                    confirmButtonColor: '#d33',
-                    confirmButtonText: 'OK'
-                });
-            });
-        }
-    });
-}
 
 
 function deleteCont(id) {
@@ -876,42 +976,6 @@ function openEditEvModal(element) { // Open modal for editing event
             event.preventDefault();  // Prevent default form submission
 
             var formData = new FormData(document.querySelector('#addScoringForm'));
-
-            fetch('EventTeamProcess.php', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: data.message,
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        location.reload();  // Reload the page or handle success
-                    }); 
-                } else {
-                    Swal.fire({
-                        title: 'Oops!',
-                        text: data.message,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            })
-            .catch(error => {
-                alert('An error occurred: ' + error.message);
-            });
-        });
-
-
-        // Form submission for editing event
-        document.querySelector('.save-btn-editev').addEventListener('click', function(event) {
-            event.preventDefault();  // Prevent default form submission
-
-            var formData = new FormData(document.querySelector('#editeventForm'));
 
             fetch('EventTeamProcess.php', {
                 method: 'POST',
