@@ -9,14 +9,13 @@ function toggleEvent(divId) {
         }
     });
 
-    loadContestant(divId);
     table.style.display = table.style.display === 'none' ? 'block' : 'none';
 }
 
 // DISPLAYING TABLE
 function loadContestant(button) {
     var id = button.getAttribute('data-event-id');
-    var tableId = button.getAttribute('data-table-id')
+    var tableId = button.getAttribute('data-table-id');
     
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
@@ -24,7 +23,7 @@ function loadContestant(button) {
             document.querySelector("#" + tableId + " tbody").innerHTML = this.responseText;
         }
     };
-    xhttp.open("POST", "get_contestants.php", true);
+    xhttp.open("POST", "../admin/get_contestants.php", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("evId=" + id);
 }
@@ -260,7 +259,7 @@ function updateJudgeField() {
 // DELETES //
 
 
-function deleteThis(userId) {
+function deleteThis(userId, name) { // Don't totally delete it
     Swal.fire({
         title: 'Confirm',
         text: "Do you want to delete this event?",
@@ -274,7 +273,8 @@ function deleteThis(userId) {
             fetch('EventTeamProcess.php', {
                 method: 'POST',
                 body: new URLSearchParams({
-                    eventid: userId
+                    eventid: userId,
+                    eventname: name
                 })
             }).then(response => {
                 if (response.ok) {

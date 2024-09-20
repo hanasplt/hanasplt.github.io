@@ -342,7 +342,7 @@ $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAccount(
         IN offset_num INT)
     BEGIN
         SELECT * FROM vw_accounts
-        WHERE CONCAT(firstName, ' ', lastName) LIKE search_query
+        WHERE status IS NULL OR CONCAT(firstName, ' ', lastName) LIKE search_query
         OR CONCAT(firstName, ' ', middleName, ' ', lastName) LIKE search_query
         LIMIT limit_num OFFSET offset_num;
     END ;";
@@ -356,8 +356,8 @@ $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAccount(
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAccountCount(
         IN search_query VARCHAR(255))
     BEGIN
-        SELECT COUNT(*) AS total FROM accounts
-        WHERE CONCAT(firstName, ' ', lastName) LIKE search_query
+        SELECT COUNT(*) AS total FROM vw_accounts
+        WHERE status IS NULL OR CONCAT(firstName, ' ', lastName) LIKE search_query
         OR CONCAT(firstName, ' ', middleName, ' ', lastName) LIKE search_query;
     END ;";
 
@@ -447,7 +447,7 @@ if ($conn->query($sqlT) === TRUE) {
 }
 
 // NAGAMIT
-$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_delAcc(IN id VARCHAR(255))
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_delAcc(IN id INT)
         BEGIN
             UPDATE vw_accounts SET status = 0 WHERE userId = id;
         END ;";
@@ -563,6 +563,8 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEvents()
         BEGIN
             SELECT * FROM vw_events WHERE status IS NULL;
@@ -604,16 +606,18 @@ if ($conn->query($sqlT) === TRUE) {
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertEvent(IN id INT, IN name VARCHAR(255), 
         IN evtype VARCHAR(255), IN category VARCHAR(255), IN elim VARCHAR(255))
         BEGIN
-            INSERT INTO vw_events VALUES (id, name, evtype, category, elim);
+            INSERT INTO vw_events VALUES (id, name, evtype, category, elim, NULL);
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_delEvent(IN id INT)
         BEGIN
-            DELETE FROM vw_events WHERE eventID = id;
+            UPDATE vw_events SET status = 0 WHERE eventID = id;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -1018,6 +1022,16 @@ $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_displayLog()
             SELECT vl.*, CONCAT(va.firstName, ' ', va.lastName) AS fullname
             FROM vw_logs vl
             INNER JOIN vw_accounts va ON vl.userId = va.userId;
+        END ;";
+if ($conn->query($sqlT) === TRUE) {
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
+// inserting log
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertLog(IN id INT, IN act VARCHAR(255))
+        BEGIN
+            INSERT INTO vw_logs VALUES (NULL, NOW(), id, act);
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {

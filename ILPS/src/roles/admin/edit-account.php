@@ -3,8 +3,10 @@ ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
 error_reporting(E_ALL);
 
-
+require_once '../../../config/sessionConfig.php'; // session Cookie
+require_once '../admin/verifyLoginSession.php'; // logged in or not
 require_once '../../../config/encryption.php';
+
 $conn = require_once '../../../config/db.php';
 
 if (!$conn) {
@@ -13,6 +15,8 @@ if (!$conn) {
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $accId = $_SESSION['userId'];
+
     $userId = $_SESSION['ID'];
     $firstName = ucwords($_POST['firstName']);
     $middleName = ucfirst($_POST['middleName']);
@@ -55,6 +59,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $suffix, $email, $password, $type);
 
         if ($stmt->execute()) {
+            // Insert in the logs
+            $action = "Updated the account of $firstName $lastName (Acc. #: $userId)";
+            $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+            $stmt = $conn->prepare($insertLogAct);
+            $stmt->bind_param("is", $accId, $action);
+            $stmt->execute();
+
             echo json_encode(array("status" => "success", "message" => "Record updated successfully"));
         } else {
             echo json_encode(array("status" => "error", "message" => "Error: " . $stmt->error));

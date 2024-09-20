@@ -134,6 +134,7 @@
                         <option value="all">All</option>
                         <option value="Committee">Committee</option>
                         <option value="Judge">Judge</option>
+                        <option value="Admin">Admin</option>
                     </select>
                 </div>
                 <div class="a-z">
@@ -190,7 +191,7 @@
                             <i class="fa-solid fa-pen-to-square"></i>
                         </div>
                         <div class="popup" id="popupEdit">
-                            <iframe id="editIframe" src="edit-account.html"></iframe>
+                            <iframe id="editIframe"></iframe>
                         </div>
                         <script>
                             document.querySelectorAll('.edit-icon').forEach(function(editIcon) {

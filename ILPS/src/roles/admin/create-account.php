@@ -3,6 +3,8 @@
     ini_set('display_startup_errors', 0);
     error_reporting(E_ALL);
 
+    require_once '../../../config/sessionConfig.php'; // session Cookie
+    require_once '../admin/verifyLoginSession.php'; // logged in or not
     require_once '../../../config/encryption.php'; // Encryp and/or decrypt data
     header('Content-Type: application/json');
 
@@ -15,6 +17,8 @@
     try {
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $accId = $_SESSION['userId'];
+
             $firstName = ucwords($_POST['firstName']);
             $middleName = ucfirst($_POST['middleName']);
             $lastName = ucfirst($_POST['lastName']);
@@ -53,6 +57,14 @@
                 $stmt->bind_param("sssssss", $firstName, $middleName, $lastName, $suffix, $email, $password, $type);
     
                 if ($stmt->execute()) {
+                    // Insert in the logs
+                    $action = "Created the account of $firstName $lastName";
+                    $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+                    $stmt = $conn->prepare($insertLogAct);
+                    $stmt->bind_param("is", $accId, $action);
+                    $stmt->execute();
+
                     echo json_encode(array("status" => "success", "message" => "New account created successfully!"));
                 } else {
                     echo json_encode(array("status" => "error", "message" => "Unable to create account!"));

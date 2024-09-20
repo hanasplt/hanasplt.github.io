@@ -85,9 +85,9 @@
 
         <div>
             <div class="account-header">
-                <div>Event Name</div>
-                <div>Type</div>
-                <div>Category</div>
+                <div style="float: left; width: 25%;">Event Name</div>
+                <div style="float: left; width: 15%;">Type</div>
+                <div style="float: left; width: 10%;">Category</div>
                 <div>Action</div>
             </div>
 
@@ -113,13 +113,13 @@
                         ?>
                         <div class="account" 
                         onclick="toggleEvent('eventTable<?php echo $db_evName; ?>')" 
-                        data-event-id="<?php echo $ID; ?>"
-                        data-table-id="<?php echo $evName; ?>Table">
-                            <div><?php echo $db_evName; ?></div>
-                            <div><?php echo $db_evType; ?></div>
-                            <div><?php echo $db_evCatg; ?></div>
+                        data-event-id="<?php echo $db_evID; ?>"
+                        data-table-id="<?php echo $db_evName; ?>Table">
+                            <div style="float: left; width: 25%;"><?php echo $db_evName; ?></div>
+                            <div style="float: left; width: 15%;"><?php echo $db_evType; ?></div>
+                            <div style="float: left; width: 10%;"><?php echo $db_evCatg; ?></div>
                             <div class="acc-buttons">
-                                <div class="subtrash-icon" onclick="deleteThis(<?php echo $ID; ?>)">
+                                <div class="subtrash-icon" onclick="deleteThis(<?php echo $db_evID; ?>, <?php echo $db_evName; ?>)">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </div>
 
@@ -129,7 +129,9 @@
                             </div>
                         </div>
 
-                        <div class="container" id="eventTable<?php echo $db_evName; ?>" style="display: none;">
+                        <div class="container" id="eventTable<?php echo $db_evName; ?>" style="display: none;"
+                        data-event-id="<?php echo $db_evID; ?>"
+                        data-table-id="<?php echo $db_evName; ?>Table">
                             <div class="accounts-title" style="margin-left: 0vw;">
                                 <p id="event">Contestant Table</p>
                             </div>
@@ -200,20 +202,20 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="contestantId">Contestant Name:</label>
-                            <select id="contestantId" name="contestantId" required>
+                            <label for="eventId">Event Name:</label>
+                            <select id="eventId" name="eventId" required>
                                 <?php
-                                    $sql = "CALL sp_getAllTeam;";
+                                    $sql = "CALL sp_getEvents();";
                                     $stmt = $conn->prepare($sql);
                                     $stmt->execute();
                                     $result = $stmt->get_result();
                                     
                                     if($result->num_rows > 0) {
                                         while ($row = $result->fetch_assoc()) {
-                                            $teamval = $row['teamId'];
-                                            $teamname = $row['teamName'];
+                                            $db_evval = $row['eventID'];
+                                            $db_evname = $row['eventName'];
                                             ?>
-                                            <option value="<?php echo $teamval; ?>"><?php echo $teamname; ?></option>
+                                            <option value="<?php echo $db_evval; ?>"><?php echo $db_evname; ?></option>
                                             <?php
                                         }
                                     }

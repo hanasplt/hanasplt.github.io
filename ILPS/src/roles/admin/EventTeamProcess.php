@@ -11,6 +11,8 @@
     die("Connection failed: " . mysqli_connect_error());
   }
 
+  $accId = $_SESSION['userId'];
+
   //add event
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'add') {
     $eventName = ucwords($_POST['eventName']);
@@ -28,6 +30,14 @@
     $stmt->bind_param("issss", $eventId, $eventName, $eventType, $eventCategory, $eventElimination);
 
     if ($stmt->execute()) {
+        // Insert in the logs
+        $action = "Added event $eventName";
+        $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+        $stmt = $conn->prepare($insertLogAct);
+        $stmt->bind_param("is", $accId, $action);
+        $stmt->execute();
+
         // Return success response as JSON
         echo json_encode([
             'status' => 'success',
@@ -233,8 +243,9 @@
   }
 
   //deletes an event
-  if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['eventid'])) {
+  if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['eventid']) && isset($_POST['eventname'])) {
     $eventID = $_POST['eventid'];
+    $eventName = $_POST['eventname'];
     
     $sql = "CALL sp_delEvent(?)"; 
     $stmt = $conn->prepare($sql);
@@ -243,6 +254,14 @@
     $response = array();
 
     if ($stmt->execute()) {
+        // Insert in the logs
+        $action = "Deleted event $eventName";
+        $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+        $stmt = $conn->prepare($insertLogAct);
+        $stmt->bind_param("is", $accId, $action);
+        $stmt->execute();
+
         $response['success'] = true;
     } else {
         $response['success'] = false;
