@@ -20,6 +20,7 @@ function toggleEvent(divId, evType, evId, evName, contTable, otherTable) {
     table.style.display = table.style.display === 'none' ? 'block' : 'none';
 }
 
+
 // DISPLAYING TABLE CONTESTANT (Sports)
 function loadContestantSp(evid, divId, evName) {
     var xhttp = new XMLHttpRequest();
@@ -32,8 +33,6 @@ function loadContestantSp(evid, divId, evName) {
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("evId=" + evid + "&&type=Sports&&eventname=" + evName);
 }
-
-
 // DISPLAYING TABLE CONTESTANT (Socio-Cultural)
 function loadContestantSc(evid, divId, evName) {
     var xhttp = new XMLHttpRequest();
@@ -46,8 +45,6 @@ function loadContestantSc(evid, divId, evName) {
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("evId=" + evid + "&&type=Socio-Cultural&&eventname=" + evName);
 }
-
-
 // DISPLAYING TABLE COMMITTEE
 function loadCommittee(evid, tableId, evName) {
     var xhttp = new XMLHttpRequest();
@@ -60,8 +57,6 @@ function loadCommittee(evid, tableId, evName) {
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("evid=" + evid + "&&eventname=" + evName);
 }
-
-
 // DISPLATING TABLE JUDGE
 function loadJudge(evid, tableId, evName) {
     var xhttp = new XMLHttpRequest();
@@ -74,25 +69,87 @@ function loadJudge(evid, tableId, evName) {
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("evid=" + evid + "&&eventname=" + evName);
 }
+// DISPLAY TABLE SCORING
+function loadScoring() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            document.querySelector("#eventScoringTableContent tbody").innerHTML = this.responseText;
+        }
+    };
+    xhttp.open("POST", "get_scoring.php", true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send();
+}
 
 
-
+// DISPLAYING EVENT MODAL
+function openModal() { // Open modal for adding event
+    var modal = document.getElementById("myModal");
+    modal.style.display = "block";
+}
 // DISPLAYING CONTESTANT MODAL
 function openContestantModal() {
     var modal = document.getElementById("contModal");
     modal.style.display = "block";
 }
-
-
 // DISPLAYING COMMITTEE MODAL
 function openCommitteeModal() {
     var modal = document.getElementById("comtSpModal");
     modal.style.display = "block";
 }
-
 // DISPLAYING JUDGE MODAL
 function openJudgesModal() {
     var modal = document.getElementById("judgesModal");
+    modal.style.display = "block";
+}
+// DISPLAYING CRITERIA MODAL
+function openCriteriaModal() {
+    var modal = document.getElementById("criteriaModal");
+    modal.style.display = "block";
+}
+// DISPLAYING SCORING TABLE MODAL
+function openScoringTable() {
+    loadScoring(); // Loads the event scoring data
+
+    var modal = document.getElementById("eventScoringTable");
+    modal.style.display = "block";
+}
+// DISPLAYING SCORING MODAL
+function openScoreModal() {
+    var modal = document.getElementById("scoringModal");
+    modal.style.display = "block";
+}
+// Open edit event modal
+function openEditEventModal(element) { // Open modal for editing event
+    var card = element.closest('.account');
+    var eventID = card.getAttribute('data-event-id');
+    var eventType = card.getAttribute('data-type');
+    var eventName = card.getAttribute('data-name');
+    var eventCat= card.getAttribute('data-category');
+
+    document.getElementById('editeventId').value = eventID;
+    document.getElementById('editeventType').value = eventType;          
+    document.getElementById('editeventName').value = eventName;
+    document.getElementById('editeventCategory').value = eventCat;
+    
+    fetch(`../admin/EventTeamProcess.php?editID=` + eventID)
+    .then(response => response.json())
+    .then(data => {
+        // Get only checkboxes inside the Edit Modal
+        var modal = document.getElementById('editEventModal');
+        var checkbox = modal.querySelector('input[name="eventBracket"]');
+
+        // Check or not the checkbox based on the data
+        if (data.course) {  // Check if elimination exists
+            checkbox.checked = true;
+        } else {
+            checkbox.checked = false; // Uncheck if elimination not present
+        }
+    })
+    .catch(error => console.error('Error fetching course data:', error));
+
+    var modal = document.getElementById("editEventModal");
     modal.style.display = "block";
 }
 
@@ -145,24 +202,6 @@ function deleteThis(userId, name) { // Don't totally delete it
 }
 
 
-// Open edit event modal
-function openEditEventModal(element) { // Open modal for editing event
-    var card = element.closest('.account');
-    var eventID = card.getAttribute('data-event-id');
-    var eventType = card.getAttribute('data-type');
-    var eventName = card.getAttribute('data-name');
-    var eventCat= card.getAttribute('data-category');
-
-    document.getElementById('editeventId').value = eventID;
-    document.getElementById('editeventType').value = eventType;          
-    document.getElementById('editeventName').value = eventName;
-    document.getElementById('editeventCategory').value = eventCat;          
-
-    var modal = document.getElementById("editEventModal");
-    modal.style.display = "block";
-}
-
-
 // Retrieving the selected text in the adding contestant dropdown
 function getSelectedText() {
     var selectElement = document.getElementById('eventId');
@@ -196,16 +235,37 @@ function updateJudgeField() {
     var selectedText = dropdownn.options[dropdownn.selectedIndex].text;
     document.getElementById("judgeName").value = selectedText;
 }
+function updateCriField() {
+    var dropdown = document.getElementById("eventId");
+    var selectedText = dropdown.options[dropdown.selectedIndex].text;
+    document.getElementById("eventname").value = selectedText;
+}
 
 
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById("openModal").addEventListener("click", function () {
+        openModal();
+    });
 
-        // Form submission for editing event
-        document.querySelector('.save-btn-editev').addEventListener('click', function(event) {
-            event.preventDefault();  // Prevent default form submission
+    // Form submission for adding event
+    document.querySelector('.save-btn-event').addEventListener('click', function(event) {
+        event.preventDefault();  // Prevent default form submission
 
-            var formData = new FormData(document.querySelector('#editeventForm'));
+        const eventType = document.getElementById('eventType').value;
+        const eventName = document.getElementById('eventName').value;
+        const eventCategory = document.getElementById('eventCategory').value;
 
-            fetch('EventTeamProcess.php', {
+        if (eventType == '' || eventName == '' || eventCategory == '') {
+            Swal.fire({
+                title: 'Oops!',
+                text: 'All fields are required to be filled in.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+        } else { // Proceed inserting the event
+            var formData = new FormData(document.querySelector('#addEvForm'));
+
+            fetch('../admin/EventTeamProcess.php', {
                 method: 'POST',
                 body: formData,
             })
@@ -230,8 +290,58 @@ function updateJudgeField() {
                 }
             })
             .catch(error => {
-                alert('An error occurred: ' + error.message);
+                console.log('An error occurred: ' + error.message);
             });
+        }
+    });
+
+
+        // Form submission for editing event
+        document.querySelector('.save-btn-editev').addEventListener('click', function(event) {
+            event.preventDefault();  // Prevent default form submission
+
+            const eventType = document.getElementById('eventType').value;
+            const eventName = document.getElementById('eventName').value;
+            const eventCategory = document.getElementById('eventCategory').value;
+    
+            if (eventType == '' || eventName == '' || eventCategory == '') {
+                Swal.fire({
+                    title: 'Oops!',
+                    text: 'All fields are required to be filled in.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            } else { // Proceed updating event
+                var formData = new FormData(document.querySelector('#editeventForm'));
+
+                fetch('EventTeamProcess.php', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            location.reload();  // Reload the page or handle success
+                        }); 
+                    } else {
+                        Swal.fire({
+                            title: 'Oops!',
+                            text: data.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.log('An error occurred: ' + error.message);
+                });
+            }
         });
 
 
@@ -348,6 +458,107 @@ function updateJudgeField() {
         });
 
 
+        // Form submission for adding criteria
+        document.querySelector('.save-btn-cri').addEventListener('click', function(event) {
+            event.preventDefault();  // Prevent default form submission
+
+            const eventId = document.getElementById('eventId').value;
+            const criteria = document.getElementById('criteria').value;
+            const criPts = document.getElementById('criPts').value;
+
+            if (eventId == '' || criteria == '' || criPts == '') {
+                Swal.fire({
+                    title: 'Oops!',
+                    text: 'All fields are required to be filled in.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            } else { // Proceed inserting criteria
+                updateCriField();
+                
+                var formData = new FormData(document.querySelector('#addCriForm'));
+
+                fetch('EventTeamProcess.php', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            location.reload();  // Reload the page or handle success
+                        }); 
+                    } else {
+                        Swal.fire({
+                            title: 'Oops!',
+                            text: data.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    alert('An error occurred: ' + error.message);
+                });
+            }
+        });
+
+
+        // Form submission for adding score
+        document.querySelector('.save-btn-scr').addEventListener('click', function(event) {
+            event.preventDefault();  // Prevent default form submission
+
+            const ranknum = document.getElementById('rankNo').value;
+            const rankname = document.getElementById('rankName').value;
+            const catg = document.getElementById('scoringCategory').value;
+            const pts = document.getElementById('scorePts').value;
+
+            if (ranknum == '' || rankname == '' || catg == '' || pts == '') {
+                Swal.fire({
+                    title: 'Oops!',
+                    text: 'All fields are required to be filled in.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                var formData = new FormData(document.querySelector('#addScoringForm'));
+
+                fetch('EventTeamProcess.php', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            location.reload();  // Reload the page or handle success
+                        }); 
+                    } else {
+                        Swal.fire({
+                            title: 'Oops!',
+                            text: data.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    alert('An error occurred: ' + error.message);
+                });
+            }
+        });
+
+
         // Display contestant no. input field when event type = 'Socio-Cultural'
         document.getElementById('eventId').addEventListener('change', function() {
             var selectedOption = this.options[this.selectedIndex];
@@ -374,6 +585,39 @@ function updateJudgeField() {
             deleteCont(conid, name);
         }
     });
+
+    //deleting Committee
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('delete-icon-faci')) {
+            var id = event.target.getAttribute('data-id');
+            var eventname = event.target.getAttribute('data-event-name');
+            var idname = event.target.getAttribute('data-name');
+
+            deleteComt(id, eventname, idname);
+        }
+    });
+
+    //deleting judge
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('delete-icon-judge')) {
+            var id = event.target.getAttribute('data-id');
+            var name = event.target.getAttribute('data-name');
+            var eventn = event.target.getAttribute('data-event-name');
+
+            deleteJudge(id, name, eventn);
+        }
+    });
+
+    //deleting score
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('delete-icon-pts')) {
+            var name = event.target.getAttribute('data-rank');
+            var rname = event.target.getAttribute('data-rank-name');
+
+            deleteScoring(name, rname);
+        }
+    });
+});
 
 
 // Deletes the contestant
@@ -422,18 +666,7 @@ function deleteCont(id, name) {
         }
     });
 }
-
-
 //deleting Committee
-document.addEventListener('click', function(event) {
-    if (event.target.classList.contains('delete-icon-faci')) {
-        var id = event.target.getAttribute('data-id');
-        var eventname = event.target.getAttribute('data-event-name');
-        var idname = event.target.getAttribute('data-name');
-
-        deleteComt(id, eventname, idname);
-    }
-});
 function deleteComt(id, event, name) {
     Swal.fire({
         title: 'Confirm',
@@ -480,18 +713,7 @@ function deleteComt(id, event, name) {
         }
     });
 }
-
-
 //deleting judge
-document.addEventListener('click', function(event) {
-    if (event.target.classList.contains('delete-icon-judge')) {
-        var id = event.target.getAttribute('data-id');
-        var name = event.target.getAttribute('data-name');
-        var eventn = event.target.getAttribute('data-event-name');
-
-        deleteJudge(id, name, eventn);
-    }
-});
 function deleteJudge(id, name, event) {
     Swal.fire({
         title: 'Confirm',
@@ -538,6 +760,85 @@ function deleteJudge(id, name, event) {
         }
     });
 }
+//deleting scoring
+function deleteScoring(name, rname) {
+    Swal.fire({
+        title: 'Confirm',
+        text: "Do you want to delete this scoring?",
+        icon: 'warning',
+        cancelButtonColor: '#8F8B8B',
+        confirmButtonColor: '#7FD278',
+        confirmButtonText: 'Confirm',
+        showCancelButton: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('EventTeamProcess.php', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    rank: name,
+                    rankname: rname
+                })
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            }).then(data => {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Scoring deleted successfully!',
+                    icon: 'success',
+                    confirmButtonColor: '#7FD278',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    location.reload();
+                });
+            }).catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error deleting scoring.',
+                    icon: 'error',
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'OK'
+                });
+            });
+        }
+    });
+}
+
+
+// Closes a modal
+function closeModal(thisModal) {
+    var modal = document.getElementById(thisModal);
+    modal.style.display = "none";
+}
+
+// Validates a text only input
+function validateInput(event) {
+    // Allow only letters (both lowercase and uppercase) and spaces
+    const regex = /^[a-zA-Z\s]*$/;
+    const inputField = event.target;
+
+    if (!regex.test(inputField.value)) {
+        inputField.value = inputField.value.replace(/[^a-zA-Z\s]/g, '');
+    }
+}
+// Validate max and min of a criteria points
+document.getElementById('criPts').addEventListener('input', function(event) {
+    const input = event.target.value;
+
+    // Check if the input is between 0 and 100
+    if (input < 0 || input > 100) {
+        Swal.fire({
+            title: 'Oops!',
+            text: 'Please enter a value between 0 and 100.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+        event.target.value = '';  // Clear the input if invalid
+    }
+});
 
 
 
@@ -561,6 +862,8 @@ function deleteJudge(id, name, event) {
 // SHOW TABLES //
 
 document.addEventListener('DOMContentLoaded', function() {
+    
+
     document.querySelectorAll('.loadContestantsBtn').forEach(function(button) {
         button.addEventListener('click', function() {
             loadDoc(button); //load contestant table
@@ -591,14 +894,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (event.target.classList.contains('delete-icon-cri')) {
             var id = event.target.getAttribute('data-id');
             deleteCri(id);
-        }
-    });
-
-    //deleting score
-    document.addEventListener('click', function(event) {
-        if (event.target.classList.contains('delete-icon-pts')) {
-            var name = event.target.getAttribute('data-rank');
-            deleteScoring(name);
         }
     });
 });
@@ -648,20 +943,6 @@ function loadCriteria(button) {
     xhttp.open("POST", "get_criteria.php", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("evid=" + evid);
-}
-
-function loadScoring(button) {
-    var tableId = button.getAttribute('data-table-id');
-    
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            document.querySelector("#" + tableId + " tbody").innerHTML = this.responseText;
-        }
-    };
-    xhttp.open("POST", "get_scoring.php", true);
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send();
 }
 
 // DISPLAY CORRESPONDING ROWS //
@@ -813,67 +1094,10 @@ function deleteCri(id) {
 }
 
 
-function deleteScoring(name) {
-    Swal.fire({
-        title: 'Confirm',
-        text: "Do you want to delete this scoring?",
-        icon: 'warning',
-        cancelButtonColor: '#8F8B8B',
-        confirmButtonColor: '#7FD278',
-        confirmButtonText: 'Confirm',
-        showCancelButton: true
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch('EventTeamProcess.php', {
-                method: 'POST',
-                body: new URLSearchParams({
-                    rank: name
-                })
-            }).then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Network response was not ok.');
-            }).then(data => {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Scoring deleted successfully!',
-                    icon: 'success',
-                    confirmButtonColor: '#7FD278',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    location.reload();
-                });
-            }).catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Error deleting scoring.',
-                    icon: 'error',
-                    confirmButtonColor: '#d33',
-                    confirmButtonText: 'OK'
-                });
-            });
-        }
-    });
-}
-
-
 
 
 
 // MODALS //
-
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("openModal").addEventListener("click", function () {
-        openModal();
-    });
-});
-
-function openModal() {
-    var modal = document.getElementById("myModal");
-    modal.style.display = "block";
-}
 
 function openContiModal(element) {
     var card = element.closest('.addcon-btn');
@@ -937,24 +1161,10 @@ function openEditCriModal(element) {
     modal.style.display = "block";
 }
 
-function openScoreModal(element) {
-    var modal = document.getElementById("scoringModal");
-    modal.style.display = "block";
-}
-
-function closeModal(thisModal) {
-    var modal = document.getElementById(thisModal);
-    modal.style.display = "none";
-}
 
 function closeEditModal() { // Close modal on edit event
     var modal = document.getElementById("editEventModal");
     modal.style.display = "none";
-}
-
-function openModal() { // Open modal for adding event
-    var modal = document.getElementById("myModal");
-    modal.style.display = "block";
 }
 
 function openEditEvModal(element) { // Open modal for editing event
@@ -981,78 +1191,12 @@ function openEditEvModal(element) { // Open modal for editing event
 
 // FORM SUBMISSIONS //
 
-        // Form submission for adding event
-        document.querySelector('.save-btn-event').addEventListener('click', function(event) {
-            event.preventDefault();  // Prevent default form submission
-
-            var formData = new FormData(document.querySelector('#addEvForm'));
-
-            fetch('../admin/EventTeamProcess.php', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: data.message,
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        location.reload();  // Reload the page or handle success
-                    }); 
-                } else {
-                    Swal.fire({
-                        title: 'Oops!',
-                        text: data.message,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            })
-            .catch(error => {
-                alert('An error occurred: ' + error.message);
-            });
-        });
+        
 
         
 
 
-        // Form submission for adding criteria
-        document.querySelector('.save-btn-cri').addEventListener('click', function(event) {
-            event.preventDefault();  // Prevent default form submission
-
-            var formData = new FormData(document.querySelector('#addCriForm'));
-
-            fetch('EventTeamProcess.php', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: data.message,
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        location.reload();  // Reload the page or handle success
-                    }); 
-                } else {
-                    Swal.fire({
-                        title: 'Oops!',
-                        text: data.message,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            })
-            .catch(error => {
-                alert('An error occurred: ' + error.message);
-            });
-        });
+        
 
 
         // Form submission for editing criteria
@@ -1091,40 +1235,7 @@ function openEditEvModal(element) { // Open modal for editing event
         });
 
 
-        // Form submission for adding score
-        document.querySelector('.save-btn-scr').addEventListener('click', function(event) {
-            event.preventDefault();  // Prevent default form submission
-
-            var formData = new FormData(document.querySelector('#addScoringForm'));
-
-            fetch('EventTeamProcess.php', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: data.message,
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        location.reload();  // Reload the page or handle success
-                    }); 
-                } else {
-                    Swal.fire({
-                        title: 'Oops!',
-                        text: data.message,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            })
-            .catch(error => {
-                alert('An error occurred: ' + error.message);
-            });
-        });
+        
 
 
 

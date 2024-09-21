@@ -20,39 +20,53 @@
     $eventCategory = $_POST['eventCategory'];
     $eventElimination = $_POST['eventBracket'] ?? NULL;
 
-    if (empty($eventElimination)) {
-        $eventElimination = NULL;
+    try {
+        if (empty($eventElimination)) {
+            $eventElimination = NULL;
+        } else {
+            // Return error if Single Elimination is checked, this only applies to Sports
+            if ($eventType == "Socio-Cultural") {
+                echo json_encode([
+                    'status' => 'error', 
+                    'message' => 'Please uncheck the Single Elimination! This only applies to Sports events.'
+                ]);
+                exit;
+            }
+        }
+
+        $sql = "CALL sp_insertEvent(?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+    
+        $stmt->bind_param("issss", $eventId, $eventName, $eventType, $eventCategory, $eventElimination);
+    
+        if ($stmt->execute()) {
+            // Insert in the logs
+            $action = "Added event $eventName";
+            $insertLogAct = "CALL sp_insertLog(?, ?)";
+    
+            $stmt = $conn->prepare($insertLogAct);
+            $stmt->bind_param("is", $accId, $action);
+            $stmt->execute();
+    
+            // Return success response as JSON
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'New event added successfully!'
+            ]);
+        } else {
+            // Return error response as JSON
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Unable to insert event!'
+            ]);
+        }
+    
+        $stmt->close();
+        exit;  // End script to ensure no further output
+
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => 'Error:'. $e->getMessage()]);
     }
-
-    $sql = "CALL sp_insertEvent(?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-
-    $stmt->bind_param("issss", $eventId, $eventName, $eventType, $eventCategory, $eventElimination);
-
-    if ($stmt->execute()) {
-        // Insert in the logs
-        $action = "Added event $eventName";
-        $insertLogAct = "CALL sp_insertLog(?, ?)";
-
-        $stmt = $conn->prepare($insertLogAct);
-        $stmt->bind_param("is", $accId, $action);
-        $stmt->execute();
-
-        // Return success response as JSON
-        echo json_encode([
-            'status' => 'success',
-            'message' => 'New event added successfully!'
-        ]);
-    } else {
-        // Return error response as JSON
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'Unable to insert event!'
-        ]);
-    }
-
-    $stmt->close();
-    exit;  // End script to ensure no further output
   }
 
 
@@ -203,21 +217,68 @@
 
   //add event criteria
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'addCriteria') {
-    $event = $_POST['criEVId'];
+    $event = $_POST['eventId'];
+    $eventname = $_POST['eventname'];
     $criteria = $_POST['criteria'];
     $pts = $_POST['criPts'];
 
-    $sql = "CALL sp_insertCriteria(?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("isi", $event, $criteria, $pts);
+    try {
+        $sql = "CALL sp_getCriteria(?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $event);
+    
+        if ($stmt->execute()) {
+            $retSum = $stmt->get_result();
+            $row = $retSum->fetch_assoc();
+            
+            // Get total percentage for input evaluation
+            $totalPerc = $row['totalPercentage'];
 
-    if ($stmt->execute()) {
-        echo json_encode(['status' => 'success', 'message' => 'Criteria added successfully!']);
-    } else {
-        echo json_encode(['status' => 'error', 'message' => "Error: " . $sql . "<br>" . $conn->error]);
+            $retSum->free();
+            $stmt->close();
+
+            // Unable insert, percentage of criteria must only be 100%
+            if ($totalPerc == 100) {
+                echo json_encode([
+                    'status' => 'error', 
+                    'message' => 'Total Criteria Percentage has reached 100%. No further entries can be added!'
+                ]);
+                exit;
+            } else {
+                if (($pts + $totalPerc) > 100) {
+                    echo json_encode([
+                        'status' => 'error', 
+                        'message' => 'Total Criteria Percentage will exceed 100%. 
+                        Please enter a value that ensures the total does not surpass 100%!'
+                    ]);
+                    exit;
+                }
+            }
+
+            $sql = "CALL sp_insertCriteria(?, ?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("isi", $event, $criteria, $pts);
+        
+            if ($stmt->execute()) {
+                // Insert in the logs
+                $action = "Added event criteria ($criteria) for event $eventname";
+                $insertLogAct = "CALL sp_insertLog(?, ?)";
+    
+                $stmt = $conn->prepare($insertLogAct);
+                $stmt->bind_param("is", $accId, $action);
+                $stmt->execute();
+    
+                echo json_encode(['status' => 'success', 'message' => 'Criteria added successfully!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => "Error: " . $sql . " " . $conn->error]);
+            }
+            $stmt->close();
+            exit;
+        }
+
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => 'Error:'. $e->getMessage()]);
     }
-    $stmt->close();
-    exit;
   }
 
   //edit criteria
@@ -261,6 +322,14 @@
         $stmt->bind_param("issi", $ranknum, $name, $category, $pts);
     
         if ($stmt->execute()) {
+            // Insert in the logs
+            $action = "Added event scoring rank $ranknum-$name($pts pts.) in the category $category";
+            $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+            $stmt = $conn->prepare($insertLogAct);
+            $stmt->bind_param("is", $accId, $action);
+            $stmt->execute();
+
             echo json_encode(['status' => 'success', 'message' => 'Scoring added successfully!']);
         } else {
             echo json_encode(['status' => 'error', 'message' => "Error: " . $sql . "<br>" . $conn->error]);
@@ -276,24 +345,68 @@
     $eventtype = $_POST['editeventType'];
     $eventname = ucwords($_POST['editeventName']);
     $eventcat = $_POST['editeventCategory'];
-    
-    $sql = "CALL sp_editEvent(?, ?, ?, ?)";
+    $eventElimination = $_POST['eventBracket'] ?? NULL;
+
+    try {
+        if (empty($eventElimination)) {
+            $eventElimination = NULL;
+        } else {
+            // Return error if Single Elimination is checked, this only applies to Sports
+            if ($eventtype == "Socio-Cultural") {
+                echo json_encode([
+                    'status' => 'error', 
+                    'message' => 'Please uncheck the Single Elimination! This only applies to Sports events.'
+                ]);
+                exit;
+            }
+        }
+
+        $sql = "CALL sp_editEvent(?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("isss", $eventid, $eventtype, $eventname, $eventcat);
+        $stmt->bind_param("issss", $eventid, $eventtype, $eventname, $eventcat, $eventElimination);
 
-    if ($stmt->execute()) {
-        // Insert in the logs
-        $action = "Updated event $eventname";
-        $insertLogAct = "CALL sp_insertLog(?, ?)";
+        if ($stmt->execute()) {
+            // Insert in the logs
+            $action = "Updated event $eventname";
+            $insertLogAct = "CALL sp_insertLog(?, ?)";
 
-        $stmt = $conn->prepare($insertLogAct);
-        $stmt->bind_param("is", $accId, $action);
-        $stmt->execute();
+            $stmt = $conn->prepare($insertLogAct);
+            $stmt->bind_param("is", $accId, $action);
+            $stmt->execute();
 
-        echo json_encode(['status' => 'success', 'message' => 'Event updated successfully!']);
+            echo json_encode(['status' => 'success', 'message' => 'Event updated successfully!']);
+        }
+        $stmt->close();
+        exit;
+
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => 'Error:'. $e->getMessage()]);
     }
-    $stmt->close();
-    exit;
+    
+  }
+
+  // Retrieve team to edit
+  if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['editID'])) {
+    $eventid = $_GET['editID'];
+  
+    try {
+      // Retrieve elimination in the database
+      $getElim = "CALL sp_getEvent(?)";
+  
+      $stmt = $conn->prepare($getElim);
+      $stmt->bind_param("i", $eventid);
+      $stmt->execute();
+  
+      $retval = $stmt->get_result();
+  
+      $row = $retval->fetch_assoc();
+      $courses = $row['eventElimination'];
+  
+      echo json_encode(['course' => $courses]);
+  
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => 'Error:'. $e->getMessage()]);
+    }
   }
 
   //deletes an event
@@ -307,24 +420,29 @@
 
     $response = array();
 
-    if ($stmt->execute()) {
-        // Insert in the logs
-        $action = "Deleted event $eventName";
-        $insertLogAct = "CALL sp_insertLog(?, ?)";
+    try {
+        if ($stmt->execute()) {
+            // Insert in the logs
+            $action = "Deleted event $eventName";
+            $insertLogAct = "CALL sp_insertLog(?, ?)";
 
-        $stmt = $conn->prepare($insertLogAct);
-        $stmt->bind_param("is", $accId, $action);
-        $stmt->execute();
+            $stmt = $conn->prepare($insertLogAct);
+            $stmt->bind_param("is", $accId, $action);
+            $stmt->execute();
 
-        $response['success'] = true;
-    } else {
-        $response['success'] = false;
-        $response['error'] = $conn->error;
+            $response['success'] = true;
+        } else {
+            $response['success'] = false;
+            $response['error'] = $conn->error;
+        }
+
+        $stmt->close();
+        header('Content-Type: application/json');
+        echo json_encode($response);
+
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => 'Error:'. $e->getMessage()]);
     }
-
-    $stmt->close();
-    header('Content-Type: application/json');
-    echo json_encode($response);
   }
 
   //deletes a contestant
@@ -338,24 +456,31 @@
 
     $response = array();
 
-    if ($stmt->execute()) {
-        // Insert in the logs
-        $action = "Deleted contestant (ID: $id) in the event $eventName";
-        $insertLogAct = "CALL sp_insertLog(?, ?)";
+    try {
 
-        $stmt = $conn->prepare($insertLogAct);
-        $stmt->bind_param("is", $accId, $action);
-        $stmt->execute();
+        if ($stmt->execute()) {
+            // Insert in the logs
+            $action = "Deleted contestant (ID: $id) in the event $eventName";
+            $insertLogAct = "CALL sp_insertLog(?, ?)";
 
-        $response['success'] = true;
-    } else {
-        $response['success'] = false;
-        $response['error'] = $conn->error;
+            $stmt = $conn->prepare($insertLogAct);
+            $stmt->bind_param("is", $accId, $action);
+            $stmt->execute();
+
+            $response['success'] = true;
+        } else {
+            $response['success'] = false;
+            $response['error'] = $conn->error;
+        }
+
+        $stmt->close();
+        header('Content-Type: application/json');
+        echo json_encode($response);
+
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => 'Error:'. $e->getMessage()]);
     }
 
-    $stmt->close();
-    header('Content-Type: application/json');
-    echo json_encode($response);
   }
 
   //deletes a Committee
@@ -370,24 +495,31 @@
 
     $response = array();
 
-    if ($stmt->execute()) {
-        // Insert in the logs
-        $action = "Deleted committee $comtname in the event $event";
-        $insertLogAct = "CALL sp_insertLog(?, ?)";
+    try  {
 
-        $stmt = $conn->prepare($insertLogAct);
-        $stmt->bind_param("is", $accId, $action);
-        $stmt->execute();
+        if ($stmt->execute()) {
+            // Insert in the logs
+            $action = "Deleted committee $comtname in the event $event";
+            $insertLogAct = "CALL sp_insertLog(?, ?)";
 
-        $response['success'] = true;
-    } else {
-        $response['success'] = false;
-        $response['error'] = $conn->error;
+            $stmt = $conn->prepare($insertLogAct);
+            $stmt->bind_param("is", $accId, $action);
+            $stmt->execute();
+
+            $response['success'] = true;
+        } else {
+            $response['success'] = false;
+            $response['error'] = $conn->error;
+        }
+
+        $stmt->close();
+        header('Content-Type: application/json');
+        echo json_encode($response);
+
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => 'Error:'. $e->getMessage()]);
     }
 
-    $stmt->close();
-    header('Content-Type: application/json');
-    echo json_encode($response);
   }
 
   //deletes a judge
@@ -402,24 +534,30 @@
 
     $response = array();
 
-    if ($stmt->execute()) {
-        // Insert in the logs
-        $action = "Deleted judge $name in the event $event";
-        $insertLogAct = "CALL sp_insertLog(?, ?)";
+    try {
+        if ($stmt->execute()) {
+            // Insert in the logs
+            $action = "Deleted judge $name in the event $event";
+            $insertLogAct = "CALL sp_insertLog(?, ?)";
 
-        $stmt = $conn->prepare($insertLogAct);
-        $stmt->bind_param("is", $accId, $action);
-        $stmt->execute();
+            $stmt = $conn->prepare($insertLogAct);
+            $stmt->bind_param("is", $accId, $action);
+            $stmt->execute();
 
-        $response['success'] = true;
-    } else {
-        $response['success'] = false;
-        $response['error'] = $conn->error;
+            $response['success'] = true;
+        } else {
+            $response['success'] = false;
+            $response['error'] = $conn->error;
+        }
+
+        $stmt->close();
+        header('Content-Type: application/json');
+        echo json_encode($response);
+
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => 'Error:'. $e->getMessage()]);
     }
 
-    $stmt->close();
-    header('Content-Type: application/json');
-    echo json_encode($response);
   }
 
   //deletes a criteria
@@ -447,6 +585,7 @@
   //deletes a scoring
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['rank'])) {
     $rank = $_POST['rank'];
+    $rankname = $_POST['rankname'];
     
     $sql = "CALL sp_delScoring(?)"; 
     $stmt = $conn->prepare($sql);
@@ -455,6 +594,14 @@
     $response = array();
 
     if ($stmt->execute()) {
+        // Insert in the logs
+        $action = "Deleted the event scoring rank $rank-$rankname";
+        $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+        $stmt = $conn->prepare($insertLogAct);
+        $stmt->bind_param("is", $accId, $action);
+        $stmt->execute();
+
         $response['success'] = true;
     } else {
         $response['success'] = false;

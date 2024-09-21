@@ -130,6 +130,7 @@ $sqlT = "CREATE TABLE IF NOT EXISTS judges (
     judgeNo INT AUTO_INCREMENT PRIMARY KEY,
     judgeId INT NOT NULL,
     eventId INT NOT NULL,
+    status INT,
     FOREIGN KEY (judgeId) REFERENCES accounts(userId), #new change
     FOREIGN KEY (eventId) REFERENCES events(eventID) #new change
     );";
@@ -629,11 +630,13 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_editEvent(IN id INT, IN type VARCHAR(255), IN name VARCHAR(255), 
-        IN category VARCHAR(255))
+        IN category VARCHAR(255), IN elim VARCHAR(255))
         BEGIN
-            UPDATE vw_events SET eventType = type, eventName = name, eventCategory = category 
-            WHERE eventID = id;
+            UPDATE vw_events SET eventType = type, eventName = name, eventCategory = category, 
+            eventElimination = elim WHERE eventID = id;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -748,7 +751,7 @@ if ($conn->query($sqlT) === TRUE) {
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEventJudge(IN event INT)
         BEGIN
             SELECT j.*, a.firstName FROM vw_eventJudge j INNER JOIN vw_accounts a ON j.judgeId = a.userId
-            WHERE eventId = event;
+            WHERE eventId = event AND j.status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -789,6 +792,8 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_delEventJudge(IN id INT)
         BEGIN
             UPDATE vw_eventJudge SET status = 0 WHERE judgeNo = id;
@@ -799,6 +804,7 @@ if ($conn->query($sqlT) === TRUE) {
 }
 
 
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getScoring()
         BEGIN
             SELECT * FROM vw_eventScore;
@@ -808,6 +814,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getScoringChk(IN num INT, IN catg VARCHAR(255))
         BEGIN
             SELECT * FROM vw_eventScore WHERE rankNo = num AND eventCategory = catg;
@@ -848,7 +855,7 @@ if ($conn->query($sqlT) === TRUE) {
 
 $sqlP = "CREATE PROCEDURE IF NOT EXISTS sp_getCriteria(IN evid INT)
         BEGIN
-            SELECT * FROM vw_criteria WHERE eventId = evid;
+            SELECT *, SUM(percentage) as totalPercentage FROM vw_criteria WHERE eventId = evid;
         END ;";
 if ($conn->query($sqlP) === TRUE) {
 } else {

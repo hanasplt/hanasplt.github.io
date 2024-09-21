@@ -79,7 +79,8 @@
                 <button onclick="openContestantModal(this)">Add Contestant</button>
                 <button onclick="openCommitteeModal(this)">Add Committee</button>
                 <button onclick="openJudgesModal(this)">Add Judge</button>
-                <button onclick="">Scoring</button>
+                <button onclick="openCriteriaModal(this)">Add Criteria</button>
+                <button onclick="openScoringTable(this)">Scoring</button>
             </div>
         </div>
 
@@ -113,7 +114,13 @@
                         ?>
                         <div class="account" onclick="toggleEvent('eventTable<?php echo $db_evName; ?>', 
                         '<?php echo $db_evType; ?>', '<?php echo $db_evID; ?>',
-                        '<?php echo $row['eventName']; ?>', 'displayContestantTable<?php echo $db_evName; ?>', 'displayOtherTable<?php echo $db_evName; ?>')" >
+                        '<?php echo $row['eventName']; ?>', 'displayContestantTable<?php echo $db_evName; ?>', 
+                        'displayOtherTable<?php echo $db_evName; ?>')"
+                        data-event-id="<?php echo $db_evID; ?>"
+                        data-name="<?php echo $row['eventName']; ?>"
+                        data-table-id="<?php echo $db_evName; ?>Table"
+                        data-type="<?php echo $db_evType; ?>"
+                        data-category="<?php echo $db_evCatg; ?>">
                             <div style="float: left; width: 25%;"><?php echo $row['eventName']; ?></div>
                             <div style="float: left; width: 15%;"><?php echo $db_evType; ?></div>
                             <div style="float: left; width: 10%;"><?php echo $db_evCatg; ?></div>
@@ -477,6 +484,172 @@
                         <div class="modal-footer">
                             <button type="button" class="cancel-btn" onclick="closeModal('judgesModal')">Cancel</button>
                             <button type="submit" class="save-btn-judge">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--FOR ADDING CRITERIA MODAL-->
+    <div id="criteriaModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('criteriaModal')">&times;</span>
+            <div class="modal-body">
+                <div class="form-section">
+                    <form method="post" id="addCriForm" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="addCriteria">
+                        <p class="addevent">Add Criteria</p>
+
+                        <div class="form-group">
+                            <label for="eventId">Event Name:</label>
+                            <select id="eventId" name="eventId" required>
+                                <?php
+                                    $sql = "CALL sp_getEventFrom(?);";
+                                    $ev_type = "Socio-Cultural";
+
+                                    $stmt = $conn->prepare($sql);
+                                    $stmt->bind_param("s", $ev_type);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+                                    
+                                    if($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            $db_evval = $row['eventID'];
+                                            $db_evname = $row['eventName'];
+                                            $db_evType = $row['eventType'];
+
+                                            ?>
+                                            <option value="<?php echo $db_evval; ?>" data-type="<?php echo $db_evType; ?>">
+                                                <?php echo $db_evname; ?>
+                                            </option>
+                                            <?php
+                                        }
+                                    }
+                                    $result->free();
+                                    $stmt->close();
+                                ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="criteria">Criteria:</label>
+                            <textarea name="criteria" id="criteria" oninput="validateInput(event)"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="criPts">Percentage:</label>
+                            <input type="number" id="criPts" name="criPts">
+                        </div>
+
+                        <input type="text" id="eventname" name="eventname" hidden>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="cancel-btn" onclick="closeModal('criteriaModal')">Cancel</button>
+                            <button type="submit" class="save-btn-cri">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--FOR EDITING CRITERIA MODAL-->
+    <div id="editcriModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editcriModal')">&times;</span>
+            <div class="modal-body">
+                <div class="form-section">
+                    <form method="post" id="editCriForm" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="editCriteria">
+                        <p class="addevent">Edit Criteria</p>
+                        <input type="number" id="editcriId" name="editcriId" hidden>
+
+                        <div class="form-group">
+                            <label for="editcriteria">Criteria:</label>
+                            <textarea name="editcriteria" id="editcriteria"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editcriPts">Points:</label>
+                            <input type="number" id="editcriPts" name="editcriPts">
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="cancel-btn" onclick="closeModal('editcriModal')">Cancel</button>
+                            <button type="submit" class="save-btn-editcri">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--FOR SCORING TABLE MODAL-->
+    <div id="eventScoringTable" class="modal">
+        <div class="modal-contentt">
+            <div class="title">
+                <p class="addevent">Scoring Table</p>
+            </div>
+            <table id="eventScoringTableContent">
+                <thead>
+                    <tr>
+                        <th>Rank No.</th>
+                        <th>Ranking</th>
+                        <th>Individual/Dual</th>
+                        <th>Group</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- EVENT SCORING DATA -->
+                </tbody>
+            </table>
+            <div class="buttons">
+                <div class="button-group">
+                    <button type="button" id="cancelBtn" onclick="closeModal('eventScoringTable')">Cancel</button>
+                    <button type="button" id="saveBtn" onclick="openScoreModal()">Add Scoring</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--FOR ADDING SCORING MODAL-->
+    <div id="scoringModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('scoringModal')">&times;</span>
+            <div class="modal-body">
+                <div class="form-section">
+                    <form method="post" id="addScoringForm" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="addScoring">
+                        <p class="addevent">Add Scoring</p>
+
+                        <div class="form-group">
+                            <label for="rankName">Rank No.:</label>
+                            <input type="number" id="rankNo" maxlength="30" name="rankNo" placeholder="e.g., 1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="rankName">Rank Name:</label>
+                            <input type="text" id="rankName" maxlength="30" name="rankName" placeholder="e.g., Champion/Winner">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="scoringCategory">Category:</label>
+                            <select id="scoringCategory" name="scoringCategory">
+                                <option value="Individual/Dual">Individual/Dual</option>
+                                <option value="Team">Team</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="scorePts">Points:</label>
+                            <input type="number" maxlength="10" id="scorePts" name="scorePts">
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="cancel-btn" onclick="closeModal('scoringModal')">Cancel</button>
+                            <button type="submit" class="save-btn-scr">Save</button>
                         </div>
                     </form>
                 </div>
@@ -1015,112 +1188,6 @@
                         <div class="modal-footer">
                             <button type="button" class="cancel-btn" onclick="closeModal('judgeModal')">Cancel</button>
                             <button type="submit" class="save-btn-judge">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!--FOR ADDING CRITERIA MODAL-->
-    <div id="criModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('criModal')">&times;</span>
-            <div class="modal-body">
-                <div class="form-section">
-                    <form method="post" id="addCriForm" enctype="multipart/form-data">
-                        <input type="hidden" name="action" value="addCriteria">
-                        <p class="addevent">Add Criteria</p>
-
-                        <div class="form-group">
-                            <label for="criteria">Criteria:</label>
-                            <textarea name="criteria" id="criteria"></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="criPts">Percentage:</label>
-                            <input type="number" id="criPts" name="criPts">
-                        </div>
-
-                        <input type="number" id="criEVId" name="criEVId" hidden>
-                        
-                        <div class="modal-footer">
-                            <button type="button" class="cancel-btn" onclick="closeModal('criModal')">Cancel</button>
-                            <button type="submit" class="save-btn-cri">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!--FOR EDITING CRITERIA MODAL-->
-    <div id="editcriModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('editcriModal')">&times;</span>
-            <div class="modal-body">
-                <div class="form-section">
-                    <form method="post" id="editCriForm" enctype="multipart/form-data">
-                        <input type="hidden" name="action" value="editCriteria">
-                        <p class="addevent">Edit Criteria</p>
-                        <input type="number" id="editcriId" name="editcriId" hidden>
-
-                        <div class="form-group">
-                            <label for="editcriteria">Criteria:</label>
-                            <textarea name="editcriteria" id="editcriteria"></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="editcriPts">Points:</label>
-                            <input type="number" id="editcriPts" name="editcriPts">
-                        </div>
-                        
-                        <div class="modal-footer">
-                            <button type="button" class="cancel-btn" onclick="closeModal('editcriModal')">Cancel</button>
-                            <button type="submit" class="save-btn-editcri">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!--FOR ADDING SCORING MODAL-->
-    <div id="scoringModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('scoringModal')">&times;</span>
-            <div class="modal-body">
-                <div class="form-section">
-                    <form method="post" id="addScoringForm" enctype="multipart/form-data">
-                        <input type="hidden" name="action" value="addScoring">
-                        <p class="addevent">Add Scoring</p>
-
-                        <div class="form-group">
-                            <label for="rankName">Rank No.:</label>
-                            <input type="number" id="rankNo" maxlength="30" name="rankNo" placeholder="e.g., 1">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="rankName">Rank Name:</label>
-                            <input type="text" id="rankName" maxlength="30" name="rankName" placeholder="e.g., Champion/Winner">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="scoringCategory">Category:</label>
-                            <select id="scoringCategory" name="scoringCategory">
-                                <option value="Individual/Dual">Individual/Dual</option>
-                                <option value="Team">Team</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="scorePts">Points:</label>
-                            <input type="number" maxlength="10" id="scorePts" name="scorePts">
-                        </div>
-                        
-                        <div class="modal-footer">
-                            <button type="button" class="cancel-btn" onclick="closeModal('scoringModal')">Cancel</button>
-                            <button type="submit" class="save-btn-scr">Save</button>
                         </div>
                     </form>
                 </div>

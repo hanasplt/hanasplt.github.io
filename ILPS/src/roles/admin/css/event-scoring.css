@@ -1,0 +1,207 @@
+body {
+    font-family: 'Poppins';
+}
+
+.container {
+    max-width: 62vw;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+.title p {
+    text-align: center;
+    color: #2D4D2A;
+    font-weight: bold;
+    font-size: 1.5vw;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 12px;
+    border: 1px solid #ccc;
+}
+
+th {
+    background-color: #3e8e41;
+    color: white;
+}
+
+td {
+    background-color: #e0e0e0;
+}
+
+td button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.button-group {
+    margin-top: 3vw;
+}
+
+
+#cancelBtn {
+    background-color: #EBEBEB;
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    font-size: 1vw;
+    height: 2vw;
+    width: 7vw;
+    cursor: pointer;
+}
+
+#cancelBtn:hover {
+    background-color: #e0e0e0;
+}
+
+#saveBtn {
+    background-color: #7FD278;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1vw;
+    font-weight: bold;
+    height: 2vw;
+    width: 10vw;
+    cursor: pointer;
+}
+
+#saveBtn:hover {
+    background-color: #96d890;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.add-form {
+    display: flex;
+    margin-left: 1.5vw; 
+}
+
+.add-img {
+    display: flex;
+    position: relative;
+    margin-right: 0.5vw;
+}
+
+    .acc-img {
+        width: 6vw;
+        height: 6vw;
+        border-radius: 50%;
+        background-color: #B1F0AB;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+
+        .acc-img i {
+            font-size: 4vw;
+            color: #2D4D2A;
+        }
+
+    .edit-img {
+        position: absolute;
+        bottom: 5vw;
+        right: 0;
+        background-color: #466543;
+        width: 1.8vw;
+        height: 1.8vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+    }
+
+        .edit-img i {
+            font-size: 1vw;
+            text-align: right;
+            color: #ffffff;
+        }
+
+.add-deets {
+    display: flex;
+    color: #2D4D2A;
+}
+
+    .add-left, .add-right {
+        display: flex;
+        margin-left: 1.5vw;
+    }
+
+        .labels, .fields {
+            display: flex;
+            flex-direction: column;
+            margin-right: 1vw;
+        }
+
+        .labels label, .fields label{
+            font-weight: bold;
+            margin-bottom: 0.8vw;
+        }
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    border: #F2F2F2 solid 1px;
+    height: 3.5vh;
+    margin-bottom: 1vh;
+    width: 15vw;
+    border-radius: 0.4vw;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.1);
+}
+
+        #sort {
+            background-color: #7FD278; 
+            color: #2D4D2A;
+            border: none;
+            border-radius: 5px; 
+            font-size: 16px;
+            font-weight: bold;
+            font-family: 'Poppins';
+            box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.1);
+            width: 15.4vw;
+            height: 3.5vh;
+            cursor: pointer;
+        }
+
+        #sort option {
+            background-color: #fff;
+            color: #333;
+        }
+
+    
+
+        
+
+        .password-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .eye-icon {
+            margin-left: -30px;
+            cursor: pointer;
+        }
