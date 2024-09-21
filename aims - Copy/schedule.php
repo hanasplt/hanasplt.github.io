@@ -153,26 +153,19 @@ usort($scheduled_days, function($a, $b) {
     <!-- time sorting-->
     <script>
         function sortTableByTime(tableId) {
-        const table = document.getElementById(tableId);
-        const rowsArray = Array.from(table.querySelectorAll('tbody tr'));
+            const table = document.getElementById(tableId);
+            const rows = Array.from(table.rows).slice(1);
 
-        rowsArray.sort((a, b) => {
-            const timeA = a.cells[0].textContent.trim();
-            const timeB = b.cells[0].textContent.trim();
+            rows.sort((a, b) => {
+                const timeA = a.cells[0].getAttribute('data-time');
+                const timeB = b.cells[0].getAttribute('data-time');
 
-            const [hourA, minuteA, periodA] = timeA.match(/(\d+):(\d+) (AM|PM)/).slice(1);
-            const [hourB, minuteB, periodB] = timeB.match(/(\d+):(\d+) (AM|PM)/).slice(1);
+                return timeA.localeCompare(timeB);
+            });
 
-            const time24A = (parseInt(hourA) % 12 + (periodA === 'PM' ? 12 : 0)) * 60 + parseInt(minuteA);
-            const time24B = (parseInt(hourB) % 12 + (periodB === 'PM' ? 12 : 0)) * 60 + parseInt(minuteB);
+            rows.forEach(row => table.appendChild(row));
+        }
 
-            return time24A - time24B;
-        });
-
-        const tbody = table.querySelector('tbody');
-        tbody.innerHTML = '';
-        rowsArray.forEach(row => tbody.appendChild(row));
-    }
     </script>
 
     <!-- logout confirmation -->
@@ -413,6 +406,7 @@ usort($scheduled_days, function($a, $b) {
             });
         });
 
+        //edit event specific to date
         document.querySelectorAll('.edit-btn').forEach(function(button) {
             button.addEventListener('click', function() {
                 const row = this.closest('tr');
@@ -483,11 +477,14 @@ usort($scheduled_days, function($a, $b) {
                                 const response = JSON.parse(xhr.responseText);
                                 if (response.success) {
                                     cells[0].textContent = time12;
+                                    cells[0].setAttribute('data-time', time24);
                                     cells[1].textContent = activity;
                                     cells[2].textContent = location;
                                     cells[3].textContent = status;
 
                                     sortTableByTime(`scheduleTable-${dayId}`);
+                                    console.log("Reloading the page");
+                                    location.reload();
 
                                     Swal.fire({
                                         title: 'Success!',
@@ -495,7 +492,7 @@ usort($scheduled_days, function($a, $b) {
                                         icon: 'success',
                                         confirmButtonColor: '#7FD278',
                                         confirmButtonText: 'OK'
-                                    });
+                                    })
                                 } else {
                                     Swal.fire({
                                         title: 'Error!',
@@ -513,76 +510,76 @@ usort($scheduled_days, function($a, $b) {
             });
         });
 
+        //edit date
         document.querySelectorAll('.editHeaderBtn').forEach(button => {
-    button.addEventListener('click', function() {
-        const dayId = this.getAttribute('data-day-id');
-        
-        // Get the current day date from the corresponding element
-        const currentDayElement = document.getElementById(dayId); // Assuming the day element has the ID as the day ID
-        const currentDayDate = currentDayElement ? currentDayElement.textContent : ''; // Get the current date
-        
-        Swal.fire({
-            title: 'Edit Date',
-            html: ` 
-                <input id="new-day-date" class="swal2-input" type="date" value="${currentDayDate}">
-            `,
-            confirmButtonText: 'Save',
-            showCancelButton: true,
-            preConfirm: () => {
-                const dayDate = document.getElementById('new-day-date').value;
-                const today = new Date().toISOString().split('T')[0];
+            button.addEventListener('click', function() {
+                const dayId = this.getAttribute('data-day-id');
+                
+                const currentDayElement = document.getElementById(dayId);
+                const currentDayDate = currentDayElement ? currentDayElement.textContent : '';
+                
+                Swal.fire({
+                    title: 'Edit Date',
+                    html: ` 
+                        <input id="new-day-date" class="swal2-input" type="date" value="${currentDayDate}">
+                    `,
+                    confirmButtonText: 'Save',
+                    showCancelButton: true,
+                    preConfirm: () => {
+                        const dayDate = document.getElementById('new-day-date').value;
+                        const today = new Date().toISOString().split('T')[0];
 
-                if (!dayDate) {
-                    Swal.showValidationMessage('Please enter a Date');
-                    return false;
-                }
-
-                if (dayDate < today) {
-                    Swal.showValidationMessage('Date cannot be in the past');
-                    return false;
-                }
-
-                return {
-                    dayId: dayId,
-                    dayDate: dayDate
-                };
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const { dayId, dayDate } = result.value;
-
-                const xhr = new XMLHttpRequest();
-                xhr.open("POST", "edit_day.php", true); // Use a different endpoint for editing
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        const response = JSON.parse(xhr.responseText);
-                        if (response.success) {
-                            Swal.fire({
-                                title: 'Success!',
-                                text: 'Day updated successfully.',
-                                icon: 'success',
-                                confirmButtonColor: '#7FD278',
-                                confirmButtonText: 'OK'
-                            }).then(() => {
-                                location.reload(); // Reload to see the updated day
-                            });
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: response.message,
-                                icon: 'error',
-                                confirmButtonColor: '#d33',
-                                confirmButtonText: 'OK'
-                            });
+                        if (!dayDate) {
+                            Swal.showValidationMessage('Please enter a Date');
+                            return false;
                         }
+
+                        if (dayDate < today) {
+                            Swal.showValidationMessage('Date cannot be in the past');
+                            return false;
+                        }
+
+                        return {
+                            dayId: dayId,
+                            dayDate: dayDate
+                        };
                     }
-                };
-                xhr.send(`day_id=${dayId}&day_date=${dayDate}`); // Send both day ID and new date
-            }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const { dayId, dayDate } = result.value;
+
+                        const xhr = new XMLHttpRequest();
+                        xhr.open("POST", "edit_day.php", true);
+                        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                        xhr.onload = function () {
+                            if (xhr.status === 200) {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.success) {
+                                    Swal.fire({
+                                        title: 'Success!',
+                                        text: 'Day updated successfully.',
+                                        icon: 'success',
+                                        confirmButtonColor: '#7FD278',
+                                        confirmButtonText: 'OK'
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: response.message,
+                                        icon: 'error',
+                                        confirmButtonColor: '#d33',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
+                            }
+                        };
+                        xhr.send(`day_id=${dayId}&day_date=${dayDate}`);
+                    }
+                });
+            });
         });
-    });
-});
 
 
 
