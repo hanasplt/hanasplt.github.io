@@ -77,8 +77,8 @@
 
             <div>
                 <button onclick="openContestantModal(this)">Add Contestant</button>
-                <button>Add Committee</button>
-                <button>Add Judge</button>
+                <button onclick="openCommitteeModal(this)">Add Committee</button>
+                <button onclick="openJudgesModal(this)">Add Judge</button>
                 <button onclick="">Scoring</button>
             </div>
         </div>
@@ -111,8 +111,10 @@
                         $db_evCatg = $row['eventCategory'];
 
                         ?>
-                        <div class="account" onclick="toggleEvent('eventTable<?php echo $db_evName; ?>', '<?php echo $db_evType; ?>', '<?php echo $db_evID; ?>', '<?php echo $db_evName; ?>Table')" >
-                            <div style="float: left; width: 25%;"><?php echo $db_evName; ?></div>
+                        <div class="account" onclick="toggleEvent('eventTable<?php echo $db_evName; ?>', 
+                        '<?php echo $db_evType; ?>', '<?php echo $db_evID; ?>',
+                        '<?php echo $row['eventName']; ?>', 'displayContestantTable<?php echo $db_evName; ?>', 'displayOtherTable<?php echo $db_evName; ?>')" >
+                            <div style="float: left; width: 25%;"><?php echo $row['eventName']; ?></div>
                             <div style="float: left; width: 15%;"><?php echo $db_evType; ?></div>
                             <div style="float: left; width: 10%;"><?php echo $db_evCatg; ?></div>
                             <div class="acc-buttons">
@@ -127,6 +129,8 @@
                         </div>
 
                         <div class="container" id="eventTable<?php echo $db_evName; ?>" style="display: none;" data-event-id="<?php echo $db_evID; ?>" data-table-id="<?php echo $db_evName; ?>Table">
+                            <div id="displayContestantTable<?php echo $db_evName; ?>"></div>
+                            <div id="displayOtherTable<?php echo $db_evName; ?>"></div>
                         </div>
                         <?php
 
@@ -251,7 +255,7 @@
 
                         <div class="form-group">
                             <label for="eventId">Event Name:</label>
-                            <select id="eventId" name="eventId" onchange="getSelectedText()" required>
+                            <select id="eventId" name="eventId" required>
                                 <?php
                                     $sql = "CALL sp_getEvents();";
                                     $stmt = $conn->prepare($sql);
@@ -284,7 +288,7 @@
 
                         <div class="form-group">
                             <label for="contestantId">Contestant Name:</label>
-                            <select id="contestantId" name="contestantId" onchange="updateNameField()" required>
+                            <select id="contestantId" name="contestantId" required>
                                 <?php
                                     $sql = "CALL sp_getAllTeam;";
                                     $stmt = $conn->prepare($sql);
@@ -309,6 +313,170 @@
                         <div class="modal-footer">
                             <button type="button" class="cancel-btn" onclick="closeModal('contModal')">Cancel</button>
                             <button type="submit" class="save-btn-contestant">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--FOR ADDING COMMITTEE (Sports) MODAL-->
+    <div id="comtSpModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('comtSpModal')">&times;</span>
+            <div class="modal-body">
+                <div class="form-section">
+                    <form method="post" id="addCommitteeForm" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="addComt">
+                        <p class="addevent">Add Committee</p>
+
+                        <div class="form-group">
+                            <label for="eventId">Event Name:</label>
+                            <select id="eventId" name="eventId" required>
+                                <?php
+                                    $sql = "CALL sp_getEventFrom(?);";
+                                    $ev_type = "Sports";
+
+                                    $stmt = $conn->prepare($sql);
+                                    $stmt->bind_param("s", $ev_type);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+                                    
+                                    if($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            $db_evval = $row['eventID'];
+                                            $db_evname = $row['eventName'];
+                                            $db_evType = $row['eventType'];
+
+                                            ?>
+                                            <option value="<?php echo $db_evval; ?>" data-type="<?php echo $db_evType; ?>">
+                                                <?php echo $db_evname; ?>
+                                            </option>
+                                            <?php
+                                        }
+                                    }
+                                    $result->free();
+                                    $stmt->close();
+                                ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="comtId">Committee Name:</label>
+                            <select id="comtId" name="comtId" required>
+                                <?php
+                                    $sql = "CALL sp_getAccType(?);";
+                                    $stmt = $conn->prepare($sql);
+                                    $role = 'Committee';
+                                    $stmt->bind_param("s", $role);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+                                    
+                                    if($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            $userId = $row['userId'];
+                                            $name = $row['firstName'];
+                                            ?>
+                                            <option value="<?php echo $userId; ?>" 
+                                                    data-fname="<?php echo $name; ?>"><?php echo $name; ?>
+                                            </option>
+                                            <?php
+                                        }
+                                    }
+                                    $result->free();
+                                    $stmt->close();
+                                ?>
+                            </select>
+                        </div>
+
+                        <input type="text" id="comtEVName" name="comtEVName" hidden>
+                        <input type="text" id="comtName" name="comtName" hidden>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="cancel-btn" onclick="closeModal('comtSpModal')">
+                                Cancel
+                            </button>
+                            <button type="submit" class="save-btn-comt">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--FOR ADDING JUDGE MODAL-->
+    <div id="judgesModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('judgesModal')">&times;</span>
+            <div class="modal-body">
+                <div class="form-section">
+                    <form method="post" id="addJudgesForm" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="addJudge">
+                        <p class="addevent">Add Judge</p>
+
+                        <div class="form-group">
+                            <label for="eventId">Event Name:</label>
+                            <select id="eventId" name="eventId" required>
+                                <?php
+                                    $sql = "CALL sp_getEventFrom(?);";
+                                    $ev_type = "Socio-Cultural";
+
+                                    $stmt = $conn->prepare($sql);
+                                    $stmt->bind_param("s", $ev_type);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+                                    
+                                    if($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            $db_evval = $row['eventID'];
+                                            $db_evname = $row['eventName'];
+                                            $db_evType = $row['eventType'];
+
+                                            ?>
+                                            <option value="<?php echo $db_evval; ?>" data-type="<?php echo $db_evType; ?>">
+                                                <?php echo $db_evname; ?>
+                                            </option>
+                                            <?php
+                                        }
+                                    }
+                                    $result->free();
+                                    $stmt->close();
+                                ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="judgeId">Contestant Name:</label>
+                            <select id="judgeId" name="judgeId" required>
+                                <?php
+                                    $sql = "CALL sp_getAccType(?);";
+                                    $stmt = $conn->prepare($sql);
+                                    $role = 'Judge';
+                                    $stmt->bind_param("s", $role);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+                                    
+                                    if($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            $userId = $row['userId'];
+                                            $name = $row['firstName'];
+                                            ?>
+                                            <option value="<?php echo $userId; ?>"><?php echo $name; ?></option>
+                                            <?php
+                                        }
+                                    }
+                                    $result->free();
+                                    $stmt->close();
+                                ?>
+                            </select>
+                        </div>
+
+                        <input type="text" id="judgeEVName" name="judgeEVName" hidden>
+                        <input type="text" id="judgeName" name="judgeName" hidden>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="cancel-btn" onclick="closeModal('judgesModal')">Cancel</button>
+                            <button type="submit" class="save-btn-judge">Save</button>
                         </div>
                     </form>
                 </div>
@@ -711,6 +879,7 @@
                         <div class="form-group">
                             <label for="contno">Contestant No.:</label>
                             <input type="number" name="contno" id="contno" required>
+
                             <label for="contestantId">Contestant Name:</label>
                             <select id="contestantId" name="contestantId" required>
                                 <?php

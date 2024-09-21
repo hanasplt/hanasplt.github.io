@@ -62,7 +62,7 @@
     $name = $_POST['contestantName'];
     $event = $_POST['eventId'];
     $eventname = $_POST['selectedEventText'];
-    $contNo = $_POST['contno'] ?? NULL;
+    $contNo = $_POST['contNum'] ?? NULL;
 
     if (empty($contNo)) {
         $contNo = NULL;
@@ -109,38 +109,56 @@
   //add event Committee
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'addComt') {
     $comtid = $_POST['comtId'];
-    $evid = $_POST['comtEvId'];
+    $comtName = $_POST['comtName'];
+    $evid = $_POST['eventId'];
+    $evname = $_POST['comtEVName'];
 
-    $sql = "CALL sp_getComt(?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $comtid, $evid);
-    $stmt->execute();
-    $retval = $stmt->get_result();
+    try {
 
-    if ($retval->num_rows > 0) {
-        echo json_encode(['status' => 'error', 'message' => 'Committee already exists!']);
-    } else {
-        $retval->free();
-        $stmt->close();
-
-        $sql = "CALL sp_insertEventComt(?, ?)";
+        $sql = "CALL sp_getComt(?, ?)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ii", $comtid, $evid);
+        $stmt->execute();
+        $retval = $stmt->get_result();
     
-        if ($stmt->execute()) {
-            echo json_encode(['status' => 'success', 'message' => 'Committee added successfully!']);
+        if ($retval->num_rows > 0) {
+            echo json_encode(['status' => 'error', 'message' => 'Committee already exists!']);
         } else {
-            echo json_encode(['status' => 'error', 'message' => ' Error: ' . $sql . '<br>' . $conn->error]);
+            $retval->free();
+            $stmt->close();
+    
+            $sql = "CALL sp_insertEventComt(?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ii", $comtid, $evid);
+        
+            if ($stmt->execute()) {
+                // Insert in the logs
+                $action = "Added event committee $comtName in the event $evname";
+                $insertLogAct = "CALL sp_insertLog(?, ?)";
+    
+                $stmt = $conn->prepare($insertLogAct);
+                $stmt->bind_param("is", $accId, $action);
+                $stmt->execute();
+    
+                echo json_encode(['status' => 'success', 'message' => 'Committee added successfully!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => ' Error: ' . $sql . ' ' . $conn->error]);
+            }
         }
+        $stmt->close();
+        exit;
+
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => 'Error:'. $e->getMessage()]);
     }
-    $stmt->close();
-    exit;
   }
 
   //add event judge
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'addJudge') {
     $judgeid = $_POST['judgeId'];
-    $evid = $_POST['judgeEvId'];
+    $evid = $_POST['eventId'];
+    $event = $_POST['judgeEVName'];
+    $judge = $_POST['judgeName'];
 
     $sql = "CALL sp_getJudge(?, ?)";
     $stmt = $conn->prepare($sql);
@@ -148,24 +166,39 @@
     $stmt->execute();
     $retval = $stmt->get_result();
 
-    if ($retval->num_rows > 0) {
-        echo json_encode(['status' => 'error', 'message' => 'Judge already exists!']);
-    } else {
-        $retval->free();
-        $stmt->close();
-
-        $sql = "CALL sp_insertEventJudge(?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ii", $judgeid, $evid);
-    
-        if ($stmt->execute()) {
-            echo json_encode(['status' => 'success', 'message' => 'Judge added successfully!']);
+    try {
+        
+        if ($retval->num_rows > 0) {
+            echo json_encode(['status' => 'error', 'message' => 'Judge already exists!']);
         } else {
-            echo json_encode(['status' => 'error', 'message' => "Error: " . $sql . "<br>" . $conn->error]);
+            $retval->free();
+            $stmt->close();
+    
+            $sql = "CALL sp_insertEventJudge(?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ii", $judgeid, $evid);
+        
+            if ($stmt->execute()) {
+                // Insert in the logs
+                $action = "Added event judge $judge in the event $event";
+                $insertLogAct = "CALL sp_insertLog(?, ?)";
+    
+                $stmt = $conn->prepare($insertLogAct);
+                $stmt->bind_param("is", $accId, $action);
+                $stmt->execute();
+    
+                echo json_encode(['status' => 'success', 'message' => 'Judge added successfully!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => "Error: " . $sql . " " . $conn->error]);
+            }
         }
+        $stmt->close();
+        exit;
+
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => 'Error:'. $e->getMessage()]);
     }
-    $stmt->close();
-    exit;
+    
   }
 
   //add event criteria
@@ -297,6 +330,7 @@
   //deletes a contestant
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['contid'])) {
     $id = $_POST['contid'];
+    $eventName = $_POST['eventname'];
     
     $sql = "CALL sp_delEventContestant(?)"; 
     $stmt = $conn->prepare($sql);
@@ -305,6 +339,14 @@
     $response = array();
 
     if ($stmt->execute()) {
+        // Insert in the logs
+        $action = "Deleted contestant (ID: $id) in the event $eventName";
+        $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+        $stmt = $conn->prepare($insertLogAct);
+        $stmt->bind_param("is", $accId, $action);
+        $stmt->execute();
+
         $response['success'] = true;
     } else {
         $response['success'] = false;
@@ -319,6 +361,8 @@
   //deletes a Committee
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['comtid'])) {
     $comtID = $_POST['comtid'];
+    $comtname = $_POST['name'];
+    $event = $_POST['eventname'];
     
     $sql = "CALL sp_delEventComt(?)"; 
     $stmt = $conn->prepare($sql);
@@ -327,6 +371,14 @@
     $response = array();
 
     if ($stmt->execute()) {
+        // Insert in the logs
+        $action = "Deleted committee $comtname in the event $event";
+        $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+        $stmt = $conn->prepare($insertLogAct);
+        $stmt->bind_param("is", $accId, $action);
+        $stmt->execute();
+
         $response['success'] = true;
     } else {
         $response['success'] = false;
@@ -341,6 +393,8 @@
   //deletes a judge
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['judgeid'])) {
     $judgeID = $_POST['judgeid'];
+    $name = $_POST['name'];
+    $event = $_POST['eventname'];
     
     $sql = "CALL sp_delEventJudge(?)";  
     $stmt = $conn->prepare($sql);
@@ -349,6 +403,14 @@
     $response = array();
 
     if ($stmt->execute()) {
+        // Insert in the logs
+        $action = "Deleted judge $name in the event $event";
+        $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+        $stmt = $conn->prepare($insertLogAct);
+        $stmt->bind_param("is", $accId, $action);
+        $stmt->execute();
+
         $response['success'] = true;
     } else {
         $response['success'] = false;

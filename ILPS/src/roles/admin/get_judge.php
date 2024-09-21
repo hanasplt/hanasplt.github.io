@@ -8,6 +8,7 @@ if ($conn->connect_error) {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $evid = $_POST['evid'];
+    $event = $_POST['eventname'];
 
     $sql = "CALL sp_getEventJudge(?)";
     $stmt = $conn->prepare($sql);
@@ -15,15 +16,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->execute();
     $result = $stmt->get_result();
 
+    echo '<div class="accounts-title" style="margin-left: 0vw;">';
+    echo '<p id="event">Committee Table</p>';
+    echo '</div>';
+
+    echo '<table class="contestantTable">';
+    echo '<thead>';
+    echo '<tr>';
+    echo '<th>No.</th>';
+    echo '<th>Name</th>';
+    echo '<th>Action</th>';
+    echo '</tr>';
+    echo '</thead>';
+
     if ($result->num_rows > 0) {
+        $count = 1;
+
+        echo '<tbody>';
+
         while ($row = $result->fetch_assoc()) {
             $id = $row['judgeNo'];
             $name = $row['firstName'];
 
             echo '<tr>';
-            echo '<td>' . $id . '</td>';
+            echo '<td>' . $count++ . '</td>';
             echo '<td>' . $name . '</td>';
-            echo '<td><i class="fa-solid fa-trash-can delete-icon-judge" data-id="'.$id.'" style="cursor: pointer;"></i></td>';
+            echo '<td><i class="fa-solid fa-trash-can delete-icon-judge" data-id="'.$id.'" data-name="'.$name.'" data-event-name="'.$event.'" style="cursor: pointer;"></i></td>';
             echo '</tr>';
         }
     } else {
@@ -31,5 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     $result->free();
     $stmt->close();
+
+    echo '</tbody>';
+    echo '</table>';
 }
 ?>

@@ -1,7 +1,5 @@
 // TOGGLE EVENT TABLES (NAGAMIT)
-function toggleEvent(divId, evType, evId, tableId) {
-    console.log("Toggling table:", divId); // Checking if toggled
-
+function toggleEvent(divId, evType, evId, evName, contTable, otherTable) {
     const table = document.getElementById(divId);
     const tables = document.querySelectorAll('.container');
 
@@ -11,18 +9,19 @@ function toggleEvent(divId, evType, evId, tableId) {
         }
     });
 
+
     if (evType == "Sports") {
-        loadContestantSp(evId, divId);
-        loadCommittee(evId, tableId);
+        loadContestantSp(evId, contTable, evName);
+        loadCommittee(evId, otherTable, evName);
     } else {
-        loadContestantSc(evId, divId);
-        loadJudge(evId, tableId);
+        loadContestantSc(evId, contTable, evName);
+        loadJudge(evId, otherTable, evName);
     }
     table.style.display = table.style.display === 'none' ? 'block' : 'none';
 }
 
 // DISPLAYING TABLE CONTESTANT (Sports)
-function loadContestantSp(evid, divId) {
+function loadContestantSp(evid, divId, evName) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -31,12 +30,12 @@ function loadContestantSp(evid, divId) {
     };
     xhttp.open("POST", "get_contestants.php", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("evId=" + evid + "&&type=Sports");
+    xhttp.send("evId=" + evid + "&&type=Sports&&eventname=" + evName);
 }
 
 
 // DISPLAYING TABLE CONTESTANT (Socio-Cultural)
-function loadContestantSc(evid, divId) {
+function loadContestantSc(evid, divId, evName) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -45,12 +44,12 @@ function loadContestantSc(evid, divId) {
     };
     xhttp.open("POST", "get_contestants.php", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("evId=" + evid + "&&type=Socio-cultural");
+    xhttp.send("evId=" + evid + "&&type=Socio-Cultural&&eventname=" + evName);
 }
 
 
 // DISPLAYING TABLE COMMITTEE
-function loadCommittee(evid, tableId) {
+function loadCommittee(evid, tableId, evName) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -59,12 +58,12 @@ function loadCommittee(evid, tableId) {
     };
     xhttp.open("POST", "get_committee.php", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("evid=" + evid);
+    xhttp.send("evid=" + evid + "&&eventname=" + evName);
 }
 
 
 // DISPLATING TABLE JUDGE
-function loadJudge(evid, tableId) {
+function loadJudge(evid, tableId, evName) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -73,7 +72,7 @@ function loadJudge(evid, tableId) {
     };
     xhttp.open("POST", "get_judge.php", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("evid=" + evid);
+    xhttp.send("evid=" + evid + "&&eventname=" + evName);
 }
 
 
@@ -81,6 +80,19 @@ function loadJudge(evid, tableId) {
 // DISPLAYING CONTESTANT MODAL
 function openContestantModal() {
     var modal = document.getElementById("contModal");
+    modal.style.display = "block";
+}
+
+
+// DISPLAYING COMMITTEE MODAL
+function openCommitteeModal() {
+    var modal = document.getElementById("comtSpModal");
+    modal.style.display = "block";
+}
+
+// DISPLAYING JUDGE MODAL
+function openJudgesModal() {
+    var modal = document.getElementById("judgesModal");
     modal.style.display = "block";
 }
 
@@ -154,13 +166,35 @@ function openEditEventModal(element) { // Open modal for editing event
 // Retrieving the selected text in the adding contestant dropdown
 function getSelectedText() {
     var selectElement = document.getElementById('eventId');
-    var selectedText = selectElement.options[selectElement.selectedIndex].text;
+    var selectedText = selectElement.options[selectElement.selectedIndex].text; // Get selected text
+    console.log("Selected event: " + selectedText); // Log to check the value
+    
+    // Set the selected text to the hidden input field
     document.getElementById('selectedEventText').value = selectedText;
 }
 function updateNameField() {
     var dropdown = document.getElementById("contestantId");
     var selectedText = dropdown.options[dropdown.selectedIndex].text;
     document.getElementById("contestantName").value = selectedText;
+}
+function updateComtEvent() {
+    var dropdown = document.getElementById("eventId");
+    var selectedText = dropdown.options[dropdown.selectedIndex].text;
+    document.getElementById("comtEVName").value = selectedText;
+}
+function updateComtName() {
+    var dropdown = document.getElementById("comtId");
+    var selectedText = dropdown.options[dropdown.selectedIndex].text;
+    document.getElementById("comtName").value = selectedText;
+}
+function updateJudgeField() {
+    var dropdown = document.getElementById("eventId");
+    var selectedText = dropdown.options[dropdown.selectedIndex].text;
+    document.getElementById("judgeEVName").value = selectedText;
+
+    var dropdownn = document.getElementById("judgeId");
+    var selectedText = dropdownn.options[dropdownn.selectedIndex].text;
+    document.getElementById("judgeName").value = selectedText;
 }
 
 
@@ -205,6 +239,9 @@ function updateNameField() {
         document.querySelector('.save-btn-contestant').addEventListener('click', function(event) {
             event.preventDefault();  // Prevent default form submission
 
+            getSelectedText();
+            updateNameField();
+
             var formData = new FormData(document.querySelector('#addContForm'));
 
             fetch('EventTeamProcess.php', {
@@ -234,6 +271,83 @@ function updateNameField() {
         });
 
 
+        // Form submission for adding committee
+        document.querySelector('.save-btn-comt').addEventListener('click', function(event) {
+            event.preventDefault();  // Prevent default form submission
+
+            updateComtEvent();
+            updateComtName();
+
+            var formData = new FormData(document.querySelector('#addCommitteeForm'));
+
+            fetch('EventTeamProcess.php', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: data.message,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        location.reload();  // Reload the page or handle success
+                    }); 
+                } else {
+                    Swal.fire({
+                        title: 'Oops!',
+                        text: data.message,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+            .catch(error => {
+                alert('An error occurred: ' + error.message);
+            });
+        });
+
+
+        // Form submission for adding judge
+        document.querySelector('.save-btn-judge').addEventListener('click', function(event) {
+            event.preventDefault();  // Prevent default form submission
+
+            updateJudgeField();
+
+            var formData = new FormData(document.querySelector('#addJudgesForm'));
+
+            fetch('EventTeamProcess.php', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: data.message,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        location.reload();  // Reload the page or handle success
+                    }); 
+                } else {
+                    Swal.fire({
+                        title: 'Oops!',
+                        text: data.message,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+            .catch(error => {
+                console.log('An error occurred: ' + error.message);
+            });
+        });
+
+
         // Display contestant no. input field when event type = 'Socio-Cultural'
         document.getElementById('eventId').addEventListener('change', function() {
             var selectedOption = this.options[this.selectedIndex];
@@ -254,13 +368,16 @@ function updateNameField() {
     document.addEventListener('click', function(event) {
         if (event.target.classList.contains('delete-icon')) {
             var conid = event.target.getAttribute('data-cont');
-            deleteCont(conid);
+            var name = event.target.getAttribute('data-event-name');
+            console.log(name);
+
+            deleteCont(conid, name);
         }
     });
 
 
 // Deletes the contestant
-function deleteCont(id) {
+function deleteCont(id, name) {
     Swal.fire({
         title: 'Confirm',
         text: "Do you want to delete this contestant?",
@@ -274,7 +391,8 @@ function deleteCont(id) {
             fetch('EventTeamProcess.php', {
                 method: 'POST',
                 body: new URLSearchParams({
-                    contid: id
+                    contid: id,
+                    eventname: name
                 })
             }).then(response => {
                 if (response.ok) {
@@ -304,6 +422,124 @@ function deleteCont(id) {
         }
     });
 }
+
+
+//deleting Committee
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('delete-icon-faci')) {
+        var id = event.target.getAttribute('data-id');
+        var eventname = event.target.getAttribute('data-event-name');
+        var idname = event.target.getAttribute('data-name');
+
+        deleteComt(id, eventname, idname);
+    }
+});
+function deleteComt(id, event, name) {
+    Swal.fire({
+        title: 'Confirm',
+        text: "Do you want to delete this committee?",
+        icon: 'warning',
+        cancelButtonColor: '#8F8B8B',
+        confirmButtonColor: '#7FD278',
+        confirmButtonText: 'Confirm',
+        showCancelButton: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('EventTeamProcess.php', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    comtid: id,
+                    eventname: event,
+                    name: name
+                })
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            }).then(data => {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Committee deleted successfully!',
+                    icon: 'success',
+                    confirmButtonColor: '#7FD278',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    location.reload();
+                });
+            }).catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error deleting committee.',
+                    icon: 'error',
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'OK'
+                });
+            });
+        }
+    });
+}
+
+
+//deleting judge
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('delete-icon-judge')) {
+        var id = event.target.getAttribute('data-id');
+        var name = event.target.getAttribute('data-name');
+        var eventn = event.target.getAttribute('data-event-name');
+
+        deleteJudge(id, name, eventn);
+    }
+});
+function deleteJudge(id, name, event) {
+    Swal.fire({
+        title: 'Confirm',
+        text: "Do you want to delete this judge?",
+        icon: 'warning',
+        cancelButtonColor: '#8F8B8B',
+        confirmButtonColor: '#7FD278',
+        confirmButtonText: 'Confirm',
+        showCancelButton: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('EventTeamProcess.php', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    judgeid: id,
+                    name: name,
+                    eventname: event
+                })
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            }).then(data => {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Judge deleted successfully!',
+                    icon: 'success',
+                    confirmButtonColor: '#7FD278',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    location.reload();
+                });
+            }).catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error deleting judge.',
+                    icon: 'error',
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'OK'
+                });
+            });
+        }
+    });
+}
+
+
 
 
 
@@ -337,12 +573,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    document.querySelectorAll('.loadJudgesBtn').forEach(function(button) {
-        button.addEventListener('click', function() {
-            loadJudge(button); //load judge table
-        });
-    });
-
     document.querySelectorAll('.loadCriteriaBtn').forEach(function(button) {
         button.addEventListener('click', function() {
             loadCriteria(button); //load criteria table
@@ -355,22 +585,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-
-    //deleting Committee
-    document.addEventListener('click', function(event) {
-        if (event.target.classList.contains('delete-icon-faci')) {
-            var id = event.target.getAttribute('data-id');
-            deleteFaci(id);
-        }
-    });
-
-    //deleting judge
-    document.addEventListener('click', function(event) {
-        if (event.target.classList.contains('delete-icon-judge')) {
-            var id = event.target.getAttribute('data-id');
-            deleteJudge(id);
-        }
-    });
 
     //deleting judge
     document.addEventListener('click', function(event) {
@@ -419,21 +633,6 @@ function loadFaci(button) {
     xhttp.open("POST", "get_faci.php", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("evid=" + evid);
-}
-
-function loadJudge(button) {
-    var id = button.getAttribute('data-event');
-    var tableId = button.getAttribute('data-table-id');
-    
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            document.querySelector("#" + tableId + " tbody").innerHTML = this.responseText;
-        }
-    };
-    xhttp.open("POST", "get_judge.php", true);
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("evid=" + id);
 }
 
 function loadCriteria(button) {
@@ -511,12 +710,6 @@ function updateFaciName() {
     document.getElementById("comtName").value = selectedText;
 }
 
-function updateJudgeField() {
-    var dropdown = document.getElementById("judgeId");
-    var selectedText = dropdown.options[dropdown.selectedIndex].text;
-    document.getElementById("judgeName").value = selectedText;
-}
-
 
 
 // DELETES //
@@ -571,50 +764,7 @@ function deleteFaci(id) {
 }
 
 
-function deleteJudge(id) {
-    Swal.fire({
-        title: 'Confirm',
-        text: "Do you want to delete this judge?",
-        icon: 'warning',
-        cancelButtonColor: '#8F8B8B',
-        confirmButtonColor: '#7FD278',
-        confirmButtonText: 'Confirm',
-        showCancelButton: true
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch('EventTeamProcess.php', {
-                method: 'POST',
-                body: new URLSearchParams({
-                    judgeid: id
-                })
-            }).then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Network response was not ok.');
-            }).then(data => {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Judge deleted successfully!',
-                    icon: 'success',
-                    confirmButtonColor: '#7FD278',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    location.reload();
-                });
-            }).catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Error deleting judge.',
-                    icon: 'error',
-                    confirmButtonColor: '#d33',
-                    confirmButtonText: 'OK'
-                });
-            });
-        }
-    });
-}
+
 
 
 function deleteCri(id) {
@@ -866,77 +1016,7 @@ function openEditEvModal(element) { // Open modal for editing event
             });
         });
 
-
-        // Form submission for adding committee
-        document.querySelector('.save-btn-comt').addEventListener('click', function(event) {
-            event.preventDefault();  // Prevent default form submission
-
-            var formData = new FormData(document.querySelector('#addComtForm'));
-
-            fetch('EventTeamProcess.php', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: data.message,
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        location.reload();  // Reload the page or handle success
-                    }); 
-                } else {
-                    Swal.fire({
-                        title: 'Oops!',
-                        text: data.message,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            })
-            .catch(error => {
-                alert('An error occurred: ' + error.message);
-            });
-        });
-
-
-        // Form submission for adding judge
-        document.querySelector('.save-btn-judge').addEventListener('click', function(event) {
-            event.preventDefault();  // Prevent default form submission
-
-            var formData = new FormData(document.querySelector('#addJudgeForm'));
-
-            fetch('EventTeamProcess.php', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: data.message,
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        location.reload();  // Reload the page or handle success
-                    }); 
-                } else {
-                    Swal.fire({
-                        title: 'Oops!',
-                        text: data.message,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            })
-            .catch(error => {
-                alert('An error occurred: ' + error.message);
-            });
-        });
+        
 
 
         // Form submission for adding criteria

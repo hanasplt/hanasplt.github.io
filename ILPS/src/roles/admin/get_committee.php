@@ -12,6 +12,7 @@ if ($conn->connect_error) {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $evId = $_POST['evid'];
+    $evname = $_POST['eventname'];
 
     $sql = "CALL sp_getEventComt(?)";    
     $stmt = $conn->prepare($sql);
@@ -43,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             echo '<tr>';
             echo '<td>' . $id . '</td>';
             echo '<td>' . $name . '</td>';
-            echo '<td><i class="fa-solid fa-trash-can delete-icon-faci" data-id="'.$id.'" style="cursor: pointer;"></i></td>';
+            echo '<td><i class="fa-solid fa-trash-can delete-icon-faci" data-id="'.$id.'" data-name="'.$name.'" data-event-name="'.$evname.'" style="cursor: pointer;"></i></td>';
             echo '</tr>';
         }
     } else {
@@ -53,6 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->close();
 
     echo '</tbody>';
-    echo '</tbale>';
+    echo '</table>';
 }
 ?>

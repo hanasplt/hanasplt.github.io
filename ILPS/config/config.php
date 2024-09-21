@@ -116,6 +116,7 @@ $sqlT = "CREATE TABLE IF NOT EXISTS committee (
     comNo INT AUTO_INCREMENT PRIMARY KEY,
     comId INT NOT NULL,
     eventId INT NOT NULL,
+    status INT,
     FOREIGN KEY (eventId) REFERENCES events(eventID), #new change
     FOREIGN KEY (comId) REFERENCES accounts(userId) #new change
     );";
@@ -456,9 +457,11 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAccType(IN ptype VARCHAR(255))
         BEGIN
-            SELECT * FROM vw_accounts WHERE type = ptype;
+            SELECT * FROM vw_accounts WHERE type = ptype AND status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -574,9 +577,11 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEventFrom(IN type VARCHAR(255))
         BEGIN
-            SELECT * FROM vw_events WHERE eventType = type;
+            SELECT * FROM vw_events WHERE eventType = type AND status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -639,7 +644,7 @@ if ($conn->query($sqlT) === TRUE) {
 // NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getContestant(IN id INT, IN evid INT)
         BEGIN
-            SELECT * FROM vw_eventParti WHERE teamId = id AND eventID = evid;
+            SELECT * FROM vw_eventParti WHERE teamId = id AND eventID = evid AND status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -651,7 +656,8 @@ if ($conn->query($sqlT) === TRUE) {
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEventContestant(IN id INT)
         BEGIN
             SELECT contId, contNo, vw_eventParti.teamId, vw_teams.teamName as team FROM vw_eventParti 
-            INNER JOIN vw_teams on vw_eventParti.teamId = vw_teams.teamId WHERE eventId = id;
+            INNER JOIN vw_teams on vw_eventParti.teamId = vw_teams.teamId 
+            WHERE eventId = id AND vw_eventParti.status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -680,9 +686,10 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_delEventContestant(IN id INT)
         BEGIN
-            DELETE FROM vw_eventParti WHERE contId = id;
+            UPDATE vw_eventParti SET status = 0 WHERE contId = id;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -694,22 +701,26 @@ if ($conn->query($sqlT) === TRUE) {
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEventComt(IN id INT)
         BEGIN
             SELECT f.*, a.firstName FROM vw_eventComt f INNER JOIN vw_accounts a ON f.comId = a.userId 
-            WHERE eventId = id;
+            WHERE eventId = id AND f.status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getComt(IN id INT, IN event INT)
         BEGIN
-            SELECT * FROM vw_eventComt WHERE comId = id AND eventId = event;
+            SELECT * FROM vw_eventComt WHERE comId = id AND eventId = event AND status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertEventComt(IN id INT, 
         IN evid INT)
         BEGIN
@@ -721,15 +732,19 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_delEventComt(IN id INT)
         BEGIN
-            DELETE FROM vw_eventComt WHERE comNo = id;
+            UPDATE vw_eventComt SET status = 0 WHERE comNo = id;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEventJudge(IN event INT)
         BEGIN
             SELECT j.*, a.firstName FROM vw_eventJudge j INNER JOIN vw_accounts a ON j.judgeId = a.userId
@@ -740,10 +755,13 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getJudge(IN id INT, IN event INT)
         BEGIN
             SELECT j.*, a.firstName FROM vw_eventJudge j 
-            INNER JOIN vw_accounts a ON j.judgeId = a.userId WHERE judgeId = id AND eventId = event;
+            INNER JOIN vw_accounts a ON j.judgeId = a.userId 
+            WHERE judgeId = id AND eventId = event AND status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -760,8 +778,9 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
-$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertEventJudge(IN id INT, 
-        IN evid INT)
+
+// NAGAMIT
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertEventJudge(IN id INT, IN evid INT)
         BEGIN
             INSERT INTO vw_eventJudge VALUES (NULL, id, evid);
         END ;";
@@ -772,7 +791,7 @@ if ($conn->query($sqlT) === TRUE) {
 
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_delEventJudge(IN id INT)
         BEGIN
-            DELETE FROM vw_eventJudge WHERE judgeNo = id;
+            UPDATE vw_eventJudge SET status = 0 WHERE judgeNo = id;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
