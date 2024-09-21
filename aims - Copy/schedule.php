@@ -24,12 +24,18 @@ if ($result_days->num_rows > 0) {
             while ($row_event = $result_events->fetch_assoc()) {
                 $events[] = $row_event;
             }
+
+            // Sort events by time
+            usort($events, function($a, $b) {
+                return strcmp($a['time'], $b['time']); // Assuming 'time' is the field with the time value
+            });
         }
 
         $row_day['events'] = $events;
         $scheduled_days[] = $row_day;
     }
 }
+
 
 usort($scheduled_days, function($a, $b) {
     return strtotime($a['day_date']) - strtotime($b['day_date']);
@@ -144,6 +150,33 @@ usort($scheduled_days, function($a, $b) {
             <?php endif; ?>
         </div>
     </div>
+
+    <!-- time sorting-->
+    <script>
+        function sortTableByTime(tableId) {
+        const table = document.getElementById(tableId);
+        const rowsArray = Array.from(table.querySelectorAll('tbody tr'));
+
+        rowsArray.sort((a, b) => {
+            const timeA = a.cells[0].textContent.trim();
+            const timeB = b.cells[0].textContent.trim();
+
+            // Convert 12-hour format to 24-hour format for comparison
+            const [hourA, minuteA, periodA] = timeA.match(/(\d+):(\d+) (AM|PM)/).slice(1);
+            const [hourB, minuteB, periodB] = timeB.match(/(\d+):(\d+) (AM|PM)/).slice(1);
+
+            const time24A = (parseInt(hourA) % 12 + (periodA === 'PM' ? 12 : 0)) * 60 + parseInt(minuteA);
+            const time24B = (parseInt(hourB) % 12 + (periodB === 'PM' ? 12 : 0)) * 60 + parseInt(minuteB);
+
+            return time24A - time24B;
+        });
+
+        // Reattach sorted rows to the table body
+        const tbody = table.querySelector('tbody');
+        tbody.innerHTML = ''; // Clear existing rows
+        rowsArray.forEach(row => tbody.appendChild(row));
+    }
+    </script>
 
     <!-- logout confirmation -->
     <script>
@@ -356,6 +389,8 @@ usort($scheduled_days, function($a, $b) {
                                         </td>
                                     `;
 
+                                    sortTableByTime(`scheduleTable-${dayId}`);
+
                                     Swal.fire({
                                         title: 'Success!',
                                         text: 'Event added successfully.',
@@ -382,103 +417,112 @@ usort($scheduled_days, function($a, $b) {
             });
         });
 
-        function reattachEventListeners() {
-            document.querySelectorAll('.edit-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const row = this.closest('tr');
-                    const cells = row.getElementsByTagName('td');
-                    const eventId = row.getAttribute('data-event-id');
+        document.querySelectorAll('.edit-btn').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const cells = row.getElementsByTagName('td');
+                const eventId = row.getAttribute('data-event-id');
+                
+                // Get the current event details from the table row
+                const time24 = cells[0].textContent.trim();
+                const activity = cells[1].textContent.trim();
+                const location = cells[2].textContent.trim();
+                const status = cells[3].textContent.trim();
 
-                    let time24hr = cells[0].textContent.trim();
-                    let [hour, minute] = time24hr.split(':');
-                    hour = parseInt(hour, 10);
+                // Convert 24-hour time to 12-hour format for display
+                let [hour, minute] = time24.split(':');
+                hour = parseInt(hour, 10);
+                const period = hour >= 12 ? 'PM' : 'AM';
+                const hour12 = (hour % 12) || 12;  // Convert 0 to 12 for midnight/noon
+                const time12 = `${hour12.toString().padStart(2, '0')}:${minute} ${period}`;
 
-                    let period = 'AM';
-                    if (hour >= 12) {
-                        period = 'PM';
-                        hour = hour > 12 ? hour - 12 : hour;
-                    } else if (hour === 0) {
-                        hour = 12;
+                Swal.fire({
+                    title: 'Edit Event',
+                    html: `
+                        <input id="edit-time" class="swal2-input" type="time" value="${time24}">
+                        <input id="edit-activity" class="swal2-input" placeholder="Activity" value="${activity}">
+                        <input id="edit-location" class="swal2-input" placeholder="Location" value="${location}">
+                        <select id="edit-status" class="swal2-input">
+                            <option value="Pending" ${status === 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option value="Ongoing" ${status === 'Ongoing' ? 'selected' : ''}>On-going</option>
+                            <option value="Ended" ${status === 'Ended' ? 'selected' : ''}>Ended</option>
+                            <option value="Cancelled" ${status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                            <option value="Moved" ${status === 'Moved' ? 'selected' : ''}>Moved</option>
+                        </select>
+                    `,
+                    confirmButtonText: 'Save',
+                    showCancelButton: true,
+                    preConfirm: () => {
+                        const time24 = document.getElementById('edit-time').value;
+                        const activity = document.getElementById('edit-activity').value;
+                        const location = document.getElementById('edit-location').value;
+                        const status = document.getElementById('edit-status').value;
+
+                        if (!time24 || !activity || !location) {
+                            Swal.showValidationMessage('Please fill in all fields');
+                            return false;
+                        }
+
+                        // Convert 24-hour time to 12-hour format for display
+                        let [hour, minute] = time24.split(':');
+                        hour = parseInt(hour, 10);
+                        const period = hour >= 12 ? 'PM' : 'AM';
+                        const hour12 = (hour % 12) || 12;  // Convert 0 to 12 for midnight/noon
+                        const time12 = `${hour12.toString().padStart(2, '0')}:${minute} ${period}`;
+
+                        return {
+                            time24,
+                            time12,
+                            activity,
+                            location,
+                            status
+                        };
                     }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const { time24, time12, activity, location, status } = result.value;
 
-                    const time12hr = `${hour}:${minute} ${period}`;
+                        const xhr = new XMLHttpRequest();
+                        xhr.open("POST", "edit_event.php", true);
+                        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                        xhr.onload = function () {
+                            if (xhr.status === 200) {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.success) {
+                                    // Update the table row with the new values
+                                    cells[0].textContent = time12;
+                                    cells[1].textContent = activity;
+                                    cells[2].textContent = location;
+                                    cells[3].textContent = status;
 
-                    Swal.fire({
-                        title: 'Edit Event',
-                        html: `
-                            <input id="edit-time" class="swal2-input" placeholder="Time" value="${cells[0].textContent}">
-                            <input id="edit-activity" class="swal2-input" placeholder="Activity" value="${cells[1].textContent}">
-                            <input id="edit-location" class="swal2-input" placeholder="Location" value="${cells[2].textContent}">
-                            <select id="edit-status" class="swal2-input">
-                                <option value="Pending" ${cells[3].textContent === 'Pending' ? 'selected' : ''}>Pending</option>
-                                <option value="Ongoing" ${cells[3].textContent === 'Ongoing' ? 'selected' : ''}>On-going</option>
-                                <option value="Ended" ${cells[3].textContent === 'Ended' ? 'selected' : ''}>Ended</option>
-                                <option value="Cancelled" ${cells[3].textContent === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
-                                <option value="Moved" ${cells[3].textContent === 'Moved' ? 'selected' : ''}>Moved</option>
-                            </select>
-                        `,
-                        confirmButtonText: 'Save',
-                        showCancelButton: true,
-                        preConfirm: () => {
-                            return {
-                                time: document.getElementById('edit-time').value,
-                                activity: document.getElementById('edit-activity').value,
-                                location: document.getElementById('edit-location').value,
-                                status: document.getElementById('edit-status').value
-                            };
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            const { time, activity, location, status } = result.value;
+                                    sortTableByTime(`scheduleTable-${dayId}`);
 
-                            const [timePart, ampm] = time.split(' ');
-                            let [hour, minute] = timePart.split(':');
-                            hour = parseInt(hour, 10);
-
-                            if (ampm === 'PM' && hour !== 12) {
-                                hour += 12;
-                            } else if (ampm === 'AM' && hour === 12) {
-                                hour = 0;
-                            }
-                            
-                            const time24hr = `${hour.toString().padStart(2, '0')}:${minute}`;
-                            
-                            const xhr = new XMLHttpRequest();
-                            xhr.open('POST', 'edit_event.php', true);
-                            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                            xhr.onload = function () {
-                                if (xhr.status === 200) {
-                                    const response = JSON.parse(xhr.responseText);
-                                    if (response.success) {
-                                        cells[0].textContent = time24hr;
-                                        cells[1].textContent = activity;
-                                        cells[2].textContent = location;
-                                        cells[3].textContent = status;
-
-                                        Swal.fire({
-                                            title: 'Success!',
-                                            text: 'Event updated successfully.',
-                                            icon: 'success',
-                                            confirmButtonColor: '#7FD278',
-                                            confirmButtonText: 'OK'
-                                        });
-                                    } else {
-                                        Swal.fire({
-                                            title: 'Error!',
-                                            text: response.message,
-                                            icon: 'error',
-                                            confirmButtonColor: '#d33',
-                                            confirmButtonText: 'OK'
-                                        });
-                                    }
+                                    Swal.fire({
+                                        title: 'Success!',
+                                        text: 'Event updated successfully.',
+                                        icon: 'success',
+                                        confirmButtonColor: '#7FD278',
+                                        confirmButtonText: 'OK'
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: response.message,
+                                        icon: 'error',
+                                        confirmButtonColor: '#d33',
+                                        confirmButtonText: 'OK'
+                                    });
                                 }
-                            };
-
-                            xhr.send(`event_id=${eventId}&time=${time24hr}&activity=${activity}&location=${location}&status=${status}`);
-                        }
-                    });
+                            }
+                        };
+                        xhr.send(`event_id=${eventId}&time=${time24}&activity=${activity}&location=${location}&status=${status}`);
+                    }
                 });
             });
+        });
+
+
+        function reattachEventListeners() {
 
         document.querySelectorAll('.delete-btn').forEach(button => {
             button.addEventListener('click', function() {
@@ -503,6 +547,7 @@ usort($scheduled_days, function($a, $b) {
                                 const response = JSON.parse(xhr.responseText);
                                 if (response.success) {
                                     row.remove();
+                                    sortTableByTime(`scheduleTable-${dayId}`);
 
                                     Swal.fire({
                                         title: 'Deleted!',
@@ -533,7 +578,6 @@ usort($scheduled_days, function($a, $b) {
         }
 
         reattachEventListeners();
-
     </script>
 
     <!-- Edit Event Modal -->
@@ -554,6 +598,7 @@ usort($scheduled_days, function($a, $b) {
             <button id="saveEditBtn">Save Changes</button>
         </div>
     </div>
+    
 
     <style>
     #editEventModal {
