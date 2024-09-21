@@ -60,8 +60,13 @@
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'addContestant') {
     $team = $_POST['contestantId'];
     $name = $_POST['contestantName'];
-    $event = $_POST['conEvId'];
-    //$contNo = $_POST['contno'];
+    $event = $_POST['eventId'];
+    $eventname = $_POST['selectedEventText'];
+    $contNo = $_POST['contno'] ?? NULL;
+
+    if (empty($contNo)) {
+        $contNo = NULL;
+    }
 
     $sql = "CALL sp_getContestant(?, ?)";
     $stmt = $conn->prepare($sql);
@@ -71,19 +76,27 @@
 
     try {
         if ($retval->num_rows > 0) {
-            echo json_encode(['status' => 'error', 'message' => 'Contestant already exists!']);
+            echo json_encode(['status' => 'error', 'message' => 'Contestant already exists!'.$retval->num_rows]);
         } else {
             $retval->free();
             $stmt->close();
     
-            $sql = "CALL sp_insertEventContestant(?, ?)";
+            $sql = "CALL sp_insertEventContestant(?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ii", $team, $event);
+            $stmt->bind_param("iii", $team, $event, $contNo);
         
             if ($stmt->execute()) {
+                // Insert in the logs
+                $action = "Added contestant $name in the event $eventname";
+                $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+                $stmt = $conn->prepare($insertLogAct);
+                $stmt->bind_param("is", $accId, $action);
+                $stmt->execute();
+
                 echo json_encode(['status' => 'success', 'message' => 'Contestant added successfully!']);
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Error: ' . $sql . '<br>' . $conn->error]);
+                echo json_encode(['status' => 'error', 'message' => 'Error: ' . $sql . ' ' . $conn->error]);
             }
         }
         $stmt->close();

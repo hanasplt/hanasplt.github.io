@@ -635,16 +635,20 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
-$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getContestant(IN id INT, IN evid VARCHAR(255))
+
+// NAGAMIT
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getContestant(IN id INT, IN evid INT)
         BEGIN
-            SELECT * FROM vw_eventParti WHERE teamId = id AND eventId = evid;
+            SELECT * FROM vw_eventParti WHERE teamId = id AND eventID = evid;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
 
-$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEventContestant(IN id VARCHAR(255))
+
+// NAGAMIT
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEventContestant(IN id INT)
         BEGIN
             SELECT contId, contNo, vw_eventParti.teamId, vw_teams.teamName as team FROM vw_eventParti 
             INNER JOIN vw_teams on vw_eventParti.teamId = vw_teams.teamId WHERE eventId = id;
@@ -666,9 +670,10 @@ if ($conn->query($sqlT) === TRUE) {
 }
 
 
-$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertEventContestant(IN id INT, IN evid INT)
+// NAGAMIT
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertEventContestant(IN id INT, IN evid INT, IN num INT)
         BEGIN
-            INSERT INTO vw_eventParti (teamId, eventId) VALUES (id, evid);
+            INSERT INTO vw_eventParti (contNo, teamId, eventId) VALUES (num, id, evid);
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {

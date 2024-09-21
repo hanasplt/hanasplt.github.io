@@ -106,18 +106,12 @@
                     while ($row = $retval->fetch_assoc()) {
                         // Display Event information
                         $db_evID = $row['eventID'];
-                        $db_evName = $row['eventName'];
+                        $db_evName = str_replace(' ', '', $row['eventName']);
                         $db_evType = $row['eventType'];
                         $db_evCatg = $row['eventCategory'];
 
                         ?>
-                        <div class="account" 
-                        onclick="toggleEvent('eventTable<?php echo $db_evName; ?>')" 
-                        data-event-id="<?php echo $db_evID; ?>"
-                        data-name="<?php echo $db_evName; ?>"
-                        data-table-id="<?php echo $db_evName; ?>Table"
-                        data-type="<?php echo $db_evType; ?>"
-                        data-category="<?php echo $db_evCatg; ?>">
+                        <div class="account" onclick="toggleEvent('eventTable<?php echo $db_evName; ?>', '<?php echo $db_evType; ?>', '<?php echo $db_evID; ?>', '<?php echo $db_evName; ?>Table')" >
                             <div style="float: left; width: 25%;"><?php echo $db_evName; ?></div>
                             <div style="float: left; width: 15%;"><?php echo $db_evType; ?></div>
                             <div style="float: left; width: 10%;"><?php echo $db_evCatg; ?></div>
@@ -132,25 +126,8 @@
                             </div>
                         </div>
 
-                        <div class="container" id="eventTable<?php echo $db_evName; ?>" style="display: none;"
-                        data-event-id="<?php echo $db_evID; ?>"
-                        data-table-id="<?php echo $db_evName; ?>Table">
-                            <div class="accounts-title" style="margin-left: 0vw;">
-                                <p id="event">Contestant Table</p>
-                            </div>
-
-                            <table id="<?php echo $evName; ?>Table" class="contestantTable">
-                                <thead>
-                                    <tr>
-                                        <th>No.</th>
-                                        <th>Name</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- CONTESTANT TABLE -->
-                                </tbody>
-                            </table>
+                        <div class="container" id="eventTable<?php echo $db_evName; ?>" style="display: none;" data-event-id="<?php echo $db_evID; ?>" data-table-id="<?php echo $db_evName; ?>Table">
+                            <!-- THE TABLE ARE SHOWN HERE -->
                         </div>
                         <?php
 
@@ -267,13 +244,15 @@
             <span class="close" onclick="closeModal('contModal')">&times;</span>
             <div class="modal-body">
                 <div class="form-section">
-                    <form method="post" id="addContForm" enctype="multipart/form-data" onsubmit="updateNameField()">
+                    <form method="post" id="addContForm" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="addContestant">
+                        <input type="hidden" name="selectedEventText" id="selectedEventText">
+                        <input type="text" id="contestantName" name="contestantName" hidden>
                         <p class="addevent">Add Contestant</p>
 
                         <div class="form-group">
                             <label for="eventId">Event Name:</label>
-                            <select id="eventId" name="eventId" required>
+                            <select id="eventId" name="eventId" onchange="getSelectedText()" required>
                                 <?php
                                     $sql = "CALL sp_getEvents();";
                                     $stmt = $conn->prepare($sql);
@@ -306,7 +285,7 @@
 
                         <div class="form-group">
                             <label for="contestantId">Contestant Name:</label>
-                            <select id="contestantId" name="contestantId" required>
+                            <select id="contestantId" name="contestantId" onchange="updateNameField()" required>
                                 <?php
                                     $sql = "CALL sp_getAllTeam;";
                                     $stmt = $conn->prepare($sql);

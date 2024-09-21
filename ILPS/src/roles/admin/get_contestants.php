@@ -4,8 +4,6 @@ ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
 error_reporting(E_ALL);
 
-
-require_once '../../../config/encryption.php';
 $conn = require_once '../../../config/db.php';
 
 if (!$conn) {
@@ -21,15 +19,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->execute();
     $result = $stmt->get_result();
 
+?>
+
+    <div class="accounts-title" style="margin-left: 0vw;">
+        <p id="event">Contestant Table</p>
+    </div>
+
+    <table id="<?php echo $db_evName; ?>Table" class="contestantTable">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- CONTESTANT TABLE -->
+        </tbody>
+    </table>
+
+<?php
     if ($result->num_rows > 0) {
         $count = 1;
+
         while ($row = $result->fetch_assoc()) {
             $conId = $row['contId'];
             $teamid = $row['teamId'];
             $team = $row['team'];
 
             echo '<tr>';
-            echo '<td>' . $conId . '</td>';
+            echo '<td>' . $count++ . '</td>';
             echo '<td>' . $team . '</td>';
             echo '<td><i class="fa-solid fa-trash-can delete-icon" data-cont="'.$conId.'" data-id="'.$teamid.'" style="cursor: pointer;"></i></td>';
             echo '</tr>';

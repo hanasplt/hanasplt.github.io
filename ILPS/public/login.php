@@ -57,7 +57,7 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
                         <label for="show-password">Show Password</label>
                     </span>
                     
-                    <a href="forgotpass/resetpass.php"><u>Forgot Password?</u></a>
+                    <a href="../auth/resetpass.php"><u>Forgot Password?</u></a>
                 </div>
                 <button type="submit" name="login">Login</button>
             </form>

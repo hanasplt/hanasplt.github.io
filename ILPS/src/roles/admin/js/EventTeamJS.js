@@ -1,32 +1,66 @@
 // TOGGLE EVENT TABLES (NAGAMIT)
-function toggleEvent(divId) {
-    console.log("Toggling table:", divId);
+function toggleEvent(divId, evType, evId, tableId) {
+    console.log("Toggling table:", divId); // Checking if toggled
+
     const table = document.getElementById(divId);
     const tables = document.querySelectorAll('.container');
+
     tables.forEach(t => {
         if (t.id !== divId) {
             t.style.display = 'none';
         }
     });
 
+    loadContestant(evId, divId);
+    if (evType == "Sports") {
+        loadCommittee(evId, tableId);
+    } else {
+        loadJudge(evId, tableId);
+    }
     table.style.display = table.style.display === 'none' ? 'block' : 'none';
 }
 
-// DISPLAYING TABLE
-function loadContestant(button) {
-    var id = button.getAttribute('data-event-id');
-    var tableId = button.getAttribute('data-table-id');
-    
+// DISPLAYING TABLE CONTESTANT
+function loadContestant(evid, divId) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            document.querySelector(divId).innerHTML = this.responseText;
+        }
+    };
+    xhttp.open("POST", "get_contestants.php", true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("evId=" + evid);
+}
+
+
+// DISPLAYING TABLE COMMITTEE
+function loadCommittee(evid, tableId) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             document.querySelector("#" + tableId + " tbody").innerHTML = this.responseText;
         }
     };
-    xhttp.open("POST", "../admin/get_contestants.php", true);
+    xhttp.open("POST", "get_faci.php", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("evId=" + id);
+    xhttp.send("evid=" + evid);
 }
+
+
+// DISPLATING TABLE JUDGE
+function loadJudge(evid, tableId) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            document.querySelector("#" + tableId + " tbody").innerHTML = this.responseText;
+        }
+    };
+    xhttp.open("POST", "get_judge.php", true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("evid=" + id);
+}
+
 
 
 // DISPLAYING CONTESTANT MODAL
@@ -99,6 +133,19 @@ function openEditEventModal(element) { // Open modal for editing event
 
     var modal = document.getElementById("editEventModal");
     modal.style.display = "block";
+}
+
+
+// Retrieving the selected text in the adding contestant dropdown
+function getSelectedText() {
+    var selectElement = document.getElementById('eventId');
+    var selectedText = selectElement.options[selectElement.selectedIndex].text;
+    document.getElementById('selectedEventText').value = selectedText;
+}
+function updateNameField() {
+    var dropdown = document.getElementById("contestantId");
+    var selectedText = dropdown.options[dropdown.selectedIndex].text;
+    document.getElementById("contestantName").value = selectedText;
 }
 
 
@@ -186,6 +233,20 @@ function openEditEventModal(element) { // Open modal for editing event
                 contestantNumField.style.display = 'none';
             }
         });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -383,11 +444,7 @@ function toggleSubTable(tableId) {
 
 // UPDATES //
 
-function updateNameField() {
-    var dropdown = document.getElementById("contestantId");
-    var selectedText = dropdown.options[dropdown.selectedIndex].text;
-    document.getElementById("contestantName").value = selectedText;
-}
+
 
 function updateFaciName() {
     var dropdown = document.getElementById("comtId");
@@ -794,39 +851,6 @@ function openEditEvModal(element) { // Open modal for editing event
         });
 
 
-        // Form submission for adding contestant
-        document.querySelector('.save-btn-contestant').addEventListener('click', function(event) {
-            event.preventDefault();  // Prevent default form submission
-
-            var formData = new FormData(document.querySelector('#addContForm'));
-
-            fetch('EventTeamProcess.php', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: data.message,
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        location.reload();  // Reload the page or handle success
-                    }); 
-                } else {
-                    Swal.fire({
-                        title: 'Oops!',
-                        text: data.message,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            });
-        });
-
-
         // Form submission for adding committee
         document.querySelector('.save-btn-comt').addEventListener('click', function(event) {
             event.preventDefault();  // Prevent default form submission
@@ -1022,7 +1046,7 @@ document.getElementById('logoutIcon').addEventListener('click', function() {
     }).then((result) => {
         if (result.isConfirmed) {
             // mag redirect siya to the login page
-            window.location.href = 'index.html';
+            window.location.href = '../admin/EventTeam.php?logout';
         }
     });
 });

@@ -4,11 +4,11 @@ session_start();
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require '../PHPMailer/src/Exception.php';
-require '../PHPMailer/src/PHPMailer.php';
-require '../PHPMailer/src/SMTP.php';
+require '../../resources/PHPMailer/src/Exception.php';
+require '../../resources/PHPMailer/src/PHPMailer.php';
+require '../../resources/PHPMailer/src/SMTP.php';
 
-$conn = include '../db.php';
+$conn = include '../../config/db.php';
 
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
@@ -64,7 +64,7 @@ if($result -> num_rows > 0) {
 
         if($mail->send()) {
             $_SESSION['status'] = "Thank you! Please check your email.";
-            header("Location: ../login.php");
+            header("Location: ../../public/login.php");
             exit;
         }
     } catch (Exception $e) {
