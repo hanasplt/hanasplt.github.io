@@ -55,17 +55,23 @@ if($result -> num_rows > 0) {
         //Content
         $mail->isHTML(true);                                  //Set email format to HTML
         $mail->Subject = 'Password Reset Code';
-        $mail->Body = '<h2>Password Reset Request</h2>
-                <p>Hi there,</p>
-                <p>We received a request to reset your password. Click the link below to proceed:</p>
-                <p><a href="http://localhost:3000/aims%20-%20Copy/forgotpass/proceed-reset-pass.php?token=' . $token . '">Reset Your Password</a></p>
-                <p><b>Note:</b> This link will expire in 10 minutes.</p>
-                <p>If you did not request this, please ignore this email.</p>
-                <p>Thank you!</p>
-                <footer>
-                    <p>Do not reply to this email.</p>
-                    <p>Best regards,<br>Intramural Leaderboard Point System Team</p>
-                </footer>';
+        $mail->Body = '<div style="font-family: Poppins, sans-serif; padding: 20px; max-width: 600px; margin: auto;">
+                            <div style="text-align: center;">
+                                <img src="../public/assets/icons/logo.png" alt="Logo" style="width: 100px; height: auto; margin-bottom: -15px;">
+                                <h2>Password Reset Request</h2>
+                            </div>
+                            <div style="background-color: #ffffff; padding: 20px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); margin-bottom: 20px;">
+                                <p style="font-weight: 700;">Hi there!</p>
+                                <p>We received a request to reset your password. Click the button below to proceed. <b>This link will expire in 10 minutes.</b></p>
+                                <div style="text-align: center; margin-top: 40px; margin-bottom: 40px;">
+                                    <a href="http://localhost:3000/aims%20-%20Copy/forgotpass/proceed-reset-pass.php?token=' . $token . '" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px;">Reset Your Password</a>
+                                </div>
+                                <hr>
+                                <p style="font-size: small; color: gray;">If you did not request this, please ignore this email.</p>
+                            </div>
+                            <p style="font-size: x-small; color: gray; text-align: center;">© 2024 Intramural Leaderboard and Points System. All rights reserved.</p>
+                        </div>
+                        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">';
 
 
         if($mail->send()) {
