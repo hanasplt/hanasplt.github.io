@@ -528,6 +528,7 @@ button:hover {
 }
 
 .styled-table-rank {
+    background-color: #4e8349;
     width: 100%;
     border-collapse: collapse;
     font-family: 'Poppins', sans-serif;
@@ -552,7 +553,7 @@ button:hover {
 
 .styled-table-rank th {
     font-weight: 600;
-    color: #A7A7A7;
+    color: #ffffff;
     text-align: center;
 }
 
@@ -663,5 +664,10 @@ button:hover {
 .back-link img {
     vertical-align: middle;
     max-width: 20px;
+}
+
+.medal-icon{
+    vertical-align: middle;
+    max-width: 35px;
 }
 

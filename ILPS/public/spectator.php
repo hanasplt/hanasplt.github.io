@@ -54,7 +54,10 @@
                         <tr>
                             <th class="rank-column">Rank</th>
                             <th class="name-column">Team Name</th>
-                            <th class="points-column">Total Score</th>
+                            <th class="gold-column"><img src="assets/icons/gold-medal.png" class="medal-icon"></th>
+                            <th class="silver-column"><img src="assets/icons/silver-medal.png" class="medal-icon"></th>
+                            <th class="bronze-column"><img src="assets/icons/bronze-medal.png" class="medal-icon"></th>
+                            <th class="points-column">Total Points</th>
                         </tr>
                         <!-- Table rows will be inserted here by JavaScript -->
                             
