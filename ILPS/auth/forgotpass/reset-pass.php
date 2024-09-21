@@ -55,11 +55,17 @@ if($result -> num_rows > 0) {
         //Content
         $mail->isHTML(true);                                  //Set email format to HTML
         $mail->Subject = 'Password Reset Code';
-        $mail->Body    = '<h2>DO NOT REPLY TO THIS.</h2>
-                            Click <a href="http://localhost:3000/aims%20-%20Copy/forgotpass/proceed-reset-pass.php?token='.$token.'">here</a> 
-                            to reset your password :) 
-                            </br>
-                            <b>REMINDER: <i>The token will expire in 10 minutes.</i></b>';
+        $mail->Body = '<h2>Password Reset Request</h2>
+                <p>Hi there,</p>
+                <p>We received a request to reset your password. Click the link below to proceed:</p>
+                <p><a href="http://localhost:3000/aims%20-%20Copy/forgotpass/proceed-reset-pass.php?token=' . $token . '">Reset Your Password</a></p>
+                <p><b>Note:</b> This link will expire in 10 minutes.</p>
+                <p>If you did not request this, please ignore this email.</p>
+                <p>Thank you!</p>
+                <footer>
+                    <p>Do not reply to this email.</p>
+                    <p>Best regards,<br>Intramural Leaderboard Point System Team</p>
+                </footer>';
 
 
         if($mail->send()) {
