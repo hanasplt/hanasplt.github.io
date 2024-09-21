@@ -12,6 +12,7 @@ if (!$conn) {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['evId'];
+    $type = $_POST['type'];
 
     $sql = "CALL sp_getEventContestant(?)";
     $stmt = $conn->prepare($sql);
@@ -19,45 +20,65 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->execute();
     $result = $stmt->get_result();
 
-?>
+    echo '<div class="accounts-title" style="margin-left: 0vw;">';
+    echo '<p id="event">Contestant Table</p>';
+    echo '</div>';
 
-    <div class="accounts-title" style="margin-left: 0vw;">
-        <p id="event">Contestant Table</p>
-    </div>
+    echo '<table class="contestantTable">';
+    echo '<thead>';
 
-    <table id="<?php echo $db_evName; ?>Table" class="contestantTable">
-        <thead>
-            <tr>
-                <th>No.</th>
-                <th>Name</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- CONTESTANT TABLE -->
-        </tbody>
-    </table>
+    if ($type == "Sports") { // Display ascending number
+        echo '<tr>';
+        echo '<th>No.</th>';
+        echo '<th>Name</th>';
+        echo '<th>Actions</th>';
+        echo '</tr>';
+        echo '</thead>';
+    } else { // Display contestant no. stored in the database
+        echo '<tr>';
+        echo '<th>Contestant No.</th>';
+        echo '<th>Name</th>';
+        echo '<th>Actions</th>';
+        echo '</tr>';
+        echo '</thead>';
+    }
 
-<?php
     if ($result->num_rows > 0) {
         $count = 1;
 
+        echo '<tbody>';
+
         while ($row = $result->fetch_assoc()) {
             $conId = $row['contId'];
+            $contNum = $row['contNo'];
             $teamid = $row['teamId'];
             $team = $row['team'];
 
-            echo '<tr>';
-            echo '<td>' . $count++ . '</td>';
-            echo '<td>' . $team . '</td>';
-            echo '<td><i class="fa-solid fa-trash-can delete-icon" data-cont="'.$conId.'" data-id="'.$teamid.'" style="cursor: pointer;"></i></td>';
-            echo '</tr>';
+            if ($type == "Sports") {
+                echo '<tr>';
+                echo '<td>' . $count++ . '</td>';
+                echo '<td>' . $team . '</td>';
+                echo '<td><i class="fa-solid fa-trash-can delete-icon" data-cont="'.$conId.'" data-id="'.$teamid.'" style="cursor: pointer;"></i></td>';
+                echo '</tr>';
+            } else {
+                echo '<tr>';
+                echo '<td>' . $contNum . '</td>';
+                echo '<td>' . $team . '</td>';
+                echo '<td><i class="fa-solid fa-trash-can delete-icon" data-cont="'.$conId.'" data-id="'.$teamid.'" style="cursor: pointer;"></i></td>';
+                echo '</tr>';
+            }
+
         }
     } else {
         echo '<tr><td colspan="3">No contestants.</td></tr>';
     }
+
     $result->free();
     $stmt->close();
+
+    echo '</tbody>';
+    echo '</table>'; 
+    
 }
 $conn->close();
 ?>

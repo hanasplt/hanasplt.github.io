@@ -1,12 +1,12 @@
 <?php
-session_start();
-include '../encryption.php';
-$conn = include '../db.php';
+
+require_once '../../config/encryption.php';
+$conn = include '../../config/db.php';
+require_once '../../config/sessionConfig.php';
 
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
-
 
 // Get token and validate
 if(isset($_GET['token'])) {
@@ -120,7 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
                 text: msg,
                 icon: "error"
             }).then(() => {
-                window.location.href = '../login.php';  // Redirect to Login page
+                window.location.href = '../../public/login.php';  // Redirect to Login page
             }); 
             <?php unset($_SESSION['validate']); ?>
         }

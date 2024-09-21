@@ -1,5 +1,4 @@
 <?php
-session_start();
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -9,6 +8,7 @@ require '../../resources/PHPMailer/src/PHPMailer.php';
 require '../../resources/PHPMailer/src/SMTP.php';
 
 $conn = include '../../config/db.php';
+require_once '../../config/sessionConfig.php';
 
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());

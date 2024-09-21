@@ -127,7 +127,6 @@
                         </div>
 
                         <div class="container" id="eventTable<?php echo $db_evName; ?>" style="display: none;" data-event-id="<?php echo $db_evID; ?>" data-table-id="<?php echo $db_evName; ?>Table">
-                            <!-- THE TABLE ARE SHOWN HERE -->
                         </div>
                         <?php
 

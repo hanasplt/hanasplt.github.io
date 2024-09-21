@@ -689,6 +689,8 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEventComt(IN id INT)
         BEGIN
             SELECT f.*, a.firstName FROM vw_eventComt f INNER JOIN vw_accounts a ON f.comId = a.userId 

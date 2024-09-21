@@ -11,26 +11,41 @@ function toggleEvent(divId, evType, evId, tableId) {
         }
     });
 
-    loadContestant(evId, divId);
     if (evType == "Sports") {
+        loadContestantSp(evId, divId);
         loadCommittee(evId, tableId);
     } else {
+        loadContestantSc(evId, divId);
         loadJudge(evId, tableId);
     }
     table.style.display = table.style.display === 'none' ? 'block' : 'none';
 }
 
-// DISPLAYING TABLE CONTESTANT
-function loadContestant(evid, divId) {
+// DISPLAYING TABLE CONTESTANT (Sports)
+function loadContestantSp(evid, divId) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            document.querySelector(divId).innerHTML = this.responseText;
+            document.querySelector("#" + divId).innerHTML = this.responseText;
         }
     };
     xhttp.open("POST", "get_contestants.php", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("evId=" + evid);
+    xhttp.send("evId=" + evid + "&&type=Sports");
+}
+
+
+// DISPLAYING TABLE CONTESTANT (Socio-Cultural)
+function loadContestantSc(evid, divId) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            document.querySelector("#" + divId).innerHTML = this.responseText;
+        }
+    };
+    xhttp.open("POST", "get_contestants.php", true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("evId=" + evid + "&&type=Socio-cultural");
 }
 
 
@@ -39,10 +54,10 @@ function loadCommittee(evid, tableId) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            document.querySelector("#" + tableId + " tbody").innerHTML = this.responseText;
+            document.querySelector("#" + tableId).innerHTML = this.responseText;
         }
     };
-    xhttp.open("POST", "get_faci.php", true);
+    xhttp.open("POST", "get_committee.php", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("evid=" + evid);
 }
@@ -53,12 +68,12 @@ function loadJudge(evid, tableId) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            document.querySelector("#" + tableId + " tbody").innerHTML = this.responseText;
+            document.querySelector("#" + tableId).innerHTML = this.responseText;
         }
     };
     xhttp.open("POST", "get_judge.php", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("evid=" + id);
+    xhttp.send("evid=" + evid);
 }
 
 
@@ -235,9 +250,60 @@ function updateNameField() {
         });
 
 
+    //deleting contestant
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('delete-icon')) {
+            var conid = event.target.getAttribute('data-cont');
+            deleteCont(conid);
+        }
+    });
 
 
-
+// Deletes the contestant
+function deleteCont(id) {
+    Swal.fire({
+        title: 'Confirm',
+        text: "Do you want to delete this contestant?",
+        icon: 'warning',
+        cancelButtonColor: '#8F8B8B',
+        confirmButtonColor: '#7FD278',
+        confirmButtonText: 'Confirm',
+        showCancelButton: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('EventTeamProcess.php', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    contid: id
+                })
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            }).then(data => {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Contestant deleted successfully!',
+                    icon: 'success',
+                    confirmButtonColor: '#7FD278',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    location.reload();
+                });
+            }).catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error deleting contestant.'+ error,
+                    icon: 'error',
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'OK'
+                });
+            });
+        }
+    });
+}
 
 
 
@@ -289,13 +355,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    //deleting contestant
-    document.addEventListener('click', function(event) {
-        if (event.target.classList.contains('delete-icon')) {
-            var conid = event.target.getAttribute('data-cont');
-            deleteCont(conid);
-        }
-    });
 
     //deleting Committee
     document.addEventListener('click', function(event) {
@@ -463,50 +522,7 @@ function updateJudgeField() {
 // DELETES //
 
 
-function deleteCont(id) {
-    Swal.fire({
-        title: 'Confirm',
-        text: "Do you want to delete this contestant?",
-        icon: 'warning',
-        cancelButtonColor: '#8F8B8B',
-        confirmButtonColor: '#7FD278',
-        confirmButtonText: 'Confirm',
-        showCancelButton: true
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch('EventTeamProcess.php', {
-                method: 'POST',
-                body: new URLSearchParams({
-                    contid: id
-                })
-            }).then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Network response was not ok.');
-            }).then(data => {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Contestant deleted successfully!',
-                    icon: 'success',
-                    confirmButtonColor: '#7FD278',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    location.reload();
-                });
-            }).catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Error deleting contestant.'+ error,
-                    icon: 'error',
-                    confirmButtonColor: '#d33',
-                    confirmButtonText: 'OK'
-                });
-            });
-        }
-    });
-}
+
 
 
 function deleteFaci(id) {
