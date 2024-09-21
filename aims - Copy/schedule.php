@@ -25,9 +25,8 @@ if ($result_days->num_rows > 0) {
                 $events[] = $row_event;
             }
 
-            // Sort events by time
             usort($events, function($a, $b) {
-                return strcmp($a['time'], $b['time']); // Assuming 'time' is the field with the time value
+                return strcmp($a['time'], $b['time']);
             });
         }
 
@@ -104,7 +103,7 @@ usort($scheduled_days, function($a, $b) {
                             <h4 id="dayDate"><?php echo date('F j, Y', strtotime($day['day_date'])); ?></h4>
                         </div>
                         <div class="header-right">
-                            <button id="editHeaderBtn" class="header-btn" onclick="editDay(<?php echo $day['id']; ?>)">Edit</button>
+                            <button id="editHeaderBtn" class="header-btn editHeaderBtn" data-day-id="<?php echo $day['id']; ?>">Edit</button>
                             <button id="deleteHeaderBtn" class="header-btn deleteHeaderBtn" data-day-id="<?php echo $day['id']; ?>">Delete</button>
                         </div>
                     </div>
@@ -161,7 +160,6 @@ usort($scheduled_days, function($a, $b) {
             const timeA = a.cells[0].textContent.trim();
             const timeB = b.cells[0].textContent.trim();
 
-            // Convert 12-hour format to 24-hour format for comparison
             const [hourA, minuteA, periodA] = timeA.match(/(\d+):(\d+) (AM|PM)/).slice(1);
             const [hourB, minuteB, periodB] = timeB.match(/(\d+):(\d+) (AM|PM)/).slice(1);
 
@@ -171,9 +169,8 @@ usort($scheduled_days, function($a, $b) {
             return time24A - time24B;
         });
 
-        // Reattach sorted rows to the table body
         const tbody = table.querySelector('tbody');
-        tbody.innerHTML = ''; // Clear existing rows
+        tbody.innerHTML = '';
         rowsArray.forEach(row => tbody.appendChild(row));
     }
     </script>
@@ -345,11 +342,10 @@ usort($scheduled_days, function($a, $b) {
                             return false;
                         }
 
-                        // Convert 24-hour time to 12-hour format
                         const [hour, minute] = time24.split(':');
                         const hours = parseInt(hour);
                         const period = hours >= 12 ? 'PM' : 'AM';
-                        const hour12 = (hours % 12) || 12;  // Convert 0 to 12 for midnight/noon
+                        const hour12 = (hours % 12) || 12;
                         const time12 = `${hour12}:${minute} ${period}`;
 
                         return {
@@ -423,17 +419,15 @@ usort($scheduled_days, function($a, $b) {
                 const cells = row.getElementsByTagName('td');
                 const eventId = row.getAttribute('data-event-id');
                 
-                // Get the current event details from the table row
                 const time24 = cells[0].textContent.trim();
                 const activity = cells[1].textContent.trim();
                 const location = cells[2].textContent.trim();
                 const status = cells[3].textContent.trim();
 
-                // Convert 24-hour time to 12-hour format for display
                 let [hour, minute] = time24.split(':');
                 hour = parseInt(hour, 10);
                 const period = hour >= 12 ? 'PM' : 'AM';
-                const hour12 = (hour % 12) || 12;  // Convert 0 to 12 for midnight/noon
+                const hour12 = (hour % 12) || 12;
                 const time12 = `${hour12.toString().padStart(2, '0')}:${minute} ${period}`;
 
                 Swal.fire({
@@ -463,11 +457,10 @@ usort($scheduled_days, function($a, $b) {
                             return false;
                         }
 
-                        // Convert 24-hour time to 12-hour format for display
                         let [hour, minute] = time24.split(':');
                         hour = parseInt(hour, 10);
                         const period = hour >= 12 ? 'PM' : 'AM';
-                        const hour12 = (hour % 12) || 12;  // Convert 0 to 12 for midnight/noon
+                        const hour12 = (hour % 12) || 12;
                         const time12 = `${hour12.toString().padStart(2, '0')}:${minute} ${period}`;
 
                         return {
@@ -489,7 +482,6 @@ usort($scheduled_days, function($a, $b) {
                             if (xhr.status === 200) {
                                 const response = JSON.parse(xhr.responseText);
                                 if (response.success) {
-                                    // Update the table row with the new values
                                     cells[0].textContent = time12;
                                     cells[1].textContent = activity;
                                     cells[2].textContent = location;
@@ -520,6 +512,78 @@ usort($scheduled_days, function($a, $b) {
                 });
             });
         });
+
+        document.querySelectorAll('.editHeaderBtn').forEach(button => {
+    button.addEventListener('click', function() {
+        const dayId = this.getAttribute('data-day-id');
+        
+        // Get the current day date from the corresponding element
+        const currentDayElement = document.getElementById(dayId); // Assuming the day element has the ID as the day ID
+        const currentDayDate = currentDayElement ? currentDayElement.textContent : ''; // Get the current date
+        
+        Swal.fire({
+            title: 'Edit Date',
+            html: ` 
+                <input id="new-day-date" class="swal2-input" type="date" value="${currentDayDate}">
+            `,
+            confirmButtonText: 'Save',
+            showCancelButton: true,
+            preConfirm: () => {
+                const dayDate = document.getElementById('new-day-date').value;
+                const today = new Date().toISOString().split('T')[0];
+
+                if (!dayDate) {
+                    Swal.showValidationMessage('Please enter a Date');
+                    return false;
+                }
+
+                if (dayDate < today) {
+                    Swal.showValidationMessage('Date cannot be in the past');
+                    return false;
+                }
+
+                return {
+                    dayId: dayId,
+                    dayDate: dayDate
+                };
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const { dayId, dayDate } = result.value;
+
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "edit_day.php", true); // Use a different endpoint for editing
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Day updated successfully.',
+                                icon: 'success',
+                                confirmButtonColor: '#7FD278',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                location.reload(); // Reload to see the updated day
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: response.message,
+                                icon: 'error',
+                                confirmButtonColor: '#d33',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    }
+                };
+                xhr.send(`day_id=${dayId}&day_date=${dayDate}`); // Send both day ID and new date
+            }
+        });
+    });
+});
+
 
 
         function reattachEventListeners() {
@@ -588,7 +652,7 @@ usort($scheduled_days, function($a, $b) {
             <input id="edit-event-time" class="swal2-input" placeholder="Time" type="time">
             <input id="edit-event-activity" class="swal2-input" placeholder="Activity">
             <input id="edit-event-location" class="swal2-input" placeholder="Location">
-            <select id="edit-event-status" class="swal2-input">
+            <select id="edit-event-status" class="swal2-input" placeholder="Status">
                 <option value="Pending">Pending</option>
                 <option value="Ongoing">On-going</option>
                 <option value="Ended">Ended</option>
@@ -599,7 +663,6 @@ usort($scheduled_days, function($a, $b) {
         </div>
     </div>
     
-
     <style>
     #editEventModal {
         position: fixed;
@@ -619,6 +682,30 @@ usort($scheduled_days, function($a, $b) {
     .swal2-input {
         margin-bottom: 10px;
         width: 100%;
+    }
+    </style>
+
+
+    <!-- Edit Day Modal -->
+    <div id="editDayModal" style="display:none;">
+        <div class="modal-content">
+            <h2>Edit Day</h2>
+            <input type="hidden" id="edit-day-id">
+            <input id="edit-day-name" class="swal2-input" placeholder="Day Name">
+            <button id="saveEditDayBtn">Save Changes</button>
+        </div>
+    </div>
+
+    <style>
+    #editDayModal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        border: 1px solid #ccc;
+        z-index: 1000;
     }
     </style>
 
