@@ -183,7 +183,7 @@
                     <div class="acc-buttons">
                         <form action="delete-account.php" method="POST" id="deleteForm_<?php echo $row['userId']; ?>">
                             <input type="hidden" name="userId" value="<?php echo $row['userId']; ?>">
-                            <button type="button" class="trash-icon" style="cursor: pointer;" onclick="confirmDelete('<?php echo $row['userId']; ?>')">
+                            <button type="button" class="trash-icon" style="cursor: pointer;" onclick="confirmDelete('<?php echo $row['userId']; ?>', '<?php echo $fullName; ?>')">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </form>

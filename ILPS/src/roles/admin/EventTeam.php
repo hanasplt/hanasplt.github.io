@@ -115,7 +115,7 @@
                         <div class="account" onclick="toggleEvent('eventTable<?php echo $db_evName; ?>', 
                         '<?php echo $db_evType; ?>', '<?php echo $db_evID; ?>',
                         '<?php echo $row['eventName']; ?>', 'displayContestantTable<?php echo $db_evName; ?>', 
-                        'displayOtherTable<?php echo $db_evName; ?>')"
+                        'displayOtherTable<?php echo $db_evName; ?>', 'displayCriteriaTable<?php echo $db_evName; ?>')"
                         data-event-id="<?php echo $db_evID; ?>"
                         data-name="<?php echo $row['eventName']; ?>"
                         data-table-id="<?php echo $db_evName; ?>Table"
@@ -138,6 +138,7 @@
                         <div class="container" id="eventTable<?php echo $db_evName; ?>" style="display: none;" data-event-id="<?php echo $db_evID; ?>" data-table-id="<?php echo $db_evName; ?>Table">
                             <div id="displayContestantTable<?php echo $db_evName; ?>"></div>
                             <div id="displayOtherTable<?php echo $db_evName; ?>"></div>
+                            <div id="displayCriteriaTable<?php echo $db_evName; ?>"></div>
                         </div>
                         <?php
 
@@ -338,8 +339,8 @@
                         <p class="addevent">Add Committee</p>
 
                         <div class="form-group">
-                            <label for="eventId">Event Name:</label>
-                            <select id="eventId" name="eventId" required>
+                            <label for="eventIdComt">Event Name:</label>
+                            <select id="eventIdComt" name="eventIdComt" required>
                                 <?php
                                     $sql = "CALL sp_getEventFrom(?);";
                                     $ev_type = "Sports";
@@ -422,8 +423,8 @@
                         <p class="addevent">Add Judge</p>
 
                         <div class="form-group">
-                            <label for="eventId">Event Name:</label>
-                            <select id="eventId" name="eventId" required>
+                            <label for="eventIdJ">Event Name:</label>
+                            <select id="eventIdJ" name="eventIdJ" required>
                                 <?php
                                     $sql = "CALL sp_getEventFrom(?);";
                                     $ev_type = "Socio-Cultural";
@@ -453,7 +454,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="judgeId">Contestant Name:</label>
+                            <label for="judgeId">Judge Name:</label>
                             <select id="judgeId" name="judgeId" required>
                                 <?php
                                     $sql = "CALL sp_getAccType(?);";
@@ -502,8 +503,8 @@
                         <p class="addevent">Add Criteria</p>
 
                         <div class="form-group">
-                            <label for="eventId">Event Name:</label>
-                            <select id="eventId" name="eventId" required>
+                            <label for="eventIdC">Event Name:</label>
+                            <select id="eventIdC" name="eventIdC" required>
                                 <?php
                                     $sql = "CALL sp_getEventFrom(?);";
                                     $ev_type = "Socio-Cultural";
@@ -555,15 +556,46 @@
     </div>
 
     <!--FOR EDITING CRITERIA MODAL-->
-    <div id="editcriModal" class="modal">
+    <div id="editcriteriaModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal('editcriModal')">&times;</span>
+            <span class="close" onclick="closeModal('editcriteriaModal')">&times;</span>
             <div class="modal-body">
                 <div class="form-section">
                     <form method="post" id="editCriForm" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="editCriteria">
                         <p class="addevent">Edit Criteria</p>
                         <input type="number" id="editcriId" name="editcriId" hidden>
+
+                        <div class="form-group">
+                            <label for="eventIdCri">Event Name:</label>
+                            <select id="eventIdCri" name="eventIdCri" required>
+                                <?php
+                                    $sql = "CALL sp_getEventFrom(?);";
+                                    $ev_type = "Socio-Cultural";
+
+                                    $stmt = $conn->prepare($sql);
+                                    $stmt->bind_param("s", $ev_type);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+                                    
+                                    if($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            $db_evval = $row['eventID'];
+                                            $db_evname = $row['eventName'];
+                                            $db_evType = $row['eventType'];
+
+                                            ?>
+                                            <option value="<?php echo $db_evval; ?>" data-type="<?php echo $db_evType; ?>">
+                                                <?php echo $db_evname; ?>
+                                            </option>
+                                            <?php
+                                        }
+                                    }
+                                    $result->free();
+                                    $stmt->close();
+                                ?>
+                            </select>
+                        </div>
 
                         <div class="form-group">
                             <label for="editcriteria">Criteria:</label>
@@ -574,9 +606,11 @@
                             <label for="editcriPts">Points:</label>
                             <input type="number" id="editcriPts" name="editcriPts">
                         </div>
+
+                        <input type="text" id="editeventname" name="editeventname" hidden>
                         
                         <div class="modal-footer">
-                            <button type="button" class="cancel-btn" onclick="closeModal('editcriModal')">Cancel</button>
+                            <button type="button" class="cancel-btn" onclick="closeModal('editcriteriaModal')">Cancel</button>
                             <button type="submit" class="save-btn-editcri">Save</button>
                         </div>
                     </form>
@@ -656,545 +690,6 @@
             </div>
         </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <div class="accounts">
-        <div class="accounts-title">
-            <p id="event">Event Type</p>
-        </div>
-
-        <div>
-            <div class="account" onclick="toggleSubEvents('sportsSubEvents')">
-                <div class="left-deets">
-                    <div class="acc-img">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="acc-deets" id="theatreArts">
-                        <p id="name">Sports</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accounts" id="sportsSubEvents" style="display: none;">
-                
-
-                <?php
-                //retrieve event (sports)
-                $sql = "CALL sp_getEventFrom(?)";
-                $sport = "Sports";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("s", $sport);
-                $stmt->execute();
-                $result = $stmt->get_result();
-
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        $ID = $row['eventID'];
-                        $evName = str_replace(' ', '', $row['eventName']);
-                        $eventName = $row['eventName'];
-                        $eventType = $row['eventType'];
-                        $eventCategory = $row['eventCategory'];
-                        ?>
-                        <div class="sub-account" id="<?php echo $eventName; ?>" data-id="<?php echo $ID; ?>" data-name="<?php echo $eventName; ?>" data-type="<?php echo $eventType; ?>" data-category="<?php echo $eventCategory; ?>">
-                            <div class="left-deets" onclick="toggleTable('<?php echo $evName; ?>Table')">
-                                <div class="acc-img">
-                                    <i class="fas fa-user"></i>
-                                </div>
-                                <div class="acc-deetss">
-                                    <p id="name"><?php echo $eventName; ?></p>
-                                </div>
-                            </div>
-                            <div class="right-deets">
-                                <div class="acc-buttons">
-                                    <div class="subtrash-icon" onclick="deleteThis(<?php echo $ID; ?>)">
-                                        <i class="fa-solid fa-trash-can"></i>
-                                    </div>
-
-                                    <div class="subedit-icon" onclick="openEditEvModal(this)">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="container" id="<?php echo $evName; ?>Table" style="display: none;">
-                            <div class="buttons">
-                                <button class="contestant loadContestantsBtn" 
-                                        onclick="toggleSubTable('<?php echo $evName; ?>ContestantTable')" 
-                                        data-event="<?php echo $ID; ?>" data-type="<?php echo $sport; ?>" 
-                                        data-name="<?php echo $eventName; ?>" 
-                                        data-table-id="<?php echo $evName; ?>ContestantsTable">
-                                    Contestant
-                                </button>
-                                <button class="faci loadFacilitatorsBtn" 
-                                        onclick="toggleSubTable('<?php echo $evName; ?>FacilitatorTable')" 
-                                        data-event="<?php echo $ID; ?>" data-personnel="Committee" 
-                                        data-type="<?php echo $sport; ?>" data-name="<?php echo $eventName; ?>" 
-                                        data-table-id="<?php echo $evName; ?>FacilitatorTable">
-                                    Committee
-                                </button>
-                                <button class="scoring loadScoringBtn" onclick="toggleSubTable('<?php echo $evName; ?>ScoringTable')" data-table-id="<?php echo $evName; ?>ScoringTable">Scoring</button>
-                            </div>
-
-                            <div id="<?php echo $evName; ?>ContestantTable" class="hidden-table" style="display: none;">
-                                <h1>Contestant Table</h1>
-                                <table id="<?php echo $evName; ?>ContestantsTable" class="contestantsTable">
-                                    <thead>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Name</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- ADD CONTESTANT FORM -->
-                                    </tbody>
-                                </table>
-                                <div class="buttons">
-                                    <button type="button" class="addcon-btn" onclick="openContiModal(this)" 
-                                            data-type="<?php echo $sport; ?>" 
-                                            data-name="<?php echo $eventName; ?>" 
-                                            data-event="<?php echo $ID; ?>">
-                                                Add Contestant
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div id="<?php echo $evName; ?>FacilitatorTable" class="hidden-table" 
-                            style="display: none;">
-                                <h1>Committee Table</h1>
-                                <table id="<?php echo $evName; ?>FacilitatorTableContent" class="facilitatorTable">
-                                    <thead>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Name</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- COMMITEE TABLE -->
-                                    </tbody>
-                                </table>
-                                <div class="buttons">
-                                    <button type="button" class="addfaci-btn" onclick="openFaciModal(this)" 
-                                            data-event="<?php echo $ID; ?>" data-personnel="Committee" 
-                                            data-type="<?php echo $sport; ?>" data-name="<?php echo $eventName; ?>">
-                                        Add Committee
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div id="<?php echo $evName; ?>ScoringTable" class="hidden-table" style="display: none;">
-                                <h1>All Scoring Table</h1>
-                                <table id="<?php echo $evName; ?>ScoringTableContent">
-                                    <thead>
-                                        <tr>
-                                            <th>Rank No.</th>
-                                            <th>Ranking</th>
-                                            <th>Individual/Dual</th>
-                                            <th>Group</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                                <div class="buttons">
-                                    <button type="button" class="addscore-btn" onclick="openScoreModal(this)">Add Score</button>
-                                </div>
-                            </div>
-
-                        </div>
-                        <?php
-                    }
-                } else {
-                    echo "No events on Sports";
-                }
-                $result->free();
-                $stmt->close();
-                ?>
-            </div>
-
-        <div>
-            <div class="account" onclick="toggleSubEvents('socioSubEvents')">
-                <div class="left-deets">
-                    <div class="acc-img">
-                        <i class="fas fa-user"></i>
-                    </div>
-
-                    <div class="acc-deets" id="socioEvent">
-                        <p id="name">Socio-Cultural</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="accounts" id="socioSubEvents" style="display: none;">
-               
-<?php
-    //retrieve event (socio)
-    $sql = "CALL sp_getEventFrom(?)";
-    $socio = "Socio-Cultural";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $socio);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $ID = $row['eventID'];
-            $socioEvent = str_replace(' ', '', $row['eventName']);
-            ?>
-                <div class="sub-account" id="<?php echo $socioEvent?>" data-id="<?php echo $ID?>" data-name="<?php echo $row['eventName']?>" data-type="<?php echo $row['eventType']?>" data-category="<?php echo $row['eventCategory']?>">
-                    <div class="left-deets" onclick="toggleTable('<?php echo $socioEvent?>Table')">
-                        <div class="acc-img">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="acc-deetss">
-                            <p id="name"><?php echo $row['eventName']?></p>
-                        </div>
-                    </div>
-                    <div class="right-deets">
-                        <div class="acc-buttons">
-                            <div class="subtrash-icon" onclick="deleteThis(<?php echo $ID ?>)">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </div>
-
-                            <div class="subedit-icon" onclick="openEditEvModal(this)">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="container" id="<?php echo $socioEvent?>Table" style="display: none;">
-                    <div class="buttons">
-                        <button class="contestant loadContestantsBtn" onclick="toggleSubTable('<?php echo $socioEvent?>ContestantTable')" data-event="<?php echo $ID; ?>" data-type="<?php echo $socio; ?>" data-name="<?php echo $row['eventName']; ?>" data-table-id="<?php echo $socioEvent; ?>ContestantsTable">Contestant</button>
-                        <button class="judge loadJudgesBtn" onclick="toggleSubTable('<?php echo $socioEvent?>JudgeTable')" data-event="<?php echo $ID; ?>" data-type="<?php echo $socio; ?>" data-name="<?php echo $row['eventName']; ?>" data-table-id="<?php echo $socioEvent; ?>JudgesTable">Judge</button>
-                        <button class="criteria1 loadCriteriaBtn" onclick="toggleSubTable('<?php echo $socioEvent?>CriteriaTable')" data-event="<?php echo $ID; ?>" data-name="<?php echo $row['eventName']; ?>" data-table-id="<?php echo $socioEvent; ?>CriteriaTable">Criteria</button>
-                        <button class="scoring loadScoringBtn" onclick="toggleSubTable('<?php echo $socioEvent?>ScoringTable')" data-table-id="<?php echo $socioEvent; ?>ScoringTable">Scoring</button>
-                    </div>
-
-                    <div id="<?php echo $socioEvent; ?>ContestantTable" class="hidden-table" style="display: none;">
-                        <h1>Contestant Table</h1>
-                        <table id="<?php echo $socioEvent; ?>ContestantsTable" class="contestantsTable">
-                                    <thead>
-                                        <tr>
-                                            <th>No.</th>
-                                            <th>Name</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- ADD CONTESTANT FORM -->
-                                    </tbody>
-                        </table>
-                        <div class="buttons">
-                            <button type="button" class="addcon-btn" onclick="openContiModal(this)" data-event="<?php echo $ID; ?>" data-type="<?php echo $socio; ?>" data-name="<?php echo $row['eventName']; ?>">Add Contestant</button>
-                        </div>
-                    </div>
-
-                    <div id="<?php echo $socioEvent?>JudgeTable" class="hidden-table" style="display: none;">
-                        <h1>Judge Table</h1>   
-                        <table id="<?php echo $socioEvent?>JudgesTable">
-                            <thead>
-                                <tr>
-                                    <th>No.</th>
-                                    <th>Name</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody> 
-                            </tbody>
-                        </table>
-                        <div class="buttons">
-                            <button type="button" class="addjudge-btn" onclick="openJudgeModal(this)" data-event="<?php echo $ID; ?>" data-name="<?php echo $row['eventName']; ?>">Add Judge</button>
-                        </div>
-                    </div>
-
-                    <div id="<?php echo $socioEvent?>CriteriaTable" class="hidden-table" style="display: none;">
-                        <h1>Criteria Table</h1> 
-                        <table id="<?php echo $socioEvent?>CriteriasTable">
-                            <thead>
-                                <tr>
-                                    <th>No.</th>
-                                    <th>Criteria</th>
-                                    <th>Percentage</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                        <div class="buttons">
-                            <button type="button" class="addcri-btn" onclick="openCriModal(this)" data-event="<?php echo $ID; ?>" data-name="<?php echo $row['eventName']; ?>">Add Criteria</button>
-                        </div>
-                    </div>
-
-                    <div id="<?php echo $socioEvent; ?>ScoringTable" class="hidden-table" style="display: none;">
-                        <h1>All Scoring Table</h1>
-                        <table id="<?php echo $socioEvent; ?>ScoringTableContent">
-                            <thead>
-                                <tr>
-                                    <th>Rank No.</th>
-                                    <th>Ranking</th>
-                                    <th>Individual/Dual</th>
-                                    <th>Group</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                        <div class="buttons">
-                            <button type="button" class="addscore-btn" onclick="openScoreModal(this)">Add Score</button>
-                        </div>
-                    </div>
-                </div>
-            <?php
-        }
-    } else {
-        echo "No events on Socio-Cultural";
-    }
-    $result->free();
-    $stmt->close();
-?>
-            </div>
-        </div>
-    </div>
-
-
-
-
-    <!--FOR ADDING CONTESTANT MODAL -->
-    <div id="contestandtModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('contestandtModal')">&times;</span>
-            <div class="modal-body">
-                <div class="form-section">
-                    <form method="post" id="addContForm" enctype="multipart/form-data" onsubmit="updateNameField()">
-                        <input type="hidden" name="action" value="addContestant">
-                        <p class="addevent">Add Contestant</p>
-
-                        <div class="form-group">
-                            <label for="contestantId">Contestant Name:</label>
-                            <select id="contestantId" name="contestantId" required>
-                                <?php
-                                    $sql = "CALL sp_getAllTeam;";
-                                    $stmt = $conn->prepare($sql);
-                                    $stmt->execute();
-                                    $result = $stmt->get_result();
-                                    
-                                    if($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            $teamval = $row['teamId'];
-                                            $teamname = $row['teamName'];
-                                            ?>
-                                            <option value="<?php echo $teamval; ?>"><?php echo $teamname; ?></option>
-                                            <?php
-                                        }
-                                    }
-                                    $result->free();
-                                    $stmt->close();
-                                ?>
-                            </select>
-                        </div>
-
-                        <input type="text" id="conEvId" name="conEvId" hidden>
-                        <input type="text" id="contestantName" name="contestantName" hidden>
-                        <input type="text" id="contestantType" name="contestantType" hidden>
-                        <input type="text" id="contestantEVName" name="contestantEVName" hidden>
-                        
-                        <div class="modal-footer">
-                            <button type="button" class="cancel-btn" onclick="closeModal('contestandtModal')">Cancel</button>
-                            <button type="submit" class="save-btn-contestant">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!--FOR ADDING CONTESTANT MODAL in Socio -->
-    <div id="contestantModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('contestantModal')">&times;</span>
-            <div class="modal-body">
-                <div class="form-section">
-                    <form method="post" id="addContForm" enctype="multipart/form-data" onsubmit="updateNameField()">
-                        <input type="hidden" name="action" value="addContestant">
-                        <p class="addevent">Add Contestant</p>
-
-                        <div class="form-group">
-                            <label for="contno">Contestant No.:</label>
-                            <input type="number" name="contno" id="contno" required>
-
-                            <label for="contestantId">Contestant Name:</label>
-                            <select id="contestantId" name="contestantId" required>
-                                <?php
-                                    $sql = "CALL sp_getAllTeam;";
-                                    $stmt = $conn->prepare($sql);
-                                    $stmt->execute();
-                                    $result = $stmt->get_result();
-                                    
-                                    if($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            $teamval = $row['teamId'];
-                                            $teamname = $row['teamName'];
-                                            ?>
-                                            <option value="<?php echo $teamval; ?>"><?php echo $teamname; ?></option>
-                                            <?php
-                                        }
-                                    }
-                                    $result->free();
-                                    $stmt->close();
-                                ?>
-                            </select>
-                        </div>
-
-                        <input type="text" id="conEvId" name="conEvId" hidden>
-                        <input type="text" id="contestantName" name="contestantName" hidden>
-                        <input type="text" id="contestantType" name="contestantType" hidden>
-                        <input type="text" id="contestantEVName" name="contestantEVName" hidden>
-                        
-                        <div class="modal-footer">
-                            <button type="button" class="cancel-btn" onclick="closeModal('contestandtModal')">Cancel</button>
-                            <button type="submit" class="save-btn-contestant">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!--FOR ADDING COMT MODAL-->
-    <div id="faciModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('faciModal')">&times;</span>
-            <div class="modal-body">
-                <div class="form-section">
-                    <form method="post" id="addComtForm" enctype="multipart/form-data" onsubmit="updateFaciName()">
-                        <input type="hidden" name="action" value="addComt">
-                        <p class="addevent">Add Committee</p>
-
-                        <div class="form-group">
-                            <label for="comtId">Contestant Name:</label>
-                            <select id="comtId" name="comtId" required>
-                                <?php
-                                    $sql = "CALL sp_getAccType(?);";
-                                    $stmt = $conn->prepare($sql);
-                                    $role = 'Committee';
-                                    $stmt->bind_param("s", $role);
-                                    $stmt->execute();
-                                    $result = $stmt->get_result();
-                                    
-                                    if($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            $userId = $row['userId'];
-                                            $name = $row['firstName'];
-                                            ?>
-                                            <option value="<?php echo $userId; ?>" 
-                                                    data-fname="<?php echo $name; ?>"><?php echo $name; ?>
-                                            </option>
-                                            <?php
-                                        }
-                                    }
-                                    $result->free();
-                                    $stmt->close();
-                                ?>
-                            </select>
-                        </div>
-
-                        <input type="text" id="comtEvId" name="comtEvId" hidden>
-                        <input type="text" id="comtEVName" name="comtEVName" hidden>
-                        <input type="text" id="comtName" name="comtName" hidden>
-                        
-                        <div class="modal-footer">
-                            <button type="button" class="cancel-btn" onclick="closeModal('faciModal')">
-                                Cancel
-                            </button>
-                            <button type="submit" class="save-btn-comt">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!--FOR ADDING JUDGE MODAL-->
-    <div id="judgeModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('judgeModal')">&times;</span>
-            <div class="modal-body">
-                <div class="form-section">
-                    <form method="post" id="addJudgeForm" enctype="multipart/form-data" onsubmit="updateJudgeField()">
-                        <input type="hidden" name="action" value="addJudge">
-                        <p class="addevent">Add Judge</p>
-
-                        <div class="form-group">
-                            <label for="judgeId">Contestant Name:</label>
-                            <select id="judgeId" name="judgeId" required>
-                                <?php
-                                    $sql = "CALL sp_getAccType(?);";
-                                    $stmt = $conn->prepare($sql);
-                                    $role = 'Judge';
-                                    $stmt->bind_param("s", $role);
-                                    $stmt->execute();
-                                    $result = $stmt->get_result();
-                                    
-                                    if($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            $userId = $row['userId'];
-                                            $name = $row['firstName'];
-                                            ?>
-                                            <option value="<?php echo $userId; ?>"><?php echo $name; ?></option>
-                                            <?php
-                                        }
-                                    }
-                                    $result->free();
-                                    $stmt->close();
-                                ?>
-                            </select>
-                        </div>
-
-                        <input type="text" id="judgeEvId" name="judgeEvId" hidden>
-                        <input type="text" id="judgeEVName" name="judgeEVName" hidden>
-                        <input type="text" id="judgeName" name="judgeName" hidden>
-                        
-                        <div class="modal-footer">
-                            <button type="button" class="cancel-btn" onclick="closeModal('judgeModal')">Cancel</button>
-                            <button type="submit" class="save-btn-judge">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
 
     <script src="../admin/js/EventTeamJS.js"></script>
 

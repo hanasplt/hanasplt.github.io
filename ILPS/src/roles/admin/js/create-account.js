@@ -59,6 +59,7 @@ document.getElementById('accountForm').addEventListener('submit', function(event
     });
 });
 
+
 function validateInput(event) {
     // Allow only letters (both lowercase and uppercase) and spaces
     const regex = /^[a-zA-Z\s]*$/;
@@ -68,6 +69,7 @@ function validateInput(event) {
         inputField.value = inputField.value.replace(/[^a-zA-Z\s]/g, '');
     }
 }
+
 
 document.getElementById('togglePassword').addEventListener('click', function() {
     const passwordField = document.getElementById('password');
@@ -80,7 +82,7 @@ document.getElementById('togglePassword').addEventListener('click', function() {
 });
 
 document.getElementById('toggleConPassword').addEventListener('click', function() {
-    const conPasswordField = document.getElementById('conpassword');
+    const conPasswordField = document.getElementById('confpassword');
     const type = conPasswordField.getAttribute('type') === 'password' ? 'text' : 'password';
     conPasswordField.setAttribute('type', type);
 

@@ -90,7 +90,7 @@
 
     try {
         if ($retval->num_rows > 0) {
-            echo json_encode(['status' => 'error', 'message' => 'Contestant already exists!'.$retval->num_rows]);
+            echo json_encode(['status' => 'error', 'message' => 'Contestant already exists!']);
         } else {
             $retval->free();
             $stmt->close();
@@ -124,7 +124,7 @@
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'addComt') {
     $comtid = $_POST['comtId'];
     $comtName = $_POST['comtName'];
-    $evid = $_POST['eventId'];
+    $evid = $_POST['eventIdComt'];
     $evname = $_POST['comtEVName'];
 
     try {
@@ -170,7 +170,7 @@
   //add event judge
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'addJudge') {
     $judgeid = $_POST['judgeId'];
-    $evid = $_POST['eventId'];
+    $evid = $_POST['eventIdJ'];
     $event = $_POST['judgeEVName'];
     $judge = $_POST['judgeName'];
 
@@ -217,7 +217,7 @@
 
   //add event criteria
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'addCriteria') {
-    $event = $_POST['eventId'];
+    $event = $_POST['eventIdC'];
     $eventname = $_POST['eventname'];
     $criteria = $_POST['criteria'];
     $pts = $_POST['criPts'];
@@ -229,10 +229,13 @@
     
         if ($stmt->execute()) {
             $retSum = $stmt->get_result();
-            $row = $retSum->fetch_assoc();
             
-            // Get total percentage for input evaluation
-            $totalPerc = $row['totalPercentage'];
+            $totalPerc = 0; // Initialize to store total percentage
+
+            while ($row = $retSum->fetch_assoc()) {
+                // Get total percentage for input evaluation
+                $totalPerc += $row['percentage'];
+            }
 
             $retSum->free();
             $stmt->close();
@@ -284,18 +287,105 @@
   //edit criteria
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'editCriteria') {
     $criid = $_POST['editcriId'];
+    $evid = $_POST['eventIdCri'];
     $cri = $_POST['editcriteria'];
     $pts = $_POST['editcriPts'];
+    $eventname = $_POST['editeventname'];
     
-    $sql = "CALL sp_editCriteria(?, ?, ?)";
+    try {
+        $sql = "CALL sp_getCriteria(?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("isi", $criid, $cri, $pts);
+        $stmt->bind_param("i", $evid);
+    
+        if ($stmt->execute()) {
+            $retSum = $stmt->get_result();
+            
+            $totalPerc = 0; // Initialize to store total percentage
 
-    if ($stmt->execute()) {
-        echo json_encode(['status' => 'success', 'message' => 'Criteria updated successfully!']);
+            while ($row = $retSum->fetch_assoc()) {
+                // Get total percentage for input evaluation
+                $totalPerc += $row['percentage'];
+            }
+
+            $retSum->free();
+            $stmt->close();
+
+            // Retrieve the percentage of this criteria
+            $getPerc = "SELECT * FROM vw_criteria WHERE eventId = ? AND criteriaId = ?";
+
+            $stmt = $conn->prepare($getPerc);
+            $stmt->bind_param("ii", $evid, $criid);
+            $stmt->execute();
+
+            $retPerc = $stmt->get_result();
+            $retRow = $retPerc->fetch_assoc();
+
+            $criPerc = $retRow['percentage']; // Get for validation
+
+            $retPerc->free();
+            $stmt->close();
+
+
+            // Validate input points
+            if ($pts < $criPerc) {
+                // Minus input points to the criteria being edited
+                $thisCriPerc = $criPerc - $pts; // To know total percentage when updated
+
+                $insPerc = $totalPerc - $thisCriPerc;
+
+                if ($insPerc > 100) {
+                    echo json_encode([
+                        'status' => 'error', 
+                        'message' => 'Total Criteria Percentage will exceed 100%. 
+                        Please enter a value that ensures the total does not surpass 100%!'
+                    ]);
+                    exit;
+                }
+                
+            } else {
+                // Unable insert, percentage of criteria must only be 100%
+                if ($totalPerc == 100) {
+                    echo json_encode([
+                        'status' => 'error', 
+                        'message' => 'Total Criteria Percentage has reached 100%. No further entries can be added!'
+                    ]);
+                    exit;
+                } else {
+                    if (($pts + $totalPerc) > 100) {
+                        echo json_encode([
+                            'status' => 'error', 
+                            'message' => 'Total Criteria Percentage will exceed 100%. 
+                            Please enter a value that ensures the total does not surpass 100%!'
+                        ]);
+                        exit;
+                    }
+                }
+            }
+
+
+            // Proceed criteria update
+            $sql = "CALL sp_editCriteria(?, ?, ?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("isii", $criid, $cri, $pts, $evid);
+
+            if ($stmt->execute()) {
+                // Insert in the logs
+                $action = "Updated event criteria ($cri) for event $eventname";
+                $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+                $stmt = $conn->prepare($insertLogAct);
+                $stmt->bind_param("is", $accId, $action);
+                $stmt->execute();
+
+                echo json_encode(['status' => 'success', 'message' => 'Criteria updated successfully!']);
+            }
+            $stmt->close();
+            exit;
+        }
+
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => 'Error:'. $e->getMessage()]);
     }
-    $stmt->close();
-    exit;
   }
 
   //add scoring
@@ -449,6 +539,7 @@
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['contid'])) {
     $id = $_POST['contid'];
     $eventName = $_POST['eventname'];
+    $contname = $_POST['contname'];
     
     $sql = "CALL sp_delEventContestant(?)"; 
     $stmt = $conn->prepare($sql);
@@ -460,7 +551,7 @@
 
         if ($stmt->execute()) {
             // Insert in the logs
-            $action = "Deleted contestant (ID: $id) in the event $eventName";
+            $action = "Deleted contestant ($contname) in the event $eventName";
             $insertLogAct = "CALL sp_insertLog(?, ?)";
 
             $stmt = $conn->prepare($insertLogAct);
@@ -563,6 +654,8 @@
   //deletes a criteria
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['criid'])) {
     $criID = $_POST['criid'];
+    $name = $_POST['name'];
+    $event = $_POST['eventname'];
     
     $sql = "CALL sp_delCriteria(?)"; 
     $stmt = $conn->prepare($sql);
@@ -571,6 +664,14 @@
     $response = array();
 
     if ($stmt->execute()) {
+        // Insert in the logs
+        $action = "Deleted criteria ($name) in the event $event";
+        $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+        $stmt = $conn->prepare($insertLogAct);
+        $stmt->bind_param("is", $accId, $action);
+        $stmt->execute();
+
         $response['success'] = true;
     } else {
         $response['success'] = false;

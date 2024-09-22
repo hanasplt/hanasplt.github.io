@@ -5,6 +5,7 @@
     
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['userId'])) {
     $userId = $_POST['userId'];
+    $username = $_POST['username'];
     $accId = $_SESSION['userId'];
 
 
@@ -20,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['userId'])) {
 
     if ($stmt->execute()) {
         // Insert in the logs
-        $action = "Deleted the account no. $userId";
+        $action = "Deleted the account no. $userId ($username).";
         $insertLogAct = "CALL sp_insertLog(?, ?)";
 
         $stmt = $conn->prepare($insertLogAct);

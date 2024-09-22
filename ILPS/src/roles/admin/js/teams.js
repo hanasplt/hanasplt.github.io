@@ -19,8 +19,7 @@ document.getElementById('logoutIcon').addEventListener('click', function() {
 
 
 // Delete team
-function deleteThis(id) {
-    console.log(id);
+function deleteThis(id, name) {
     Swal.fire({
         title: 'Confirm',
         text: "Do you want to delete this team?",
@@ -34,7 +33,8 @@ function deleteThis(id) {
             fetch('../admin/teamsprocess.php', {
                 method: 'POST',
                 body: new URLSearchParams({
-                    teamid: id
+                    teamid: id,
+                    teamname: name
                 })
             }).then(response => {
                 if (response.ok) {
@@ -68,8 +68,8 @@ function deleteThis(id) {
 
 // Open Add Modal
 function openAddModal() {
-    document.getElementById('addModal').style.display = 'block';
-  }
+  document.getElementById('addModal').style.display = 'block';
+}
 
   // Open Edit Modal
   function openEditModal(element) {
@@ -117,10 +117,21 @@ function openAddModal() {
     e.preventDefault();
 
     var modal = document.getElementById('teamForm');
-    
-    var proceedSubmit = validateCheckboxSelection(modal);
 
-    if (proceedSubmit) {
+    // Get all checkboxes inside the Edit Modal
+    var checkboxes = modal.querySelectorAll('input[name="course[]"]');
+
+    // Check if at least one checkbox is selected
+    var atLeastOneChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+
+    if (!atLeastOneChecked) { // Prevent form submission
+        Swal.fire({
+          title: 'Oops..',
+          text: 'Select a course(s)!',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        })
+    } else { // Proceed inserting team
       var formData = new FormData(this);
 
       fetch('../admin/teamsprocess.php', {
@@ -159,9 +170,20 @@ function openAddModal() {
     
     var modal = document.getElementById('editTeamForm');
     
-    var proceedSubmit = validateCheckboxSelection(modal);
+    // Get all checkboxes inside the Edit Modal
+    var checkboxes = modal.querySelectorAll('input[name="course[]"]');
 
-    if (proceedSubmit) {
+    // Check if at least one checkbox is selected
+    var atLeastOneChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+
+    if (!atLeastOneChecked) { // Prevent form submission
+        Swal.fire({
+          title: 'Oops..',
+          text: 'Select a course(s)!',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        })
+    } else { // Proceed updating team
       var formData = new FormData(this);
     
       fetch('../admin/teamsprocess.php', {
@@ -189,25 +211,3 @@ function openAddModal() {
         });
     }
   });
-
-
-  // Validate if user selected a course(s)
-  function validateCheckboxSelection(modal) {
-    // Get all checkboxes inside the Edit Modal
-    var checkboxes = modal.querySelectorAll('input[name="course[]"]');
-
-    // Check if at least one checkbox is selected
-    var atLeastOneChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
-
-    if (!atLeastOneChecked) {
-        Swal.fire({
-          title: 'Oops..',
-          text: 'Select a course(s)!',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        })
-        return false; // Prevent form submission
-    }
-
-    return true; // Allow form submission if validation passes
-}

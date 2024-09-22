@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $name = $row['firstName'];
 
             echo '<tr>';
-            echo '<td>' . $id . '</td>';
+            echo '<td>' . $count++ . '</td>';
             echo '<td>' . $name . '</td>';
             echo '<td><i class="fa-solid fa-trash-can delete-icon-faci" data-id="'.$id.'" data-name="'.$name.'" data-event-name="'.$evname.'" style="cursor: pointer;"></i></td>';
             echo '</tr>';

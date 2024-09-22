@@ -1,5 +1,5 @@
 // TOGGLE EVENT TABLES (NAGAMIT)
-function toggleEvent(divId, evType, evId, evName, contTable, otherTable) {
+function toggleEvent(divId, evType, evId, evName, contTable, otherTable, criTable) {
     const table = document.getElementById(divId);
     const tables = document.querySelectorAll('.container');
 
@@ -16,6 +16,7 @@ function toggleEvent(divId, evType, evId, evName, contTable, otherTable) {
     } else {
         loadContestantSc(evId, contTable, evName);
         loadJudge(evId, otherTable, evName);
+        loadCriteria(evId, criTable, evName);
     }
     table.style.display = table.style.display === 'none' ? 'block' : 'none';
 }
@@ -66,6 +67,18 @@ function loadJudge(evid, tableId, evName) {
         }
     };
     xhttp.open("POST", "get_judge.php", true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("evid=" + evid + "&&eventname=" + evName);
+}
+// DISPALYING TABLE CRITERIA
+function loadCriteria(evid, tableId, evName) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            document.querySelector("#" + tableId).innerHTML = this.responseText;
+        }
+    };
+    xhttp.open("POST", "get_criteria.php", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("evid=" + evid + "&&eventname=" + evName);
 }
@@ -152,6 +165,22 @@ function openEditEventModal(element) { // Open modal for editing event
     var modal = document.getElementById("editEventModal");
     modal.style.display = "block";
 }
+// Open edit criteria modal
+function openEditCriModal(element) {
+    var card = element.closest('.edit-icon-cri');
+    var criId = card.getAttribute('data-id');
+    var criteria = card.getAttribute('data-criteria');
+    var pts = card.getAttribute('data-pts');
+    var evid = card.getAttribute('data-event-id');
+    
+    document.getElementById('eventIdCri').value = evid;
+    document.getElementById('editcriId').value = criId;
+    document.getElementById('editcriteria').value = criteria;
+    document.getElementById('editcriPts').value = pts;
+
+    var modal = document.getElementById("editcriteriaModal");
+    modal.style.display = "block";
+}
 
 
 // Deletes the event
@@ -206,7 +235,6 @@ function deleteThis(userId, name) { // Don't totally delete it
 function getSelectedText() {
     var selectElement = document.getElementById('eventId');
     var selectedText = selectElement.options[selectElement.selectedIndex].text; // Get selected text
-    console.log("Selected event: " + selectedText); // Log to check the value
     
     // Set the selected text to the hidden input field
     document.getElementById('selectedEventText').value = selectedText;
@@ -217,7 +245,7 @@ function updateNameField() {
     document.getElementById("contestantName").value = selectedText;
 }
 function updateComtEvent() {
-    var dropdown = document.getElementById("eventId");
+    var dropdown = document.getElementById("eventIdComt");
     var selectedText = dropdown.options[dropdown.selectedIndex].text;
     document.getElementById("comtEVName").value = selectedText;
 }
@@ -226,19 +254,25 @@ function updateComtName() {
     var selectedText = dropdown.options[dropdown.selectedIndex].text;
     document.getElementById("comtName").value = selectedText;
 }
-function updateJudgeField() {
-    var dropdown = document.getElementById("eventId");
+function updateJudgeEvField() {
+    var dropdown = document.getElementById("eventIdJ");
     var selectedText = dropdown.options[dropdown.selectedIndex].text;
     document.getElementById("judgeEVName").value = selectedText;
-
+}
+function updateJudgeField() {
     var dropdownn = document.getElementById("judgeId");
     var selectedText = dropdownn.options[dropdownn.selectedIndex].text;
     document.getElementById("judgeName").value = selectedText;
 }
 function updateCriField() {
-    var dropdown = document.getElementById("eventId");
+    var dropdown = document.getElementById("eventIdC");
     var selectedText = dropdown.options[dropdown.selectedIndex].text;
     document.getElementById("eventname").value = selectedText;
+}
+function updateCriteriaField() {
+    var dropdown = document.getElementById("eventIdCri");
+    var selectedText = dropdown.options[dropdown.selectedIndex].text;
+    document.getElementById("editeventname").value = selectedText;
 }
 
 
@@ -301,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();  // Prevent default form submission
 
             const eventType = document.getElementById('eventType').value;
-            const eventName = document.getElementById('eventName').value;
+            const eventName = document.getElementById('editeventName').value;
             const eventCategory = document.getElementById('eventCategory').value;
     
             if (eventType == '' || eventName == '' || eventCategory == '') {
@@ -424,6 +458,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('.save-btn-judge').addEventListener('click', function(event) {
             event.preventDefault();  // Prevent default form submission
 
+            updateJudgeEvField();
             updateJudgeField();
 
             var formData = new FormData(document.querySelector('#addJudgesForm'));
@@ -462,7 +497,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('.save-btn-cri').addEventListener('click', function(event) {
             event.preventDefault();  // Prevent default form submission
 
-            const eventId = document.getElementById('eventId').value;
+            const eventId = document.getElementById('eventIdCri').value;
             const criteria = document.getElementById('criteria').value;
             const criPts = document.getElementById('criPts').value;
 
@@ -477,6 +512,57 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateCriField();
                 
                 var formData = new FormData(document.querySelector('#addCriForm'));
+
+                fetch('EventTeamProcess.php', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            location.reload();  // Reload the page or handle success
+                        }); 
+                    } else {
+                        Swal.fire({
+                            title: 'Oops!',
+                            text: data.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.log('An error occurred: ' + error.message);
+                });
+            }
+        });
+
+
+        // Form submission for editing criteria
+        document.querySelector('.save-btn-editcri').addEventListener('click', function(event) {
+            event.preventDefault();  // Prevent default form submission
+
+            const eventId = document.getElementById('eventIdCri').value;
+            const criteria = document.getElementById('editcriteria').value;
+            const criPts = document.getElementById('editcriPts').value;
+
+            if (eventId == '' || criteria == '' || criPts == '') {
+                Swal.fire({
+                    title: 'Oops!',
+                    text: 'All fields are required to be filled in.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            } else { // Proceed updating criteria
+                updateCriteriaField();
+
+                var formData = new FormData(document.querySelector('#editCriForm'));
 
                 fetch('EventTeamProcess.php', {
                     method: 'POST',
@@ -580,9 +666,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (event.target.classList.contains('delete-icon')) {
             var conid = event.target.getAttribute('data-cont');
             var name = event.target.getAttribute('data-event-name');
-            console.log(name);
+            var cname = event.target.getAttribute('data-name');
 
-            deleteCont(conid, name);
+            deleteCont(conid, name, cname);
         }
     });
 
@@ -608,6 +694,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    //deleting criteria
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('delete-icon-cri')) {
+            var id = event.target.getAttribute('data-id');
+            var name = event.target.getAttribute('data-name');
+            var eventn = event.target.getAttribute('data-event-name');
+
+            deleteCri(id, name, eventn);
+        }
+    });
+
     //deleting score
     document.addEventListener('click', function(event) {
         if (event.target.classList.contains('delete-icon-pts')) {
@@ -621,7 +718,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 // Deletes the contestant
-function deleteCont(id, name) {
+function deleteCont(id, name, contn) {
     Swal.fire({
         title: 'Confirm',
         text: "Do you want to delete this contestant?",
@@ -636,7 +733,8 @@ function deleteCont(id, name) {
                 method: 'POST',
                 body: new URLSearchParams({
                     contid: id,
-                    eventname: name
+                    eventname: name,
+                    contname: contn
                 })
             }).then(response => {
                 if (response.ok) {
@@ -760,6 +858,53 @@ function deleteJudge(id, name, event) {
         }
     });
 }
+//deleting criteria
+function deleteCri(id, name, event) {
+    Swal.fire({
+        title: 'Confirm',
+        text: "Do you want to delete this criteria?",
+        icon: 'warning',
+        cancelButtonColor: '#8F8B8B',
+        confirmButtonColor: '#7FD278',
+        confirmButtonText: 'Confirm',
+        showCancelButton: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('EventTeamProcess.php', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    criid: id,
+                    name: name,
+                    eventname: event
+                })
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            }).then(data => {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Criteria deleted successfully!',
+                    icon: 'success',
+                    confirmButtonColor: '#7FD278',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    location.reload();
+                });
+            }).catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error deleting criteria.',
+                    icon: 'error',
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'OK'
+                });
+            });
+        }
+    });
+}
 //deleting scoring
 function deleteScoring(name, rname) {
     Swal.fire({
@@ -829,10 +974,24 @@ document.getElementById('criPts').addEventListener('input', function(event) {
     const input = event.target.value;
 
     // Check if the input is between 0 and 100
-    if (input < 0 || input > 100) {
+    if (input < 1 || input > 100) {
         Swal.fire({
             title: 'Oops!',
-            text: 'Please enter a value between 0 and 100.',
+            text: 'Please enter a value between 1 and 100.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+        event.target.value = '';  // Clear the input if invalid
+    }
+});
+document.getElementById('editcriPts').addEventListener('input', function(event) {
+    const input = event.target.value;
+
+    // Check if the input is between 0 and 100
+    if (input < 1 || input > 100) {
+        Swal.fire({
+            title: 'Oops!',
+            text: 'Please enter a value between 1 and 100.',
             icon: 'warning',
             confirmButtonText: 'OK'
         });
@@ -841,405 +1000,7 @@ document.getElementById('criPts').addEventListener('input', function(event) {
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// SHOW TABLES //
-
-document.addEventListener('DOMContentLoaded', function() {
-    
-
-    document.querySelectorAll('.loadContestantsBtn').forEach(function(button) {
-        button.addEventListener('click', function() {
-            loadDoc(button); //load contestant table
-        });
-    });
-
-    document.querySelectorAll('.loadFacilitatorsBtn').forEach(function(button) {
-        button.addEventListener('click', function() {
-            loadFaci(button); //load Committee table
-        });
-    });
-
-    document.querySelectorAll('.loadCriteriaBtn').forEach(function(button) {
-        button.addEventListener('click', function() {
-            loadCriteria(button); //load criteria table
-        });
-    });
-
-    document.querySelectorAll('.loadScoringBtn').forEach(function(button) {
-        button.addEventListener('click', function() {
-            loadScoring(button); //load scoring table
-        });
-    });
-
-
-    //deleting judge
-    document.addEventListener('click', function(event) {
-        if (event.target.classList.contains('delete-icon-cri')) {
-            var id = event.target.getAttribute('data-id');
-            deleteCri(id);
-        }
-    });
-});
-
-
-function loadDoc(button) {
-    var id = button.getAttribute('data-event');
-    var tableId = button.getAttribute('data-table-id')
-    
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            document.querySelector("#" + tableId + " tbody").innerHTML = this.responseText;
-        }
-    };
-    xhttp.open("POST", "get_contestants.php", true);
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("evId=" + id);
-}
-
-function loadFaci(button) {
-    var evid = button.getAttribute('data-event');
-    var evname = button.getAttribute('data-name');
-    var tableId = button.getAttribute('data-table-id');
-    
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            document.querySelector("#" + tableId + " tbody").innerHTML = this.responseText;
-        }
-    };
-    xhttp.open("POST", "get_faci.php", true);
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("evid=" + evid);
-}
-
-function loadCriteria(button) {
-    var evid = button.getAttribute('data-event');
-    var tableId = button.getAttribute('data-table-id');
-    
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            document.querySelector("#" + tableId + " tbody").innerHTML = this.responseText;
-        }
-    };
-    xhttp.open("POST", "get_criteria.php", true);
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("evid=" + evid);
-}
-
-// DISPLAY CORRESPONDING ROWS //
-
-function toggleSubEvents(subEventId) { // Display events from Socio or Sports
-    const subEvents = document.getElementById(subEventId);
-    subEvents.style.display = subEvents.style.display === 'none' ? 'block' : 'none';
-}
-
-// Display button for contestant, committee/judge, criteria, scoring
-function toggleTable(tableId) { 
-    console.log("Toggling table:", tableId);
-    const table = document.getElementById(tableId);
-    const tables = document.querySelectorAll('.container');
-    tables.forEach(t => {
-        if (t.id !== tableId) {
-            t.style.display = 'none';
-        }
-    });
-    table.style.display = 'block';
-}
-
-// Display events' contestant, committee/judge, criteria, scoring
-function toggleSubTable(tableId) {
-    console.log("Toggling table:", tableId);
-    const table = document.getElementById(tableId);
-    const tables = document.querySelectorAll('.hidden-table');
-    tables.forEach(t => {
-        if (t.id !== tableId) {
-            t.style.display = 'none';
-        }
-    });
-    table.style.display = 'block';
-}
-
-
-
-
-// UPDATES //
-
-
-
-function updateFaciName() {
-    var dropdown = document.getElementById("comtId");
-    var selectedText = dropdown.options[dropdown.selectedIndex].text;
-    document.getElementById("comtName").value = selectedText;
-}
-
-
-
-// DELETES //
-
-
-
-
-
-function deleteFaci(id) {
-    Swal.fire({
-        title: 'Confirm',
-        text: "Do you want to delete this committee?",
-        icon: 'warning',
-        cancelButtonColor: '#8F8B8B',
-        confirmButtonColor: '#7FD278',
-        confirmButtonText: 'Confirm',
-        showCancelButton: true
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch('EventTeamProcess.php', {
-                method: 'POST',
-                body: new URLSearchParams({
-                    comtid: id
-                })
-            }).then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Network response was not ok.');
-            }).then(data => {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Committee deleted successfully!',
-                    icon: 'success',
-                    confirmButtonColor: '#7FD278',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    location.reload();
-                });
-            }).catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Error deleting committee.',
-                    icon: 'error',
-                    confirmButtonColor: '#d33',
-                    confirmButtonText: 'OK'
-                });
-            });
-        }
-    });
-}
-
-
-
-
-
-function deleteCri(id) {
-    Swal.fire({
-        title: 'Confirm',
-        text: "Do you want to delete this criteria?",
-        icon: 'warning',
-        cancelButtonColor: '#8F8B8B',
-        confirmButtonColor: '#7FD278',
-        confirmButtonText: 'Confirm',
-        showCancelButton: true
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch('EventTeamProcess.php', {
-                method: 'POST',
-                body: new URLSearchParams({
-                    criid: id
-                })
-            }).then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Network response was not ok.');
-            }).then(data => {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Criteria deleted successfully!',
-                    icon: 'success',
-                    confirmButtonColor: '#7FD278',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    location.reload();
-                });
-            }).catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Error deleting criteria.',
-                    icon: 'error',
-                    confirmButtonColor: '#d33',
-                    confirmButtonText: 'OK'
-                });
-            });
-        }
-    });
-}
-
-
-
-
-
-// MODALS //
-
-function openContiModal(element) {
-    var card = element.closest('.addcon-btn');
-    var eventType = card.getAttribute('data-type');
-    var eventName = card.getAttribute('data-name');
-    var evId = card.getAttribute('data-event');
-
-    document.getElementById('contestantType').value = eventType;          
-    document.getElementById('contestantEVName').value = eventName;
-    document.getElementById('conEvId').value = evId;
-
-    var modal = document.getElementById("contestandtModal");
-    modal.style.display = "block";
-}
-
-function openFaciModal(element) {
-    var card = element.closest('.addfaci-btn');
-    var event = card.getAttribute('data-event');
-    var eventName = card.getAttribute('data-name');
-
-    document.getElementById('comtEvId').value = event;          
-    document.getElementById('comtEVName').value = eventName;
-
-    var modal = document.getElementById("faciModal");
-    modal.style.display = "block";
-}
-
-function openJudgeModal(element) {
-    var card = element.closest('.addjudge-btn');
-    var event = card.getAttribute('data-event');
-    var eventName = card.getAttribute('data-name');
-
-    document.getElementById('judgeEvId').value = event;          
-    document.getElementById('judgeEVName').value = eventName;
-
-    var modal = document.getElementById("judgeModal");
-    modal.style.display = "block";
-}
-
-function openCriModal(element) {
-    var card = element.closest('.addcri-btn');
-    var eventid = card.getAttribute('data-event');
-
-    document.getElementById('criEVId').value = eventid;
-
-    var modal = document.getElementById("criModal");
-    modal.style.display = "block";
-}
-
-function openEditCriModal(element) {
-    var card = element.closest('.edit-icon-cri');
-    var criId = card.getAttribute('data-id');
-    var criteria = card.getAttribute('data-criteria');
-    var pts = card.getAttribute('data-pts');
-
-    document.getElementById('editcriId').value = criId;
-    document.getElementById('editcriteria').value = criteria;
-    document.getElementById('editcriPts').value = pts;
-
-    var modal = document.getElementById("editcriModal");
-    modal.style.display = "block";
-}
-
-
-function closeEditModal() { // Close modal on edit event
-    var modal = document.getElementById("editEventModal");
-    modal.style.display = "none";
-}
-
-function openEditEvModal(element) { // Open modal for editing event
-    var card = element.closest('.sub-account');
-    var eventID = card.getAttribute('data-id');
-    var eventType = card.getAttribute('data-type');
-    var eventName = card.getAttribute('data-name');
-    var eventCat= card.getAttribute('data-category');
-
-    document.getElementById('editeventId').value = eventID;
-    document.getElementById('editeventType').value = eventType;          
-    document.getElementById('editeventName').value = eventName;
-    document.getElementById('editeventCategory').value = eventCat;          
-
-    var modal = document.getElementById("editEventModal");
-    modal.style.display = "block";
-}
-
-
-
-
-
-
-
-// FORM SUBMISSIONS //
-
-        
-
-        
-
-
-        
-
-
-        // Form submission for editing criteria
-        document.querySelector('.save-btn-editcri').addEventListener('click', function(event) {
-            event.preventDefault();  // Prevent default form submission
-
-            var formData = new FormData(document.querySelector('#editCriForm'));
-
-            fetch('EventTeamProcess.php', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: data.message,
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        location.reload();  // Reload the page or handle success
-                    }); 
-                } else {
-                    Swal.fire({
-                        title: 'Oops!',
-                        text: data.message,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            })
-            .catch(error => {
-                alert('An error occurred: ' + error.message);
-            });
-        });
-
-
-        
-
-
-
-// LOGOUT CONFIRMATION
+// Logout Confirmation
 document.getElementById('logoutIcon').addEventListener('click', function() {
     Swal.fire({
         title: 'Are you sure?',
@@ -1253,8 +1014,7 @@ document.getElementById('logoutIcon').addEventListener('click', function() {
     }).then((result) => {
         if (result.isConfirmed) {
             // mag redirect siya to the login page
-            window.location.href = '../admin/EventTeam.php?logout';
+            window.location.href = '../admin/teams.php?logout';
         }
     });
 });
-        

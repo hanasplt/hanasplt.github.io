@@ -598,9 +598,11 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEventLimit(IN limitnum INT)
         BEGIN
-            SELECT * FROM vw_events LIMIT limitnum;
+            SELECT * FROM vw_events WHERE status IS NULL LIMIT limitnum;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -658,9 +660,12 @@ if ($conn->query($sqlT) === TRUE) {
 // NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEventContestant(IN id INT)
         BEGIN
-            SELECT contId, contNo, vw_eventParti.teamId, vw_teams.teamName as team FROM vw_eventParti 
-            INNER JOIN vw_teams on vw_eventParti.teamId = vw_teams.teamId 
-            WHERE eventId = id AND vw_eventParti.status IS NULL;
+            SELECT 
+                vp.contId, vp.contNo, vp.teamId, vt.teamName as team
+            FROM vw_eventParti vp 
+            INNER JOIN vw_teams vt on vp.teamId = vt.teamId
+            INNER JOIN vw_events ve on vp.eventId = ve.eventID
+            WHERE vp.eventId = id AND vp.status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -764,7 +769,7 @@ $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getJudge(IN id INT, IN event INT)
         BEGIN
             SELECT j.*, a.firstName FROM vw_eventJudge j 
             INNER JOIN vw_accounts a ON j.judgeId = a.userId 
-            WHERE judgeId = id AND eventId = event AND status IS NULL;
+            WHERE judgeId = id AND eventId = event AND j.status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -785,7 +790,7 @@ if ($conn->query($sqlT) === TRUE) {
 // NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertEventJudge(IN id INT, IN evid INT)
         BEGIN
-            INSERT INTO vw_eventJudge VALUES (NULL, id, evid);
+            INSERT INTO vw_eventJudge VALUES (NULL, id, evid, NULL);
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -853,9 +858,10 @@ if ($conn->query($sqlT) === TRUE) {
 }
 
 
+// NAGAMIT
 $sqlP = "CREATE PROCEDURE IF NOT EXISTS sp_getCriteria(IN evid INT)
         BEGIN
-            SELECT *, SUM(percentage) as totalPercentage FROM vw_criteria WHERE eventId = evid;
+            SELECT * FROM vw_criteria WHERE eventId = evid;
         END ;";
 if ($conn->query($sqlP) === TRUE) {
 } else {
@@ -873,16 +879,21 @@ if ($conn->query($sqlP) === TRUE) {
     echo "Error: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlP = "CREATE PROCEDURE IF NOT EXISTS sp_editCriteria(IN id INT, IN cri VARCHAR(255),
-        IN pts INT)
+        IN pts INT, IN evid INT)
         BEGIN
-            UPDATE vw_criteria SET criteria = cri, percentage = pts WHERE criteriaId = id;
+            UPDATE vw_criteria SET eventId = evid, criteria = cri, percentage = pts 
+            WHERE criteriaId = id;
         END ;";
 if ($conn->query($sqlP) === TRUE) {
 } else {
     echo "Error: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlP = "CREATE PROCEDURE IF NOT EXISTS sp_delCriteria(IN id INT)
         BEGIN
             DELETE FROM vw_criteria WHERE criteriaId = id;

@@ -3,11 +3,15 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+require_once '../../../config/sessionConfig.php'; // Session Cookie
 $conn = require_once '../../../config/db.php'; // Database connection
+require_once '../admin/verifyLoginSession.php'; // Logged in or not
 
 if (!$conn) {
   die("Connection failed: " . mysqli_connect_error());
 }
+
+$accId = $_SESSION['userId'];
 
 // HANDLE TEAM INSERTION AND/OR UPDATE
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
@@ -37,6 +41,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
         $stmt->bind_param("sss", $teamName, $courseValues, $imagePath);
   
         if ($stmt->execute()) {
+          // Insert in the logs
+          $action = "Added team $teamName.";
+          $insertLogAct = "CALL sp_insertLog(?, ?)";
+  
+          $stmt = $conn->prepare($insertLogAct);
+          $stmt->bind_param("is", $accId, $action);
+          $stmt->execute();
+
           echo json_encode(['status' => 'success', 'message' => 'New Team added successfully!']);
         } else {
           echo json_encode(['status' => 'error', 'message' => 'Error adding team!']);
@@ -92,6 +104,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
       }
   
       if ($stmt->execute()) {
+        // Insert in the logs
+        $action = "Updated the team $teamName.";
+        $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+        $stmt = $conn->prepare($insertLogAct);
+        $stmt->bind_param("is", $accId, $action);
+        $stmt->execute();
+
         echo json_encode(['status' => 'success', 'message' => 'Team updated successfully!']);
       } else {
         echo json_encode(['status' => 'error', 'message' => "Unable to update team."]);
@@ -101,32 +121,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
       exit;
     }
   } catch (Exception $e) {
-    die("Error: " . $e->getMessage());
+    echo json_encode(['status' => 'error', 'message' => 'Error:'. $e->getMessage()]);
   }
 
 }
 
-// Handle team deletion
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['teamid'])) {
-    $teamID = $_POST['teamid'];
+  // Handle team deletion
+  if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['teamid']) && isset($_POST['teamname'])) {
+      $teamID = $_POST['teamid'];
+      $teamName = $_POST['teamname'];
 
-    $sql = "CALL sp_delTeam(?)"; // This doesn't really delete the team (FK constraint)
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $teamID);
+      $sql = "CALL sp_delTeam(?)"; // This doesn't really delete the team (FK constraint)
+      $stmt = $conn->prepare($sql);
+      $stmt->bind_param("i", $teamID);
 
-    $response = array();
+      $response = array();
 
-    if ($stmt->execute()) {
-      $response['success'] = true;
-    } else {
-      $response['success'] = false;
-      $response['error'] = $conn->error;
-    }
+      if ($stmt->execute()) {
+        $stmt->close();
+        // Insert in the logs
+        $action = "Deleted the team $teamName.";
+        $insertLogAct = "CALL sp_insertLog(?, ?)";
 
-    $stmt->close();
-    header('Content-Type: application/json');
-    echo json_encode($response);
-}
+        $stmt = $conn->prepare($insertLogAct);
+        $stmt->bind_param("is", $accId, $action);
+        $stmt->execute();
+
+        $response['success'] = true;
+      } else {
+        $response['success'] = false;
+        $response['error'] = $conn->error;
+      }
+
+      $stmt->close();
+      header('Content-Type: application/json');
+      echo json_encode($response);
+  }
 
 // Retrieve team to edit
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['editID'])) {

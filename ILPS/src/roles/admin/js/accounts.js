@@ -65,7 +65,7 @@ window.addEventListener("message", function(event) {
 
 
 // delete confirmation
-function confirmDelete(userId) {
+function confirmDelete(userId, name) {
     Swal.fire({
         title: 'Confirm',
         text: "Do you want to delete this account?",
@@ -79,7 +79,8 @@ function confirmDelete(userId) {
             fetch('delete-account.php', {
                 method: 'POST',
                 body: new URLSearchParams({
-                    userId: userId
+                    userId: userId,
+                    username: name
                 })
             }).then(response => {
                 if (response.ok) {

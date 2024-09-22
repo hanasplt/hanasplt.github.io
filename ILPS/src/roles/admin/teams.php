@@ -88,7 +88,7 @@ try {
             echo "<div class='img'><img src='$teamImageSrc' alt='Team Image'></div>";
             echo "<div class='details'><div class='name'>$teamName</div></div>";
             echo "<div class='media-icons'>";
-            echo "<a href='#' onclick='deleteThis($teamId)'><i class='fas fa-trash'></i></a>";
+            echo "<a href='#' onclick='deleteThis($teamId, \"$teamName\")'><i class='fas fa-trash'></i></a>";
             echo "<a href='#' onclick='openEditModal(this)'><i class='fas fa-pen'></i></a>";
             echo "</div></div></div>";
           }

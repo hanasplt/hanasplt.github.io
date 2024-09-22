@@ -59,13 +59,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 echo '<tr>';
                 echo '<td>' . $count++ . '</td>';
                 echo '<td>' . $team . '</td>';
-                echo '<td><i class="fa-solid fa-trash-can delete-icon" data-cont="'.$conId.'" data-event-name="'.$eventname.'" data-id="'.$teamid.'" style="cursor: pointer;"></i></td>';
+                echo '<td><i class="fa-solid fa-trash-can delete-icon" data-cont="'.$conId.'" data-name="'.$team.'" data-event-name="'.$eventname.'" data-id="'.$teamid.'" style="cursor: pointer;"></i></td>';
                 echo '</tr>';
             } else {
                 echo '<tr>';
                 echo '<td>' . $contNum . '</td>';
                 echo '<td>' . $team . '</td>';
-                echo '<td><i class="fa-solid fa-trash-can delete-icon" data-cont="'.$conId.'" data-event-name="'.$eventname.'" data-id="'.$teamid.'" style="cursor: pointer;"></i></td>';
+                echo '<td><i class="fa-solid fa-trash-can delete-icon" data-cont="'.$conId.'" data-name="'.$team.'" data-event-name="'.$eventname.'" data-id="'.$teamid.'" style="cursor: pointer;"></i></td>';
                 echo '</tr>';
             }
 
