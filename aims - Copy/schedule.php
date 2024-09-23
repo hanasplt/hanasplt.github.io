@@ -483,7 +483,6 @@ usort($scheduled_days, function($a, $b) {
                                     cells[3].textContent = status;
 
                                     sortTableByTime(`scheduleTable-${dayId}`);
-                                    console.log("Reloading the page");
                                     location.reload();
 
                                     Swal.fire({
