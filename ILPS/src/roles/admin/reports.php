@@ -216,7 +216,7 @@ if (!$conn) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     // mag redirect siya to the login page
-                    window.location.href = 'index.html';
+                    window.location.href = 'reports.php?logout';
                 }
             });
         });

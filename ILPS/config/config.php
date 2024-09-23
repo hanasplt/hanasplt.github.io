@@ -379,6 +379,8 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT 
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAnAcc(IN id INT)
         BEGIN
             SELECT * FROM vw_accounts WHERE userId = id;
@@ -427,6 +429,8 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_editAccPass(IN id INT, IN pass VARCHAR(255),
         IN stat VARCHAR(50))
         BEGIN
@@ -907,10 +911,12 @@ if ($conn->query($sqlP) === TRUE) {
 
 #PROCEDURES (COMMITTEE & JUDGE) ---------------------------------------------------------------------
 
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAComt(IN id INT)
         BEGIN
             SELECT ef.eventId, ev.eventName FROM vw_eventComt ef 
-            INNER JOIN vw_events ev ON ef.eventId = ev.eventID WHERE comId = id;
+            INNER JOIN vw_events ev ON ef.eventId = ev.eventID 
+            WHERE comId = id AND ef.status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -929,7 +935,8 @@ if ($conn->query($sqlT) === TRUE) {
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getTeams(IN id INT)
         BEGIN
             SELECT p.*, t.teamName FROM vw_eventParti p 
-            INNER JOIN vw_teams t ON p.teamId = t.teamId WHERE p.contId = id;
+            INNER JOIN vw_teams t ON p.teamId = t.teamId 
+            WHERE p.contId = id AND p.status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -995,6 +1002,16 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getScorePts(IN evid INT)
+        BEGIN
+            SELECT * FROM vw_eventScore WHERE eventCategory = 
+            (SELECT eventCategory FROM vw_events WHERE eventID = evid);
+        END ;";
+if ($conn->query($sqlT) === TRUE) {
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getScoreJudge(IN evid INT, IN evid1 INT, IN perid INT)
         BEGIN
             select *, (select DISTINCT t.teamName from vw_eventParti p 
@@ -1007,12 +1024,13 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getJudges(IN evid INT)
         BEGIN
-            select DISTINCT (SELECT userId from vw_accounts where userId = personnelId) 
-            AS perId, 
-            (SELECT firstName from vw_accounts where userId = personnelId) AS perName 
-            from vw_subresult where eventId = evid;
+            SELECT DISTINCT(va.userId) as perId, va.firstName AS perName FROM vw_subresult vs
+            INNER JOIN vw_accounts va on vs.personnelId = va.userId
+            WHERE vs.eventId = evid AND va.status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {

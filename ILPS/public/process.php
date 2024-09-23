@@ -3,7 +3,9 @@
     require_once '../config/encryption.php';
     $conn = require_once '../config/db.php';
 
-    
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
 
     if (isset($_POST['login'])) {
         $uzr = $_POST['email']; // user input--username (this is email)
@@ -91,8 +93,6 @@
         exit();
     }
 
-    header('Content-Type: text/html');
-
     if (isset($_POST['changepass'])) { // mandatory change password (judge) 
         $id = $_POST['jid'];
         $newpass = encrypt($_POST['newpass'], $encryption_key);
@@ -110,10 +110,16 @@
         $newpass = encrypt($_POST['newpass'], $encryption_key);
         $logstat = "finish";
 
-        $sql = "CALL sp_editAccPass('$id', '$newpass', '$logstat')"; // user password updated
-        if(mysqli_query($conn, $sql)) {
-            echo "<script>alert('Password Changed Successfully!'); window.location.href = 'committee.php?id=$id'; </script>";
-        } else {
+        try {
+            $sql = "CALL sp_editAccPass('$id', '$newpass', '$logstat')"; // user password updated
+            if(mysqli_query($conn, $sql)) {
+                echo "<script>alert('Password Changed Successfully!'); window.location.href = '../src/roles/committee/committee.php?id=$id'; </script>";
+            } else {
+                echo "<script>alert('Unable to change password!'); </script>";
+            }
+            
+        } catch (Exception $e) {
+            echo "<script>alert('Error: '".$e->getMessage()."); </script>";
         }
     }
 
