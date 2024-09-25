@@ -1,6 +1,8 @@
 <?php 
-    session_start(); 
-    $jid = $_SESSION['judgeId'];
+    require_once '../../config/sessionConfig.php'; // Session Cookie
+    require_once '../mandatory/verifyLogin.php'; // Logged in or not
+
+    $jid = $_SESSION['userId'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -8,7 +10,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ILPS</title>
-    <link rel="icon" href="assets/icons/logo-1.png">
+    <link rel="icon" href="../../public/assets/icons/logo-1.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
@@ -17,17 +19,38 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="../../public/assets/css/styles.css">
 
     <!-- SweetAlert CSS and JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="container">
-        <div class="form-container">
+        <?php
+        if (isset($_SESSION['msg'])) { // For displaying message
+            echo '
+            <div class="msg" id="msg-container">
+                <div class="msg-content">
+                    <span style="">
+                        <p id="form-msg">' . $_SESSION['msg'] . '</p>
+                        <button type="button" id="x-btn">OK</button>
+                    </span>
+                </div>
+            </div>
+            ';
+            unset($_SESSION['error']);
+        }
+        ?>
+        <div class="form-container" id="form-container">
             <h2>Change Password</h2>
-            <p>You are required to change your password.</p>
-            <form id="changePasswordForm" method="post" action="process.php">
+            <p>You are required to change your password.
+            <b>Password must contain the following:</b><br>
+                <span id="letter" class="status">- <i>Lowercase</i> letter</span><br>
+                <span id="capital" class="status">- <i>Capital</i> letter</span><br>
+                <span id="number" class="status">- A <i>Number</i></span><br>
+                <span id="length" class="status">- A Minimum of <i>8 characters</i></span><br>
+            </p>
+            <form id="changePasswordForm" method="post" action="../../public/process.php">
                 <input type="text" name="jid" id="jid" value="<?php echo $jid; ?>" hidden>
                 <div class="input-group">
                     <label for="newpass">Enter new password:</label>
@@ -44,37 +67,6 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById('toggleNewPass').addEventListener('click', function() {
-            const passwordField = document.getElementById('newpass');
-            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordField.setAttribute('type', type);
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
-
-        document.getElementById('toggleConfPass').addEventListener('click', function() {
-            const passwordField = document.getElementById('confpass');
-            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordField.setAttribute('type', type);
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
-
-        document.getElementById('changePasswordForm').addEventListener('submit', function(event) {
-            var password = document.getElementById('newpass').value;
-            var confirmPassword = document.getElementById('confpass').value;
-
-            if (password !== confirmPassword) {
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Passwords do not match!',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-        });
-    </script>
+    <script src="../mandatory/js/change_pass.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 <?php 
     require_once '../../config/sessionConfig.php'; // Session Cookie
-    require_once '../../src/roles/admin/verifyLoginSession.php'; // Logged in or not
+    require_once '../mandatory/verifyLogin.php'; // Logged in or not
 
     $fid = $_SESSION['userId'];
 ?>
@@ -24,9 +24,29 @@
 </head>
 <body>
     <div class="container">
-        <div class="form-container">
+        <?php
+        if (isset($_SESSION['msg'])) { // For displaying message
+            echo '
+            <div class="msg" id="msg-container">
+                <div class="msg-content">
+                    <span style="">
+                        <p id="form-msg">' . $_SESSION['msg'] . '</p>
+                        <button type="button" id="x-btn">OK</button>
+                    </span>
+                </div>
+            </div>
+            ';
+            unset($_SESSION['error']);
+        }
+        ?>
+        <div class="form-container" id="form-container">
             <h2>Change Password</h2>
-            <p>You are required to change your password.</p>
+            <p>You are required to change your password.
+                <span id="letter" class="status">- <i>Lowercase</i> letter</span><br>
+                <span id="capital" class="status">- <i>Capital</i> letter</span><br>
+                <span id="number" class="status">- A <i>Number</i></span><br>
+                <span id="length" class="status">- A Minimum of <i>8 characters</i></span><br>
+            </p>
             <form id="changePasswordForm" method="post" action="../../public/process.php">
                 <input type="text" name="fid" id="fid" value="<?php echo $fid; ?>" hidden>
                 <div class="input-group">

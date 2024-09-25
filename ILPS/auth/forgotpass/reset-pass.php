@@ -64,7 +64,7 @@ if($result -> num_rows > 0) {
                                 <p style="font-weight: 700;">Hi there!</p>
                                 <p>We received a request to reset your password. Click the button below to proceed. <b>This link will expire in 10 minutes.</b></p>
                                 <div style="text-align: center; margin-top: 40px; margin-bottom: 40px;">
-                                    <a href="http://localhost:3000/aims%20-%20Copy/forgotpass/proceed-reset-pass.php?token=' . $token . '" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px;">Reset Your Password</a>
+                                    <a href="http://localhost:3000/ILPS/auth/forgotpass/proceed-reset-pass.php?token=' . $token . '" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px;">Reset Your Password</a>
                                 </div>
                                 <hr>
                                 <p style="font-size: small; color: gray;">If you did not request this, please ignore this email.</p>

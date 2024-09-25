@@ -1,15 +1,16 @@
 <?php
 
-require_once '../../config/encryption.php';
-$conn = include '../../config/db.php';
 require_once '../../config/sessionConfig.php';
+require_once '../../config/encryption.php';
+$conn = require_once '../../config/db.php';
 
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
+
 // Get token and validate
-if(isset($_GET['token'])) {
+if (isset($_GET['token'])) {
     $token = $_GET['token'];
 
     $sql = "SELECT userId, reset_token_expiration FROM accounts WHERE reset_token = ?";
@@ -18,13 +19,13 @@ if(isset($_GET['token'])) {
     $stmt->execute();
     $result = $stmt->get_result();
 
-    if($result->num_rows > 0) {
+    if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $id = $row['userId'];
 
         date_default_timezone_set('Asia/Manila');
 
-        if(strtotime($row['reset_token_expiration']) <= time()) {
+        if (strtotime($row['reset_token_expiration']) <= time()) {
             $_SESSION['validate'] = "Token has expired!";
             header("Location: proceed-reset-pass.php");
             exit;
@@ -46,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("is", $id, $newpass);
 
-    if($stmt->execute()) {
+    if ($stmt->execute()) {
         // Return success response as JSON
         echo json_encode([
             'status' => 'success',
@@ -67,22 +68,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ILPS</title>
-    <link rel="icon" href="../assets/icons/logo-1.png">
+    <link rel="icon" href="../../public/assets/icons/logo-1.png">
 
     <!-- icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
-    
+
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../../public/assets/css/styles.css">
 
     <!-- SweetAlert CSS and JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body>
     <div class="container">
         <div class="form-container">
@@ -90,10 +93,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
             <p>
                 Create a strong password. <br>
                 <b>Password must contain the following:</b><br>
-                <span id="letter" class="invalid">- <i>Lowercase</i> letter</span><br>
-                <span id="capital" class="invalid">- <i>Capital</i> letter</span><br>
-                <span id="number" class="invalid">- A <i>Number</i></span><br>
-                <span id="length" class="invalid">- A Minimum of <i>8 characters</i></span><br>
+                <span id="letter" class="status">- <i>Lowercase</i> letter</span><br>
+                <span id="capital" class="status">- <i>Capital</i> letter</span><br>
+                <span id="number" class="status">- A <i>Number</i></span><br>
+                <span id="length" class="status">- A Minimum of <i>8 characters</i></span><br>
             </p>
             <form id="changePasswordForm" method="post">
                 <input type="text" name="id" id="id" value="<?php echo $id; ?>" hidden>
@@ -104,7 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
                 </div>
                 <div class="input-group">
                     <label for="confpass">Confirm new password:</label>
-                    <input type="password" name="confpass" id="confpass" required>
+                    <input type="password" name="confpass" id="confpass" required disabled>
                     <i class="fa-solid fa-eye-slash" id="toggleConfPass"></i>
                 </div>
                 <button type="submit" name="changepass" class="save-btn">Change Password</button>
@@ -114,18 +117,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
     <script>
         var msg = "<?= $_SESSION['validate'] ?? ''; ?>";
 
-        if(msg != '') {
+        if (msg != '') {
             Swal.fire({
                 title: "Oops..",
                 text: msg,
                 icon: "error"
             }).then(() => {
-                window.location.href = '../../public/login.php';  // Redirect to Login page
-            }); 
+                window.location.href = '../../public/login.php'; // Redirect to Login page
+            });
             <?php unset($_SESSION['validate']); ?>
         }
     </script>
 
     <script src="proceed-reset-pass.js"></script>
 </body>
+
 </html>

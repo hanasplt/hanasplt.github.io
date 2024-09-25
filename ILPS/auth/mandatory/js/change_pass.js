@@ -1,4 +1,19 @@
-// Show Password icon
+// message prompt redirection
+var x = document.getElementById('x-btn'); // OK button for redirection
+var jid = document.getElementById('jid'); // Element where the Judge ID exists
+
+if (x) {
+    const form = document.getElementById('form-container');
+
+    form.style.display = "none"; // remove form display
+    // Message from database process will display
+
+    x.addEventListener('click', function() {
+        // redirect to judge page
+        window.location.href = "../../src/roles/judge/judge.php?id="+jid.value;
+    });
+}
+
 document.getElementById('toggleNewPass').addEventListener('click', function() {
     const passwordField = document.getElementById('newpass');
     const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -7,7 +22,6 @@ document.getElementById('toggleNewPass').addEventListener('click', function() {
     this.classList.toggle('fa-eye-slash');
 });
 
-// Show Password icon
 document.getElementById('toggleConfPass').addEventListener('click', function() {
     const passwordField = document.getElementById('confpass');
     const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -16,16 +30,12 @@ document.getElementById('toggleConfPass').addEventListener('click', function() {
     this.classList.toggle('fa-eye-slash');
 });
 
-
-// Form validation and submission
-document.querySelector('.save-btn').addEventListener('click', function(event) {
-    event.preventDefault();  // Prevent default form submission
-
+document.getElementById('changePasswordForm').addEventListener('submit', function(event) {
     var password = document.getElementById('newpass').value;
     var confirmPassword = document.getElementById('confpass').value;
 
-    // Validate password and confirm password--they must match
     if (password !== confirmPassword) {
+        event.preventDefault();
         Swal.fire({
             title: 'Error!',
             text: 'Passwords do not match!',
@@ -34,43 +44,8 @@ document.querySelector('.save-btn').addEventListener('click', function(event) {
         });
         return;
     }
-
-    // When password is valid and matches, proceed to form submission
-    var formData = new FormData(document.querySelector('#changePasswordForm'));
-
-    fetch('proceed-reset-pass.php', {
-        method: 'POST',
-        body: formData,
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            Swal.fire({
-                title: 'Success!',
-                text: data.message,
-                icon: 'success',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                window.location.href = '../login.php';  // Redirect to Login page
-            }); 
-        } else {
-            Swal.fire({
-                title: 'Oops!',
-                text: data.message,
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-        }
-    })
-    .catch(error => {
-        Swal.fire({
-            title: 'Oops!',
-            text: 'An error occurred: ' + error.message,
-            icon: 'error',
-            confirmButtonText: 'OK'
-        });
-    });
 });
+
 
 // PASSWORD VALIDATION
 document.addEventListener('DOMContentLoaded', function() {

@@ -1,5 +1,5 @@
 <?php
-    $conn = include '../config/config.php';
+    $conn = require_once '../../../config/db.php'; // Include Database Connection
     
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
@@ -16,22 +16,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
     
     <!-- css --> 
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../../../public/assets/css/style.css">
 
     <!--Web-logo-->
-    <link rel="icon" href="/assets/icons/logo-1.png">
+    <link rel="icon" href="../../../public/assets/icons/logo-1.png">
 </head>
 <body onload="updateTable()">
     <header>
         <div class="logo">
-            <img src="assets/icons/logo.png" alt="Logo">
+            <img src="../../../public/assets/icons/logo.png" alt="Logo">
         </div>
         <nav>
-            <a href="landing-page.html" class="navbar">Home</a>
-            <a href="landing-page.html" class="navbar">About Us</a>
+            <a href="../../index.html" class="navbar">Home</a>
+            <a href="../../index.html" class="navbar">About Us</a>
             <a href="#" class="navbar">Schedule</a>
             <a class="navbarbar" href="spectator.php">Dashboard</a>
-            <a href="login.php" class="login-btn">LOGIN</a>
+            <a href="../../../public/login.php" class="login-btn">LOGIN</a>
         </nav>
     </header>
     <div class="container-3">
@@ -41,7 +41,7 @@
                 <p>Transform intramurals with our Leaderboard & Points System. Real-time updates, competitive environment, community engagement. Streamline organization, identify talent effortlessly. Elevate your intramural experience today!</p>
             </div>
             <div class="banner-right">
-                <img src="assets/icons/banner-3.png">
+                <img src="../../../public/assets/icons/banner-3.png">
             </div>
         </div>
     </div>
@@ -51,16 +51,7 @@
                 <div class="rank-list">
                     <p>Current Ranking</p>
                     <table class="styled-table-rank" id="scoreTable">
-                        <tr>
-                            <th class="rank-column">Rank</th>
-                            <th class="name-column">Team Name</th>
-                            <th class="gold-column"><img src="assets/icons/gold-medal.png" class="medal-icon"></th>
-                            <th class="silver-column"><img src="assets/icons/silver-medal.png" class="medal-icon"></th>
-                            <th class="bronze-column"><img src="assets/icons/bronze-medal.png" class="medal-icon"></th>
-                            <th class="points-column">Total Points</th>
-                        </tr>
                         <!-- Table rows will be inserted here by JavaScript -->
-                            
                     </table>
                 </div>
             </div>
@@ -83,7 +74,7 @@
                                 while ($row = $result->fetch_assoc()) {
                                     ?>
                         <tr>
-                            <td><img src="assets/icons/sample.png"> <?php echo $row['teamName'] ?></td>
+                            <td><img src="../../../public/assets/icons/sample.png"> <?php echo $row['teamName'] ?></td>
                         </tr>
                                     <?php
                                 }
@@ -103,8 +94,8 @@
         </div>
         <div class="footer-right">
             <h6>CONTACT US</h6>
-            <p class="footer-email"><img src="assets/icons/contact-email.png" alt="Email">john.doe@example.com</p>
-            <p class="footer-contact"><img src="assets/icons/contact-num.png" alt="Phone">(555) 123-4567</p>
+            <p class="footer-email"><img src="../../../public/assets/icons/contact-email.png" alt="Email">john.doe@example.com</p>
+            <p class="footer-contact"><img src="../../../public/assets/icons/contact-num.png" alt="Phone">(555) 123-4567</p>
             <p class="footer-add">123 Street Barangay Apokon, Tagum City, Davao Del Norte</p>
         </div>
     </footer>
@@ -112,18 +103,6 @@
         <hr style="height:1px; border-width:0; color: #60A85A; background-color:#60A85A">
         <p>© 2024 Dreamy Inc. All Rights Reserved.</p>
     </div>
-    <script>
-        function updateTable() {
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', 'overall.php', true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.onload = function() {
-                if (this.status == 200) {
-                    document.getElementById('scoreTable').innerHTML = this.responseText;
-                }
-            };
-            xhr.send();
-        }
-    </script>
+    <script src="../spectator/js/spectator.js"></script>
 </body>
 </html>

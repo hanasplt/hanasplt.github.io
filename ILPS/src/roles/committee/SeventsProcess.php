@@ -4,6 +4,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+require_once '../../../config/sessionConfig.php'; // Session Cookie
+require_once '../admin/verifyLoginSession.php'; // Logged in or not
 $conn = require_once '../../../config/db.php'; // Database connection
 
 if ($conn->connect_error) {
@@ -32,24 +34,22 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['scoreCon'])) {
             $stmt->bind_param("is", $id, $action);
             $stmt->execute();
 
-            echo json_encode([
-                'status' => 'success',
-                'message' => 'Score Recorded Successfully!'
-            ]);
+            $_SESSION['error'] = "Score Recorded Successfully!";
+            header('Location: Sevents.php?event='.$eventId.'&name='.$eventname); // Return to previous page
+            exit();
+            
         } else {
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Error Recording Score!'
-            ]);
+            $_SESSION['error'] = "Error Recording Score!";
+            header('Location: Sevents.php?event='.$eventId.'&name='.$eventname); // Return to previous page
+            exit();
         }
         $stmt->close();
         exit;
 
     } catch (Exception $e) {
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'Error: '. $e->getMessage()
-        ]);
+        $_SESSION['error'] = "Error" .$e->getMessage();
+        header('Location: Sevents.php?event='.$eventId.'&name='.$eventname); // Return to previous page
+        exit();
     }
 }
 
@@ -75,15 +75,22 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['changeScore'])) {
             $stmt->bind_param("is", $id, $action);
             $stmt->execute();
 
-            echo "Success";
+            $_SESSION['error'] = "Score Updated Successfully!";
+            header('Location: Sevents.php?event='.$eventId.'&name='.$eventname); // Return to previous page
+            exit();
+
         } else {
-            echo "Error";
+            $_SESSION['error'] = "Error updating score!";
+            header('Location: Sevents.php?event='.$eventId.'&name='.$eventname); // Return to previous page
+            exit();
         }
         $stmt->close();
         exit;
 
     } catch (Exception $e) {
-        echo "Error" .$e->getMessage();
+        $_SESSION['error'] = "Error" .$e->getMessage();
+        header('Location: Sevents.php?event='.$eventId.'&name='.$eventname); // Return to previous page
+        exit();
     }
 }
 

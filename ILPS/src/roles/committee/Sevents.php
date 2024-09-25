@@ -56,6 +56,21 @@ $contestant = isset($_GET['contestant']) ? $_GET['contestant'] : '';
             Back
         </button>
         <h1 style="text-align: center;"><?php echo $evname; ?></h1>
+        <?php
+            if (isset($_SESSION['error'])) { // For displaying error
+                echo '
+                <div class="msg" id="msg-container">
+                    <div class="msg-content">
+                        <span style="display: flex; align-items: center; justify-content: space-around;">
+                            <p id="error-msg">' . $_SESSION['error'] . '</p>
+                            <button type="button" id="x-btn">X</button>
+                        </span>
+                    </div>
+                </div>
+                ';
+                unset($_SESSION['error']);
+            }
+        ?>
     </div>
 
 

@@ -9,7 +9,14 @@ function displayTally() {
     form.style.display = 'block';
 }
 
+var x = document.getElementById('x-btn');
+if (x) {
+    x.addEventListener('click', function() {
+        const msg = document.getElementById('msg-container');
 
+        msg.style.display = "none";
+    });
+}
 
 // LOGOUT CONFIRMATION
 document.getElementById('logoutIcon').addEventListener('click', function() {
@@ -31,40 +38,3 @@ document.getElementById('logoutIcon').addEventListener('click', function() {
 });
 
 
-// FORM SUBMISSION
-document.addEventListener('DOMContentLoaded', function() {
-    // Form submission for adding score
-    document.querySelector('.save-btn-event').addEventListener('click', function(event) {
-        event.preventDefault();  // Prevent default form submission
-
-        var formData = new FormData(document.querySelector('#addEvForm'));
-
-        fetch('../committtee/SeventsProcess.php', {
-            method: 'POST',
-            body: formData,
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                Swal.fire({
-                    title: 'Success!',
-                    text: data.message,
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    location.reload();  // Reload the page or handle success
-                }); 
-            } else {
-                Swal.fire({
-                    title: 'Oops!',
-                    text: data.message,
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            }
-        })
-        .catch(error => {
-            console.log('An error occurred: ' + error.message);
-        });
-    });
-});

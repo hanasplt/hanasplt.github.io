@@ -1,4 +1,8 @@
 <?php
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+
     require_once '../config/sessionConfig.php';
     require_once '../config/encryption.php';
     $conn = require_once '../config/db.php';
@@ -98,10 +102,23 @@
         $newpass = encrypt($_POST['newpass'], $encryption_key);
         $logstat = "finish";
 
-        $sql = "CALL sp_editAccPass('$id', '$newpass', '$logstat')"; // user password updated
-        if(mysqli_query($conn, $sql)) {
-            echo "<script>alert('Password Changed Successfully!'); window.location.href = 'judge.php?id=$id'; </script>";
-        } else {
+        try {
+            $sql = "CALL sp_editAccPass('$id', '$newpass', '$logstat')"; // user password updated
+            if(mysqli_query($conn, $sql)) {
+                $_SESSION['msg'] = "Password Changed Successfully!";
+                header('Location: ../auth/mandatory/change_pass.php'); // Return to previous page
+                exit();
+    
+            } else {
+                $_SESSION['msg'] = "Password Changed Failed!";
+                header('Location: ../auth/mandatory/change_pass.php'); // Return to previous page
+                exit();
+            }
+
+        } catch (Exception $e) {
+            $_SESSION['msg'] = "Error: ".$e->getMessage();
+            header('Location: ../auth/mandatory/change_pass.php'); // Return to previous page
+            exit();
         }
     }
 
@@ -113,13 +130,20 @@
         try {
             $sql = "CALL sp_editAccPass('$id', '$newpass', '$logstat')"; // user password updated
             if(mysqli_query($conn, $sql)) {
-                echo "<script>alert('Password Changed Successfully!'); window.location.href = '../src/roles/committee/committee.php?id=$id'; </script>";
+                $_SESSION['msg'] = "Password Changed Successfully!";
+                header('Location: ../auth/mandatory/change_passComt.php'); // Return to previous page
+                exit();
+                
             } else {
-                echo "<script>alert('Unable to change password!'); </script>";
+                $_SESSION['msg'] = "Password Changed Failed!";
+                header('Location: ../auth/mandatory/change_passComt.php'); // Return to previous page
+                exit();
             }
             
         } catch (Exception $e) {
-            echo "<script>alert('Error: '".$e->getMessage()."); </script>";
+            $_SESSION['msg'] = "Error: ".$e->getMessage();
+            header('Location: ../auth/mandatory/change_passComt.php'); // Return to previous page
+            exit();
         }
     }
 

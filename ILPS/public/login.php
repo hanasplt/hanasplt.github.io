@@ -61,7 +61,7 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
                 </div>
                 <button type="submit" name="login">Login</button>
             </form>
-            <p class="spectator">A <span><a href="../public/spectator.php">Spectator</a></span>? No need to log in! Simply track the current rankings and scores by tapping on 'Spectator'. Let's enjoy the action together!</p>
+            <p class="spectator">A <span><a href="../src/roles/spectator/spectator.php">Spectator</a></span>? No need to log in! Simply track the current rankings and scores by tapping on 'Spectator'. Let's enjoy the action together!</p>
         </div>
     </div>
 

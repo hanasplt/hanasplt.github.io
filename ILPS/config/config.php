@@ -312,6 +312,8 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getData(IN evid INT)
         BEGIN
             select eventId, (select vw_teams.teamName from vw_eventParti 
@@ -326,6 +328,8 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getRanking(IN rank INT, IN evid INT)
         BEGIN
             select * from vw_eventscore where rankNo = rank and 
@@ -780,10 +784,13 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAJudge(IN id INT)
         BEGIN
-            SELECT j.*, ev.eventName FROM vw_eventJudge j INNER JOIN vw_events ev ON j.eventId = ev.eventID 
-            WHERE judgeId = id;
+            SELECT j.*, ev.eventName FROM vw_eventJudge j 
+            INNER JOIN vw_events ev ON j.eventId = ev.eventID 
+            WHERE judgeId = id AND j.status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -1061,6 +1068,8 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// UNSURE
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_chckJudge(IN evid INT, IN perId VARCHAR(255))
         BEGIN
             SELECT vw_eventParti.teamId, vw_teams.teamName 
