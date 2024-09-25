@@ -1,21 +1,20 @@
 <?php
+    include 'db.php';
 
-include 'encryption.php';
+    if (isset($_POST['day_date'])) {
+        $dayDate = $_POST['day_date'];
 
-$host = 'localhost'; 
-$username = 'root';  
-$password = '';   
-$dbname = 'ilps'; 
+        $query = "SELECT COUNT(*) AS dateCount FROM scheduled_days WHERE day_date = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $dayDate);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
 
-$conn = new mysqli($host, $username, $password, $dbname);
-
-$query = "SELECT day_date FROM scheduled_days";
-$result = mysqli_query($conn, $query);
-
-$dates = [];
-while ($row = mysqli_fetch_assoc($result)) {
-    $dates[] = $row['day_date'];
-}
-
-echo json_encode($dates);
+        if ($row['dateCount'] > 0) {
+            echo json_encode(['exists' => true]);
+        } else {
+            echo json_encode(['exists' => false]);
+        }
+    }
 ?>

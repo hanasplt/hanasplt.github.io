@@ -220,37 +220,58 @@ usort($scheduled_days, function($a, $b) {
                 if (result.isConfirmed) {
                     const { dayDate } = result.value;
 
-                    const xhr = new XMLHttpRequest();
-                        xhr.open("POST", "add_day.php", true);
-                        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                        xhr.onload = function () {
-                            if (xhr.status === 200) {
-                                const response = JSON.parse(xhr.responseText);
-                                if (response.success) {
-                                    Swal.fire({
-                                        title: 'Success!',
-                                        text: 'New day added successfully.',
-                                        icon: 'success',
-                                        confirmButtonColor: '#7FD278',
-                                        confirmButtonText: 'OK'
-                                    }).then(() => {
-                                        location.reload();
-                                    });
-                                } else {
-                                    Swal.fire({
-                                        title: 'Error!',
-                                        text: response.message,
-                                        icon: 'error',
-                                        confirmButtonColor: '#d33',
-                                        confirmButtonText: 'OK'
-                                    });
-                                }
+                    const xhrCheck = new XMLHttpRequest();
+                    xhrCheck.open("POST", "get_existing_dates.php", true);
+                    xhrCheck.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    xhrCheck.onload = function() {
+                        if (xhrCheck.status === 200) {
+                            const response = JSON.parse(xhrCheck.responseText);
+                            
+                            if (response.exists) {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'This date already exists. Please choose another date.',
+                                    icon: 'error',
+                                    confirmButtonColor: '#d33',
+                                    confirmButtonText: 'OK'
+                                });
+                            } else {
+                                const xhrAdd = new XMLHttpRequest();
+                                xhrAdd.open("POST", "add_day.php", true);
+                                xhrAdd.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                                xhrAdd.onload = function () {
+                                    if (xhrAdd.status === 200) {
+                                        const addResponse = JSON.parse(xhrAdd.responseText);
+                                        if (addResponse.success) {
+                                            Swal.fire({
+                                                title: 'Success!',
+                                                text: 'New day added successfully.',
+                                                icon: 'success',
+                                                confirmButtonColor: '#7FD278',
+                                                confirmButtonText: 'OK'
+                                            }).then(() => {
+                                                location.reload();
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                title: 'Error!',
+                                                text: addResponse.message,
+                                                icon: 'error',
+                                                confirmButtonColor: '#d33',
+                                                confirmButtonText: 'OK'
+                                            });
+                                        }
+                                    }
+                                };
+                                xhrAdd.send(`day_date=${dayDate}`);
                             }
-                        };
-                        xhr.send(`day_date=${dayDate}`);
+                        }
+                    };
+                    xhrCheck.send(`day_date=${dayDate}`);
                 }
             });
         });
+
 
         // Delete date
         document.querySelectorAll('.deleteHeaderBtn').forEach(button => {
