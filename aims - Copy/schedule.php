@@ -152,6 +152,7 @@ usort($scheduled_days, function($a, $b) {
 
     <!-- time sorting-->
     <script>
+        
         function sortTableByTime(tableId) {
             const table = document.getElementById(tableId);
             const rows = Array.from(table.rows).slice(1);
@@ -194,7 +195,7 @@ usort($scheduled_days, function($a, $b) {
             Swal.fire({
                 title: 'Add New Day',
                 html: ` 
-                    <input id="new-day-date" class="swal2-input" placeholder="Date" type="date">
+                    <input id="new-day-date" class="swal2-input1" placeholder="Date" type="date">
                 `,
                 confirmButtonText: 'Add',
                 showCancelButton: true,
@@ -332,10 +333,10 @@ usort($scheduled_days, function($a, $b) {
                 Swal.fire({
                     title: 'Add New Event',
                     html: `
-                        <input id="event-time" class="swal2-input" placeholder="Time" type="time">
-                        <input id="event-activity" class="swal2-input" placeholder="Activity">
-                        <input id="event-location" class="swal2-input" placeholder="Location">
-                        <select id="event-status" class="swal2-input">
+                        <input id="event-time" class="swal2-input1" placeholder="Time" type="time">
+                        <input id="event-activity" class="swal2-input2" placeholder="Activity">
+                        <input id="event-location" class="swal2-input2" placeholder="Location">
+                        <select id="event-status" class="swal2-input3">
                             <option value="Pending">Pending</option>
                             <option value="Ongoing">On-going</option>
                             <option value="Ended">Ended</option>
@@ -448,10 +449,10 @@ usort($scheduled_days, function($a, $b) {
                 Swal.fire({
                     title: 'Edit Event',
                     html: `
-                        <input id="edit-time" class="swal2-input" type="time" value="${time24}">
-                        <input id="edit-activity" class="swal2-input" placeholder="Activity" value="${activity}">
-                        <input id="edit-location" class="swal2-input" placeholder="Location" value="${location}">
-                        <select id="edit-status" class="swal2-input">
+                        <input id="edit-time" class="swal2-input1" type="time" value="${time24}">
+                        <input id="edit-activity" class="swal2-input2" placeholder="Activity" value="${activity}">
+                        <input id="edit-location" class="swal2-input2" placeholder="Location" value="${location}">
+                        <select id="edit-status" class="swal2-input3">
                             <option value="Pending" ${status === 'Pending' ? 'selected' : ''}>Pending</option>
                             <option value="Ongoing" ${status === 'Ongoing' ? 'selected' : ''}>On-going</option>
                             <option value="Ended" ${status === 'Ended' ? 'selected' : ''}>Ended</option>
@@ -541,7 +542,7 @@ usort($scheduled_days, function($a, $b) {
                 Swal.fire({
                     title: 'Edit Date',
                     html: ` 
-                        <input id="new-day-date" class="swal2-input" type="date" value="${currentDayDate}">
+                        <input id="new-day-date" class="swal2-input1" type="date" value="${currentDayDate}">
                     `,
                     confirmButtonText: 'Save',
                     showCancelButton: true,

@@ -279,6 +279,7 @@ body {
     margin-left: auto;
     margin-right: auto;
     margin-top: 10px;
+    margin-bottom: 20px;
     width: 90%;
     border-collapse: collapse;
     font-family: 'Poppins', sans-serif;
@@ -399,4 +400,22 @@ body {
 #addEventBtn:focus {
     outline: none;
     background-color: #45a049;
+}
+.swal2-input1{
+    margin: auto;
+    height: 40px;
+    width: 90.5%;
+    margin-bottom: 10px;
+}
+.swal2-input2{
+    margin: auto;
+    height: 40px;
+    width: 90%;
+    margin-bottom: 10px;
+}
+.swal2-input3{
+    margin: auto;
+    height: 40px;
+    width: 92%;
+    margin-bottom: 10px;
 }

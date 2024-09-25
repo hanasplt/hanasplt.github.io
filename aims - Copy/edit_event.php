@@ -4,7 +4,7 @@ include 'db.php';
 if (isset($_POST['event_id'], $_POST['time'], $_POST['activity'], $_POST['location'], $_POST['status'])) {
     $event_id = $_POST['event_id'];
     $time = $_POST['time'];
-    $activity = $_POST['activity'];
+    $activity = ucwords($_POST['activity']);
     $location = $_POST['location'];
     $status = $_POST['status'];
 

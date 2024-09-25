@@ -4,7 +4,7 @@ include 'db.php';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $day_id = $_POST['day_id'];
     $time = $_POST['time'];
-    $activity = $_POST['activity'];
+    $activity = ucwords($_POST['activity']);
     $location = $_POST['location'];
     $status = $_POST['status'];
 
