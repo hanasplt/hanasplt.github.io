@@ -568,39 +568,58 @@ usort($scheduled_days, function($a, $b) {
                     if (result.isConfirmed) {
                         const { dayId, dayDate } = result.value;
 
-                        const xhr = new XMLHttpRequest();
-                        xhr.open("POST", "edit_day.php", true);
-                        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                        xhr.onload = function () {
-                            if (xhr.status === 200) {
-                                const response = JSON.parse(xhr.responseText);
-                                if (response.success) {
-                                    Swal.fire({
-                                        title: 'Success!',
-                                        text: 'Day updated successfully.',
-                                        icon: 'success',
-                                        confirmButtonColor: '#7FD278',
-                                        confirmButtonText: 'OK'
-                                    }).then(() => {
-                                        location.reload();
-                                    });
-                                } else {
+                        const xhrCheck = new XMLHttpRequest();
+                        xhrCheck.open("POST", "get_existing_dates.php", true);
+                        xhrCheck.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                        xhrCheck.onload = function() {
+                            if (xhrCheck.status === 200) {
+                                const response = JSON.parse(xhrCheck.responseText);
+                                
+                                if (response.exists) {
                                     Swal.fire({
                                         title: 'Error!',
-                                        text: response.message,
+                                        text: 'This date already exists. Please choose another date.',
                                         icon: 'error',
                                         confirmButtonColor: '#d33',
                                         confirmButtonText: 'OK'
                                     });
+                                } else {
+                                    const xhrUpdate = new XMLHttpRequest();
+                                    xhrUpdate.open("POST", "edit_day.php", true);
+                                    xhrUpdate.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                                    xhrUpdate.onload = function () {
+                                        if (xhrUpdate.status === 200) {
+                                            const updateResponse = JSON.parse(xhrUpdate.responseText);
+                                            if (updateResponse.success) {
+                                                Swal.fire({
+                                                    title: 'Success!',
+                                                    text: 'Day updated successfully.',
+                                                    icon: 'success',
+                                                    confirmButtonColor: '#7FD278',
+                                                    confirmButtonText: 'OK'
+                                                }).then(() => {
+                                                    location.reload();
+                                                });
+                                            } else {
+                                                Swal.fire({
+                                                    title: 'Error!',
+                                                    text: updateResponse.message,
+                                                    icon: 'error',
+                                                    confirmButtonColor: '#d33',
+                                                    confirmButtonText: 'OK'
+                                                });
+                                            }
+                                        }
+                                    };
+                                    xhrUpdate.send(`day_id=${dayId}&day_date=${dayDate}`);
                                 }
                             }
                         };
-                        xhr.send(`day_id=${dayId}&day_date=${dayDate}`);
+                        xhrCheck.send(`day_date=${dayDate}`);
                     }
                 });
             });
         });
-
 
 
         function reattachEventListeners() {
@@ -649,7 +668,6 @@ usort($scheduled_days, function($a, $b) {
                             }
                         };
 
-                        // Send event ID to PHP script
                         xhr.send(`event_id=${eventId}`);
                     }
                 });
