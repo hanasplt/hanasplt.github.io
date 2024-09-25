@@ -100,7 +100,7 @@
             <p onclick="window.location.href = 'accounts.php';"><b>Accounts</b></p>
             <p onclick="window.location.href = 'teams.php';">Teams</p>
             <p onclick="window.location.href = 'EventTeam.php';">Events</p>
-            <p onclick="window.location.href = '#';">Schedule</p>
+            <p onclick="window.location.href = 'schedule.php';">Schedule</p>
             <p onclick="window.location.href = 'reports.php';">Reports</p>
         </div>
         <div class="menu-icon">

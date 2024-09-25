@@ -13,7 +13,7 @@ if ($result_days->num_rows > 0) {
         $day_id = $row_day['id'];
         
         // Fetch events for each day
-        $query_events = "SELECT * FROM scheduled_eventstoday WHERE day_id = ?";
+        $query_events = "SELECT * FROM scheduled_eventstoday WHERE day_id = ? ORDER BY time ASC";
         $stmt_events = $conn->prepare($query_events);
         $stmt_events->bind_param("i", $day_id);
         $stmt_events->execute();
