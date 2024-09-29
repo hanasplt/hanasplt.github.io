@@ -116,14 +116,23 @@ body {
     font-weight: 600;
 }
 
+.accounts {
+    background-color: white;
+    margin-left: 5%;
+    margin-right: 5%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(48, 48, 48, 0.222);
+}
+
 .accounts-title,
 .teams-title,
 .events-title {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-left: 7vw; /*gi adjust ra nako ang posisyon*/
-    margin-right: 5vw;
+    margin-left: 3vw; /*gi adjust ra nako ang posisyon*/
+    margin-right: 3vw;
 }
 
 #event,
@@ -131,7 +140,7 @@ body {
 #event {
     font-weight: 700;
     color: #466543;
-    font-size: 1.3vw;
+    font-size: 1.9vw;
 }
 
 #vwall {
@@ -143,7 +152,7 @@ body {
 .ebent {
     display: flex;
     background-color: #ffffff; /*change the color*/
-    width: 87%;
+    width: 91%;
     align-items: center;
     margin: auto;
     padding: 1vw;
@@ -156,17 +165,18 @@ body {
 
 .account-header {
     display: flex;
-    background-color: #466543; /*change the color*/
-    width: 87%;
+    background-color: #c8c8c8;
+    width: 91%;
     align-items: center;
-    margin: auto;
+    margin-left: 3%;
+    margin-right: 3%;
     padding: 1vw;
-    border-radius: 1vw;
-    box-shadow: 0px 0px 10px 0px rgba(48, 48, 48, 0.222);
+    box-shadow: 0px 0px 10px 0px rgba(88, 88, 88, 0.222);
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.3vw;
-    color: #ffffff;
+    color: #000000;
+    font-weight: 500;
 }
 
 .account {
@@ -274,15 +284,6 @@ body {
 }
 
 
-
-
-
-
-
-
-
-
-
 .iframe-overlay {
     position: fixed;
     top: 0;
@@ -355,14 +356,42 @@ body {
 
 .buttons {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    gap: 3vw;
     width: 84%;
-    height: 3vw;
     margin: auto;
     margin-top: 2vw;
     margin-bottom: 1.3vw;
+    height: 3vw;
+}
+
+#saveBtn {
+    background-color: #45a049;
+    color: #fff;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#saveBtn:hover {
+    background-color: #3c8c40;
+}
+
+#cancelBtn {
+    background-color: #bebebe;
+    color: #000;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none !important;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#cancelBtn:hover {
+    background-color: #a6a6a6;
 }
 
 .contestant,
@@ -644,19 +673,17 @@ select {
 }
 
 /* Assuming the parent class is .modal-footer */
-.modal-footer .cancel-btn {
+.cancel-btn {
     background-color: #45a049;
     color: #fff;
     padding: 8px 16px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    text-decoration: none !important; /* Remove link decoration */
 }
 
-
 .save-btn, .save-btn-event {
-    background-color: #45a049;
+    background-color: #45a049 !important;
     color: #fff;
     padding: 8px 16px;
     border: none;
@@ -743,8 +770,6 @@ select {
     transform: scale(1.5); 
 }
 
-
-/* Clear float for the last label in each column */
 .departments .column label:last-child {
     margin-right: 0;
 }
@@ -758,10 +783,89 @@ select {
     
 }
 
-
 .addevent, .editteam{
     font-size: 20px;
     color: #45a049;
     text-align: center;
     font-weight: bold;
+
 }
+
+.button-group {
+    margin-left: 3%;
+    margin-right: 3%;
+    width: 93%;
+    margin-bottom: 30px;
+    display: flex; 
+    background-color: #4fa052; 
+    border-radius: 8px; 
+    overflow: hidden; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.group-btn {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px !important;
+    flex: 1;
+    padding: 12px 0;
+    background: none; 
+    border: none; 
+    color: white; 
+    font-size: 14px; 
+    cursor: pointer; 
+    transition: background 0.3s ease; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    text-align: center;
+}
+
+.group-btn i {
+    margin-right: 8px; 
+}
+
+.group-btn:hover {
+    background-color: #2e7031; 
+}
+
+.group-btn:active {
+    background-color: #265c27; 
+}
+
+.group-btn + .group-btn {
+    border-left: 1px solid rgba(255, 255, 255, 0.2); 
+}
+
+/* add criteria modal */
+#criteria,#editcriteria {
+    resize: none;
+    width: 98%;
+    border: solid #a8a8a8 1px;
+    border-radius: 5px;
+    height: 100px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+#criPts {
+    resize: none;
+    height: 30px;
+    border: solid #a8a8a8 1px;
+    border-radius: 5px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.form-group label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 650;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 2%;
+}
+
+.modal-content, .modal-body, .form-section, .form-group, .modal-footer, .addevent, label, input, select, button {
+    font-family: 'Montserrat', sans-serif;
+}
+

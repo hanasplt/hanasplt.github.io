@@ -74,17 +74,26 @@
             <div>
                 <p id="event">Events</p>
             </div>
-
-            <div>
-                <button onclick="openContestantModal(this)">Add Contestant</button>
-                <button onclick="openCommitteeModal(this)">Add Committee</button>
-                <button onclick="openJudgesModal(this)">Add Judge</button>
-                <button onclick="openCriteriaModal(this)">Add Criteria</button>
-                <button onclick="openScoringTable(this)">Scoring</button>
-            </div>
+        </div>
+        <div class="button-group">
+            <button class="group-btn" onclick="openContestantModal(this)">
+                <i class="fa-solid fa-user-plus"></i> Add Contestant
+            </button>
+            <button class="group-btn" onclick="openCommitteeModal(this)">
+                <i class="fa-solid fa-users"></i> Add Committee
+            </button>
+            <button class="group-btn" onclick="openJudgesModal(this)">
+                <i class="fa-solid fa-gavel"></i> Add Judge
+            </button>
+            <button class="group-btn" onclick="openCriteriaModal(this)">
+                <i class="fa-solid fa-list-check"></i> Add Criteria
+            </button>
+            <button class="group-btn" onclick="openScoringTable(this)">
+                <i class="fa-solid fa-chart-bar"></i> Scoring Table
+            </button>
         </div>
 
-        <div>
+        <div class="details">
             <div class="account-header">
                 <div style="float: left; width: 25%;">Event Name</div>
                 <div style="float: left; width: 15%;">Type</div>
@@ -640,10 +649,8 @@
                 </tbody>
             </table>
             <div class="buttons">
-                <div class="button-group">
-                    <button type="button" id="cancelBtn" onclick="closeModal('eventScoringTable')">Cancel</button>
-                    <button type="button" id="saveBtn" onclick="openScoreModal()">Add Scoring</button>
-                </div>
+                <button type="button" id="cancelBtn" onclick="closeModal('eventScoringTable')">Cancel</button>
+                <button type="button" id="saveBtn" onclick="openScoreModal()">Add Scoring</button>
             </div>
         </div>
     </div>
