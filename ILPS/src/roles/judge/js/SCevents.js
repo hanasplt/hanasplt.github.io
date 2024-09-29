@@ -1,4 +1,4 @@
-function loadEventCriteria(eventId) { // Display the Event's Criteria
+function loadEventCriteria(eventId, evname) { // Display the Event's Criteria
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
@@ -9,7 +9,7 @@ function loadEventCriteria(eventId) { // Display the Event's Criteria
     };
     xhttp.open("POST", "../judge/get_eventFrom.php", true); // Retrieve display in this file
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("evid=" + eventId); // Send the event id for sql query
+    xhttp.send("evid=" + eventId + "&evname=" + evname); // Send the event id for sql query
 }
 
 

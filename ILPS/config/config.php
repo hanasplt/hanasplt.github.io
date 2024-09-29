@@ -1019,6 +1019,8 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+
+// ewan
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getScoreJudge(IN evid INT, IN evid1 INT, IN perid INT)
         BEGIN
             select *, (select DISTINCT t.teamName from vw_eventParti p 
@@ -1062,22 +1064,6 @@ $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getScoreSport(IN evid INT)
                 sb.contestantId, t.teamName, sb.total_score
             ORDER BY 
                 sb.total_score DESC;
-        END ;";
-if ($conn->query($sqlT) === TRUE) {
-} else {
-    echo "Error creating table: " . $conn->error;
-}
-
-
-// UNSURE
-$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_chckJudge(IN evid INT, IN perId VARCHAR(255))
-        BEGIN
-            SELECT vw_eventParti.teamId, vw_teams.teamName 
-            FROM vw_eventParti 
-            INNER JOIN vw_teams on vw_eventParti.teamId = vw_teams.teamId
-            LEFT JOIN vw_subresult ON vw_subresult.contestantId = vw_eventParti.teamId
-            WHERE vw_subresult.eventId = evid AND vw_subresult.personnelId = perId 
-            GROUP BY vw_eventParti.teamId;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {

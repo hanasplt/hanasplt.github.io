@@ -98,7 +98,7 @@ body {
 }
 
 /* Table styling */
-table {
+.ParticipantsCont table {
     width: 60%;
     border-collapse: collapse;
     margin-top: 20px; 
@@ -107,7 +107,7 @@ table {
 }
 
 /* Table header */
-table th {
+.ParticipantsCont table th {
     padding: 12px 10px;
     background-color: #4B8946;
     color: #fff;
@@ -116,14 +116,14 @@ table th {
 }
 
 /* Table data cells */
-table td {
+.ParticipantsCont table td {
     padding: 10px;
     border-bottom: 1px solid #ccc; /* Added border between rows */
     font-family: 'Poppins', sans-serif;
 }
 
 /* Alternate row background color */
-table tr:nth-child(even) {
+.ParticipantsCont table tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 
@@ -144,7 +144,7 @@ table tr:nth-child(even) {
     color: #4B8946;
 }
 
-table  td{
+.ParticipantsCont table  td{
     padding: 10px;
 }
 .Scoress{
@@ -214,4 +214,41 @@ table  td{
     background-color: white;
     border: 1px solid;
     transition: ease-in 0.2s;
+}
+
+
+.tally-container {
+    margin: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tally-container table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.tally-container table #headCol {
+    font-weight: bold;
+}
+
+
+.tally-container table #tabletr td, #tabletr th {
+    padding: 20px;
+    border-bottom: 1px solid #00000062;
+}
+
+
+
+.facilitators-container {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    padding: 20px 10%;
+    text-align: center;
+}
+
+.col {
+    margin-right: 2.5%;
 }

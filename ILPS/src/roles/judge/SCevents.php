@@ -54,9 +54,12 @@ $id = $_SESSION['userId'];
     <script src="../judge/js/SCevents.js"></script>
 
     <?php
-        if(isset($_GET['event'])) { // When 'event' is set, criteria will be loaded
+    // When 'event' and 'name' is set, criteria will be loaded
+        if(isset($_GET['event']) && isset($_GET['name'])) {
             $evId = $_GET['event'];
-            echo "<script>loadEventCriteria($evId)</script>";
+            $evname = $_GET['name'];
+
+            echo "<script>loadEventCriteria($evId, '$evname')</script>";
         }
 
         $conn->close();
