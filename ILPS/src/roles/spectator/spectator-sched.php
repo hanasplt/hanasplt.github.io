@@ -11,12 +11,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Schedule</title>
     <!-- font --> 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
     
     <!-- css --> 
-    <link rel="stylesheet" href="../../../public/assets/css/style.css">
+    <link rel="stylesheet" href="../../../public/assets/css/spec-sched.css">
 
     <!--Web-logo-->
     <link rel="icon" href="../../../public/assets/icons/logo-1.png">
@@ -29,8 +29,8 @@
         <nav>
             <a href="../../index.html" class="navbar">Home</a>
             <a href="../../index.html" class="navbar">About Us</a>
-            <a href="spectator-sched.php" class="navbar">Schedule</a>
-            <a class="navbarbar" href="spectator.php">Dashboard</a>
+            <a class="navbarbar" href="spectator.php">Schedule</a>
+            <a href="spectator.php" class="navbar">Dashboard</a>
             <a href="../../../public/login.php" class="login-btn">LOGIN</a>
         </nav>
     </header>
@@ -45,47 +45,36 @@
             </div>
         </div>
     </div>
-    <div class="container-4">
-        <div class="container-left">
-            <div class="curr-rank">
-                <div class="rank-list">
-                    <p>Current Ranking</p>
-                    <table class="styled-table-rank" id="scoreTable">
-                        <!-- Table rows will be inserted here by JavaScript -->
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="container-right">
-            <div class="view-button">
-                <a href="score.php" class="view-btn">View Scores for Each Event</a>
-            </div>
-            <div class="list-team">
-                <div class="list-teams">
-                    <p>TEAMS</p>
-                    <table class="styled-table">
-                        <?php
-                            $sql = "CALL sp_getAllTeam";
-                            $stmt = $conn->prepare($sql);
-                            $stmt->execute();
-                            $result = $stmt->get_result();
-
-                            if ($result->num_rows > 0) {
-                                while ($row = $result->fetch_assoc()) {
-                                    ?>
-                        <tr>
-                            <td><img src="../../../public/assets/icons/sample.png"> <?php echo $row['teamName'] ?></td>
-                        </tr>
-                                    <?php
-                                }
-                            }
-                            $result->free();
-                            $stmt->close();
-                        ?>
-                    </table>
-                </div>
-            </div>
-        </div>
+    <div class="schedule-list">
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="3">Day 1 - January 13, 2018</th>
+                </tr>
+                <tr>
+                    <th class="head">Time</th>
+                    <th class="head">Activity</th>
+                    <th class="head">Location</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>08:00 AM</td>
+                    <td>Opening Ceremony</td>
+                    <td>Open Grounds</td>
+                </tr>
+                <tr>
+                    <td>09:00 AM</td>
+                    <td>Basketball Match</td>
+                    <td>PECC Gymnasium</td>
+                </tr>
+                <tr>
+                    <td>10:30 AM</td>
+                    <td>Volleyball Match</td>
+                    <td>Volleyball Court</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     <footer>
         <div class="footer-left">
