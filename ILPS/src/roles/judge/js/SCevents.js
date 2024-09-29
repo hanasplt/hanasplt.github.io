@@ -87,6 +87,7 @@ document.getElementById('logoutIcon').addEventListener('click', function() {
 document.getElementById('criteriaForm').addEventListener('submit', function(event) {
     event.preventDefault();
     
+    var userid = document.getElementById('user_ID').value;
     var formData = new FormData(document.querySelector('#criteriaForm'));
 
     // Validate the total score for tie
@@ -115,46 +116,49 @@ document.getElementById('criteriaForm').addEventListener('submit', function(even
             icon: 'error',
             confirmButtonText: 'OK'
         });
-    } else {
-        //TBC
-        fetch ('../judge/SCeventsProcess.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data === 'success') {
-                // Display success message
-                Swal.fire({
-                    title: 'Success!',
-                    text: data.message,
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    location.reload();  // Reload the page or handle success
-                }); 
-            } else {
-                // Display error message on insertion
-                Swal.fire({
-                    title: 'Oops!',
-                    text: data.message,
-                    icon: 'error',
-                    confirmButtonText: 'OK'
+    } else { // Proceeding recording score
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Please note that this action is irreversible! Your score is final and cannot be changed.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'OK',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // User confirmed they want to proceed recording the score
+                fetch ('../judge/SCeventsProcess.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Display success message
+                        Swal.fire({
+                            title: 'Success!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            window.location.href = '../judge/judge.php?id=' + userid; // Reload the page or handle success
+                        }); 
+                    } else {
+                        // Display error message on insertion
+                        Swal.fire({
+                            title: 'Oops!',
+                            text: data.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.log('Error ' + error.message);
                 });
             }
-        })
-        .catch(error => {
-            console.log('Error ' + error.message);
         });
     }
-
-
-    /*var inputs = document.querySelectorAll('.criteriaInput');
-    var total = 0;
-    inputs.forEach(function(input) {
-        total += parseFloat(input.value) || 0;
-    });
-    document.getElementById('totalScore').value = total;*/
 }); 
 
 

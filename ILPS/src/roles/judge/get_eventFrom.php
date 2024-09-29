@@ -65,41 +65,50 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
     // Condition for displaying criteria or inform end-user whether no criteria
-    if (!empty($teams) && !empty($eventCriterias)) {
-        echo '<input type="text" name="evName" id="evName" value="'.$evid.'" hidden>';
-        echo '<input type="text" name="action" value="record" hidden>';
+    if (!empty($teams) && !empty($eventCriterias)) { // Team and Criteria is available
+        echo '<input type="text" name="evID" id="evID" value="'.$evid.'" hidden>';
+        echo '<input type="int" name="user_ID" id="user_ID" value="'.$id.'" hidden>';
         echo '<div class="ParticipantsCont">
                 <table>
                     <tr>
                         <td>Contestant No.</td>';
-                        $totalPercentage = 0;
-                        foreach ($eventCriterias as $cri) { // Display Criteria
+
+                        $totalPercentage = 0; // Calculate total score of the Criteria
+                        foreach ($eventCriterias as $cri) { // Display Header Row (Criterias)
                             $totalPercentage += $cri['percentage'];
                             echo "<td>$cri[criteria] ($cri[percentage]%)</td>";
-                        }
+                        } // end for each loop for criterias
+
                 echo '<td>Total ('. $totalPercentage .'%)</td>
-                    </tr>';
+                    </tr>'; // Criteria Percentage
 
                     foreach ($teams as $team) {
+                        $contestantId = $team['contId'];
                         $teamCount = $team['contNo'];
-                        echo '<input type="hidden" name="contestant" id="contestant" value="'.$team['contId'].'"/>';
+                        
                         echo '<tr>
-                                <td>' . $teamCount++ . '</td>'; // Display Contestant No.
+                                <td>' . $teamCount . '</td>'; // Display Contestant No.
                                 
                         foreach ($eventCriterias as $cri) { // Display Criteria Score input
+                            // Score input fields
                             echo '<td>
-                                    <input class="criteriaInput'.$teamCount.'" type="number" 
-                                    name="criteria[' . $cri['criteriaId'] . ']" 
+                                    <input class="criteriaInput'.$contestantId.'" type="number" 
+                                    name="criteria['. $contestantId .'][' . $cri['criteriaId'] . ']" 
                                     data-criteria="' . $cri['criteria'] . '" 
                                     max="' . $cri['percentage'] . '" 
-                                    min="0" required onchange="calculateTotal('.$teamCount.')" />
+                                    min="0" required onchange="calculateTotal('.$contestantId.')" />
                                 </td>';
-                        }
+                        } #end for each loop
+
+                        // Total Score input field for display
                         echo '<td>
-                                <input type="number" name="totalScore'. $teamCount . '" 
-                                id="totalScore'. $teamCount . '" readonly />
+                                <input type="number" name="totalScore'. $contestantId . '" 
+                                id="totalScore'. $contestantId . '" readonly />
                               </td>'; // Display Calculated Total Score
                         echo '</tr>';
+
+                        // Retrievable contestant IDs for submission
+                        echo '<input type="hidden" name="contestant[]" value="'. $contestantId .'" />';
                     }
 
         echo '</table>';
