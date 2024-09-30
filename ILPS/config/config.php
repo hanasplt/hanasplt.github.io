@@ -33,7 +33,6 @@ $sqlT = "CREATE TABLE IF NOT EXISTS events (
     eventName VARCHAR(255) NOT NULL,
     eventType VARCHAR(255) NOT NULL,
     eventCategory VARCHAR(255) NOT NULL,
-    eventElimination VARCHAR(255),
     status VARCHAR(255)
 )";
 
@@ -81,7 +80,7 @@ try {
         $stmt->close();
 
         // Insert Admin's Account
-        $sqlInsertAdminAcc = "INSERT INTO vw_accounts 
+        $sqlInsertAdminAcc = "INSERT INTO accounts 
                         VALUES 
                             (NULL, ?, ?, ?, NULL, ?, ?, ?, NULL, NULL, NULL, NULL)";
         $stmt = $conn->prepare($sqlInsertAdminAcc);
@@ -103,8 +102,8 @@ $sqlT = "CREATE TABLE IF NOT EXISTS contestant (
     contNo INT,
     teamId INT NOT NULL,
     eventId INT NOT NULL,
-    status VARCHAR(255), #finish when done judging
-    FOREIGN KEY (teamId) REFERENCES teams(teamId) #new change
+    status VARCHAR(255),
+    FOREIGN KEY (teamId) REFERENCES teams(teamId)
     );";
 
 if ($conn->query($sqlT) === TRUE) {
@@ -116,7 +115,7 @@ $sqlT = "CREATE TABLE IF NOT EXISTS committee (
     comNo INT AUTO_INCREMENT PRIMARY KEY,
     comId INT NOT NULL,
     eventId INT NOT NULL,
-    status INT,
+    status INT, #deletes committee
     FOREIGN KEY (eventId) REFERENCES events(eventID), #new change
     FOREIGN KEY (comId) REFERENCES accounts(userId) #new change
     );";
@@ -130,7 +129,7 @@ $sqlT = "CREATE TABLE IF NOT EXISTS judges (
     judgeNo INT AUTO_INCREMENT PRIMARY KEY,
     judgeId INT NOT NULL,
     eventId INT NOT NULL,
-    status INT,
+    status INT, #deletes judge
     FOREIGN KEY (judgeId) REFERENCES accounts(userId), #new change
     FOREIGN KEY (eventId) REFERENCES events(eventID) #new change
     );";
@@ -182,9 +181,9 @@ $sqlT = "CREATE TABLE IF NOT EXISTS sub_results (
     criteria8 DECIMAL(10, 2) NOT NULL,
     criteria9 DECIMAL(10, 2) NOT NULL,
     criteria10 DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (eventId) REFERENCES events(eventID), #new change
-    FOREIGN KEY (contestantId) REFERENCES contestant(contId), #new change
-    FOREIGN KEY (personnelId) REFERENCES accounts(userId) #new change
+    FOREIGN KEY (eventId) REFERENCES events(eventID), 
+    FOREIGN KEY (contestantId) REFERENCES contestant(contId), 
+    FOREIGN KEY (personnelId) REFERENCES accounts(userId) 
 )";
 
 if ($conn->query($sqlT) === TRUE) {
@@ -197,9 +196,9 @@ if ($conn->query($sqlT) === TRUE) {
 $sqlT = "CREATE TABLE IF NOT EXISTS adminlogs (
     logId INT AUTO_INCREMENT PRIMARY KEY,
     date_on DATETIME NOT NULL,
-    userId INT NOT NULL, #to be implemented
+    userId INT NOT NULL,
     actions VARCHAR(255) NOT NULL,
-    FOREIGN KEY (userId) REFERENCES accounts(userId) #to be implemented
+    FOREIGN KEY (userId) REFERENCES accounts(userId)
     );";
 
 if ($conn->query($sqlT) === TRUE) {
@@ -208,9 +207,55 @@ if ($conn->query($sqlT) === TRUE) {
 }
 
 
+// Tables for scheduling
+$sqlDAYS = "CREATE TABLE IF NOT EXISTS scheduled_days ( #adding days
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    day_date DATE NOT NULL
+    );";
+
+if ($conn->query($sqlDAYS) === TRUE) {
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
+$sqlEvDay = "CREATE TABLE IF NOT EXISTS scheduled_eventstoday ( #schedule event/activity table
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    day_id INT,
+    time TIME NOT NULL,
+    type ENUM('Sports', 'Socio-Cultural', 'Others'),
+    activity VARCHAR(255) NOT NULL,
+    gameNo INT,
+    teamA INT,
+    teamB INT,
+    location VARCHAR(255) NOT NULL,
+    status ENUM('Pending', 'Ongoing', 'Ended', 'Cancelled', 'Moved') DEFAULT 'Pending',
+    FOREIGN KEY (day_id) REFERENCES scheduled_days(id) ON DELETE CASCADE,
+    FOREIGN KEY (teamA) REFERENCES contestant(teamId) ON DELETE CASCADE,
+    FOREIGN KEY (teamB) REFERENCES contestant(teamId) ON DELETE CASCADE
+    );";
+    #if the day is deleted, all the events linked to the day is also deleted
+
+if ($conn->query($sqlEvDay) === TRUE) {
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
 
 
 #VIEWS (ADMIN ALL) --------------------------------------------------------------------------------------------------------
+
+$sqlF = "CREATE OR REPLACE VIEW vw_sched AS SELECT * FROM scheduled_days;";
+if ($conn->query($sqlF) === TRUE) {
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
+$sqlF = "CREATE OR REPLACE VIEW vw_eventSched AS SELECT * FROM scheduled_eventstoday;";
+if ($conn->query($sqlF) === TRUE) {
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
 $sqlF = "CREATE OR REPLACE VIEW vw_criteria AS SELECT * FROM criteria;";
 if ($conn->query($sqlF) === TRUE) {
 } else {

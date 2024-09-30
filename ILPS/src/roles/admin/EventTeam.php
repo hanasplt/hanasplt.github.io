@@ -152,6 +152,12 @@
                         <?php
 
                     }
+                } else {
+                    echo '
+                    <div class="container">
+                        <b>No events.</b>
+                    </div>
+                    ';
                 }
 
                 $retval->free();
