@@ -33,7 +33,7 @@
             <p onclick="window.location.href = '../EventTeam.php';">Events</p>
             <p onclick="window.location.href = '../schedule.php';">Schedule</p>
             <p onclick="window.location.href = '../reports.php';">Reports</p>
-            <p onclick="window.location.href = 'accesslog.html';"><b>Logs</b></p>
+            <p onclick="window.location.href = 'accesslog.php';"><b>Logs</b></p>
         </div>
         <div class="menu-icon">
             <i class="fas fa-sign-out-alt" id="logoutIcon"></i>
@@ -56,7 +56,7 @@
                     // Generate year options dynamically (e.g., from 2000 to current year)
                     let currentYear = new Date().getFullYear();
                     for (let i = 2000; i <= currentYear; i++) {
-                        document.write(`<option value="${i}">${i}</option>`);
+                        document.write(<option value="${i}">${i}</option>);
                     }
                 </script>
             </select>
@@ -76,6 +76,15 @@
         </table>
     </div>
 
-    <script src="../js/log.js"></script>
+    <!-- Pagination Controls -->
+    <div id="pagination">
+    <button id="prevBtn" onclick="changePage(currentPage - 1)">Previous</button>
+    <span id="pageInfo" ($pageInfo)> </span>
+    <button id="nextBtn" onclick="changePage(currentPage + 1)">Next</button>
+</div>
+
+<script src="../js/log.js"></script>
+
+    
 </body>
 </html>

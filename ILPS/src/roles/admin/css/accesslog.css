@@ -73,10 +73,6 @@ body {
     margin: 10% 0;
 }
 
-.filter-dropdown {
-    margin: 0 55%;
-    width: 100%;
-}
 
 table {
     border-collapse: collapse;
@@ -126,4 +122,127 @@ table th, table td {
         text-transform: uppercase;
         padding-right: 10px;
     }
+}
+.div-table {
+    max-width: 900px;
+    margin: 100px auto 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.export-button {
+    text-align: right;
+    margin-top: 15px;
+}
+
+.export-button button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #209146;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.export-button button:hover {
+    background-color: #58aa6b;
+}
+
+.filter-dropdown {
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.filter-dropdown label {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.filter-dropdown select {
+    padding: 8px 15px;
+    font-size: 0.95rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #f7f7f7;
+    transition: border-color 0.3s ease;
+}
+
+.filter-dropdown select:focus {
+    border-color: #286922;
+    outline: none;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+thead {
+    background-color: #4B8946;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+thead th {
+    padding: 15px;
+    font-weight: bold;
+}
+
+tbody td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    color: #555;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+#pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+#prevBtn, #nextBtn {
+    padding: 10px 15px;
+    margin: 0 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #4B8946;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#prevBtn:hover, #nextBtn:hover {
+    background-color: #3a6b34;
+    transform: translateY(-2px);
+}
+
+#prevBtn:disabled, #nextBtn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+#pageInfo {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    margin: 0 15px;
 }
