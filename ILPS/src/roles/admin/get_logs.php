@@ -30,6 +30,12 @@
                     echo '<td>'.$row['actions'].'</td>';
                 echo '</tr>';
             }
+        } else {
+            echo '
+            <tr>
+                <td colspan=4>No Activities Exists.</td>
+            </tr>
+            ';
         }
     }
 

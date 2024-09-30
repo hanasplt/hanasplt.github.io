@@ -25,6 +25,7 @@ document.getElementById('yearFilter').addEventListener('change', function() {
     let selectedYear = this.value;
     let table = document.getElementById('tableLog');
     let rows = table.getElementsByTagName('tr');
+    let msg = document.getElementById('db-msg');
     
     // Loop through rows and display only those matching the selected year
     for (let i = 1; i < rows.length; i++) { // Start at 1 to skip the table header
@@ -35,8 +36,10 @@ document.getElementById('yearFilter').addEventListener('change', function() {
         // Show or hide the row based on the selected year
         if (selectedYear === "" || rowYear == selectedYear) {
             rows[i].style.display = '';
+            msg.innerText = '';
         } else {
             rows[i].style.display = 'none';
+            msg.innerText = 'No Activities Exists.';
         }
     }
 });

@@ -202,11 +202,6 @@
                                 <option value="Team">Team</option>
                             </select>
                         </div>
-
-                        <div class="form-group">
-                            <input type="checkbox" name="eventBracket" id="eventBracket" value="Single">
-                            Single Elimination
-                        </div>
                         <div class="modal-footer">
                             <button type="button" class="cancel-btn" onclick="closeModal('myModal')">Cancel</button>
                             <button type="submit" class="save-btn-event">Save</button>
@@ -247,11 +242,6 @@
                                 <option value="Individual/Dual">Individual/Dual</option>
                                 <option value="Team">Team</option>
                             </select>
-                        </div>
-
-                        <div class="form-group">
-                            <input type="checkbox" name="eventBracket" id="eventBracket" value="Single">
-                            Single Elimination
                         </div>
                         
                         <div class="modal-footer">
@@ -297,6 +287,8 @@
                                             </option>
                                             <?php
                                         }
+                                    } else {
+                                        echo '<option selected disabled value=0>No Event/s exists.</option>';
                                     }
                                     $result->free();
                                     $stmt->close();
@@ -326,6 +318,8 @@
                                             <option value="<?php echo $teamval; ?>"><?php echo $teamname; ?></option>
                                             <?php
                                         }
+                                    } else {
+                                        echo '<option selected disabled value=0>No Team/s exists.</option>';
                                     }
                                     $result->free();
                                     $stmt->close();
@@ -377,6 +371,8 @@
                                             </option>
                                             <?php
                                         }
+                                    } else {
+                                        echo '<option selected disabled value=0>No Event/s exists.</option>';
                                     }
                                     $result->free();
                                     $stmt->close();
@@ -405,6 +401,8 @@
                                             </option>
                                             <?php
                                         }
+                                    } else {
+                                        echo '<option selected disabled value=0>No Committee/s exists.</option>';
                                     }
                                     $result->free();
                                     $stmt->close();
@@ -461,6 +459,8 @@
                                             </option>
                                             <?php
                                         }
+                                    } else {
+                                        echo '<option selected disabled value=0>No Event/s exists.</option>';
                                     }
                                     $result->free();
                                     $stmt->close();
@@ -487,6 +487,8 @@
                                             <option value="<?php echo $userId; ?>"><?php echo $name; ?></option>
                                             <?php
                                         }
+                                    } else {
+                                        echo '<option selected disabled value=0>No Judge/s exists.</option>';
                                     }
                                     $result->free();
                                     $stmt->close();
@@ -541,6 +543,8 @@
                                             </option>
                                             <?php
                                         }
+                                    } else {
+                                        echo '<option selected disabled value=0>No Event/s exists.</option>';
                                     }
                                     $result->free();
                                     $stmt->close();
