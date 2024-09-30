@@ -317,11 +317,42 @@ if ($conn->query($sqlF) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+$sqlF = "CREATE OR REPLACE VIEW vw_subresult AS SELECT * FROM sub_results";
+
+if ($conn->query($sqlF) === TRUE) {
+} else {
+    echo "Error creating table: " . $conn->error;
+}
 
 
-#PROCEDURES (ADMIN ALL) --------------------------------------------------------------------------------------------------------
+#TRIGGERS (ALL) --------------------------------------------------------------------------------------------------------
 
-#newwwww
+
+#STORED PROCEDURES (ALL) --------------------------------------------------------------------------------------------------------
+
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_UpdateToken(IN token VARCHAR(255), IN eml VARCHAR(255))
+        BEGIN
+            UPDATE accounts
+            SET reset_token = token,
+                reset_token_expiration = NOW() + INTERVAL 10 MINUTE
+            WHERE email = eml;
+        END ;";
+if ($conn->query($sqlT) === TRUE) {
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_resetPass(IN eml VARCHAR(255))
+        BEGIN
+            SELECT userId
+            FROM accounts
+            WHERE email = eml AND status IS NULL;
+        END ;";
+if ($conn->query($sqlT) === TRUE) {
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_delLead()
         BEGIN
             DROP TABLE IF EXISTS leaderboard;
@@ -384,7 +415,7 @@ if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
-#end new
+
 
 //NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAccount(
@@ -665,9 +696,9 @@ if ($conn->query($sqlT) === TRUE) {
 
 // NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertEvent(IN id INT, IN name VARCHAR(255), 
-        IN evtype VARCHAR(255), IN category VARCHAR(255), IN elim VARCHAR(255))
+        IN evtype VARCHAR(255), IN category VARCHAR(255))
         BEGIN
-            INSERT INTO vw_events VALUES (id, name, evtype, category, elim, NULL);
+            INSERT INTO vw_events VALUES (id, name, evtype, category, NULL);
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -688,10 +719,9 @@ if ($conn->query($sqlT) === TRUE) {
 
 // NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_editEvent(IN id INT, IN type VARCHAR(255), IN name VARCHAR(255), 
-        IN category VARCHAR(255), IN elim VARCHAR(255))
+        IN category VARCHAR(255))
         BEGIN
-            UPDATE vw_events SET eventType = type, eventName = name, eventCategory = category, 
-            eventElimination = elim WHERE eventID = id;
+            UPDATE vw_events SET eventType = type, eventName = name, eventCategory = category WHERE eventID = id;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -718,7 +748,7 @@ $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEventContestant(IN id INT)
             FROM vw_eventParti vp 
             INNER JOIN vw_teams vt on vp.teamId = vt.teamId
             INNER JOIN vw_events ve on vp.eventId = ve.eventID
-            WHERE vp.eventId = id AND vp.status IS NULL;
+            WHERE vp.eventId = id AND vp.status IS NULL AND vt.status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -762,7 +792,7 @@ if ($conn->query($sqlT) === TRUE) {
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEventComt(IN id INT)
         BEGIN
             SELECT f.*, a.firstName FROM vw_eventComt f INNER JOIN vw_accounts a ON f.comId = a.userId 
-            WHERE eventId = id AND f.status IS NULL;
+            WHERE eventId = id AND f.status IS NULL AND a.status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -809,7 +839,7 @@ if ($conn->query($sqlT) === TRUE) {
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEventJudge(IN event INT)
         BEGIN
             SELECT j.*, a.firstName FROM vw_eventJudge j INNER JOIN vw_accounts a ON j.judgeId = a.userId
-            WHERE eventId = event AND j.status IS NULL;
+            WHERE eventId = event AND j.status IS NULL AND a.status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -1136,58 +1166,6 @@ $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertLog(IN id INT, IN act VARCHAR(2
             INSERT INTO vw_logs VALUES (NULL, NOW(), id, act);
         END ;";
 if ($conn->query($sqlT) === TRUE) {
-} else {
-    echo "Error creating table: " . $conn->error;
-}
-
-
-
-
-
-
-#VIEWS (JUDGE) --------------------------------------------------------------------------------
-
-$sqlF = "CREATE OR REPLACE VIEW vw_subresult AS SELECT * FROM sub_results";
-
-if ($conn->query($sqlF) === TRUE) {
-} else {
-    echo "Error creating table: " . $conn->error;
-}
-
-
-
-
-
-
-
-
-
-#ADD DAY (SCHEDULE) --------------------------------------------------------------------------------
-
-$sqlDAYS = "CREATE TABLE IF NOT EXISTS scheduled_days (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    day_date DATE NOT NULL
-    );";
-
-if ($conn->query($sqlDAYS) === TRUE) {
-} else {
-    echo "Error creating table: " . $conn->error;
-}
-
-#ADD EVENT TO DAY (SCHEDULE) --------------------------------------------------------------------------------
-
-$sqlEvDay = "CREATE TABLE IF NOT EXISTS scheduled_eventstoday (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    day_id INT,
-    time TIME NOT NULL,
-    activity VARCHAR(255) NOT NULL,
-    location VARCHAR(255) NOT NULL,
-    status ENUM('Pending', 'Ongoing', 'Ended', 'Cancelled', 'Moved') DEFAULT 'Pending',
-    FOREIGN KEY (day_id) REFERENCES scheduled_days(id) ON DELETE CASCADE
-    );";
-    #if the day is deleted, all the events linked to the day is also deleted
-
-if ($conn->query($sqlEvDay) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }

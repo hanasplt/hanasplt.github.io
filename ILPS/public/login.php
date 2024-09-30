@@ -67,6 +67,18 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../public/js/login.js"></script>
+    <script>
+        var msg = "<?= $_SESSION['status'] ?? ''; ?>";
+
+        if(msg != '') {
+            Swal.fire({
+                title: "Email Sent!",
+                text: msg,
+                icon: "success"
+            });
+            <?php unset($_SESSION['status']); ?>
+        }
+    </script>
 
 </body>
 </html>

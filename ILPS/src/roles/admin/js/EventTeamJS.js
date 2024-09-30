@@ -145,22 +145,6 @@ function openEditEventModal(element) { // Open modal for editing event
     document.getElementById('editeventType').value = eventType;          
     document.getElementById('editeventName').value = eventName;
     document.getElementById('editeventCategory').value = eventCat;
-    
-    fetch(`../admin/EventTeamProcess.php?editID=` + eventID)
-    .then(response => response.json())
-    .then(data => {
-        // Get only checkboxes inside the Edit Modal
-        var modal = document.getElementById('editEventModal');
-        var checkbox = modal.querySelector('input[name="eventBracket"]');
-
-        // Check or not the checkbox based on the data
-        if (data.course) {  // Check if elimination exists
-            checkbox.checked = true;
-        } else {
-            checkbox.checked = false; // Uncheck if elimination not present
-        }
-    })
-    .catch(error => console.error('Error fetching course data:', error));
 
     var modal = document.getElementById("editEventModal");
     modal.style.display = "block";
@@ -386,32 +370,61 @@ document.addEventListener('DOMContentLoaded', function() {
             getSelectedText();
             updateNameField();
 
-            var formData = new FormData(document.querySelector('#addContForm'));
+            var evnt = document.getElementById('eventId');
+            var cont = document.getElementById('contestantId');
 
-            fetch('EventTeamProcess.php', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: data.message,
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        location.reload();  // Reload the page or handle success
-                    }); 
-                } else {
-                    Swal.fire({
-                        title: 'Oops!',
-                        text: data.message,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            });
+            // Form validation
+            if (evnt.value == 0 && cont.value == 0) { // If no events and teams are added yet
+                Swal.fire({
+                    title: 'Submission Failed!',
+                    text: 'You need to insert event/s and team/s first.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            }
+            else if (evnt.value == 0) { // If no events are added yet
+                Swal.fire({
+                    title: 'Submission Failed!',
+                    text: 'You need to insert event/s first.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            }
+            else if (cont.value == 0) { // If no teams are added yet
+                Swal.fire({
+                    title: 'Submission Failed!',
+                    text: 'You need to insert team/s first.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            } else { // Proceed form submission
+                var formData = new FormData(document.querySelector('#addContForm'));
+
+                fetch('EventTeamProcess.php', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            location.reload();  // Reload the page or handle success
+                        }); 
+                    } else {
+                        Swal.fire({
+                            title: 'Oops!',
+                            text: data.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            }
         });
 
 
@@ -422,35 +435,64 @@ document.addEventListener('DOMContentLoaded', function() {
             updateComtEvent();
             updateComtName();
 
-            var formData = new FormData(document.querySelector('#addCommitteeForm'));
+            var evnt = document.getElementById('eventIdComt');
+            var cont = document.getElementById('comtId');
 
-            fetch('EventTeamProcess.php', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: data.message,
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        location.reload();  // Reload the page or handle success
-                    }); 
-                } else {
-                    Swal.fire({
-                        title: 'Oops!',
-                        text: data.message,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            })
-            .catch(error => {
-                alert('An error occurred: ' + error.message);
-            });
+            // Form validation
+            if (evnt.value == 0 && cont.value == 0) { // If no events and teams are added yet
+                Swal.fire({
+                    title: 'Submission Failed!',
+                    text: 'You need to insert event/s and team/s first.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            }
+            else if (evnt.value == 0) { // If no events are added yet
+                Swal.fire({
+                    title: 'Submission Failed!',
+                    text: 'You need to insert event/s first.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            }
+            else if (cont.value == 0) { // If no teams are added yet
+                Swal.fire({
+                    title: 'Submission Failed!',
+                    text: 'You need to insert team/s first.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            } else { // Proceed form submission
+                var formData = new FormData(document.querySelector('#addCommitteeForm'));
+
+                fetch('EventTeamProcess.php', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            location.reload();  // Reload the page or handle success
+                        }); 
+                    } else {
+                        Swal.fire({
+                            title: 'Oops!',
+                            text: data.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    alert('An error occurred: ' + error.message);
+                });
+            }
         });
 
 
@@ -461,35 +503,64 @@ document.addEventListener('DOMContentLoaded', function() {
             updateJudgeEvField();
             updateJudgeField();
 
-            var formData = new FormData(document.querySelector('#addJudgesForm'));
+            var evnt = document.getElementById('eventIdJ');
+            var cont = document.getElementById('judgeId');
 
-            fetch('EventTeamProcess.php', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    Swal.fire({
-                        title: 'Success!',
-                        text: data.message,
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        location.reload();  // Reload the page or handle success
-                    }); 
-                } else {
-                    Swal.fire({
-                        title: 'Oops!',
-                        text: data.message,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            })
-            .catch(error => {
-                console.log('An error occurred: ' + error.message);
-            });
+            // Form validation
+            if (evnt.value == 0 && cont.value == 0) { // If no events and teams are added yet
+                Swal.fire({
+                    title: 'Submission Failed!',
+                    text: 'You need to insert event/s and team/s first.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            }
+            else if (evnt.value == 0) { // If no events are added yet
+                Swal.fire({
+                    title: 'Submission Failed!',
+                    text: 'You need to insert event/s first.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            }
+            else if (cont.value == 0) { // If no teams are added yet
+                Swal.fire({
+                    title: 'Submission Failed!',
+                    text: 'You need to insert team/s first.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            } else { // Proceed form submission
+                var formData = new FormData(document.querySelector('#addJudgesForm'));
+
+                fetch('EventTeamProcess.php', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            location.reload();  // Reload the page or handle success
+                        }); 
+                    } else {
+                        Swal.fire({
+                            title: 'Oops!',
+                            text: data.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.log('An error occurred: ' + error.message);
+                });
+            }
         });
 
 
@@ -497,7 +568,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('.save-btn-cri').addEventListener('click', function(event) {
             event.preventDefault();  // Prevent default form submission
 
-            const eventId = document.getElementById('eventIdCri').value;
+            const eventId = document.getElementById('eventIdC').value;
             const criteria = document.getElementById('criteria').value;
             const criPts = document.getElementById('criPts').value;
 
@@ -505,6 +576,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
                     title: 'Oops!',
                     text: 'All fields are required to be filled in.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            } else if (eventId == 0) {
+                Swal.fire({
+                    title: 'Oops!',
+                    text: 'You need to insert event/s first.',
                     icon: 'warning',
                     confirmButtonText: 'OK'
                 });

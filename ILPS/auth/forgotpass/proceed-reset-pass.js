@@ -51,7 +51,7 @@ document.querySelector('.save-btn').addEventListener('click', function(event) {
                 icon: 'success',
                 confirmButtonText: 'OK'
             }).then(() => {
-                window.location.href = '../login.php';  // Redirect to Login page
+                window.location.href = 'http://localhost:3000/ILPS/public/login.php';  // Redirect to Login page
             }); 
         } else {
             Swal.fire({

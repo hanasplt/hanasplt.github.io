@@ -53,10 +53,15 @@
             <select id="yearFilter">
                 <option value="">--Select Year--</option>
                 <script>
-                    // Generate year options dynamically (e.g., from 2000 to current year)
+                    // Generate year of log
                     let currentYear = new Date().getFullYear();
+<<<<<<< HEAD
                     for (let i = 2000; i <= currentYear; i++) {
                         document.write(<option value="${i}">${i}</option>);
+=======
+                    for (let i = 2022; i <= currentYear; i++) {
+                        document.write(`<option value="${i}">${i}</option>`);
+>>>>>>> ea5810fa8823796eba1669102076a40852137eb6
                     }
                 </script>
             </select>
@@ -74,6 +79,9 @@
                 <!-- DISPLAY DATA LOG HERE -->
             </tbody>
         </table>
+        <div class="msg-container" style="text-align: center;">
+            <p id="db-msg"> <!-- DISPLAY MESSAGE HERE --> </p>
+        </div>
     </div>
 
     <!-- Pagination Controls -->

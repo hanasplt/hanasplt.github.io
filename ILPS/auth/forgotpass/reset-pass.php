@@ -18,9 +18,7 @@ $email = $_POST['email'];
 $token = bin2hex(random_bytes(16));
 $expiry = "";
 
-$sql = "SELECT userId
-        FROM accounts
-        WHERE email = ?";
+$sql = "CALL sp_resetPass(?)";
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $email);
@@ -28,10 +26,9 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if($result -> num_rows > 0) {
-    $sql = "UPDATE accounts
-            SET reset_token = ?,
-                reset_token_expiration = NOW() + INTERVAL 10 MINUTE
-            WHERE email = ?";
+    $stmt->close();
+
+    $sql = "CALL sp_UpdateToken(?,?)";
     
     $stmt = $conn -> prepare($sql);
     $stmt->bind_param("ss", $token, $email);

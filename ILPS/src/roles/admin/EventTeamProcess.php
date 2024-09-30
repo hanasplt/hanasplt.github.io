@@ -18,26 +18,13 @@
     $eventName = ucwords($_POST['eventName']);
     $eventType = $_POST['eventType'];
     $eventCategory = $_POST['eventCategory'];
-    $eventElimination = $_POST['eventBracket'] ?? NULL;
 
     try {
-        if (empty($eventElimination)) {
-            $eventElimination = NULL;
-        } else {
-            // Return error if Single Elimination is checked, this only applies to Sports
-            if ($eventType == "Socio-Cultural") {
-                echo json_encode([
-                    'status' => 'error', 
-                    'message' => 'Please uncheck the Single Elimination! This only applies to Sports events.'
-                ]);
-                exit;
-            }
-        }
 
-        $sql = "CALL sp_insertEvent(?, ?, ?, ?, ?)";
+        $sql = "CALL sp_insertEvent(?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
     
-        $stmt->bind_param("issss", $eventId, $eventName, $eventType, $eventCategory, $eventElimination);
+        $stmt->bind_param("isss", $eventId, $eventName, $eventType, $eventCategory);
     
         if ($stmt->execute()) {
             // Insert in the logs
@@ -435,25 +422,12 @@
     $eventtype = $_POST['editeventType'];
     $eventname = ucwords($_POST['editeventName']);
     $eventcat = $_POST['editeventCategory'];
-    $eventElimination = $_POST['eventBracket'] ?? NULL;
 
     try {
-        if (empty($eventElimination)) {
-            $eventElimination = NULL;
-        } else {
-            // Return error if Single Elimination is checked, this only applies to Sports
-            if ($eventtype == "Socio-Cultural") {
-                echo json_encode([
-                    'status' => 'error', 
-                    'message' => 'Please uncheck the Single Elimination! This only applies to Sports events.'
-                ]);
-                exit;
-            }
-        }
 
-        $sql = "CALL sp_editEvent(?, ?, ?, ?, ?)";
+        $sql = "CALL sp_editEvent(?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("issss", $eventid, $eventtype, $eventname, $eventcat, $eventElimination);
+        $stmt->bind_param("isss", $eventid, $eventtype, $eventname, $eventcat);
 
         if ($stmt->execute()) {
             // Insert in the logs

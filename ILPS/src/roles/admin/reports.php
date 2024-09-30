@@ -72,6 +72,12 @@ if (!$conn) {
 
                 $events[] = array('evid' => $evid, 'evname' => $evname, 'type' => $catg);
               }
+            } else {
+              echo '
+              <tr>
+                <td colspan=2>No event/s exists.</td>
+              </tr>
+              ';
             }
 
             $retval->free();
@@ -103,6 +109,8 @@ if (!$conn) {
                           &&evname=$evName' target='_blank'>View Summary
                         </a>";
                   echo "</td>";
+                } else {
+                  echo '<td style="color: gray;">No score yet.</td>';
                 }
                 $retval->free();
                 $stmt->close();
@@ -124,6 +132,8 @@ if (!$conn) {
                   </td>
                   
                   <?php
+                } else {
+                  echo '<td style="color: gray;">No score yet.</td>';
                 }
                 $retval->free();
                 $stmt->close();
