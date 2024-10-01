@@ -1,2 +1,3 @@
 PHPMailer is used for the forgot password of the user.
-Where the administrator will send the token.
+
+dompdf is used for generating html to pdf for exporting data.

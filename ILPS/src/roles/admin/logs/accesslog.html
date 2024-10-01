@@ -42,17 +42,19 @@
 
 
     <div class="div-table">
-        <div class="export-button">
-            <form action="../exportLogXlxs.php" method="post">
-                <button type="submit" name="exportlog_xsls">Export to Excel</button>
-            </form>
-        </div>
         <div class="filter-dropdown">
+            <form method="post" id="exportForm">
+                <div class="export-button">
+                    <button type="button" onclick="submitForm('../export/exportLogXlxs.php')" name="exportlog_xsls" id="exportlog_xsls">Export to Excel</button>
+                    <button type="button" onclick="submitForm('../export/exportLogpdf.php')" name="exportlog_pdf" id="exportlog_pdf">Export to PDF</button>
+                </div>
+
             <!-- Filter Dropdown -->
             <label for="yearFilter">Filter by Year:</label>
-            <select id="yearFilter">
-                <option value="">--Select Year--</option>
+            <select id="yearFilter" name="yearFilter">
+                <option value="" selected disabled>--Select Year--</option>
             </select>
+            </form>
         </div>
         <table id="tableLog">
             <thead>
@@ -81,6 +83,5 @@
 
 <script src="../js/log.js"></script>
 
-    
 </body>
 </html>

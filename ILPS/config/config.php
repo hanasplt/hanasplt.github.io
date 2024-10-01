@@ -1149,11 +1149,12 @@ if ($conn->query($sqlT) === TRUE) {
 
 // NAGAMIT
 // Stored Procedure for displaying logs
-$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_displayLog()
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_displayLog(IN inpYear INT)
         BEGIN
             SELECT vl.*, CONCAT(va.firstName, ' ', va.lastName) AS fullname
             FROM vw_logs vl
-            INNER JOIN vw_accounts va ON vl.userId = va.userId;
+            INNER JOIN vw_accounts va ON vl.userId = va.userId
+            WHERE YEAR(date_on) = inpYear;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
