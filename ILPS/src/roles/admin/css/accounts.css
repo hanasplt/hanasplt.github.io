@@ -323,3 +323,38 @@ body {
 }
 
 
+.name-export-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.export-button {
+    margin-right: 5vw;
+}
+
+.export-button button {
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px !important;
+    padding: 10px;
+    background-color: #4fa052;
+    border: none;
+    border-radius: 8px;
+    color: white; 
+    cursor: pointer; 
+    transition: background 0.3s ease; 
+    text-align: center;
+}
+
+.export-button button:hover {
+    background-color: #2e7031; 
+}
+
+.export-button button:active {
+    background-color: #265c27; 
+}
+
+.export-button button + .export-button button {
+    border-left: 1px solid rgba(255, 255, 255, 0.2); 
+}

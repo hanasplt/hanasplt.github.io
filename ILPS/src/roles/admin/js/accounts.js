@@ -157,3 +157,13 @@ document.getElementById('abc').addEventListener('change', function() {
         accountsContainer.appendChild(account);
     });
 });
+
+
+// Validate form submission for export
+function submitForm(actionUrl) {
+    // Set the form action to the specified file
+    document.getElementById('exportForm').action = actionUrl;
+
+    // Submit the form
+    document.getElementById('exportForm').submit();
+}

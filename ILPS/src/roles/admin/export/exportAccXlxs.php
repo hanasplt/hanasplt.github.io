@@ -1,18 +1,16 @@
 <?php
     date_default_timezone_set('Asia/Manila');
+
     $conn = require_once '../../../../config/db.php'; // Database connection
 
     $output = ''; // Initialize variable for compiling data output
     $dt_exported = date("Y-m-d H:i:s"); // Extend as file name
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['yearFilter'])) {
-        $year = $_POST['yearFilter'];
-
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Retrieve data from the database
-        $sql = "CALL sp_displayLog(?)";
+        $sql = "CALL sp_getAllAcc()";
 
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $year);
         $stmt->execute();
 
         $retval = $stmt->get_result();
@@ -22,21 +20,26 @@
                 <table>
                     <tr>
                         <th>ID</th>
-                        <th>Date</th>
-                        <th>Name</th>
-                        <th>Action</th>
+                        <th>First Name</th>
+                        <th>Middle Name</th>
+                        <th>Last Name</th>
+                        <th>Suffix</th>
+                        <th>Email</th>
+                        <th>Role</th>
                     </tr>
             ';
             
             // Proceed populating data
-            $count = 1;
             while ($row = $retval->fetch_assoc()) {
                 $output .= '
                     <tr>
-                        <td>'.$count++.'</td>
-                        <td>'.$row['date_on'].'</td>
-                        <td>'.$row['fullname'].'</td>
-                        <td>'.$row['actions'].'</td>
+                        <td>'.$row['userId'].'</td>
+                        <td>'.$row['firstName'].'</td>
+                        <td>'.$row['middleName'].'</td>
+                        <td>'.$row['lastName'].'</td>
+                        <td>'.$row['suffix'].'</td>
+                        <td>'.$row['email'].'</td>
+                        <td>'.$row['type'].'</td>
                     </tr>
                 ';
             }
@@ -48,7 +51,7 @@
             $output .= '
                 <table>
                     <tr>
-                        <td colspan=4>No logs found for year '.$year.'.</td>
+                        <td colspan=4>No account/s exists.</td>
                     </tr>
                 </table>
             ';
@@ -56,7 +59,7 @@
 
         // Define header functions
         header("Content-Type: application/vnd.ms-excel");
-        header("Content-Disposition: attachment; filename=AuditLog_".$year."-[".$dt_exported."].xls");
+        header("Content-Disposition: attachment; filename=Account-[".$dt_exported."].xls");
 
         echo $output;
     }

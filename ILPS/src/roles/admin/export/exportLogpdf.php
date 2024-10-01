@@ -2,9 +2,11 @@
 	require_once '../../../../resources/dompdf/autoload.inc.php';
 	use Dompdf\Dompdf;
 
+	date_default_timezone_set('Asia/Manila');
     $conn = require_once '../../../../config/db.php'; // Database connection
 
     $output = ''; // Initialize variable for compiling data output
+	$dt_exported = date("Y-m-d H:i:s"); // Extend as file name
 
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['yearFilter'])) {
 		$year = $_POST['yearFilter'];
@@ -57,6 +59,6 @@
 	$dompdf->loadHtml($output);
 	$dompdf->setPaper("A4", "Portrait");
 	$dompdf->render();
-	$dompdf->stream("AuditLog_".$year.".pdf");
+	$dompdf->stream("AuditLog_".$year."-[".$dt_exported."].pdf");
 	
 ?>

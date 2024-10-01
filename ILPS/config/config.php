@@ -452,7 +452,7 @@ $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAccountCount(
 // NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAllAcc()
         BEGIN
-            SELECT * FROM accounts WHERE status IS NULL;
+            SELECT * FROM vw_accounts WHERE status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {

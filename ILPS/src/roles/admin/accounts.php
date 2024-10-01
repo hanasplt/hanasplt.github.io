@@ -128,8 +128,15 @@
         <div class="name-export-container">
             <p id="accs">Accounts</p>
             <div class="export-button">
-                <button type="button" onclick="submitForm('../export/exportLogXlxs.php')" name="exportlog_xsls" id="exportlog_xsls">Export to Excel</button>
-                <button type="button" onclick="submitForm('../export/exportLogpdf.php')" name="exportlog_pdf" id="exportlog_pdf">Export to PDF</button>
+                <form method="post" id="exportForm">
+                    <button type="button" onclick="submitForm('export/exportAccXlxs.php')" name="exportlog_xsls" id="exportlog_xsls">
+                        Export to Excel
+                    </button>
+                    <button type="button" onclick="submitForm('export/exportAccpdf.php')" name="exportlog_pdf" id="exportlog_pdf">
+                        Export to PDF
+                    </button>
+                </form>
+                
             </div>
         </div>
         <div class="accounts-title">
