@@ -5,7 +5,7 @@ html {
 body {
     margin: 0;
     padding: 0;
-    background-color: #EFF0F4;
+    background-color: #ffffff;
 }
 
 header {
@@ -13,7 +13,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 20px 50px;
-    background-color: #EFF0F4;
+    background-color: #FFFFFF;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
@@ -25,13 +25,13 @@ header {
 .navbar {
     font-family: Montserrat, sans-serif;
     font-weight: 650;
-    color: #595959;
+    color: #a3a3a3;
 }
 
 .navbarbie {
     font-family: Montserrat, sans-serif;
     font-weight: 700;
-    color: #60A85A;
+    color: #2B2B2B;
 }
 
 
@@ -42,15 +42,15 @@ nav a {
 }
 
 .navbar:hover {
-    color: #60A85A;
+    color: #D9F17F;
     transform: translateY(-2px);
 }
 
 .login-btn {
-    font-family: Poppins, sans-serif;
-    font-weight: 700;
-    background-color: #7FD278;
-    color: #fff;
+    font-family: Inter, sans-serif;
+    font-weight: 900;
+    background-color: #D9F17F;
+    color: #2B2B2B;
     padding: 10px 30px;
     border: none;
     border-radius: 100px;
@@ -63,7 +63,7 @@ nav a {
 }
 
 .login-btn:hover {
-    background-color: #6BBF6C;
+    background-color: #cced55;
     transform: translateY(-2px);
 }
 
@@ -79,10 +79,10 @@ nav a {
 }
 
 .text-section h1 {
-    font-family: Montserrat, sans-serif;
-    font-weight: 700;
+    font-family: Inter, sans-serif;
+    font-weight: 900;
     font-size: 48px;
-    color: #333;
+    color: #2B2B2B;
 }
 
 .reset-pass {
@@ -98,6 +98,7 @@ nav a {
     margin-bottom: 0px;
     color: #333;
 }
+
 .reset-pass p {
     font-family: Montserrat, sans-serif;
     font-weight: 400;
@@ -137,15 +138,15 @@ nav a {
     font-family: Montserrat, sans-serif;
     font-weight: 400;
     font-size: 15px;
-    color: #666;
+    color: #2B2B2B;
     line-height: 1.6;
 }
 
 .get-started-btn {
-    font-family: Poppins, sans-serif;
-    font-weight: 700;
-    background-color: #7FD278;
-    color: #fff;
+    font-family: Inter, sans-serif;
+    font-weight: 900;
+    background-color: #D9F17F;
+    color: #2B2B2B;
     padding: 15px 40px;
     border: none;
     border-radius: 30px;
@@ -159,7 +160,7 @@ nav a {
 }
 
 .get-started-btn:hover {
-    background-color: #6BBF6C;
+    background-color: #cced55;
     transform: translateY(-2px);
 }
 
@@ -172,7 +173,7 @@ nav a {
     justify-content: space-between;
     align-items: center;
     padding: 50px;
-    background-color: #EFF0F4;
+    background-color: #ffffff;
 }
 
 .about-text {
@@ -180,10 +181,10 @@ nav a {
 }
 
 .about-text h2 {
-    font-family: Poppins, sans-serif;
+    font-family: Inter, sans-serif;
     font-weight: 900;
+    color: #2B2B2B;
     font-size: 48px;
-    color: #333;
     margin-bottom: 10px;
 }
 
@@ -191,7 +192,7 @@ nav a {
     font-family: Montserrat, sans-serif;
     font-weight: 400;
     font-size: 17px;
-    color: #666;
+    color: #2B2B2B;
     line-height: 1.6;
     margin-top: 0;
 }
@@ -202,7 +203,7 @@ nav a {
 }
 
 footer  {
-    background-color: #7FD278;
+    background-color: #D9F17F;
     color: #fff;
     padding: 20px 50px;
     display: flex;
@@ -211,7 +212,7 @@ footer  {
 }
 
 .footer-footer {
-    background-color: #7FD278;
+    background-color: #D9F17F;
     color: #fff;
     padding: 20px 50px;
     align-items: center;
@@ -225,7 +226,7 @@ footer .footer-left {
     font-family: Poppins, sans-serif;
     font-weight: 700;
     font-size: 15px;
-    color: #2D4D2A;
+    color: #2B2B2B;
     margin-bottom: 5px;
 }
 
@@ -233,7 +234,7 @@ footer .footer-left {
     font-family: Poppins, sans-serif;
     font-weight: 300;
     font-size: 14px;
-    color: #2D4D2A;
+    color: #2B2B2B;
     margin-bottom: 5px;
 }
 
@@ -241,7 +242,7 @@ footer .footer-left {
     font-family: Poppins, sans-serif;
     font-weight: 700;
     font-size: 15px;
-    color: #2D4D2A;
+    color: #2B2B2B;
     margin-bottom: 5px;
 }
 
@@ -249,7 +250,7 @@ footer .footer-left {
     font-family: Montserrat, sans-serif;
     font-weight: 400;
     font-size: 14px;
-    color: #2D4D2A;
+    color: #2B2B2B;
     margin-bottom: 0;
 }
 
