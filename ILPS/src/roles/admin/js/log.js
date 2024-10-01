@@ -3,10 +3,12 @@ let totalPages = 1;
 
 // Display Access Log
 window.onload = function() {
-    loadAccessLog();
+    // Initial load
+    loadAccessLog(currentPage);
     populateYearFilter();
 };
 
+// Loads the log based on the year selected
 function loadAccessLog(page = 1, year = "") {
     var table = document.getElementById("tableLog"); // Get the table id
 
@@ -18,10 +20,6 @@ function loadAccessLog(page = 1, year = "") {
 
                 // Assign totalPages from the response
                 totalPages = response.totalPages;
-
-                // Log the response for debugging
-                console.log('Current Page:', currentPage);
-                console.log('Total Pages:', totalPages);
                 
                 // Start ID number for display
                 const startId = (page - 1) * 10 + 1; // Assuming 10 logs per page
@@ -84,8 +82,6 @@ function changePage(newPage) {
     }
 }
 
-// Initial load
-loadAccessLog(currentPage);
 
 // Function to populate the year filter dropdown
 function populateYearFilter() {
@@ -104,6 +100,29 @@ document.getElementById('yearFilter').addEventListener('change', function() {
     currentPage = 1; // Reset to page 1 when filtering by year
     loadAccessLog(currentPage, selectedYear); // Load logs based on selected year
 });
+
+
+// Validate form submission
+function submitForm(actionUrl) {
+    const yearFilter = document.getElementById('yearFilter').value;
+
+    if (!yearFilter) { // If no year is selected
+        // Prevent form submission and show warning
+        Swal.fire({
+            title: 'Oops!',
+            text: 'Please select a year before exporting.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+    } else {
+        // Set the form action to the specified file
+        document.getElementById('exportForm').action = actionUrl;
+
+        // Submit the form
+        document.getElementById('exportForm').submit();
+    }
+}
+
 
 // LOGOUT CONFIRMATION
 document.getElementById('logoutIcon').addEventListener('click', function() {

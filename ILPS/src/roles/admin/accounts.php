@@ -125,7 +125,13 @@
     </div>
 
     <div class="accounts">
-        <p id="accs">Accounts</p>
+        <div class="name-export-container">
+            <p id="accs">Accounts</p>
+            <div class="export-button">
+                <button type="button" onclick="submitForm('../export/exportLogXlxs.php')" name="exportlog_xsls" id="exportlog_xsls">Export to Excel</button>
+                <button type="button" onclick="submitForm('../export/exportLogpdf.php')" name="exportlog_pdf" id="exportlog_pdf">Export to PDF</button>
+            </div>
+        </div>
         <div class="accounts-title">
             <input type="text" id="searchBox" name="SearchBox" placeholder="Search Account..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
             <div class="dropdowns">
