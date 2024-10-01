@@ -5,7 +5,7 @@ html {
 body {
     margin: 0;
     padding: 0;
-    background-color: #ffffff;
+    background-color: #f4f4f4;
 }
 
 header {
@@ -13,7 +13,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 20px 50px;
-    background-color: #FFFFFF;
+    background-color: #f4f4f4;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
@@ -86,8 +86,8 @@ nav a {
 }
 
 .reset-pass {
-    max-width: 50%;
-    margin-top: -130px;
+    flex: 2;
+    margin-left: 100px;
     flex-direction: column;
 }
 
@@ -164,8 +164,15 @@ nav a {
     transform: translateY(-2px);
 }
 
+.image-section {
+    flex: 1;
+    margin-right: 10vh;
+    margin-left: 8vh;
+}
+
 .image-section img {
-    max-width: 600px;
+    max-width: 550px;
+    vertical-align: middle;
 }
 
 .about-section {
@@ -173,7 +180,7 @@ nav a {
     justify-content: space-between;
     align-items: center;
     padding: 50px;
-    background-color: #ffffff;
+    background-color: #f4f4f4
 }
 
 .about-text {
@@ -268,7 +275,7 @@ footer .footer-right {
 .container-2 {
     display: flex;
     height: 100vh;
-    background-color: #7FD278;
+    background-color: #f4f4f4;
 }
 
 .left-part {
@@ -279,27 +286,33 @@ footer .footer-right {
     align-items: center;
 }
 
-.left-part img, .right-part img {
+.right-part img {
     max-width: 700px;
     height: auto;
     margin-left: -50px;
 }
 
+.left-part img {
+    max-width: 600px;
+    height: auto;
+}
+
 .right-part {
     flex: 1;
-    background-color: #7FD278;
+    background-color: #f4f4f4;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 0 50px;
-    color: #333;
+    color: #2B2B2B;
     height: 100%;
+    margin-right: 100px;
 }
 
 .right-part h1 {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    font-weight: 900;
     font-size: 36px;
     margin-bottom: 10px;
 }
@@ -308,7 +321,7 @@ footer .footer-right {
     font-family: 'Montserrat', sans-serif;
     font-size: 16px;
     margin-bottom: 20px;
-    color: #000000;
+    color: #2B2B2B;
 }
 
 .login {
@@ -317,7 +330,7 @@ footer .footer-right {
     width: 100%;
 }
 
-.login label {
+.login label, .right-part u  {
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
     margin-top: 10px;
@@ -327,7 +340,7 @@ footer .footer-right {
 
 input {
     padding: 10px;
-    border: none;
+    border: solid #2F2F2F 1px;
     border-radius: 5px;
     margin-bottom: 20px;
     font-size: 16px;
@@ -337,8 +350,8 @@ button {
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
     padding: 10px 20px;
-    background-color: #60A85A;
-    color: #fff;
+    background-color: #D9F17F;
+    color: #2B2B2B;
     border: none;
     border-radius: 20px;
     font-size: 18px;
@@ -347,7 +360,7 @@ button {
 }
 
 button:hover {
-    background-color: #4E8E48;
+    background-color: #bbda4a;
     transform: translateY(-2px);
 }
 

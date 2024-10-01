@@ -54,14 +54,14 @@ if($result -> num_rows > 0) {
         $mail->Subject = 'Password Reset Code';
         $mail->Body = '<div style="font-family: Poppins, sans-serif; padding: 20px; max-width: 600px; margin: auto;">
                             <div style="text-align: center;">
-                                <img src="../public/assets/icons/logo.png" alt="Logo" style="width: 100px; height: auto; margin-bottom: -15px;">
+                                <h1 style= margin-bottom: 15px;"> Intramural Leaderboard and Points System </h1>
                                 <h2>Password Reset Request</h2>
                             </div>
                             <div style="background-color: #ffffff; padding: 20px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); margin-bottom: 20px;">
                                 <p style="font-weight: 700;">Hi there!</p>
                                 <p>We received a request to reset your password. Click the button below to proceed. <b>This link will expire in 10 minutes.</b></p>
                                 <div style="text-align: center; margin-top: 40px; margin-bottom: 40px;">
-                                    <a href="http://localhost:3000/ILPS/auth/forgotpass/proceed-reset-pass.php?token=' . $token . '" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px;">Reset Your Password</a>
+                                    <a href="http://localhost:3000/ILPS/auth/forgotpass/proceed-reset-pass.php?token=' . $token . '" style="background-color: #D9F17F; color: #2B2B2B; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px;">Reset Your Password</a>
                                 </div>
                                 <hr>
                                 <p style="font-size: small; color: gray;">If you did not request this, please ignore this email.</p>

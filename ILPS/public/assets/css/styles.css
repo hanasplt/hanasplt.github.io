@@ -1,6 +1,6 @@
 body {
-    font-family: 'Poppins';
-    background-color: #e5f7d8;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f4;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -10,43 +10,82 @@ body {
 
 .container {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: row;
     width: 100%;
     height: 100%;
 }
 
 .form-container {
-    background-color: #ffffff;
+    flex: 1;
+    background-color: #f4f4f4;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     width: 350px;
     text-align: center;
 }
 
+.container-form {
+    margin: auto;
+    background-color: #2F2F2F;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 450px;
+    border-radius: 25px;
+    text-align: center;
+    margin-top: 10vh;
+}
+
 .form-container h2 {
-    color: #4caf50;
+    margin-left: 5%;
+    margin-right: 5%;
+    font-family: 'Inter', sans-serif;
+    font-weight: 900;
+    color: #ffffff;
 }
 
 .form-container p {
-    color: #333;
-    margin-bottom: 50px;
+    margin-left: 5%;
+    margin-right: 5%;
+    color: #ffffff;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.left-part {
+    flex: 1;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.left-part img {
+    max-width: 600px;
+    height: auto;
 }
 
 .input-group {
+    margin-left: 5%;
+    margin-right: 5%;
     margin-bottom: 15px;
     position: relative;
 }
 
+#newpass, #confpass{
+    background-color: #686868;
+}
+
 .input-group label {
+    font-family: 'Poppins', sans-serif;
     display: block;
     margin-bottom: 5px;
-    color: #333;
+    color: #ffffff;
     text-align: left;
 }
 
 .input-group input {
+    font-family: 'Poppins', sans-serif;
     width: calc(100% - 30px);
     padding: 10px;
     padding-right: 30px;
@@ -55,6 +94,7 @@ body {
 }
 
 .input-group i {
+    align-items: center;
     position: absolute;
     right: 0px;
     top: 65%;
@@ -64,15 +104,19 @@ body {
 }
 
 .input-group i.fa-eye {
-    color: #4caf50;
+    color: #b0cd47;
+}
+
+#letter, #capital, #number, #length {
+    font-family: Poppins, sans-serif;
 }
 
 .status {
-    color: black; /* Default color for dashes */
+    color: white; /* Default color for dashes */
 }
 
 .valid {
-    color: green; /* Color for valid status */
+    color: #D9F17F; /* Color for valid status */
 }
 
 .invalid {
@@ -81,17 +125,23 @@ body {
 
 
 button {
-    width: 100%;
+    margin-left: 5%;
+    margin-right: 5%;
+    width: 90%;
     padding: 10px;
-    background-color: #4caf50;
+    background-color: #ffffff;
     border: none;
-    border-radius: 4px;
-    color: white;
+    border-radius: 20px;
+    color: #2F2F2F;
+    font-family: Poppins, sans-serif;
+    font-weight: 700;
     font-size: 16px;
     cursor: pointer;
     margin-top: 25px;
+    margin-bottom: 25px;
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #b8b8b8;
 }
+                    
