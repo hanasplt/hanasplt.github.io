@@ -93,7 +93,7 @@ function populateYearFilter() {
     const currentYear = new Date().getFullYear(); // Get the current year
     
     // Loop from 2000 to current year and create option elements
-    for (let i = 2000; i <= currentYear; i++) {
+    for (let i = 2022; i <= currentYear; i++) {
         yearFilter.innerHTML += `<option value="${i}">${i}</option>`;
     }
 }
