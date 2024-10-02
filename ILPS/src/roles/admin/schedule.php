@@ -1,6 +1,8 @@
 <?php
 
-include 'db.php';
+require_once '../../../config/sessionConfig.php'; // Session Cookie
+$conn = require_once '../../../config/db.php'; // Database connection
+require_once '../admin/verifyLoginSession.php'; // Logged in or not
 
 // Fetch scheduled days
 $query_days = "SELECT * FROM scheduled_days";
@@ -46,8 +48,8 @@ usort($scheduled_days, function($a, $b) {
     <title>Schedule</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/schedule.css">
-    <link rel="icon" href="assets/icons/logo.svg">
+    <link rel="stylesheet" href="css/schedule.css">
+    <link rel="icon" href="../../../public/assets/icons/logo.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -58,7 +60,7 @@ usort($scheduled_days, function($a, $b) {
 </head>
 <body>
     <div class="nav-bar">
-        <img class="logo-img" src="assets/icons/logoo.png">
+        <img class="logo-img" src="../../../public/assets/icons/logoo.png">
         <div class="logo-bar">
             <p>Intramural Leaderboard</p>
             <p>and Points System</p>

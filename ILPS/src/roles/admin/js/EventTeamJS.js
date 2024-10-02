@@ -1078,6 +1078,21 @@ document.getElementById('editcriPts').addEventListener('input', function(event) 
 });
 
 
+// Validate form submission for export
+// Validate form submission for export
+function submitForm(eventId, actionUrl) {
+    // Find the form with the specific event ID
+    var form = document.getElementById('exportForm' + eventId);
+
+    // Set the form action to the specified file
+    form.action = actionUrl;
+
+    // Submit the form
+    form.submit();
+}
+
+
+
 // Logout Confirmation
 document.getElementById('logoutIcon').addEventListener('click', function() {
     Swal.fire({

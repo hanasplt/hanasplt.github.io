@@ -97,7 +97,7 @@
             <div class="account-header">
                 <div style="float: left; width: 25%;">Event Name</div>
                 <div style="float: left; width: 15%;">Type</div>
-                <div style="float: left; width: 10%;">Category</div>
+                <div style="float: left; width: 11%;">Category</div>
                 <div>Action</div>
             </div>
 
@@ -145,6 +145,21 @@
                         </div>
 
                         <div class="container" id="eventTable<?php echo $db_evName; ?>" style="display: none;" data-event-id="<?php echo $db_evID; ?>" data-table-id="<?php echo $db_evName; ?>Table">
+                            <!-- EXPORT BUTTONS -->
+                            <div class="export-button">
+                                <form method="post" id="exportForm<?php echo $db_evID; ?>">
+                                    <input type="hidden" name="xp_eventId" value="<?php echo $db_evID; ?>">
+                                    Export <?php echo $db_evName; ?>'s Data as: 
+                                    <button type="button" onclick="submitForm(<?php echo $db_evID; ?>, 'export/exportEventXlxs.php')" name="exportlog_xsls" id="exportlog_xsls">
+                                        Excel
+                                    </button>
+                                    <button type="button" onclick="submitForm(<?php echo $db_evID; ?>, 'export/exportEventpdf.php')" name="exportlog_pdf" id="exportlog_pdf">
+                                        PDF
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- TABLES -->
                             <div id="displayContestantTable<?php echo $db_evName; ?>"></div>
                             <div id="displayOtherTable<?php echo $db_evName; ?>"></div>
                             <div id="displayCriteriaTable<?php echo $db_evName; ?>"></div>
