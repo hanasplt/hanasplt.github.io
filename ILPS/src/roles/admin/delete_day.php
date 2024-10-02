@@ -1,5 +1,5 @@
 <?php
-    include 'db.php'; 
+include '../../../config/db.php';
 
     if (isset($_POST['day_id'])) {
         $day_id = $_POST['day_id'];
