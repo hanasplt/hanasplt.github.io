@@ -19,7 +19,12 @@
 
         if ($retval->num_rows > 0) {
 			$output .= '
-				<h2 align="center">ILPS Accounts Information</h2>
+                <style>
+                    * {
+                        font-family: Arial, Helvetica, sans-serif;
+                    }
+                </style>
+				<h2 align="center">ILPS Accounts Information</h2></br>
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
                         <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">ID</th>
@@ -61,6 +66,6 @@
 	$dompdf->loadHtml($output);
 	$dompdf->setPaper("A4", "Landscape");
 	$dompdf->render();
-	$dompdf->stream("Account-[".$dt_exported."].pdf");
+	$dompdf->stream("ILPS-Accounts [".$dt_exported."].pdf");
 	
 ?>

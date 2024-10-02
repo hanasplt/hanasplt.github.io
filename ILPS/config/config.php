@@ -791,7 +791,9 @@ if ($conn->query($sqlT) === TRUE) {
 // NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEventComt(IN id INT)
         BEGIN
-            SELECT f.*, a.firstName FROM vw_eventComt f INNER JOIN vw_accounts a ON f.comId = a.userId 
+            SELECT f.*, a.firstName, a.lastName 
+            FROM vw_eventComt f 
+            INNER JOIN vw_accounts a ON f.comId = a.userId 
             WHERE eventId = id AND f.status IS NULL AND a.status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
@@ -838,7 +840,9 @@ if ($conn->query($sqlT) === TRUE) {
 // NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEventJudge(IN event INT)
         BEGIN
-            SELECT j.*, a.firstName FROM vw_eventJudge j INNER JOIN vw_accounts a ON j.judgeId = a.userId
+            SELECT j.*, a.firstName, a.lastName 
+            FROM vw_eventJudge j 
+            INNER JOIN vw_accounts a ON j.judgeId = a.userId
             WHERE eventId = event AND j.status IS NULL AND a.status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {

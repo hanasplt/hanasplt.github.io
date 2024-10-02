@@ -20,18 +20,23 @@
 
         $retval = $stmt->get_result();
 
-        if ($retval->num_rows > 0) {
-			$output .= '
-				<h2 align="center">Audit Log of Year '.$year.'</h2>
-                <table style="width: 100%; border-collapse: collapse;">
-                    <tr>
-                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">ID</th>
-                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Date</th>
-                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Name</th>
-                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Action</th>
-                    </tr>
-            ';
+		$output .= '
+			<style>
+                * {
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+            </style>
+			<h2 align="center">Audit Log of Year '.$year.'</h2></br>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">ID</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Date</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Name</th>
+                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Action</th>
+                </tr>
+        ';
 
+        if ($retval->num_rows > 0) {
 			// Populate table
 			$count = 1;
 			while ($row = $retval->fetch_assoc()) {
@@ -53,12 +58,13 @@
 				</tr>
 			';
 		}
+		$output .= '</table>';
 	}
 
 	$dompdf = new DOMPDF();
 	$dompdf->loadHtml($output);
 	$dompdf->setPaper("A4", "Portrait");
 	$dompdf->render();
-	$dompdf->stream("AuditLog_".$year."-[".$dt_exported."].pdf");
+	$dompdf->stream("ILPS-AuditLog(".$year.") [".$dt_exported."].pdf");
 	
 ?>
