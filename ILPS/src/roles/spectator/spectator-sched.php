@@ -12,9 +12,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedule</title>
+
     <!-- font --> 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
     <!-- css --> 
     <link rel="stylesheet" href="../../../public/assets/css/spec-sched.css">
 
@@ -28,7 +32,6 @@
         </div>
         <nav>
             <a href="../../index.html" class="navbar">Home</a>
-            <a href="../../index.html" class="navbar">About Us</a>
             <a class="navbarbar" href="spectator.php">Schedule</a>
             <a href="spectator.php" class="navbar">Dashboard</a>
             <a href="../../../public/login.php" class="login-btn">LOGIN</a>
@@ -83,14 +86,13 @@
         </div>
         <div class="footer-right">
             <h6>CONTACT US</h6>
-            <p class="footer-email"><img src="../../../public/assets/icons/contact-email.png" alt="Email">john.doe@example.com</p>
-            <p class="footer-contact"><img src="../../../public/assets/icons/contact-num.png" alt="Phone">(555) 123-4567</p>
-            <p class="footer-add">123 Street Barangay Apokon, Tagum City, Davao Del Norte</p>
+            <p class="footer-email"><img src="../../../public/assets/icons/contact-email.png" alt="Email">ilps.usep@gmail.com</p>
+            <p class="footer-contact"><img src="../../../public/assets/icons/contact-num.png" alt="Phone">+63 994 155 8637</p>
         </div>
     </footer>
     <div class="footer-footer">
-        <hr style="height:1px; border-width:0; color: #60A85A; background-color:#60A85A">
-        <p>© 2024 Dreamy Inc. All Rights Reserved.</p>
+    <hr style="height:1px; border-width:0; color: #a7be54; background-color:#a7be54">
+        <p>© 2024 Intramural Leaderboard and Points System. All Rights Reserved.</p>
     </div>
     <script src="../spectator/js/spectator.js"></script>
 </body>

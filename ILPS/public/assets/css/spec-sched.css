@@ -23,17 +23,16 @@ header {
 }
 
 .navbar {
-    font-family: Montserrat, sans-serif;
-    font-weight: 650;
-    color: #595959;
+    font-family: Poppins, sans-serif;
+    font-weight: 600;
+    color: #a3a3a3;
 }
 
 .navbarbie {
-    font-family: Montserrat, sans-serif;
-    font-weight: 700;
-    color: #60A85A;
+    font-family: Poppins, sans-serif;
+    font-weight: 800;
+    color: #2B2B2B;
 }
-
 
 nav a {
     margin-left: 40px;
@@ -42,15 +41,15 @@ nav a {
 }
 
 .navbar:hover {
-    color: #60A85A;
-    transform: translateY(-2px);
+    color: #2B2B2B;
+    font-weight: 600;
 }
 
 .login-btn {
-    font-family: Poppins, sans-serif;
-    font-weight: 700;
-    background-color: #7FD278;
-    color: #fff;
+    font-family: Inter, sans-serif;
+    font-weight: 900;
+    background-color: #D9F17F;
+    color: #2B2B2B;
     padding: 10px 30px;
     border: none;
     border-radius: 100px;
@@ -63,7 +62,7 @@ nav a {
 }
 
 .login-btn:hover {
-    background-color: #6BBF6C;
+    background-color: #cced55;
     transform: translateY(-2px);
 }
 
@@ -141,28 +140,6 @@ nav a {
     line-height: 1.6;
 }
 
-.get-started-btn {
-    font-family: Poppins, sans-serif;
-    font-weight: 700;
-    background-color: #7FD278;
-    color: #fff;
-    padding: 15px 40px;
-    border: none;
-    border-radius: 30px;
-    font-size: 18px;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-}
-
-.get-started-btn:hover {
-    background-color: #6BBF6C;
-    transform: translateY(-2px);
-}
-
 .image-section img {
     max-width: 600px;
 }
@@ -202,7 +179,7 @@ nav a {
 }
 
 footer  {
-    background-color: #7FD278;
+    background-color: #D9F17F;
     color: #fff;
     padding: 20px 50px;
     display: flex;
@@ -211,7 +188,7 @@ footer  {
 }
 
 .footer-footer {
-    background-color: #7FD278;
+    background-color: #D9F17F;
     color: #fff;
     padding: 20px 50px;
     align-items: center;
@@ -221,11 +198,12 @@ footer .footer-left {
     max-width: 50%;
 }
 
+
 .footer-left h6 {
     font-family: Poppins, sans-serif;
     font-weight: 700;
     font-size: 15px;
-    color: #2D4D2A;
+    color: #2B2B2B;
     margin-bottom: 5px;
 }
 
@@ -233,7 +211,7 @@ footer .footer-left {
     font-family: Poppins, sans-serif;
     font-weight: 300;
     font-size: 14px;
-    color: #2D4D2A;
+    color: #2B2B2B;
     margin-bottom: 5px;
 }
 
@@ -241,7 +219,7 @@ footer .footer-left {
     font-family: Poppins, sans-serif;
     font-weight: 700;
     font-size: 15px;
-    color: #2D4D2A;
+    color: #2B2B2B;
     margin-bottom: 5px;
 }
 
@@ -249,7 +227,7 @@ footer .footer-left {
     font-family: Montserrat, sans-serif;
     font-weight: 400;
     font-size: 14px;
-    color: #2D4D2A;
+    color: #2B2B2B;
     margin-bottom: 0;
 }
 
@@ -367,23 +345,24 @@ button:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 50px 50px 0px 50px;
+    margin: 50px 50px 0px 50px;
     margin-bottom: 30px;
-    margin-top: 0%;
 }
 
 .navbarbar {
     font-family: Montserrat, sans-serif;
-    font-weight: 700;
-    color: #60A85A;
+    font-weight: 800;
+    color: #2B2B2B;
 }
 
 .banner {
     font-family: 'Montserrat', sans-serif;
-    background-color: #B1F0AB;
+    background-color: #d8f17f57;
     display: flex;
     justify-content: space-between;
     border-radius: 30px;
+    color: #2B2B2B;
+    overflow: hidden;
 }
 
 .banner-left {
@@ -402,9 +381,9 @@ button:hover {
 }
 
 .banner-right img {
-    max-width: 250px;
-    text-align: right;
-    margin-right: 30px;
+    max-width: 280px;
+    text-align: left;
+    margin-right: 100px;
 }
 
 .container-right {
@@ -445,7 +424,7 @@ button:hover {
 }
 
 .schedule-list th {
-    background-color: #eeeeee;
+    background-color: #d8f17f57;
     color: #333;
     font-size: 18px;
     text-align: center;
@@ -463,7 +442,7 @@ button:hover {
 }
 
 .schedule-list th[colspan="3"] {
-    background-color: #d3d3d3; 
+    background-color: #D9F17F; 
     font-size: 20px;
     color: #333;
     text-align: center;
