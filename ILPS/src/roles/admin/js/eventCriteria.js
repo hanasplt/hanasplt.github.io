@@ -8,7 +8,7 @@ $(document).on("click", "#addMore", function(e) {
                 <input type="text" class="form-control" name="criteria[]" required>
             </div>
             <div class="col-3">
-                <input type="number" class="form-control" id="criPts" name="criPts[]" required>
+                <input type="number" class="form-control criPts" name="criPts[]" required>
             </div>
             <div class="col-1 remove-btn">
                 <button type="button" id="remove" class="btn btn-danger" title="Remove this row">
@@ -32,10 +32,10 @@ function updateCriteriaField() {
 }
 
 // Validate max and min of a criteria points
-document.getElementById('criPts').addEventListener('input', function(event) {
+$(document).on('input', '.criPts', function(event) {
     const input = event.target.value;
 
-    // Check if the input is between 0 and 100
+    // Check if the input is between 1 and 100
     if (input < 1 || input > 100) {
         Swal.fire({
             title: 'Oops!',
@@ -50,25 +50,34 @@ document.getElementById('criPts').addEventListener('input', function(event) {
 $(document).on("submit", "#addCriForm", function(e) {
     e.preventDefault();
 
-    updateCriteriaField();
+    var evnt = document.getElementById('eventIdC');
 
-    // Submits the form
-    $.ajax({
-        method: "post",
-        url: "../admin/EventTeamProcess.php",
-        data: $(this).serialize(),
-        success: function(response) {
-            if (response == "success") {
-                // Display success message
-                var str = '<div class="alert alert-success">Criteria added successfully!</div>';
-                $(".additionalRow").remove();
-                $("#addCriForm")[0].reset();
-            } else { // Display error message
-                var str = '<div class="alert alert-danger">'+response+'!</div>';
+    // Form validation
+    if (evnt.value == 0) { // If no events and teams are added yet
+        var str = '<div class="alert alert-danger">You need to insert event/s first!</div>';
+        $("#msg").html(str);
+    } else {
+        updateCriteriaField();
+
+        // Submits the form
+        $.ajax({
+            method: "post",
+            url: "../admin/EventTeamProcess.php",
+            data: $(this).serialize(),
+            success: function(response) {
+                if (response == "success") {
+                    // Display success message
+                    var str = '<div class="alert alert-success">Criteria added successfully!</div>';
+                    $(".additionalRow").remove();
+                    $("#addCriForm")[0].reset();
+                } else { // Display error message
+                    var str = '<div class="alert alert-danger">'+response+'!</div>';
+                }
+                $("#msg").html(str);
             }
-            $("#msg").html(str);
-        }
-    });
+        });
+    }
+    
 });
 
 // When cancel button is clicked

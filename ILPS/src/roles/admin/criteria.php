@@ -86,7 +86,7 @@
                         <input type="text" class="form-control" name="criteria[]" required>
                     </div>
                     <div class="col-3">
-                        <input type="number" class="form-control" id="criPts" name="criPts[]" required>
+                        <input type="number" class="form-control criPts" name="criPts[]" required>
                     </div>
                     <div class="col-1 add-btn">
                         <button type="button" id="addMore" class="btn" title="Add more row" style="background-color: #45a049; color: white;">

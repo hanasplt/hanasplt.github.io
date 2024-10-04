@@ -249,8 +249,28 @@ function updateJudgeField() {
     document.getElementById("judgeName").value = selectedText;
 }
 
+// Function to show or hide the contestant number field
+function toggleContestantNumField() {
+    // Get the currently selected option
+    var selectedOption = document.getElementById('eventId').options[document.getElementById('eventId').selectedIndex];
+    
+    // Get the event type from the data-type attribute
+    var eventType = selectedOption.getAttribute('data-type');
+    
+    // Get the input field element
+    var contestantNumField = document.getElementById('contestantNumField');
+    
+    // Show or hide the contestant number field based on event type
+    if (eventType === 'Socio-Cultural') {
+        contestantNumField.style.display = 'block'; // Show field
+    } else {
+        contestantNumField.style.display = 'none';  // Hide field
+    }
+}
 
 document.addEventListener('DOMContentLoaded', function() {
+    toggleContestantNumField();
+
     document.getElementById("openModal").addEventListener("click", function () {
         openModal();
     });
@@ -603,22 +623,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
 
-        // Display contestant no. input field when event type = 'Socio-Cultural'
-        document.getElementById('eventId').addEventListener('change', function() {
-            var selectedOption = this.options[this.selectedIndex];
-            var eventType = selectedOption.getAttribute('data-type');
-            
-            // Get the input field element
-            var contestantNumField = document.getElementById('contestantNumField');
-            
-            if (eventType === 'Socio-Cultural') {
-                contestantNumField.style.display = 'block';
-            } else {
-                contestantNumField.style.display = 'none';
-            }
-        });
-
-
     //deleting contestant
     document.addEventListener('click', function(event) {
         if (event.target.classList.contains('delete-icon')) {
@@ -915,22 +919,6 @@ function validateInput(event) {
         inputField.value = inputField.value.replace(/[^a-zA-Z\s]/g, '');
     }
 }
-/*
-document.getElementById('editcriPts').addEventListener('input', function(event) {
-    const input = event.target.value;
-
-    // Check if the input is between 0 and 100
-    if (input < 1 || input > 100) {
-        Swal.fire({
-            title: 'Oops!',
-            text: 'Please enter a value between 1 and 100.',
-            icon: 'warning',
-            confirmButtonText: 'OK'
-        });
-        event.target.value = '';  // Clear the input if invalid
-    }
-});
-*/
 
 // Validate form submission for export
 function submitForm(eventId, actionUrl) {
@@ -943,6 +931,9 @@ function submitForm(eventId, actionUrl) {
     // Submit the form
     form.submit();
 }
+
+
+document.getElementById('eventId').addEventListener('change', toggleContestantNumField);
 
 
 

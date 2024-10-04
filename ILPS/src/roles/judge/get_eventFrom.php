@@ -217,19 +217,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             echo '</table>';
             
             echo '</div>';
-        } else {
-            echo '<div class="ParticipantsCont">
-                    <table>
-                        <tr><td colspan="3">No Criteria for Judging.</td></tr>
-                    </table>';
-        }
 
-        
-        // When clicked 'Record Score', score summary with tally will be display
-        echo '<div class="CRButton">
+            // When clicked 'Record Score', score summary with tally will be display
+            echo '<div class="CRButton">
+                    <input type="button" class="GoButton" name="Back" value="BACK" onclick="window.location.href = \'judge.php?id='.$id.'\'" />
+                    <button class="ComputeB" type="submit">Record Score</button>
+                </div>';
+        } else {
+            echo '
+            <div class="ParticipantsCont">
+                <table>
+                    <tr><td colspan="3">No Criteria for Judging.</td></tr>
+                </table>
+            </div>
+            <div class="CRButton">
                 <input type="button" class="GoButton" name="Back" value="BACK" onclick="window.location.href = \'judge.php?id='.$id.'\'" />
-                <button class="ComputeB" type="submit">Record Score</button>
             </div>';
+        }
     }
 
 }
