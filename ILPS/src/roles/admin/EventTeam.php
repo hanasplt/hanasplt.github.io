@@ -1,11 +1,11 @@
 <?php require_once 'EventTeamProcess.php'; ?>
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>Admin</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+
     <link rel="stylesheet" href="../admin/css/EventTeam.css">
 
     <!--font-->
@@ -27,11 +27,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
 
-    <!--others-->
+    <!--alert-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-
 <body>
+
     <div class="nav-bar">
         <img class="logo-img" src="../../../public/assets/icons/logoo.png">
         <div class="logo-bar">
@@ -53,7 +53,6 @@
             <i class="fas fa-sign-out-alt" id="logoutIcon"></i>
         </div>
     </div>
-
     <div class="dash">
         <div class="create" id="openModal">
             <div class="new-account" id="openPopup">
@@ -68,12 +67,14 @@
             </div>
         </div>
     </div>
-
     <div class="accounts">
         <div class="accounts-title">
             <div>
                 <p id="event">Events</p>
             </div>
+        </div>
+        <div class="iframe-overlay" id="iframeOverlay">
+            <iframe id="popupFrame"></iframe>
         </div>
         <div class="button-group">
             <button class="group-btn" onclick="openContestantModal(this)">
@@ -85,14 +86,13 @@
             <button class="group-btn" onclick="openJudgesModal(this)">
                 <i class="fa-solid fa-gavel"></i> Add Judge
             </button>
-            <button class="group-btn" onclick="openCriteriaModal(this)">
+            <button class="group-btn" id="openCriteriaPopup">
                 <i class="fa-solid fa-list-check"></i> Add Criteria
             </button>
             <button class="group-btn" onclick="openScoringTable(this)">
                 <i class="fa-solid fa-chart-bar"></i> Scoring Table
             </button>
         </div>
-
         <div class="details">
             <div class="account-header">
                 <div style="float: left; width: 25%;">Event Name</div>
@@ -523,8 +523,8 @@
             </div>
         </div>
     </div>
-
-    <!--FOR ADDING CRITERIA MODAL-->
+<!--
+    FOR ADDING CRITERIA MODAL
     <div id="criteriaModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('criteriaModal')">&times;</span>
@@ -589,7 +589,7 @@
         </div>
     </div>
 
-    <!--FOR EDITING CRITERIA MODAL-->
+    FOR EDITING CRITERIA MODAL
     <div id="editcriteriaModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('editcriteriaModal')">&times;</span>
@@ -652,6 +652,7 @@
             </div>
         </div>
     </div>
+-->
 
     <!--FOR SCORING TABLE MODAL-->
     <div id="eventScoringTable" class="modal">
@@ -728,6 +729,5 @@
 <?php 
     $conn->close();
 ?>
-
 </body>
 </html>

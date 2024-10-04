@@ -116,11 +116,6 @@ function openJudgesModal() {
     var modal = document.getElementById("judgesModal");
     modal.style.display = "block";
 }
-// DISPLAYING CRITERIA MODAL
-function openCriteriaModal() {
-    var modal = document.getElementById("criteriaModal");
-    modal.style.display = "block";
-}
 // DISPLAYING SCORING TABLE MODAL
 function openScoringTable() {
     loadScoring(); // Loads the event scoring data
@@ -149,22 +144,27 @@ function openEditEventModal(element) { // Open modal for editing event
     var modal = document.getElementById("editEventModal");
     modal.style.display = "block";
 }
+// Open add criteria
+document.getElementById("openCriteriaPopup").addEventListener("click", function() { 
+    document.getElementById("popupFrame").src = "../admin/criteria.php";
+    document.getElementById("iframeOverlay").style.display = "block";
+});
+window.addEventListener("message", function(event) {
+    if (event.data === "closePopup") {
+        document.getElementById("iframeOverlay").style.display = "none";
+    }
+});
 // Open edit criteria modal
-function openEditCriModal(element) {
-    var card = element.closest('.edit-icon-cri');
-    var criId = card.getAttribute('data-id');
-    var criteria = card.getAttribute('data-criteria');
-    var pts = card.getAttribute('data-pts');
-    var evid = card.getAttribute('data-event-id');
-    
-    document.getElementById('eventIdCri').value = evid;
-    document.getElementById('editcriId').value = criId;
-    document.getElementById('editcriteria').value = criteria;
-    document.getElementById('editcriPts').value = pts;
+document.addEventListener("click", function(event) {
+    if (event.target && event.target.id === "openEditCriteriaPopup") {
+        var evid = event.target.getAttribute("data-evid");
+        var evname = event.target.getAttribute("data-evname");
 
-    var modal = document.getElementById("editcriteriaModal");
-    modal.style.display = "block";
-}
+        document.getElementById("popupFrame").src = "../admin/editcriteria.php?event=" + evid + "&&eventname=" + evname;
+        document.getElementById("iframeOverlay").style.display = "block";
+    }
+});
+
 
 
 // Deletes the event
@@ -247,16 +247,6 @@ function updateJudgeField() {
     var dropdownn = document.getElementById("judgeId");
     var selectedText = dropdownn.options[dropdownn.selectedIndex].text;
     document.getElementById("judgeName").value = selectedText;
-}
-function updateCriField() {
-    var dropdown = document.getElementById("eventIdC");
-    var selectedText = dropdown.options[dropdown.selectedIndex].text;
-    document.getElementById("eventname").value = selectedText;
-}
-function updateCriteriaField() {
-    var dropdown = document.getElementById("eventIdCri");
-    var selectedText = dropdown.options[dropdown.selectedIndex].text;
-    document.getElementById("editeventname").value = selectedText;
 }
 
 
@@ -563,116 +553,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-
-        // Form submission for adding criteria
-        document.querySelector('.save-btn-cri').addEventListener('click', function(event) {
-            event.preventDefault();  // Prevent default form submission
-
-            const eventId = document.getElementById('eventIdC').value;
-            const criteria = document.getElementById('criteria').value;
-            const criPts = document.getElementById('criPts').value;
-
-            if (eventId == '' || criteria == '' || criPts == '') {
-                Swal.fire({
-                    title: 'Oops!',
-                    text: 'All fields are required to be filled in.',
-                    icon: 'warning',
-                    confirmButtonText: 'OK'
-                });
-            } else if (eventId == 0) {
-                Swal.fire({
-                    title: 'Oops!',
-                    text: 'You need to insert event/s first.',
-                    icon: 'warning',
-                    confirmButtonText: 'OK'
-                });
-            } else { // Proceed inserting criteria
-                updateCriField();
-                
-                var formData = new FormData(document.querySelector('#addCriForm'));
-
-                fetch('EventTeamProcess.php', {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        Swal.fire({
-                            title: 'Success!',
-                            text: data.message,
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-                            location.reload();  // Reload the page or handle success
-                        }); 
-                    } else {
-                        Swal.fire({
-                            title: 'Oops!',
-                            text: data.message,
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.log('An error occurred: ' + error.message);
-                });
-            }
-        });
-
-
-        // Form submission for editing criteria
-        document.querySelector('.save-btn-editcri').addEventListener('click', function(event) {
-            event.preventDefault();  // Prevent default form submission
-
-            const eventId = document.getElementById('eventIdCri').value;
-            const criteria = document.getElementById('editcriteria').value;
-            const criPts = document.getElementById('editcriPts').value;
-
-            if (eventId == '' || criteria == '' || criPts == '') {
-                Swal.fire({
-                    title: 'Oops!',
-                    text: 'All fields are required to be filled in.',
-                    icon: 'warning',
-                    confirmButtonText: 'OK'
-                });
-            } else { // Proceed updating criteria
-                updateCriteriaField();
-
-                var formData = new FormData(document.querySelector('#editCriForm'));
-
-                fetch('EventTeamProcess.php', {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        Swal.fire({
-                            title: 'Success!',
-                            text: data.message,
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-                            location.reload();  // Reload the page or handle success
-                        }); 
-                    } else {
-                        Swal.fire({
-                            title: 'Oops!',
-                            text: data.message,
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                })
-                .catch(error => {
-                    alert('An error occurred: ' + error.message);
-                });
-            }
-        });
-
-
         // Form submission for adding score
         document.querySelector('.save-btn-scr').addEventListener('click', function(event) {
             event.preventDefault();  // Prevent default form submission
@@ -769,17 +649,6 @@ document.addEventListener('DOMContentLoaded', function() {
             var eventn = event.target.getAttribute('data-event-name');
 
             deleteJudge(id, name, eventn);
-        }
-    });
-
-    //deleting criteria
-    document.addEventListener('click', function(event) {
-        if (event.target.classList.contains('delete-icon-cri')) {
-            var id = event.target.getAttribute('data-id');
-            var name = event.target.getAttribute('data-name');
-            var eventn = event.target.getAttribute('data-event-name');
-
-            deleteCri(id, name, eventn);
         }
     });
 
@@ -937,10 +806,10 @@ function deleteJudge(id, name, event) {
     });
 }
 //deleting criteria
-function deleteCri(id, name, event) {
+function deleteCri(id, event) {
     Swal.fire({
         title: 'Confirm',
-        text: "Do you want to delete this criteria?",
+        text: "Do you want to delete the criteria/s for this event?",
         icon: 'warning',
         cancelButtonColor: '#8F8B8B',
         confirmButtonColor: '#7FD278',
@@ -951,8 +820,7 @@ function deleteCri(id, name, event) {
             fetch('EventTeamProcess.php', {
                 method: 'POST',
                 body: new URLSearchParams({
-                    criid: id,
-                    name: name,
+                    criteriaeventid: id,
                     eventname: event
                 })
             }).then(response => {
@@ -1047,21 +915,7 @@ function validateInput(event) {
         inputField.value = inputField.value.replace(/[^a-zA-Z\s]/g, '');
     }
 }
-// Validate max and min of a criteria points
-document.getElementById('criPts').addEventListener('input', function(event) {
-    const input = event.target.value;
-
-    // Check if the input is between 0 and 100
-    if (input < 1 || input > 100) {
-        Swal.fire({
-            title: 'Oops!',
-            text: 'Please enter a value between 1 and 100.',
-            icon: 'warning',
-            confirmButtonText: 'OK'
-        });
-        event.target.value = '';  // Clear the input if invalid
-    }
-});
+/*
 document.getElementById('editcriPts').addEventListener('input', function(event) {
     const input = event.target.value;
 
@@ -1076,9 +930,8 @@ document.getElementById('editcriPts').addEventListener('input', function(event) 
         event.target.value = '';  // Clear the input if invalid
     }
 });
+*/
 
-
-// Validate form submission for export
 // Validate form submission for export
 function submitForm(eventId, actionUrl) {
     // Find the form with the specific event ID

@@ -7,10 +7,6 @@
   $conn = require_once '../../../config/db.php'; // Database connection
   require_once '../admin/verifyLoginSession.php'; // Logged in or not
 
-  if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-  }
-
   $accId = $_SESSION['userId'];
 
   //add event
@@ -208,71 +204,107 @@
     $eventname = $_POST['eventname'];
     $criteria = $_POST['criteria'];
     $pts = $_POST['criPts'];
+    $totalPts  = 0;
 
     try {
+        // Checks whether a criteria exists for this event
         $sql = "CALL sp_getCriteria(?)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $event);
-    
-        if ($stmt->execute()) {
-            $retSum = $stmt->get_result();
-            
-            $totalPerc = 0; // Initialize to store total percentage
+        $stmt->execute();
+        $retSum = $stmt->get_result();
 
-            while ($row = $retSum->fetch_assoc()) {
-                // Get total percentage for input evaluation
-                $totalPerc += $row['percentage'];
-            }
-
-            $retSum->free();
-            $stmt->close();
-
-            // Unable insert, percentage of criteria must only be 100%
-            if ($totalPerc == 100) {
-                echo json_encode([
-                    'status' => 'error', 
-                    'message' => 'Total Criteria Percentage has reached 100%. No further entries can be added!'
-                ]);
-                exit;
-            } else {
-                if (($pts + $totalPerc) > 100) {
-                    echo json_encode([
-                        'status' => 'error', 
-                        'message' => 'Total Criteria Percentage will exceed 100%. 
-                        Please enter a value that ensures the total does not surpass 100%!'
-                    ]);
-                    exit;
-                }
-            }
-
-            $sql = "CALL sp_insertCriteria(?, ?, ?)";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("isi", $event, $criteria, $pts);
-        
-            if ($stmt->execute()) {
-                // Insert in the logs
-                $action = "Added event criteria ($criteria) for event $eventname";
-                $insertLogAct = "CALL sp_insertLog(?, ?)";
-    
-                $stmt = $conn->prepare($insertLogAct);
-                $stmt->bind_param("is", $accId, $action);
-                $stmt->execute();
-    
-                echo json_encode(['status' => 'success', 'message' => 'Criteria added successfully!']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => "Error: " . $sql . " " . $conn->error]);
-            }
-            $stmt->close();
+        if ($retSum->num_rows > 0) {
+            echo "There is already a Criteria for this event. Can't add anymore";
             exit;
         }
 
+        $retSum->free();
+        $stmt->close();
+    
+        // For loop to check total points
+        for ($i = 0; $i < count($criteria); $i++) {
+            $totalPts += $pts[$i];
+        }
+
+        if ($totalPts == 100) { // Proceed insertion
+            for ($i = 0; $i < count($criteria); $i++) {
+                // Insert criterias
+                $sql = "CALL sp_insertCriteria(?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("isi", $event, $criteria[$i], $pts[$i]);
+                $stmt->execute();
+            }
+        } else { // Total Points of Criteria must be 100
+            echo "Please enter a value that ensures the total percentage is 100%";
+            exit;
+        }
+
+        // Insert in the logs
+        $action = "Added criteria/s for the event $eventname";
+        $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+        $stmt = $conn->prepare($insertLogAct);
+        $stmt->bind_param("is", $accId, $action);
+        $stmt->execute();
+        
+        echo "success";
+        
     } catch (Exception $e) {
-        echo json_encode(['status' => 'error', 'message' => 'Error:'. $e->getMessage()]);
+        echo $e->getMessage();
     }
   }
 
   //edit criteria
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'editCriteria') {
+    $event = $_POST['editeventIdC'];
+    $eventname = $_POST['editeventname'];
+    $criteria = $_POST['editcriteria'];
+    $pts = $_POST['editcriPts'];
+    $totalPts  = 0;
+
+    try {
+        // For loop to check total points
+        for ($i = 0; $i < count($criteria); $i++) {
+            $totalPts += $pts[$i];
+        }
+
+        if ($totalPts == 100) { // Proceed insertion
+            $delCriteria = "DELETE FROM vw_criteria WHERE eventID = ?";
+
+            $stmt = $conn->prepare($delCriteria);
+            $stmt->bind_param("i", $event);
+            $stmt->execute();
+
+            $stmt->close();
+
+            for ($i = 0; $i < count($criteria); $i++) {
+                // Update criterias
+                $sql = "CALL sp_insertCriteria(?, ?, ?)";
+
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("isi", $event, $criteria[$i], $pts[$i]);
+                $stmt->execute();
+            }
+        } else { // Total Points of Criteria must be 100
+            echo "Please enter a value that ensures the total percentage is 100%";
+            exit;
+        }
+
+        // Insert in the logs
+        $action = "Updated criteria/s for the event $eventname";
+        $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+        $stmt = $conn->prepare($insertLogAct);
+        $stmt->bind_param("is", $accId, $action);
+        $stmt->execute();
+        
+        echo "success";
+        
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
+    /*
     $criid = $_POST['editcriId'];
     $evid = $_POST['eventIdCri'];
     $cri = $_POST['editcriteria'];
@@ -372,7 +404,7 @@
 
     } catch (Exception $e) {
         echo json_encode(['status' => 'error', 'message' => 'Error:'. $e->getMessage()]);
-    }
+    } */
   }
 
   //add scoring
@@ -625,31 +657,35 @@
 
   }
 
-  //deletes a criteria
-  if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['criid'])) {
-    $criID = $_POST['criid'];
-    $name = $_POST['name'];
+  //deletes criteria
+  if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['criteriaeventid'])) {
+    $eventid = $_POST['criteriaeventid'];
     $event = $_POST['eventname'];
     
-    $sql = "CALL sp_delCriteria(?)"; 
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $criID);
+    try {
+        $sql = "DELETE FROM vw_criteria WHERE eventId = ?;"; 
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $eventid);
 
-    $response = array();
+        $response = array();
 
-    if ($stmt->execute()) {
-        // Insert in the logs
-        $action = "Deleted criteria ($name) in the event $event";
-        $insertLogAct = "CALL sp_insertLog(?, ?)";
+        if ($stmt->execute()) {
+            // Insert in the logs
+            $action = "Deleted the criteria/s in the event $event";
+            $insertLogAct = "CALL sp_insertLog(?, ?)";
 
-        $stmt = $conn->prepare($insertLogAct);
-        $stmt->bind_param("is", $accId, $action);
-        $stmt->execute();
+            $stmt = $conn->prepare($insertLogAct);
+            $stmt->bind_param("is", $accId, $action);
+            $stmt->execute();
 
-        $response['success'] = true;
-    } else {
-        $response['success'] = false;
-        $response['error'] = $conn->error;
+            $response['success'] = true;
+        } else {
+            $response['success'] = false;
+            $response['error'] = $conn->error;
+        }
+
+    } catch (Exception $e) {
+        $response['error'] = $e->getMessage();
     }
 
     $stmt->close();

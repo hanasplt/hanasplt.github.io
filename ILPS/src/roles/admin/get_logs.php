@@ -40,9 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     CONCAT(a.firstName, ' ', 
                            a.lastName) AS fullname, 
                     al.actions 
-             FROM adminlogs al 
-             JOIN accounts a ON al.userId = a.userId
+             FROM vw_logs al 
+             JOIN vw_accounts a ON al.userId = a.userId
              $yearCondition
+             ORDER BY al.logId
              LIMIT ? OFFSET ?";
 
     $stmtLogs = $conn->prepare($getLogs);

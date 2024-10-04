@@ -18,6 +18,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     echo '<div class="accounts-title" style="margin-left: 0vw;">';
     echo '<p id="event">Criteria Table</p>';
+
+    if ($result->num_rows > 0) {
+        echo '
+            <div>
+            <button type="button" id="openEditCriteriaPopup" data-evid="'.$evid.'" data-evname="'.$event.'" style="cursor: pointer;">
+                <i class="fa-solid fa-pen-to-square edit-icon-cri"></i>
+                Edit
+            </button>
+            <button type="button" onclick="deleteCri('.$evid.', \''.$event.'\')" style="cursor: pointer;">
+                <i class="fa-solid fa-trash-can"></i>
+                Delete
+            </button>
+            </div>
+        ';
+    }
     echo '</div>';
 
     echo '<table class="contestantTable">';
@@ -26,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     echo '<th>No.</th>';
     echo '<th>Criteria</th>';
     echo '<th>Percentage</th>';
-    echo '<th>Action</th>';
     echo '</tr>';
     echo '</thead>';
 
@@ -43,10 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             echo '<td>' . $count++ . '</td>';
             echo '<td>' . $cri . '</td>';
             echo '<td>' . $pts . '</td>';
-            echo '<td>
-                    <i class="fa-solid fa-pen-to-square edit-icon-cri" data-id="'.$id.'"  data-name="'.$cri.'" data-event-name="'.$event.'" data-criteria="'.$cri.'" data-pts="'.$pts.'" data-event-id="'.$evid.'" onclick="openEditCriModal(this)" style="cursor: pointer;"></i>
-                    <i class="fa-solid fa-trash-can delete-icon-cri" data-id="'.$id.'" data-name="'.$cri.'" data-event-name="'.$event.'" style="cursor: pointer;"></i>
-                  </td>';
             echo '</tr>';
         }
     } else {
