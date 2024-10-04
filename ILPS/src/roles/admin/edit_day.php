@@ -1,5 +1,5 @@
 <?php
-include 'db.php';
+include '../../../config/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $dayId = $_POST['day_id'];

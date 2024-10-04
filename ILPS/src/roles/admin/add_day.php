@@ -1,6 +1,6 @@
 <?php
 
-include 'encryption.php';
+include '../../../config/db.php';
 
 $host = 'localhost'; 
 $username = 'root';  
