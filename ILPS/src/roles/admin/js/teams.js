@@ -18,94 +18,10 @@ document.getElementById('logoutIcon').addEventListener('click', function() {
 });
 
 
-// Delete team
-function deleteThis(id, name) {
-    Swal.fire({
-        title: 'Confirm',
-        text: "Do you want to delete this team?",
-        icon: 'warning',
-        cancelButtonColor: '#8F8B8B',
-        confirmButtonColor: '#7FD278',
-        confirmButtonText: 'Confirm',
-        showCancelButton: true
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch('../admin/teamsprocess.php', {
-                method: 'POST',
-                body: new URLSearchParams({
-                    teamid: id,
-                    teamname: name
-                })
-            }).then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Network response was not ok.');
-            }).then(data => {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Team deleted successfully!',
-                    icon: 'success',
-                    confirmButtonColor: '#7FD278',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    location.reload();
-                });
-            }).catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Team is in an event; cannot be deleted',
-                    icon: 'error',
-                    confirmButtonColor: '#d33',
-                    confirmButtonText: 'OK'
-                });
-            });
-        }
-    });
-}
-
-
 // Open Add Modal
 function openAddModal() {
   document.getElementById('addModal').style.display = 'block';
 }
-
-  // Open Edit Modal
-  function openEditModal(element) {
-    var card = element.closest('.card');
-    var teamID = card.getAttribute('data-id');
-    var teamName = card.getAttribute('data-name');
-    
-    document.getElementById('editTeamID').value = teamID;
-    document.getElementById('editTeamName').value = teamName;
-    document.getElementById('editTeamImage').value = ''; // Reset file input
-
-
-    fetch(`../admin/teamsprocess.php?editID=` + teamID)
-    .then(response => response.json())
-    .then(data => {
-        // Get only checkboxes inside the Edit Modal
-        var modal = document.getElementById('editModal');
-
-        // Reset all checkboxes
-        var checkboxes = document.querySelectorAll('input[name="course[]"]');
-        checkboxes.forEach(function(checkbox) {
-            checkbox.checked = false; // Uncheck all checkboxes
-        });
-
-        // Check the checkboxes that match the team's courses
-        data.courses.forEach(function(course) {
-            var checkbox = modal.querySelector('input[name="course[]"][value="' + course + '"]');
-            if (checkbox) {
-                checkbox.checked = true; // Check the matching checkbox
-            }
-        });
-    })
-    .catch(error => console.error('Error fetching course data:', error));
-
-    document.getElementById('editModal').style.display = 'block';
-  }
 
   // Close Modal
   function closeModal(modalID) {
@@ -210,4 +126,123 @@ function openAddModal() {
           }
         });
     }
+  });
+
+  $(document).on("click", ".card", function() {
+    var teamId = $(this).data('id'); // Get the teamId from the clicked card
+  
+    // Fetch team details
+    $.ajax({
+      method: "POST",
+      url: "../admin/teamsprocess.php",
+      data: { viewTeamId: teamId },
+      dataType: "json",
+      success: function(response) {
+        if (response.error) { // Display error message
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: response.error,
+          });
+        } else {
+          // Display the data in the SweetAlert
+          Swal.fire({
+            title: response.teamName,
+            html: `<div style="text-align: center;">
+                     <img src="../../public/uploads/${response.teamImage}" alt="Team Image" style="width: 150px; height: 150px; object-fit: cover;">
+                     <p style="margin-top: 15px;"><b>Team Members:</b><br>${response.teamMembers}</p>
+                   </div>`,
+            showCloseButton: true,
+            showConfirmButton: false,
+          });
+        }
+      }
+    });
+  });
+  
+  // Delete Team
+  $(document).on("click", ".fa-trash", function(e) {
+    e.stopPropagation(); // Prevent click event from bubbling up to the card
+    var teamId = $(this).closest('.card').data('id'); // Get the teamId from the card
+    var name = $(this).closest('.card').data('name'); // Get the teamname from the card
+    
+    Swal.fire({
+      title: 'Confirm',
+      text: "Do you want to delete this team?",
+      icon: 'warning',
+      cancelButtonColor: '#8F8B8B',
+      confirmButtonColor: '#7FD278',
+      confirmButtonText: 'Confirm',
+      showCancelButton: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('../admin/teamsprocess.php', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    teamid: teamId,
+                    teamname: name
+                })
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            }).then(data => {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Team deleted successfully!',
+                    icon: 'success',
+                    confirmButtonColor: '#7FD278',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    location.reload();
+                });
+            }).catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Team is in an event; cannot be deleted',
+                    icon: 'error',
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'OK'
+                });
+            });
+        }
+    });
+  });
+  
+  // Edit Team
+  $(document).on("click", ".fa-pen", function(e) {
+    e.stopPropagation(); // Prevent click event from bubbling up to the card
+    var teamID = $(this).closest('.card').data('id'); // Get the teamId from the card
+    var teamName = $(this).closest('.card').data('name'); // Get the teamname from the card
+
+    document.getElementById('editTeamID').value = teamID;
+    document.getElementById('editTeamName').value = teamName;
+    document.getElementById('editTeamImage').value = ''; // Reset file input
+
+
+    fetch(`../admin/teamsprocess.php?editID=` + teamID)
+    .then(response => response.json())
+    .then(data => {
+        // Get only checkboxes inside the Edit Modal
+        var modal = document.getElementById('editModal');
+
+        // Reset all checkboxes
+        var checkboxes = document.querySelectorAll('input[name="course[]"]');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = false; // Uncheck all checkboxes
+        });
+
+        // Check the checkboxes that match the team's courses
+        data.courses.forEach(function(course) {
+            var checkbox = modal.querySelector('input[name="course[]"][value="' + course + '"]');
+            if (checkbox) {
+                checkbox.checked = true; // Check the matching checkbox
+            }
+        });
+    })
+    .catch(error => console.error('Error fetching course data:', error));
+
+    document.getElementById('editModal').style.display = 'block';
   });

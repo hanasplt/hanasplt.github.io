@@ -44,6 +44,7 @@ try {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <link rel="icon" href="../../../public/assets/icons/logo.png">
 </head>
 <body>
@@ -83,13 +84,13 @@ try {
             $teamName = htmlspecialchars($row['teamName']);
             $teamId = (int)$row['teamId'];
 
-            echo "<div class='card' data-id='$teamId' data-name='$teamName' data-image='../../../public/uploads/$teamImageSrc'>";
+            echo "<div class='card' id='openTeam' data-id='$teamId' data-name='$teamName' data-image='../../../public/uploads/$teamImageSrc'>";
             echo "<div class='content'>";
             echo "<div class='img'><img src='$teamImageSrc' alt='Team Image'></div>";
             echo "<div class='details'><div class='name'>$teamName</div></div>";
             echo "<div class='media-icons'>";
-            echo "<a href='#' onclick='deleteThis($teamId, \"$teamName\")'><i class='fas fa-trash'></i></a>";
-            echo "<a href='#' onclick='openEditModal(this)'><i class='fas fa-pen'></i></a>";
+            echo "<a href='#' class='delete-btn' data-id='$teamId' data-name='$teamName'><i class='fas fa-trash'></i></a>";
+            echo "<a href='#' class='editteam-btn' data-id='$teamId' data-name='$teamName'><i class='fas fa-pen'></i></a>";
             echo "</div></div></div>";
           }
         } else {

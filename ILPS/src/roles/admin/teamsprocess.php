@@ -182,4 +182,39 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['editID'])) {
   }
 }
 
+// Retrieve Team Details
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['viewTeamId'])) {
+  $team_id = $_POST['viewTeamId'];
+
+  try {
+    $getTeam = "CALL sp_getATeam(?)";
+
+    $stmt = $conn->prepare($getTeam);
+    $stmt->bind_param("i", $team_id);
+    $stmt->execute();
+    $retval = $stmt->get_result();
+
+    if ($retval->num_rows > 0) {
+      $row = $retval->fetch_assoc();
+
+      $teamName = $row['teamName'];
+      $members = $row['members'];
+
+      $response = [
+        'teamName' => $row['teamName'],
+        'teamMembers' => $row['members'],
+        'teamImage' => $row['image'],
+      ];
+      
+      // Return the JSON response
+      echo json_encode($response);
+    } else {
+      echo json_encode(['error' => 'No team found']);
+    }
+    
+  } catch (Exception $e) {
+    echo json_encode(['error' => $e->getMessage()]);
+  }
+}
+
 ?>
