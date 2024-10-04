@@ -93,64 +93,94 @@ usort($scheduled_days, function($a, $b) {
         <div class="schedule-title">
             <p id="sched">Schedule</p>
         </div>
+        
         <div class="schedule-history">
-            <?php if (count($scheduled_days) > 0): ?>
-                <?php $dayCounter = 1;?>
-                <?php foreach ($scheduled_days as $day): ?>
-                    <div class="day-header">
-                        <h3>Day <?php echo $dayCounter++; ?></h3>
-                    </div>
-                    <div class="title-schedule">
-                        <div class="header-left">
-                            <h4 id="dayDate"><?php echo date('F j, Y', strtotime($day['day_date'])); ?></h4>
-                        </div>
-                        <div class="header-right">
-                            <button id="editHeaderBtn" class="header-btn editHeaderBtn" data-day-id="<?php echo $day['id']; ?>">Edit</button>
-                            <button id="deleteHeaderBtn" class="header-btn deleteHeaderBtn" data-day-id="<?php echo $day['id']; ?>">Delete</button>
-                        </div>
-                    </div>
+    <?php if (count($scheduled_days) > 0): ?>
+        <?php $dayCounter = 1; ?>
+        
+        <?php foreach ($scheduled_days as $day): ?>
+            <div class="new-sched day-schedule" id="daySchedule-<?php echo $day['id']; ?>" data-day-id="<?php echo $day['id']; ?>">
+            <div class="day-info">
+            <div class="day-icon">
+                <i class="fas fa-calendar-day"></i>
+            </div>
+                <p class="day-title">Day <?php echo $dayCounter++; ?></p>
+                <p class="day-date"><?php echo date('F j, Y', strtotime($day['day_date'])); ?></p>
+             </div>
 
-                    <!-- Events table -->
-                    <table id="scheduleTable-<?php echo $day['id']; ?>">
-                        <thead>
+                <div class="header-right">
+                    <button id="editHeaderBtn" class="header-btn editHeaderBtn" data-day-id="<?php echo $day['id']; ?>">Edit</button>
+                    <button id="deleteHeaderBtn" class="header-btn deleteHeaderBtn" data-day-id="<?php echo $day['id']; ?>">Delete</button>
+                </div>
+		
+            </div>
+
+            <!-- Events for the day (Initially hidden) -->
+            <div class="day-events" id="dayEvents-<?php echo $day['id']; ?>" style="display: none;">
+                <table id="scheduleTable-<?php echo $day['id']; ?>">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Activity</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (count($day['events']) == 0): ?>
                             <tr>
-                                <th>Time</th>
-                                <th>Activity</th>
-                                <th>Location</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                                <td colspan="5" style="text-align: center;">No events scheduled for this day.</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (count($day['events']) == 0): ?>
-                                <tr>
-                                    <td colspan="5" style="text-align: center;">No events scheduled for this day.</td>
+                        <?php else: ?>
+                            <?php foreach ($day['events'] as $event): ?>
+                                <tr data-event-id="<?php echo $event['id']; ?>">
+                                    <td><?php echo date('h:i A', strtotime($event['time'])); ?></td>
+                                    <td><?php echo $event['activity']; ?></td>
+                                    <td><?php echo $event['location']; ?></td>
+                                    <td><?php echo $event['status']; ?></td>
+                                    <td>
+                                        <button class="edit-btn" data-event-id="<?php echo $event['id']; ?>">Edit</button>
+                                        <button class="delete-btn">Delete</button>
+                                    </td>
                                 </tr>
-                            <?php else: ?>
-                                <?php foreach ($day['events'] as $event): ?>
-                                    <tr data-event-id="<?php echo $event['id']; ?>">
-                                        <td><?php echo date('h:i A', strtotime($event['time'])); ?></td>
-                                        <td><?php echo $event['activity']; ?></td>
-                                        <td><?php echo $event['location']; ?></td>
-                                        <td><?php echo $event['status']; ?></td>
-                                        <td>
-                                            <button class="edit-btn" data-event-id="<?php echo $event['id']; ?>">Edit</button>
-                                            <button class="delete-btn">Delete</button>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+                <button class="addEventBtn" id="addEventBtn" data-day-id="<?php echo $day['id']; ?>">Add Event</button>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>No schedule available. Please add new days.</p>
+    <?php endif; ?>
+</div>
+</div>
 
-                        </tbody>
+    <script>
+    document.querySelectorAll('.day-schedule').forEach(daySchedule => {
+        daySchedule.addEventListener('click', function() {
+            const dayId = this.getAttribute('data-day-id');
+            const eventsDiv = document.getElementById(`dayEvents-${dayId}`);
 
-                    </table>
-                    <button class="addEventBtn" id="addEventBtn" data-day-id="<?php echo $day['id']; ?>">Add Event</button>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p>No schedule available. Please add new days.</p>
-            <?php endif; ?>
-        </div>
-    </div>
+            if (eventsDiv.style.display === 'block') {
+                eventsDiv.style.display = 'none';
+            } else {
+                document.querySelectorAll('[id^="dayEvents-"]').forEach(eventDiv => {
+                    eventDiv.style.display = 'none';
+                });
+                eventsDiv.style.display = 'block';
+            }
+        });
+    });
+
+    // Prevent toggle when clicking Edit or Delete buttons
+    document.querySelectorAll('.header-btn').forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.stopPropagation(); 
+        });
+    });
+    </script>
 
     <!-- time sorting-->
     <script>
@@ -306,9 +336,8 @@ usort($scheduled_days, function($a, $b) {
                                         confirmButtonColor: '#7FD278',
                                         confirmButtonText: 'OK'
                                     }).then(() => {
-                                        location.reload();
+                                        location.reload(); // Reload the page to reflect changes
                                     });
-
                                 } else {
                                     Swal.fire({
                                         title: 'Error!',
@@ -318,14 +347,25 @@ usort($scheduled_days, function($a, $b) {
                                         confirmButtonText: 'OK'
                                     });
                                 }
+                            } else {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'Failed to delete the schedule.',
+                                    icon: 'error',
+                                    confirmButtonColor: '#d33',
+                                    confirmButtonText: 'OK'
+                                });
                             }
                         };
 
+                        // Send the ID of the day to be deleted
                         xhr.send(`day_id=${dayId}`);
                     }
                 });
             });
         });
+
+
 
         // Add event to specific date
         document.querySelectorAll('.addEventBtn').forEach(function (button) {
@@ -701,27 +741,6 @@ usort($scheduled_days, function($a, $b) {
         </div>
     </div>
     
-    <style>
-    #editEventModal {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: white;
-        padding: 20px;
-        border: 1px solid #ccc;
-        z-index: 1000;
-    }
-
-    .modal-content {
-        padding: 20px;
-    }
-
-    .swal2-input {
-        margin-bottom: 10px;
-        width: 100%;
-    }
-    </style>
 
 
     <!-- Edit Day Modal -->
@@ -734,18 +753,6 @@ usort($scheduled_days, function($a, $b) {
         </div>
     </div>
 
-    <style>
-    #editDayModal {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: white;
-        padding: 20px;
-        border: 1px solid #ccc;
-        z-index: 1000;
-    }
-    </style>
 
 </body>
 </html>
