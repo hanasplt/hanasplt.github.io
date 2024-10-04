@@ -24,16 +24,19 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     }
 
     // Retrieve total log count based sa year nga gi filter
-    $countQuery = "SELECT COUNT(*) as total FROM adminlogs al $yearCondition";
+    $countQuery = "SELECT fn_getLogCount(?) AS totalLogs";
     $stmtCount = $conn->prepare($countQuery);
     
+    $blnk = NULL;
     if (!empty($year)) {
         $stmtCount->bind_param("i", $year);
+    } else {
+        $stmtCount->bind_param("i", $blnk);
     }
     
     $stmtCount->execute();
     $countResult = $stmtCount->get_result();
-    $totalLogs = $countResult->fetch_assoc()['total'];
+    $totalLogs = $countResult->fetch_assoc()['totalLogs'];
     $totalPages = ceil($totalLogs / $limit); 
 
     $getLogs = "SELECT al.logId, al.date_on, 

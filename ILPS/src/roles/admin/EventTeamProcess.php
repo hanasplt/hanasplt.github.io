@@ -270,7 +270,7 @@
         }
 
         if ($totalPts == 100) { // Proceed insertion
-            $delCriteria = "DELETE FROM vw_criteria WHERE eventID = ?";
+            $delCriteria = "CALL sp_delCriteria(?)";
 
             $stmt = $conn->prepare($delCriteria);
             $stmt->bind_param("i", $event);
@@ -304,107 +304,6 @@
     } catch (Exception $e) {
         echo $e->getMessage();
     }
-    /*
-    $criid = $_POST['editcriId'];
-    $evid = $_POST['eventIdCri'];
-    $cri = $_POST['editcriteria'];
-    $pts = $_POST['editcriPts'];
-    $eventname = $_POST['editeventname'];
-    
-    try {
-        $sql = "CALL sp_getCriteria(?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $evid);
-    
-        if ($stmt->execute()) {
-            $retSum = $stmt->get_result();
-            
-            $totalPerc = 0; // Initialize to store total percentage
-
-            while ($row = $retSum->fetch_assoc()) {
-                // Get total percentage for input evaluation
-                $totalPerc += $row['percentage'];
-            }
-
-            $retSum->free();
-            $stmt->close();
-
-            // Retrieve the percentage of this criteria
-            $getPerc = "SELECT * FROM vw_criteria WHERE eventId = ? AND criteriaId = ?";
-
-            $stmt = $conn->prepare($getPerc);
-            $stmt->bind_param("ii", $evid, $criid);
-            $stmt->execute();
-
-            $retPerc = $stmt->get_result();
-            $retRow = $retPerc->fetch_assoc();
-
-            $criPerc = $retRow['percentage']; // Get for validation
-
-            $retPerc->free();
-            $stmt->close();
-
-
-            // Validate input points
-            if ($pts < $criPerc) {
-                // Minus input points to the criteria being edited
-                $thisCriPerc = $criPerc - $pts; // To know total percentage when updated
-
-                $insPerc = $totalPerc - $thisCriPerc;
-
-                if ($insPerc > 100) {
-                    echo json_encode([
-                        'status' => 'error', 
-                        'message' => 'Total Criteria Percentage will exceed 100%. 
-                        Please enter a value that ensures the total does not surpass 100%!'
-                    ]);
-                    exit;
-                }
-                
-            } else {
-                // Unable insert, percentage of criteria must only be 100%
-                if ($totalPerc == 100) {
-                    echo json_encode([
-                        'status' => 'error', 
-                        'message' => 'Total Criteria Percentage has reached 100%. No further entries can be added!'
-                    ]);
-                    exit;
-                } else {
-                    if (($pts + $totalPerc) > 100) {
-                        echo json_encode([
-                            'status' => 'error', 
-                            'message' => 'Total Criteria Percentage will exceed 100%. 
-                            Please enter a value that ensures the total does not surpass 100%!'
-                        ]);
-                        exit;
-                    }
-                }
-            }
-
-
-            // Proceed criteria update
-            $sql = "CALL sp_editCriteria(?, ?, ?, ?)";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("isii", $criid, $cri, $pts, $evid);
-
-            if ($stmt->execute()) {
-                // Insert in the logs
-                $action = "Updated event criteria ($cri) for event $eventname";
-                $insertLogAct = "CALL sp_insertLog(?, ?)";
-
-                $stmt = $conn->prepare($insertLogAct);
-                $stmt->bind_param("is", $accId, $action);
-                $stmt->execute();
-
-                echo json_encode(['status' => 'success', 'message' => 'Criteria updated successfully!']);
-            }
-            $stmt->close();
-            exit;
-        }
-
-    } catch (Exception $e) {
-        echo json_encode(['status' => 'error', 'message' => 'Error:'. $e->getMessage()]);
-    } */
   }
 
   //add scoring
@@ -414,35 +313,39 @@
     $category = $_POST['scoringCategory'];
     $pts = $_POST['scorePts'];
 
-    $sql = "CALL sp_getScoringChk(?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("is", $ranknum, $category);
-    $stmt->execute();
-    $retval = $stmt->get_result();
-
-    if ($retval->num_rows > 0) {
-        echo json_encode(['status' => 'error', 'message' => 'Scoring already exists!']);
-    } else {
-        $retval->free();
-        $stmt->close();
-
-        $sql = "CALL sp_insertScoring(?, ?, ?, ?)";
+    try {
+        $sql = "CALL sp_getScoringChk(?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("issi", $ranknum, $name, $category, $pts);
-    
-        if ($stmt->execute()) {
-            // Insert in the logs
-            $action = "Added event scoring rank $ranknum-$name($pts pts.) in the category $category";
-            $insertLogAct = "CALL sp_insertLog(?, ?)";
+        $stmt->bind_param("is", $ranknum, $category);
+        $stmt->execute();
+        $retval = $stmt->get_result();
 
-            $stmt = $conn->prepare($insertLogAct);
-            $stmt->bind_param("is", $accId, $action);
-            $stmt->execute();
-
-            echo json_encode(['status' => 'success', 'message' => 'Scoring added successfully!']);
+        if ($retval->num_rows > 0) {
+            echo json_encode(['status' => 'error', 'message' => 'Scoring already exists!']);
         } else {
-            echo json_encode(['status' => 'error', 'message' => "Error: " . $sql . "<br>" . $conn->error]);
+            $retval->free();
+            $stmt->close();
+
+            $sql = "CALL sp_insertScoring(?, ?, ?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("issi", $ranknum, $name, $category, $pts);
+        
+            if ($stmt->execute()) {
+                // Insert in the logs
+                $action = "Added event scoring rank $ranknum-$name($pts pts.) in the category $category";
+                $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+                $stmt = $conn->prepare($insertLogAct);
+                $stmt->bind_param("is", $accId, $action);
+                $stmt->execute();
+
+                echo json_encode(['status' => 'success', 'message' => 'Scoring added successfully!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => "Error: " . $sql . "<br>" . $conn->error]);
+            }
         }
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
     $stmt->close();
     exit;
@@ -663,7 +566,7 @@
     $event = $_POST['eventname'];
     
     try {
-        $sql = "DELETE FROM vw_criteria WHERE eventId = ?;"; 
+        $sql = "CALL sp_delCriteria(?)"; 
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $eventid);
 
@@ -698,27 +601,31 @@
     $rank = $_POST['rank'];
     $rankname = $_POST['rankname'];
     
-    $sql = "CALL sp_delScoring(?)"; 
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $rank);
+    try {
+        $sql = "CALL sp_delScoring(?)"; 
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $rank);
 
-    $response = array();
+        $response = array();
 
-    if ($stmt->execute()) {
-        // Insert in the logs
-        $action = "Deleted the event scoring rank $rank-$rankname";
-        $insertLogAct = "CALL sp_insertLog(?, ?)";
+        if ($stmt->execute()) {
+            // Insert in the logs
+            $action = "Deleted the event scoring rank $rank-$rankname";
+            $insertLogAct = "CALL sp_insertLog(?, ?)";
 
-        $stmt = $conn->prepare($insertLogAct);
-        $stmt->bind_param("is", $accId, $action);
-        $stmt->execute();
+            $stmt = $conn->prepare($insertLogAct);
+            $stmt->bind_param("is", $accId, $action);
+            $stmt->execute();
 
-        $response['success'] = true;
-    } else {
+            $response['success'] = true;
+        } else {
+            $response['success'] = false;
+            $response['error'] = $conn->error;
+        }
+    } catch (Exception $e) {
         $response['success'] = false;
-        $response['error'] = $conn->error;
+        $response['error'] = $e->getMessage();
     }
-
     $stmt->close();
     header('Content-Type: application/json');
     echo json_encode($response);

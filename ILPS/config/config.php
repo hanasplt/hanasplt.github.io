@@ -11,54 +11,62 @@ require_once 'database.php';
 require_once 'encryption.php';
 $conn = require_once 'db.php';
 
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+try {
+    $sqlT = "CREATE TABLE IF NOT EXISTS teams (
+        teamId INT AUTO_INCREMENT PRIMARY KEY,
+        teamName VARCHAR(255) NOT NULL,
+        members VARCHAR(255) NOT NULL,
+        image LONGBLOB NOT NULL,
+        status VARCHAR(255)
+    )";
+
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
 }
 
-$sqlT = "CREATE TABLE IF NOT EXISTS teams (
-    teamId INT AUTO_INCREMENT PRIMARY KEY,
-    teamName VARCHAR(255) NOT NULL,
-    members VARCHAR(255) NOT NULL,
-    image LONGBLOB NOT NULL,
-    status VARCHAR(255)
-)";
+try {
+    $sqlT = "CREATE TABLE IF NOT EXISTS events (
+        eventID INT AUTO_INCREMENT PRIMARY KEY,
+        eventName VARCHAR(255) NOT NULL,
+        eventType VARCHAR(255) NOT NULL,
+        eventCategory VARCHAR(255) NOT NULL,
+        status VARCHAR(255)
+    )";
 
-if ($conn->query($sqlT) === TRUE) {
-} else {
-    echo "Error creating table: " . $conn->error;
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
 }
 
-$sqlT = "CREATE TABLE IF NOT EXISTS events (
-    eventID INT AUTO_INCREMENT PRIMARY KEY,
-    eventName VARCHAR(255) NOT NULL,
-    eventType VARCHAR(255) NOT NULL,
-    eventCategory VARCHAR(255) NOT NULL,
-    status VARCHAR(255)
-)";
+try {
+    $sqlT = "CREATE TABLE IF NOT EXISTS accounts (
+        userId INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+        firstName VARCHAR(255) NOT NULL,
+        middleName VARCHAR(255),
+        lastName VARCHAR(255) NOT NULL,
+        suffix VARCHAR(50),
+        password VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        type VARCHAR(50) NOT NULL,
+        log_status VARCHAR(50),
+        status INT,
+        reset_token VARCHAR(64),
+        reset_token_expiration DATETIME
+        );";
 
-if ($conn->query($sqlT) === TRUE) {
-} else {
-    echo "Error creating table: " . $conn->error;
-}
-
-$sqlT = "CREATE TABLE IF NOT EXISTS accounts (
-    userId INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    firstName VARCHAR(255) NOT NULL,
-    middleName VARCHAR(255),
-    lastName VARCHAR(255) NOT NULL,
-    suffix VARCHAR(50),
-    password VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    type VARCHAR(50) NOT NULL,
-    log_status VARCHAR(50),
-    status INT,
-    reset_token VARCHAR(64),
-    reset_token_expiration DATETIME
-    );";
-
-if ($conn->query($sqlT) === TRUE) {
-} else {
-    echo "Error creating table: " . $conn->error;
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
 }
 
 
@@ -96,48 +104,61 @@ try {
     echo "Error: " . $e->getMessage();
 }
 
+try {
+    $sqlT = "CREATE TABLE IF NOT EXISTS contestant (
+        contId INT AUTO_INCREMENT PRIMARY KEY,
+        contNo INT,
+        teamId INT NOT NULL,
+        eventId INT NOT NULL,
+        status VARCHAR(255),
+        FOREIGN KEY (teamId) REFERENCES teams(teamId)
+        );";
 
-$sqlT = "CREATE TABLE IF NOT EXISTS contestant (
-    contId INT AUTO_INCREMENT PRIMARY KEY,
-    contNo INT,
-    teamId INT NOT NULL,
-    eventId INT NOT NULL,
-    status VARCHAR(255),
-    FOREIGN KEY (teamId) REFERENCES teams(teamId)
-    );";
-
-if ($conn->query($sqlT) === TRUE) {
-} else {
-    echo "Error creating table: " . $conn->error;
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
 }
 
-$sqlT = "CREATE TABLE IF NOT EXISTS committee (
-    comNo INT AUTO_INCREMENT PRIMARY KEY,
-    comId INT NOT NULL,
-    eventId INT NOT NULL,
-    status INT, #deletes committee
-    FOREIGN KEY (eventId) REFERENCES events(eventID), #new change
-    FOREIGN KEY (comId) REFERENCES accounts(userId) #new change
-    );";
+try {
+    $sqlT = "CREATE TABLE IF NOT EXISTS committee (
+        comNo INT AUTO_INCREMENT PRIMARY KEY,
+        comId INT NOT NULL,
+        eventId INT NOT NULL,
+        status INT, #deletes committee
+        FOREIGN KEY (eventId) REFERENCES events(eventID), #new change
+        FOREIGN KEY (comId) REFERENCES accounts(userId) #new change
+        );";
 
-if ($conn->query($sqlT) === TRUE) {
-} else {
-    echo "Error creating table: " . $conn->error;
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+
+} catch (Exception $e) {
+    echo $e->getMessage();
 }
 
-$sqlT = "CREATE TABLE IF NOT EXISTS judges (
-    judgeNo INT AUTO_INCREMENT PRIMARY KEY,
-    judgeId INT NOT NULL,
-    eventId INT NOT NULL,
-    status INT, #deletes judge
-    FOREIGN KEY (judgeId) REFERENCES accounts(userId), #new change
-    FOREIGN KEY (eventId) REFERENCES events(eventID) #new change
-    );";
+try {
+    $sqlT = "CREATE TABLE IF NOT EXISTS judges (
+        judgeNo INT AUTO_INCREMENT PRIMARY KEY,
+        judgeId INT NOT NULL,
+        eventId INT NOT NULL,
+        status INT, #deletes judge
+        FOREIGN KEY (judgeId) REFERENCES accounts(userId), #new change
+        FOREIGN KEY (eventId) REFERENCES events(eventID) #new change
+        );";
 
-if ($conn->query($sqlT) === TRUE) {
-} else {
-    echo "Error creating table: " . $conn->error;
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
 }
+
 
 $sqlT = "CREATE TABLE IF NOT EXISTS eventScoring (
     rankNo INT,
@@ -986,7 +1007,7 @@ if ($conn->query($sqlP) === TRUE) {
 // NAGAMIT
 $sqlP = "CREATE PROCEDURE IF NOT EXISTS sp_delCriteria(IN id INT)
         BEGIN
-            DELETE FROM vw_criteria WHERE criteriaId = id;
+            DELETE FROM vw_criteria WHERE eventID = id;
         END ;";
 if ($conn->query($sqlP) === TRUE) {
 } else {
@@ -1151,7 +1172,7 @@ if ($conn->query($sqlT) === TRUE) {
 
 
 
-// NAGAMIT
+
 // Stored Procedure for displaying logs
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_displayLog(IN inpYear INT)
         BEGIN
@@ -1165,7 +1186,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
-// inserting log
+// inserting log NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertLog(IN id INT, IN act VARCHAR(255))
         BEGIN
             INSERT INTO vw_logs VALUES (NULL, NOW(), id, act);
@@ -1174,6 +1195,36 @@ if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
+
+
+// STORED FUNCTION
+try {
+    // Stored Function for count logs
+    $sqlT = "CREATE FUNCTION fn_getLogCount(yearFilter INT) 
+            RETURNS INT 
+            DETERMINISTIC
+            BEGIN
+                DECLARE totalLogs INT;
+
+                IF yearFilter IS NOT NULL THEN
+                    SELECT COUNT(*) INTO totalLogs
+                    FROM vw_logs
+                    WHERE YEAR(date_on) = yearFilter;
+                ELSE
+                    SELECT COUNT(*) INTO totalLogs
+                    FROM vw_logs;
+                END IF;
+
+                RETURN totalLogs;
+            END ;";
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
 
 $conn->close();
 
