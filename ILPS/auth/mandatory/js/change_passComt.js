@@ -5,9 +5,6 @@ var fid = document.getElementById('fid'); // Element where the Committee ID exis
 if (x) {
     const form = document.getElementById('form-container');
 
-    form.style.display = "none"; // remove form display
-    // Message from database process will display
-
     x.addEventListener('click', function() {
         // redirect to committee page
         window.location.href = "../../src/roles/committee/committee.php?id="+fid.value;

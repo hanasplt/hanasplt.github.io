@@ -5,9 +5,6 @@ var jid = document.getElementById('jid'); // Element where the Judge ID exists
 if (x) {
     const form = document.getElementById('form-container');
 
-    form.style.display = "none"; // remove form display
-    // Message from database process will display
-
     x.addEventListener('click', function() {
         // redirect to judge page
         window.location.href = "../../src/roles/judge/judge.php?id="+jid.value;

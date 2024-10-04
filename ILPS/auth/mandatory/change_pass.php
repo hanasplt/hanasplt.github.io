@@ -41,29 +41,34 @@
             unset($_SESSION['error']);
         }
         ?>
+        <div class="left-part">
+            <img src="../../public/assets/icons/reset-pass-1.png" alt="reset icon">
+        </div>
         <div class="form-container" id="form-container">
-            <h2>Change Password</h2>
-            <p>You are required to change your password.
-            <b>Password must contain the following:</b><br>
-                <span id="letter" class="status">- <i>Lowercase</i> letter</span><br>
-                <span id="capital" class="status">- <i>Capital</i> letter</span><br>
-                <span id="number" class="status">- A <i>Number</i></span><br>
-                <span id="length" class="status">- A Minimum of <i>8 characters</i></span><br>
-            </p>
-            <form id="changePasswordForm" method="post" action="../../public/process.php">
-                <input type="text" name="jid" id="jid" value="<?php echo $jid; ?>" hidden>
-                <div class="input-group">
-                    <label for="newpass">Enter new password:</label>
-                    <input type="password" name="newpass" id="newpass" required>
-                    <i class="fa-solid fa-eye-slash" id="toggleNewPass"></i>
-                </div>
-                <div class="input-group">
-                    <label for="confpass">Confirm new password:</label>
-                    <input type="password" name="confpass" id="confpass" required>
-                    <i class="fa-solid fa-eye-slash" id="toggleConfPass"></i>
-                </div>
-                <button type="submit" name="changepass">Change Password</button>
-            </form>
+            <div class="container-form">
+                <h2>Change Password</h2>
+                <p>You are required to change your password.
+                <b>Password must contain the following:</b><br>
+                    <span id="letter" class="status">- <i>Lowercase</i> letter</span><br>
+                    <span id="capital" class="status">- <i>Capital</i> letter</span><br>
+                    <span id="number" class="status">- A <i>Number</i></span><br>
+                    <span id="length" class="status">- A Minimum of <i>8 characters</i></span><br>
+                </p>
+                <form id="changePasswordForm" method="post" action="../../public/process.php">
+                    <input type="text" name="jid" id="jid" value="<?php echo $jid; ?>" hidden>
+                    <div class="input-group">
+                        <label for="newpass">Enter new password:</label>
+                        <input type="password" name="newpass" id="newpass" required>
+                        <i class="fa-solid fa-eye-slash" id="toggleNewPass"></i>
+                    </div>
+                    <div class="input-group">
+                        <label for="confpass">Confirm new password:</label>
+                        <input type="password" name="confpass" id="confpass" required>
+                        <i class="fa-solid fa-eye-slash" id="toggleConfPass"></i>
+                    </div>
+                    <button type="submit" name="changepass">Change Password</button>
+                </form>
+            </div>
         </div>
     </div>
 
