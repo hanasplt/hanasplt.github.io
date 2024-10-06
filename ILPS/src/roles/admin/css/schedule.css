@@ -445,10 +445,20 @@ body {
 }
 
 .swal2-input1,
-.swal2-input2,
-.swal2-input3 {
+.swal2-input2 {
     margin: auto;
     height: 40px;
+    width: 90%;
+    margin-bottom: 10px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.swal2-input3 {
+    margin: auto;
+    height: 50px;
     width: 90%;
     margin-bottom: 10px;
     padding: 5px;
@@ -495,4 +505,11 @@ body {
     padding: 20px;
     border: 1px solid #ccc;
     z-index: 1000;
+}
+
+.swal-title {
+    text-align: left;
+    margin-left: 14px;
+    margin-bottom: 0;
+    margin-top: 0;
 }

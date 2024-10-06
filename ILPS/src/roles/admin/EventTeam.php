@@ -1,6 +1,7 @@
 <?php require_once 'EventTeamProcess.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,6 +31,7 @@
     <!--alert-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body>
 
     <div class="nav-bar">
@@ -120,16 +122,16 @@
                         $db_evType = $row['eventType'];
                         $db_evCatg = $row['eventCategory'];
 
-                        ?>
+            ?>
                         <div class="account" onclick="toggleEvent('eventTable<?php echo $db_evName; ?>', 
                         '<?php echo $db_evType; ?>', '<?php echo $db_evID; ?>',
                         '<?php echo $row['eventName']; ?>', 'displayContestantTable<?php echo $db_evName; ?>', 
                         'displayOtherTable<?php echo $db_evName; ?>', 'displayCriteriaTable<?php echo $db_evName; ?>')"
-                        data-event-id="<?php echo $db_evID; ?>"
-                        data-name="<?php echo $row['eventName']; ?>"
-                        data-table-id="<?php echo $db_evName; ?>Table"
-                        data-type="<?php echo $db_evType; ?>"
-                        data-category="<?php echo $db_evCatg; ?>">
+                            data-event-id="<?php echo $db_evID; ?>"
+                            data-name="<?php echo $row['eventName']; ?>"
+                            data-table-id="<?php echo $db_evName; ?>Table"
+                            data-type="<?php echo $db_evType; ?>"
+                            data-category="<?php echo $db_evCatg; ?>">
                             <div style="float: left; width: 25%;"><?php echo $row['eventName']; ?></div>
                             <div style="float: left; width: 15%;"><?php echo $db_evType; ?></div>
                             <div style="float: left; width: 10%;"><?php echo $db_evCatg; ?></div>
@@ -149,7 +151,7 @@
                             <div class="export-button">
                                 <form method="post" id="exportForm<?php echo $db_evID; ?>">
                                     <input type="hidden" name="xp_eventId" value="<?php echo $db_evID; ?>">
-                                    Export <?php echo $db_evName; ?>'s Data as: 
+                                    Export <?php echo $db_evName; ?>'s Data as:
                                     <button type="button" onclick="submitForm(<?php echo $db_evID; ?>, 'export/exportEventXlxs.php')" name="exportlog_xsls" id="exportlog_xsls">
                                         Excel
                                     </button>
@@ -164,7 +166,7 @@
                             <div id="displayOtherTable<?php echo $db_evName; ?>"></div>
                             <div id="displayCriteriaTable<?php echo $db_evName; ?>"></div>
                         </div>
-                        <?php
+            <?php
 
                     }
                 } else {
@@ -177,7 +179,6 @@
 
                 $retval->free();
                 $stmt->close();
-
             } catch (Exception $e) {
                 die("Error: " . $e->getMessage());
             }
@@ -258,7 +259,7 @@
                                 <option value="Team">Team</option>
                             </select>
                         </div>
-                        
+
                         <div class="modal-footer">
                             <button type="button" class="cancel-btn" onclick="closeModal('editEventModal')">Cancel</button>
                             <button type="submit" class="save-btn-editev">Save</button>
@@ -285,28 +286,28 @@
                             <label for="eventId">Event Name:</label>
                             <select id="eventId" name="eventId" required>
                                 <?php
-                                    $sql = "CALL sp_getEvents();";
-                                    $stmt = $conn->prepare($sql);
-                                    $stmt->execute();
-                                    $result = $stmt->get_result();
-                                    
-                                    if($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            $db_evval = $row['eventID'];
-                                            $db_evname = $row['eventName'];
-                                            $db_evType = $row['eventType'];
+                                $sql = "CALL sp_getEvents();";
+                                $stmt = $conn->prepare($sql);
+                                $stmt->execute();
+                                $result = $stmt->get_result();
 
-                                            ?>
-                                            <option value="<?php echo $db_evval; ?>" data-type="<?php echo $db_evType; ?>">
-                                                <?php echo $db_evname; ?>
-                                            </option>
-                                            <?php
-                                        }
-                                    } else {
-                                        echo '<option selected disabled value=0>No Event/s exists.</option>';
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        $db_evval = $row['eventID'];
+                                        $db_evname = $row['eventName'];
+                                        $db_evType = $row['eventType'];
+
+                                ?>
+                                        <option value="<?php echo $db_evval; ?>" data-type="<?php echo $db_evType; ?>">
+                                            <?php echo $db_evname; ?>
+                                        </option>
+                                <?php
                                     }
-                                    $result->free();
-                                    $stmt->close();
+                                } else {
+                                    echo '<option selected disabled value=0>No Event/s exists.</option>';
+                                }
+                                $result->free();
+                                $stmt->close();
                                 ?>
                             </select>
                         </div>
@@ -320,28 +321,28 @@
                             <label for="contestantId">Contestant Name:</label>
                             <select id="contestantId" name="contestantId" required>
                                 <?php
-                                    $sql = "CALL sp_getAllTeam;";
-                                    $stmt = $conn->prepare($sql);
-                                    $stmt->execute();
-                                    $result = $stmt->get_result();
-                                    
-                                    if($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            $teamval = $row['teamId'];
-                                            $teamname = $row['teamName'];
-                                            ?>
-                                            <option value="<?php echo $teamval; ?>"><?php echo $teamname; ?></option>
-                                            <?php
-                                        }
-                                    } else {
-                                        echo '<option selected disabled value=0>No Team/s exists.</option>';
+                                $sql = "CALL sp_getAllTeam;";
+                                $stmt = $conn->prepare($sql);
+                                $stmt->execute();
+                                $result = $stmt->get_result();
+
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        $teamval = $row['teamId'];
+                                        $teamname = $row['teamName'];
+                                ?>
+                                        <option value="<?php echo $teamval; ?>"><?php echo $teamname; ?></option>
+                                <?php
                                     }
-                                    $result->free();
-                                    $stmt->close();
+                                } else {
+                                    echo '<option selected disabled value=0>No Team/s exists.</option>';
+                                }
+                                $result->free();
+                                $stmt->close();
                                 ?>
                             </select>
                         </div>
-                        
+
                         <div class="modal-footer">
                             <button type="button" class="cancel-btn" onclick="closeModal('contModal')">Cancel</button>
                             <button type="submit" class="save-btn-contestant">Save</button>
@@ -366,31 +367,31 @@
                             <label for="eventIdComt">Event Name:</label>
                             <select id="eventIdComt" name="eventIdComt" required>
                                 <?php
-                                    $sql = "CALL sp_getEventFrom(?);";
-                                    $ev_type = "Sports";
+                                $sql = "CALL sp_getEventFrom(?);";
+                                $ev_type = "Sports";
 
-                                    $stmt = $conn->prepare($sql);
-                                    $stmt->bind_param("s", $ev_type);
-                                    $stmt->execute();
-                                    $result = $stmt->get_result();
-                                    
-                                    if($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            $db_evval = $row['eventID'];
-                                            $db_evname = $row['eventName'];
-                                            $db_evType = $row['eventType'];
+                                $stmt = $conn->prepare($sql);
+                                $stmt->bind_param("s", $ev_type);
+                                $stmt->execute();
+                                $result = $stmt->get_result();
 
-                                            ?>
-                                            <option value="<?php echo $db_evval; ?>" data-type="<?php echo $db_evType; ?>">
-                                                <?php echo $db_evname; ?>
-                                            </option>
-                                            <?php
-                                        }
-                                    } else {
-                                        echo '<option selected disabled value=0>No Event/s exists.</option>';
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        $db_evval = $row['eventID'];
+                                        $db_evname = $row['eventName'];
+                                        $db_evType = $row['eventType'];
+
+                                ?>
+                                        <option value="<?php echo $db_evval; ?>" data-type="<?php echo $db_evType; ?>">
+                                            <?php echo $db_evname; ?>
+                                        </option>
+                                <?php
                                     }
-                                    $result->free();
-                                    $stmt->close();
+                                } else {
+                                    echo '<option selected disabled value=0>No Event/s exists.</option>';
+                                }
+                                $result->free();
+                                $stmt->close();
                                 ?>
                             </select>
                         </div>
@@ -399,35 +400,35 @@
                             <label for="comtId">Committee Name:</label>
                             <select id="comtId" name="comtId" required>
                                 <?php
-                                    $sql = "CALL sp_getAccType(?);";
-                                    $stmt = $conn->prepare($sql);
-                                    $role = 'Committee';
-                                    $stmt->bind_param("s", $role);
-                                    $stmt->execute();
-                                    $result = $stmt->get_result();
-                                    
-                                    if($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            $userId = $row['userId'];
-                                            $name = $row['firstName'];
-                                            ?>
-                                            <option value="<?php echo $userId; ?>" 
-                                                    data-fname="<?php echo $name; ?>"><?php echo $name; ?>
-                                            </option>
-                                            <?php
-                                        }
-                                    } else {
-                                        echo '<option selected disabled value=0>No Committee/s exists.</option>';
+                                $sql = "CALL sp_getAccType(?);";
+                                $stmt = $conn->prepare($sql);
+                                $role = 'Committee';
+                                $stmt->bind_param("s", $role);
+                                $stmt->execute();
+                                $result = $stmt->get_result();
+
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        $userId = $row['userId'];
+                                        $name = $row['firstName'];
+                                ?>
+                                        <option value="<?php echo $userId; ?>"
+                                            data-fname="<?php echo $name; ?>"><?php echo $name; ?>
+                                        </option>
+                                <?php
                                     }
-                                    $result->free();
-                                    $stmt->close();
+                                } else {
+                                    echo '<option selected disabled value=0>No Committee/s exists.</option>';
+                                }
+                                $result->free();
+                                $stmt->close();
                                 ?>
                             </select>
                         </div>
 
                         <input type="text" id="comtEVName" name="comtEVName" hidden>
                         <input type="text" id="comtName" name="comtName" hidden>
-                        
+
                         <div class="modal-footer">
                             <button type="button" class="cancel-btn" onclick="closeModal('comtSpModal')">
                                 Cancel
@@ -454,31 +455,31 @@
                             <label for="eventIdJ">Event Name:</label>
                             <select id="eventIdJ" name="eventIdJ" required>
                                 <?php
-                                    $sql = "CALL sp_getEventFrom(?);";
-                                    $ev_type = "Socio-Cultural";
+                                $sql = "CALL sp_getEventFrom(?);";
+                                $ev_type = "Socio-Cultural";
 
-                                    $stmt = $conn->prepare($sql);
-                                    $stmt->bind_param("s", $ev_type);
-                                    $stmt->execute();
-                                    $result = $stmt->get_result();
-                                    
-                                    if($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            $db_evval = $row['eventID'];
-                                            $db_evname = $row['eventName'];
-                                            $db_evType = $row['eventType'];
+                                $stmt = $conn->prepare($sql);
+                                $stmt->bind_param("s", $ev_type);
+                                $stmt->execute();
+                                $result = $stmt->get_result();
 
-                                            ?>
-                                            <option value="<?php echo $db_evval; ?>" data-type="<?php echo $db_evType; ?>">
-                                                <?php echo $db_evname; ?>
-                                            </option>
-                                            <?php
-                                        }
-                                    } else {
-                                        echo '<option selected disabled value=0>No Event/s exists.</option>';
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        $db_evval = $row['eventID'];
+                                        $db_evname = $row['eventName'];
+                                        $db_evType = $row['eventType'];
+
+                                ?>
+                                        <option value="<?php echo $db_evval; ?>" data-type="<?php echo $db_evType; ?>">
+                                            <?php echo $db_evname; ?>
+                                        </option>
+                                <?php
                                     }
-                                    $result->free();
-                                    $stmt->close();
+                                } else {
+                                    echo '<option selected disabled value=0>No Event/s exists.</option>';
+                                }
+                                $result->free();
+                                $stmt->close();
                                 ?>
                             </select>
                         </div>
@@ -487,33 +488,33 @@
                             <label for="judgeId">Judge Name:</label>
                             <select id="judgeId" name="judgeId" required>
                                 <?php
-                                    $sql = "CALL sp_getAccType(?);";
-                                    $stmt = $conn->prepare($sql);
-                                    $role = 'Judge';
-                                    $stmt->bind_param("s", $role);
-                                    $stmt->execute();
-                                    $result = $stmt->get_result();
-                                    
-                                    if($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            $userId = $row['userId'];
-                                            $name = $row['firstName'];
-                                            ?>
-                                            <option value="<?php echo $userId; ?>"><?php echo $name; ?></option>
-                                            <?php
-                                        }
-                                    } else {
-                                        echo '<option selected disabled value=0>No Judge/s exists.</option>';
+                                $sql = "CALL sp_getAccType(?);";
+                                $stmt = $conn->prepare($sql);
+                                $role = 'Judge';
+                                $stmt->bind_param("s", $role);
+                                $stmt->execute();
+                                $result = $stmt->get_result();
+
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        $userId = $row['userId'];
+                                        $name = $row['firstName'];
+                                ?>
+                                        <option value="<?php echo $userId; ?>"><?php echo $name; ?></option>
+                                <?php
                                     }
-                                    $result->free();
-                                    $stmt->close();
+                                } else {
+                                    echo '<option selected disabled value=0>No Judge/s exists.</option>';
+                                }
+                                $result->free();
+                                $stmt->close();
                                 ?>
                             </select>
                         </div>
 
                         <input type="text" id="judgeEVName" name="judgeEVName" hidden>
                         <input type="text" id="judgeName" name="judgeName" hidden>
-                        
+
                         <div class="modal-footer">
                             <button type="button" class="cancel-btn" onclick="closeModal('judgesModal')">Cancel</button>
                             <button type="submit" class="save-btn-judge">Save</button>
@@ -570,7 +571,7 @@
                             <label for="rankName">Rank Name:</label>
                             <input type="text" id="rankName" maxlength="30" name="rankName" placeholder="e.g., Champion/Winner">
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="scoringCategory">Category:</label>
                             <select id="scoringCategory" name="scoringCategory">
@@ -583,7 +584,7 @@
                             <label for="scorePts">Points:</label>
                             <input type="number" maxlength="10" id="scorePts" name="scorePts">
                         </div>
-                        
+
                         <div class="modal-footer">
                             <button type="button" class="cancel-btn" onclick="closeModal('scoringModal')">Cancel</button>
                             <button type="submit" class="save-btn-scr">Save</button>
@@ -596,8 +597,9 @@
 
     <script src="../admin/js/EventTeamJS.js"></script>
 
-<?php 
+    <?php
     $conn->close();
-?>
+    ?>
 </body>
+
 </html>
