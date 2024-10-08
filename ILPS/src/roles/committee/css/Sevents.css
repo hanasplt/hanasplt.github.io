@@ -360,3 +360,95 @@ div .msg {
     color: white;
     font-weight: 200;
 }
+
+.recordTable {
+    margin-bottom: 40px;
+    margin-left: 70px;
+    margin-right: 70px;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-left: 3px solid #7FD278;
+}
+
+.recordTable table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+.recordTable table th, 
+.recordTable table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.recordTable table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    color: #333;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.recordTable table td {
+    color: #555;
+    font-size: 13px;
+}
+
+.recordTable table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.recordTable table td button {
+    padding: 8px 12px;
+    font-size: 12px;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 5px;
+    transition: background-color 0.3s;
+}
+
+.edit-btn {
+    background-color: #4CAF50;
+}
+
+.save-btn {
+    background-color: #006eff;
+}
+
+.delete-btn {
+    background-color: #FFA500;
+}
+
+.edit-btn:hover {
+    background-color: #45a049;
+}
+
+.save-btn:hover {
+    background-color: #0264e6;
+}
+
+.delete-btn:hover {
+    background-color: #e69500;
+}
+
+.non-editable {
+    border: none;
+    background-color: transparent; 
+}
+
+.non-editable:disabled {
+    color: black; 
+    background-color: transparent; 
+    opacity: 1; 
+    border: none;
+}
+
+/* Disable pointer events so the dropdown isn't interactive while disabled */
+.non-editable:disabled {
+    pointer-events: none;
+    appearance: none;
+}

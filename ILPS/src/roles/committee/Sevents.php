@@ -19,6 +19,7 @@ $contestant = isset($_GET['contestant']) ? $_GET['contestant'] : '';
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,6 +30,7 @@ $contestant = isset($_GET['contestant']) ? $_GET['contestant'] : '';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
 </head>
+
 <body>
 
     <div class="nav-bar">
@@ -52,13 +54,13 @@ $contestant = isset($_GET['contestant']) ? $_GET['contestant'] : '';
 
     <div class="sub-head" style="margin-top: 8%;">
         <button id="backbtn-faci" onclick="window.location.href='committee.php?id=<?php echo $id; ?>'">
-            <img src="../../../public/assets/icons/back.png" alt="back arrow button" width="20" style="margin-right: 5px;">  
+            <img src="../../../public/assets/icons/back.png" alt="back arrow button" width="20" style="margin-right: 5px;">
             Back
         </button>
         <h1 style="text-align: center;"><?php echo $evname; ?></h1>
         <?php
-            if (isset($_SESSION['error'])) { // For displaying error
-                echo '
+        if (isset($_SESSION['error'])) { // For displaying error
+            echo '
                 <div class="msg" id="msg-container">
                     <div class="msg-content">
                         <span style="display: flex; align-items: center; justify-content: space-around;">
@@ -68,216 +70,323 @@ $contestant = isset($_GET['contestant']) ? $_GET['contestant'] : '';
                     </div>
                 </div>
                 ';
-                unset($_SESSION['error']);
-            }
+            unset($_SESSION['error']);
+        }
         ?>
     </div>
-
-
-    <div class="link-container">
-    <?php
-        $query = "CALL sp_getEventContestant(?)";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("i", $evId);
-        $stmt->execute();
-        $retval = $stmt->get_result();
-
-        if ($retval->num_rows > 0) {
-            while($row = $retval->fetch_assoc()) {
-                $conid = $row['contId'];
-                ?>
-    <a href="Sevents.php?event=<?php echo $evId ?>&name=<?php echo $evname ?>&contestant=<?php echo $conid ?>"><?php echo $row['team']; ?></a>
-                <?php
-            }
-        }
-        $retval->free();
-        $stmt->close();
-    ?>
-    <a href="Sevents.php?event=<?php echo $evId ?>&name=<?php echo $evname ?>&contestant=0">View Tally</a>
-    </div>
-
-
 
     
-
-    <form id="scoreForm" method="post" action="../committee/SeventsProcess.php" style="display: none;">
-        <input type="number" name="evId" id="evId" value="<?php echo ($evId); ?>" hidden>
-        <input type="number" name="cont" id="cont" value="<?php echo ($contestant); ?>" hidden>
-        <input type="number" name="id" id="id" value="<?php echo ($id); ?>" hidden>
-        <input type="text" name="evname" id="evname" value="<?php echo ($evname); ?>" hidden>
-
-        <?php
-        // Retrieve team info.
-        $sql = "CALL sp_getTeams(?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $contestant);
-        $stmt->execute();
-        $retval = $stmt->get_result();
-
-        if ($retval->num_rows > 0) {
-            $row = $retval->fetch_assoc();
-            $conName = ($row['teamName']);
-        } else {
-            $conName = "Unknown Team"; // Fallback if no results
-        }
-        $retval->free();
-        $stmt->close();
-
-        // Ensure no more results are pending for this query
-        $conn->next_result();
-        ?>
-        <input type="text" name="conname" id="conname" value="<?php echo ($conName); ?>" hidden>
-        <b>Enter score for <?php echo $conName; ?></b><br><br>
-
-        <?php
-        // Retrieve score of the contestant
-        $sql = "CALL sp_getScore(?,?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ii", $contestant, $evId);
-        $stmt->execute();
-        $retval = $stmt->get_result();
-
-        if ($retval->num_rows > 0) {
-            // Select the dropdown points that's equivalent to $score
-            $row = $retval->fetch_assoc();
-            $score = ($row['total_score']);
-
-            $retval->free();
-            $stmt->close();
-
-            // Ensure no more results are pending for this query
-            $conn->next_result();
-
-            // Retrieve Score Points for dropdown
-            $get = "CALL sp_getScorePts(?)";
-            $prep = $conn->prepare($get);
-            $prep->bind_param("i", $evId);
-            $prep->execute();
-
-            $retrieve = $prep->get_result();
-
-            if ($retrieve->num_rows > 0) {
-                ?>
-                <select name="score" id="score">
-                <?php
-                    while ($row = $retrieve->fetch_assoc()) {
-                        $pts = htmlspecialchars($row['points']);
-                        $rank = htmlspecialchars($row['rank']);
-
-                        $selected = ($pts == $score) ? 'selected' : '';
-                ?>
-                    <option value="<?php echo $pts; ?>" <?php echo $selected; ?>>
-                        <?php echo "$rank - $pts pts."; ?>
-                    </option>
-                <?php
-                    }
-                ?>
-                </select>
-                <div class="submit-btn">
-                    <button type="submit" class="changeScore-btn" name="changeScore">Change</button>
-                </div>
-                <?php
-            }
-            $retrieve->free();
-            $prep->close();
-
-            // Ensure no more results are pending for this query
-            $conn->next_result();
-
-        } else { // Just display the score points
-            $retval->free();
-            $stmt->close();
-
-            // Ensure no more results are pending for this query
-            $conn->next_result();
-
-            // Retrieve Score Points for dropdown
-            $get = "CALL sp_getScorePts(?);";
-            $prep = $conn->prepare($get);
-            $prep->bind_param("i", $evId);
-            $prep->execute();
-
-            $retrieve = $prep->get_result();
-
-            if ($retrieve->num_rows > 0) {
-            ?>
-            <select name="score" id="score">
-            <?php
-                while ($row = $retrieve->fetch_assoc()) {
-                    $pts = htmlspecialchars($row['points']);
-                    $rank = htmlspecialchars($row['rank']);
-            ?>
-                <option value="<?php echo $pts; ?>"><?php echo "$rank - $pts pts."; ?></option>
-            <?php
-                }
-            ?>
-            </select>
-            <div class="submit-btn">
-                <button type="submit" class="scoreContestant" name="scoreCon">Submit</button>
-            </div>
-            <?php
-            } else { // No score added yet by the admin
-                echo "No scores available.";
-            }
-            $retrieve->free();
-            $prep->close();
-
-            // Ensure no more results are pending for this query
-            $conn->next_result();
-        }
-        ?>
-    </form>
-
-
-
-    <div class="tally-container" id="TallyTable" style="display: none;">
-        <table id="tallyTable">
-            <tr style="text-align: center;" id="tabletr">
-                <td id="headCol">Contest Name</td>
-                <td id="headCol">Score</td>
-                <td id="headCol">Rank</td>
+    <!-- NEW INTERFACE -->
+    <div class="recordTable">
+        <table style="margin: auto">
+            <tr>
+                <td>TIME</td>
+                <td>EVENT</td>
+                <td>GAME NO.</td>
+                <td>TEAM A ( ERUDITE )</td>
+                <td>POINTS</td>
+                <td>TEAM B ( AMITY )</td>
+                <td>POINTS</td>
+                <td>ACTION</td>
             </tr>
-            
-                <?php
-                    $get = "CALL sp_getScoreSport(?)";
-                    $stmt = $conn->prepare($get);
-                    $stmt->bind_param("i", $evId);
+            <tr>
+                <td>10/08/2024 1:00 PM</td>
+                <td>Basketball</td>
+                <td>1</td>
+                <td>
+                    <select id="teamA" class="non-editable" onchange="syncTeams('teamA')" disabled>
+                        <option value=""></option>
+                        <option value="Winner">Winner</option>
+                        <option value="Loser">Loser</option>
+                    </select>
+                </td>
+                <td>
+                    <?php
+                    // Retrieve score of the contestant
+                    $sql = "CALL sp_getScore(?,?)";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("ii", $contestant, $evId);
                     $stmt->execute();
                     $retval = $stmt->get_result();
 
                     if ($retval->num_rows > 0) {
-                        while($row = $retval->fetch_assoc()) {
-                            $tmname = $row['name'];
-                            $tscore = $row['total_score'];
-                            $rank = $row['rank'];
-                            ?>
-                            <tr style="text-align: left;" id="tabletr">
-                                <th><?php echo $tmname; ?></th>
-                                <td id="scoreCol"><?php echo $tscore; ?></td>
-                                <th><?php echo $rank; ?></th>
-                            </tr>
-                            <?php
+                        // Select the dropdown points that's equivalent to $score
+                        $row = $retval->fetch_assoc();
+                        $score = ($row['total_score']);
+
+                        $retval->free();
+                        $stmt->close();
+
+                        // Ensure no more results are pending for this query
+                        $conn->next_result();
+
+                        // Retrieve Score Points for dropdown
+                        $get = "CALL sp_getScorePts(?)";
+                        $prep = $conn->prepare($get);
+                        $prep->bind_param("i", $evId);
+                        $prep->execute();
+
+                        $retrieve = $prep->get_result();
+
+                        if ($retrieve->num_rows > 0) {
+                    ?>
+                            <select name="score" id="score" class="non-editable" onchange="updateScore(<?php echo $contestant; ?>, <?php echo $evId; ?>)" disabled>
+                                <?php
+                                while ($row = $retrieve->fetch_assoc()) {
+                                    $pts = htmlspecialchars($row['points']);
+                                    $rank = htmlspecialchars($row['rank']);
+
+                                    $selected = ($pts == $score) ? 'selected' : '';
+                                ?>
+                                    <option value="<?php echo $pts; ?>" <?php echo $selected; ?>>
+                                        <?php echo "$rank - $pts pts."; ?>
+                                    </option>
+                                <?php
+                                }
+                                ?>
+                            </select>
+                            <div id="response"></div> <!-- For showing feedback message -->
+                        <?php
                         }
+                        $retrieve->free();
+                        $prep->close();
+
+                        // Ensure no more results are pending for this query
+                        $conn->next_result();
+                    } else { // Just display the score points
+                        $retval->free();
+                        $stmt->close();
+
+                        // Ensure no more results are pending for this query
+                        $conn->next_result();
+
+                        // Retrieve Score Points for dropdown
+                        $get = "CALL sp_getScorePts(?);";
+                        $prep = $conn->prepare($get);
+                        $prep->bind_param("i", $evId);
+                        $prep->execute();
+
+                        $retrieve = $prep->get_result();
+
+                        if ($retrieve->num_rows > 0) {
+                        ?>
+                            <select name="score" id="score" class="non-editable" onchange="updateScore(<?php echo $contestant; ?>, <?php echo $evId; ?>)" disabled>
+                                <option value="0">0</option>
+                                <?php
+                                while ($row = $retrieve->fetch_assoc()) {
+                                    $pts = htmlspecialchars($row['points']);
+                                    $rank = htmlspecialchars($row['rank']);
+                                ?>
+                                    <option value="<?php echo $pts; ?>"><?php echo "$rank - $pts pts."; ?></option>
+                                <?php
+                                }
+                                ?>
+                            </select>
+                            <div id="response"></div> <!-- For showing feedback message -->
+                    <?php
+                        } else {
+                            echo "No scores available.";
+                        }
+                        $retrieve->free();
+                        $prep->close();
+
+                        // Ensure no more results are pending for this query
+                        $conn->next_result();
                     }
-                    $retval->free();
-                    $stmt->close();
-                ?>
-            <tr id="tabletr" style="text-align: center; color:crimson">
-                <td colspan="3"><b style="background-color: lightcoral;">In case of tie, please break the tie by changing the scores.</b></td>
+                    ?>
+
+                </td>
+                <td>
+                    <select id="teamB" class="non-editable" onchange="syncTeams('teamB')" disabled>
+                        <option value=""></option>
+                        <option value="Winner">Winner</option>
+                        <option value="Loser">Loser</option>
+                    </select>
+                </td>
+                <td>
+                    <?php
+                    // Retrieve score of the contestant
+                    $sql = "CALL sp_getScore(?,?)";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("ii", $contestant, $evId);
+                    $stmt->execute();
+                    $retval = $stmt->get_result();
+
+                    if ($retval->num_rows > 0) {
+                        // Select the dropdown points that's equivalent to $score
+                        $row = $retval->fetch_assoc();
+                        $score = ($row['total_score']);
+
+                        $retval->free();
+                        $stmt->close();
+
+                        // Ensure no more results are pending for this query
+                        $conn->next_result();
+
+                        // Retrieve Score Points for dropdown
+                        $get = "CALL sp_getScorePts(?)";
+                        $prep = $conn->prepare($get);
+                        $prep->bind_param("i", $evId);
+                        $prep->execute();
+
+                        $retrieve = $prep->get_result();
+
+                        if ($retrieve->num_rows > 0) {
+                    ?>
+                            <select name="score" id="score" class="non-editable" onchange="updateScore(<?php echo $contestant; ?>, <?php echo $evId; ?>)" disabled>
+                                <?php
+                                while ($row = $retrieve->fetch_assoc()) {
+                                    $pts = htmlspecialchars($row['points']);
+                                    $rank = htmlspecialchars($row['rank']);
+
+                                    $selected = ($pts == $score) ? 'selected' : '';
+                                ?>
+                                    <option value="<?php echo $pts; ?>" <?php echo $selected; ?>>
+                                        <?php echo "$rank - $pts pts."; ?>
+                                    </option>
+                                <?php
+                                }
+                                ?>
+                            </select>
+                            <div id="response"></div> <!-- For showing feedback message -->
+                        <?php
+                        }
+                        $retrieve->free();
+                        $prep->close();
+
+                        // Ensure no more results are pending for this query
+                        $conn->next_result();
+                    } else { // Just display the score points
+                        $retval->free();
+                        $stmt->close();
+
+                        // Ensure no more results are pending for this query
+                        $conn->next_result();
+
+                        // Retrieve Score Points for dropdown
+                        $get = "CALL sp_getScorePts(?);";
+                        $prep = $conn->prepare($get);
+                        $prep->bind_param("i", $evId);
+                        $prep->execute();
+
+                        $retrieve = $prep->get_result();
+
+                        if ($retrieve->num_rows > 0) {
+                        ?>
+                            <select name="score" id="score" class="non-editable" onchange="updateScore(<?php echo $contestant; ?>, <?php echo $evId; ?>)" disabled>
+                                <option value="0">0</option>
+                                <?php
+                                while ($row = $retrieve->fetch_assoc()) {
+                                    $pts = htmlspecialchars($row['points']);
+                                    $rank = htmlspecialchars($row['rank']);
+                                ?>
+                                    <option value="<?php echo $pts; ?>"><?php echo "$rank - $pts pts."; ?></option>
+                                <?php
+                                }
+                                ?>
+                            </select>
+                            <div id="response"></div> <!-- For showing feedback message -->
+                    <?php
+                        } else {
+                            echo "No scores available.";
+                        }
+                        $retrieve->free();
+                        $prep->close();
+
+                        // Ensure no more results are pending for this query
+                        $conn->next_result();
+                    }
+                    ?>
+                </td>
+                <td>
+                    <button class="edit-btn" data-event-id="<?php echo $event['id']; ?>">Edit</button>
+                    <button class="save-btn" style="display: none;" data-event-id="<?php echo $event['id']; ?>">Save</button>
+                </td>
             </tr>
         </table>
     </div>
-
-    <script src="../committee/js/Sevents.js"></script>
     
-<?php
-if($contestant != 0 && $contestant != '') {
-    echo "<script>displayForm();</script>";
-}
-if ($contestant == 0 && $contestant != '') {
-    echo "<script>displayTally();</script>";
-}
-?>
 
+    <!-- SYNC TEAM RESULT -->
+    <script>
+        function syncTeams(changedTeam) {
+            const teamASelect = document.getElementById('teamA');
+            const teamBSelect = document.getElementById('teamB');
+
+
+            // Check which dropdown was changed
+            if (changedTeam === 'teamA') {
+                // If team A is set to 'Winner', automatically set team B to 'Loser'
+                // and if set to 'Loser', set team B to 'Winner'
+                if (teamASelect.value === 'Winner') {
+                    teamBSelect.value = 'Loser';
+                    teamBSelect.style.color = 'red';
+                    teamASelect.style.color = 'green';
+                } else if (teamASelect.value === 'Loser') {
+                    teamBSelect.value = 'Winner';
+                    teamBSelect.style.color = 'green';
+                    teamASelect.style.color = 'red';
+                }
+            } else if (changedTeam === 'teamB') {
+                // Similarly for team B
+                if (teamBSelect.value === 'Winner') {
+                    teamASelect.value = 'Loser';
+                    teamASelect.style.color = 'red';
+                    teamBSelect.style.color = 'green';
+                } else if (teamBSelect.value === 'Loser') {
+                    teamASelect.value = 'Winner';
+                    teamASelect.style.color = 'green';
+                    teamBSelect.style.color = 'red';
+                }
+            }
+        }
+    </script>
+
+    <script>
+        // Function to enable editing and show the Save button
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const row = this.closest('tr');
+
+                // Enable the dropdowns in the current row
+                row.querySelectorAll('select').forEach(select => {
+                    select.disabled = false;
+                });
+                // Hide the Edit button and show the Save button again
+                row.querySelector('.edit-btn').style.display = 'none';
+                // Hide the Delete button and show the Save button
+                row.querySelector('.save-btn').style.display = 'inline-block';
+
+                // Optionally, you can disable the Edit button after clicking
+                this.disabled = true;
+            });
+        });
+
+        // Function to save changes and revert the Save button to Delete
+        document.querySelectorAll('.save-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const row = this.closest('tr');
+
+                // Disable the dropdowns again after saving
+                row.querySelectorAll('select').forEach(select => {
+                    select.disabled = true;
+                });
+
+                // Hide the Save button and show the Edit button again
+                row.querySelector('.save-btn').style.display = 'none';
+
+                // Optionally, re-enable the Edit button
+                row.querySelector('.edit-btn').disabled = false;
+
+                // Hide the Save button and show the Edit button again
+                row.querySelector('.edit-btn').style.display = 'block';
+
+                // You can also trigger the actual saving logic (e.g., AJAX call) here
+                // For now, just display a message
+                console.log("Changes saved!");
+            });
+        });
+    </script>
 </body>
+
 </html>
