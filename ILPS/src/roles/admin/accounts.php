@@ -163,6 +163,8 @@
         <?php
         if (!empty($accounts)) {
             foreach ($accounts as $row) {
+                $check_id = $row['userId']; // Remove Delete icon for the main Admin
+
                 $fullName = $row['firstName'];
                 if (!empty($row['middleName'])) {
                     $fullName .= " " . $row['middleName'];
@@ -194,12 +196,20 @@
                         </div>
                     </div>
                     <div class="acc-buttons">
-                        <form action="delete-account.php" method="POST" id="deleteForm_<?php echo $row['userId']; ?>">
-                            <input type="hidden" name="userId" value="<?php echo $row['userId']; ?>">
-                            <button type="button" class="trash-icon" style="cursor: pointer;" onclick="confirmDelete('<?php echo $row['userId']; ?>', '<?php echo $fullName; ?>')">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </form>
+                        <?php 
+                        // Display delete icon if not the main Admin
+                        if ($check_id != 1) {
+                            echo '
+                            <form action="delete-account.php" method="POST" id="deleteForm_'.$row["userId"].';">
+                                <input type="hidden" name="userId" value="'.$row["userId"].'">
+                                <button type="button" class="trash-icon" style="cursor: pointer;" onclick="confirmDelete('.$row["userId"].', \''.$fullName.'\')">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </form>
+                            ';
+                        } // else don't display delete button, removing the main admin is not allowed
+                        ?>
+                        
                         <div class="edit-icon" data-user-id="<?php echo $row['userId']; ?>">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </div>
