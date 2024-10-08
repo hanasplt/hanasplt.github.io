@@ -162,3 +162,37 @@ input[type="email"] {
             margin-left: -30px;
             cursor: pointer;
         }
+
+
+/* Start of container permissions CSS */
+.permissions {
+    margin-left: 1.5vw;
+    color: #2D4D2A;
+    margin-top: 1.5vw;
+}
+.permTitle,
+.permission-container {
+    margin-left: 1.5vw;
+}
+
+.permission {
+    border-bottom: 1px solid lightgrey;
+}
+.home, .home_view {
+    margin: 10px 0;
+}
+.moduleName, 
+.moduleFunc {
+    margin: 10px 0;
+}
+.moduleFunc {
+    border: 1px solid #7FD278;
+    text-align: center;
+    transition: 0.5s;
+}
+.permissionActive {
+    background-color: #D9F17F;
+    border: 1px solid transparent;
+    transition: 0.5s;
+}
+/* End of container permissions CSS */

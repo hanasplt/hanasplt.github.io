@@ -4,6 +4,7 @@
     <title>Add Account Form</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/bootstrap-grid.min.css">
     <link rel="stylesheet" href="../css/create-account.css">
 
     <!--font-->
@@ -23,6 +24,7 @@
 
     <!-- SweetAlert CSS and JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 <body>
     <div class="container">
@@ -80,13 +82,271 @@
                                 <option value="Admin">Admin</option>
                             </select>
     
-                            <div class="button-group">
-                                <button type="button" id="cancelBtn">Cancel</button>
-                                <button type="submit" id="saveBtn">SAVE</button>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRIAL PANI -->
+            <div class="permissions">
+                <b class="permTitle">Permissions</b>
+                <div class="permission-container">
+                    <b class="admin_perm">Admin</b>
+                    <!-- HOME -->
+                    <div class="permission">
+                        <div class="row">
+                            <div class="col-3">
+                                <p class="moduleName home">Home</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc home_view" data-value="admin_view">View</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- REPORTS -->
+                    <div class="permission">
+                        <div class="row">
+                            <div class="col-3">
+                                <p class="moduleName">Reports</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="reports_view">View</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- LOGS -->
+                    <div class="permission">
+                        <div class="row">
+                            <div class="col-3">
+                                <p class="moduleName">Logs</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="logs_view">View</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- CONTESTANTS -->
+                    <div class="permission">
+                        <div class="row">
+                            <div class="col-3">
+                                <p class="moduleName">Contestants</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="contestants_view">View</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="contestants_add">Add</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="contestants_delete">Delete</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- COMMITTEE -->
+                    <div class="permission">
+                        <div class="row">
+                            <div class="col-3">
+                                <p class="moduleName">Committee</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="committee_view">View</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="committee_add">Add</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="committee_delete">Delete</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- JUDGE -->
+                    <div class="permission">
+                        <div class="row">
+                            <div class="col-3">
+                                <p class="moduleName">Judge</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="judge_view">View</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="judge_add">Add</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="judge_delete">Delete</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- SCORING -->
+                    <div class="permission">
+                        <div class="row">
+                            <div class="col-3">
+                                <p class="moduleName">Scoring</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="scoring_view">View</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="scoring_add">Add</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="scoring_delete">Delete</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ACCOUNTS -->
+                    <div class="permission">
+                        <div class="row">
+                            <div class="col-3">
+                                <p class="moduleName">Accounts</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="accounts_view">View</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="accounts_create">Create</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="accounts_edit">Edit</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="accounts_delete">Delete</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- TEAMS -->
+                    <div class="permission">
+                        <div class="row">
+                            <div class="col-3">
+                                <p class="moduleName">Teams</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="teams_view">View</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="teams_create">Create</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="teams_edit">Edit</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="teams_delete">Delete</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- EVENTS -->
+                    <div class="permission">
+                        <div class="row">
+                            <div class="col-3">
+                                <p class="moduleName">Events</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="events_view">View</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="events_create">Create</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="events_edit">Edit</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="events_delete">Delete</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- CRITERIA -->
+                    <div class="permission">
+                        <div class="row">
+                            <div class="col-3">
+                                <p class="moduleName">Criteria</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="criteria_view">View</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="criteria_add">Add</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="criteria_edit">Edit</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="criteria_delete">Delete</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- SCHEDULE Day -->
+                    <div class="permission">
+                        <div class="row">
+                            <div class="col-3">
+                                <p class="moduleName">Schedule Day</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="schedDay_view">View</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="schedDay_add">Add</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="schedDay_edit">Edit</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="schedDay_delete">Delete</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- SCHEDULE EVENT DAY -->
+                    <div class="permission">
+                        <div class="row">
+                            <div class="col-3">
+                                <p class="moduleName">Schedule Event</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="schedEvent_view">View</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="schedEvent_add">Add</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="schedEvent_edit">Edit</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc" data-value="schedEvent_delete">Delete</p>
+                            </div>
+                        </div>
+                    </div><br>
+
+                    <!-- COMMITTEE FUNCTIONALITIES -->
+                    <b class="admin_perm">Committee</b>
+                    <div class="permission">
+                        <div class="row">
+                            <div class="col-3">
+                                <p class="moduleName home">Committee</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc home_view" data-value="committee_grant">Grant</p>
+                            </div>
+                        </div>
+                    </div><br>
+
+                    <!-- JUDGE FUNCTIONALITIES -->
+                    <b class="admin_perm">Judge</b>
+                    <div class="permission">
+                        <div class="row">
+                            <div class="col-3">
+                                <p class="moduleName home">Judge</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="moduleFunc home_view" data-value="judge_grant">Grant</p>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <!-- TRIAL PANI -->
+
+            <div class="button-group">
+                <button type="button" id="cancelBtn">Cancel</button>
+                <button type="submit" id="saveBtn">SAVE</button>
             </div>
         </form>
     </div>
