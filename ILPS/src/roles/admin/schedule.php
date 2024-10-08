@@ -429,10 +429,10 @@ usort($scheduled_days, function ($a, $b) {
 
                             if ($result->num_rows > 0) {
                                 while ($row = $result->fetch_assoc()) {
-                                    $db_eventId = $row['eventId'];
+                                    $db_eventId = $row['eventID'];
                                     $db_evname = $row['eventName'];
                             ?>
-                                    <option value="<?php echo $db_eventId; ?>">
+                                    <option value="<?php echo $db_eventId; ?>" data-event-name="<?php echo htmlspecialchars($db_evname); ?>">
                                         <?php echo htmlspecialchars($db_evname); ?>
                                     </option>
                                     <?php
@@ -444,7 +444,6 @@ usort($scheduled_days, function ($a, $b) {
                             $stmt->close();
                                     ?>
                         </select>
-
                         <select id="event-socio" class="swal2-input3" required>
                             <option value="" disabled selected>Event</option>
                                 <?php
@@ -487,7 +486,7 @@ usort($scheduled_days, function ($a, $b) {
                     preConfirm: () => {
                         const time24 = document.getElementById('event-time').value;
                         const type = document.getElementById('event-category').value;
-                        const eventSports = document.getElementById('event-sports').value;
+                        const eventSports = document.getElementById('event-sports').selectedOptions[0].getAttribute('data-event-name');
                         const eventSocio = document.getElementById('event-socio').value;
                         const activityOthers = document.getElementById('event-activity-others').value;
                         const gameNumber = document.getElementById('event-game-number').value;
@@ -597,6 +596,53 @@ usort($scheduled_days, function ($a, $b) {
                     }
                 });
 
+                document.getElementById('event-sports').addEventListener('change', function() {
+                    const eventId = this.value;
+                    if (eventId) {
+
+                        const xhr = new XMLHttpRequest();
+                        xhr.open("POST", "get_eventContestants.php", true);
+                        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+                        xhr.onload = function() {
+                            if (xhr.status === 200) {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.success) {
+                                    const teamASelect = document.getElementById('team-a');
+                                    const teamBSelect = document.getElementById('team-b');
+
+                                    teamASelect.innerHTML = '<option value="" disabled selected>Team A</option>';
+                                    teamBSelect.innerHTML = '<option value="" disabled selected>Team B</option>';
+
+                                    response.teams.forEach(team => {
+                                        const optionA = document.createElement('option');
+                                        optionA.value = team.teamId;
+                                        optionA.textContent = `${team.teamName}`;
+                                        teamASelect.appendChild(optionA);
+
+                                        const optionB = document.createElement('option');
+                                        optionB.value = team.teamId;
+                                        optionB.textContent = `${team.teamName}`;
+                                        teamBSelect.appendChild(optionB);
+                                    });
+
+                                    // show the team dropdowns
+                                    teamASelect.style.display = 'block';
+                                    teamBSelect.style.display = 'block';
+                                } else {
+                                    alert('No teams found for the selected event.');
+                                }
+                            } else {
+                                alert('Error communicating with the server.');
+                            }
+                        };
+
+                        xhr.send(`event_id=${eventId}`);
+                    }
+                });
+
+
+
                 // JavaScript to toggle visibility of the activity inputs based on category selection
                 document.getElementById('event-category').addEventListener('change', function() {
                     const activitySports = document.getElementById('event-sports');
@@ -636,7 +682,6 @@ usort($scheduled_days, function ($a, $b) {
                     }
                 });
 
-                // show team B and filter options
                 document.getElementById('team-a').addEventListener('change', function() {
                     const selectedTeamA = this.value;
                     const teamB = document.getElementById('team-b');
