@@ -243,7 +243,7 @@ $sqlEvDay = "CREATE TABLE IF NOT EXISTS scheduled_eventstoday ( #schedule event/
     id INT AUTO_INCREMENT PRIMARY KEY,
     day_id INT,
     time TIME NOT NULL,
-    type ENUM('Sports', 'Socio-Cultural', 'Others'),
+    type ENUM('Sports', 'Socio-Cultural', 'Others') NOT NULL,
     activity VARCHAR(255) NOT NULL,
     gameNo INT,
     teamA INT,

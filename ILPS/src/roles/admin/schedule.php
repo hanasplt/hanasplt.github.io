@@ -500,7 +500,7 @@ usort($scheduled_days, function ($a, $b) {
                             .replace(/\b\w/g, char => char.toUpperCase());
                         const status = "Pending";
 
-                        if (!time24 || !location || (!eventSports && !eventSocio && !activityOthers)) {
+                        if (!time24 || !type || !location || (!eventSports && !eventSocio && !activityOthers)) {
                             Swal.showValidationMessage('Please fill in all required fields');
                             return false;
                         }
@@ -659,6 +659,7 @@ usort($scheduled_days, function ($a, $b) {
                                     // Hide the dropdowns if no teams are found
                                     teamASelect.style.display = 'none';
                                     teamBSelect.style.display = 'none';
+                                    gameNo.style.display = 'none';
 
                                     // Show validation message only when no teams are found
                                     Swal.showValidationMessage("No teams found for the selected event.");
