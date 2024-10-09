@@ -1,5 +1,5 @@
 <?php
-include 'db.php';
+include '../../../config/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $event_id = $_POST['event_id'] ?? null;
