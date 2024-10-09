@@ -1,14 +1,4 @@
-// FOR OPENING THE OVERLAYED POP UP (CREATE ACCOUNTS)
-document.getElementById("openPopup").addEventListener("click", function() {
-    document.getElementById("popupFrame").src = "../admin/html/create-account.html";
-    document.getElementById("iframeOverlay").style.display = "block";
-});
 
-window.addEventListener("message", function(event) {
-    if (event.data === "closePopup") {
-        document.getElementById("iframeOverlay").style.display = "none";
-    }
-});
 
 // LOGOUT CONFIRMATION
 document.getElementById('logoutIcon').addEventListener('click', function() {

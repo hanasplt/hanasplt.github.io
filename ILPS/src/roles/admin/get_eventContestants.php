@@ -14,8 +14,8 @@ if (isset($_POST['event_id'])) {
         $teams = [];
         while ($row = $result->fetch_assoc()) {
             $teams[] = [
-                'teamId' => $row['teamId'],  // Ensure 'teamId' matches the JavaScript
-                'teamName' => htmlspecialchars($row['team'])  // Sanitize the team name
+                'teamId' => $row['teamId'],
+                'teamName' => htmlspecialchars($row['team'])
             ];
         }
 

@@ -103,6 +103,7 @@ usort($scheduled_days, function ($a, $b) {
             <p onclick="window.location.href = 'EventTeam.php';">Events</p>
             <p onclick="window.location.href = 'schedule.php';"><b>Schedule</b></p>
             <p onclick="window.location.href = 'reports.php';">Reports</p>
+            <p onclick="window.location.href = '../admin/logs/accesslog.html';" class="navbar">Logs</p>
         </div>
         <div class="menu-icon">
             <i class="fas fa-sign-out-alt" id="logoutIcon"></i>
@@ -474,7 +475,7 @@ usort($scheduled_days, function ($a, $b) {
                                 ?>
                         </select>
                         <input id="event-activity-others" class="swal2-input2" placeholder="Activity" style="display: none;">
-                        <input id="event-game-number" class="swal2-input2" placeholder="Game Number" style="display: none;" type="number" min="1" style ="display: none;">
+                        <input id="event-game-number" class="swal2-input2" placeholder="Game Number" style="display: none;" type="number" min="1" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                         <select id="team-a" class="swal2-input3" style="display: none;" data-event-id="">
                             <option value="" disabled selected>Team A</option>
                         </select>
@@ -502,6 +503,21 @@ usort($scheduled_days, function ($a, $b) {
                         if (!time24 || !location || (!eventSports && !eventSocio && !activityOthers)) {
                             Swal.showValidationMessage('Please fill in all required fields');
                             return false;
+                        }
+
+                        if (type === 'sports') {
+                            if (!gameNumber || isNaN(gameNumber) || gameNumber < 1) {
+                                Swal.showValidationMessage('Please fill in all required fields');
+                                return false;
+                            }
+                            if (!teamA) {
+                                Swal.showValidationMessage('Please select Team A');
+                                return false;
+                            }
+                            if (!teamB) {
+                                Swal.showValidationMessage('Please select Team B');
+                                return false;
+                            }
                         }
 
                         const [hour, minute] = time24.split(':');
@@ -598,10 +614,10 @@ usort($scheduled_days, function ($a, $b) {
                     }
                 });
 
+
                 document.getElementById('event-sports').addEventListener('change', function() {
                     const eventId = this.value;
                     if (eventId) {
-
                         const xhr = new XMLHttpRequest();
                         xhr.open("POST", "get_eventContestants.php", true);
                         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -609,13 +625,14 @@ usort($scheduled_days, function ($a, $b) {
                         xhr.onload = function() {
                             if (xhr.status === 200) {
                                 const response = JSON.parse(xhr.responseText);
-                                if (response.success) {
-                                    const teamASelect = document.getElementById('team-a');
-                                    const teamBSelect = document.getElementById('team-b');
+                                const teamASelect = document.getElementById('team-a');
+                                const teamBSelect = document.getElementById('team-b');
+                                const gameNo = document.getElementById('event-game-number');
 
-                                    teamASelect.innerHTML = '<option value="" disabled selected>Team A</option>';
-                                    teamBSelect.innerHTML = '<option value="" disabled selected>Team B</option>';
+                                teamASelect.innerHTML = '<option value="" disabled selected>Team A</option>';
+                                teamBSelect.innerHTML = '<option value="" disabled selected>Team B</option>';
 
+                                if (response.success && response.teams.length > 0) {
                                     response.teams.forEach(team => {
                                         const optionA = document.createElement('option');
                                         optionA.value = team.teamId;
@@ -628,11 +645,23 @@ usort($scheduled_days, function ($a, $b) {
                                         teamBSelect.appendChild(optionB);
                                     });
 
-                                    // show the team dropdowns
+                                    // Show the team dropdowns
                                     teamASelect.style.display = 'block';
                                     teamBSelect.style.display = 'block';
+                                    gameNo.style.display = 'block';
+
+
+                                    // Clear any validation messages
+                                    if (Swal.isVisible()) {
+                                        Swal.resetValidationMessage();
+                                    }
                                 } else {
-                                    alert('No teams found for the selected event.');
+                                    // Hide the dropdowns if no teams are found
+                                    teamASelect.style.display = 'none';
+                                    teamBSelect.style.display = 'none';
+
+                                    // Show validation message only when no teams are found
+                                    Swal.showValidationMessage("No teams found for the selected event.");
                                 }
                             } else {
                                 alert('Error communicating with the server.');
@@ -642,7 +671,6 @@ usort($scheduled_days, function ($a, $b) {
                         xhr.send(`event_id=${eventId}`);
                     }
                 });
-
 
 
                 // JavaScript to toggle visibility of the activity inputs based on category selection
@@ -656,8 +684,8 @@ usort($scheduled_days, function ($a, $b) {
 
                     if (this.value === 'sports') {
                         activitySports.style.display = 'block';
-                        gameNo.style.display = 'block';
-                        teamA.style.display = 'block';
+                        gameNo.style.display = 'none';
+                        teamA.style.display = 'none';
                         activityOthers.style.display = 'none';
                         activitySocio.style.display = 'none';
                     } else if (this.value === 'others') {
