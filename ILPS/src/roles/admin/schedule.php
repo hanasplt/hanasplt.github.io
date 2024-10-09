@@ -139,7 +139,7 @@ usort($scheduled_days, function ($a, $b) {
                         </div>
 
                         <div class="header-right">
-                            <button id="editHeaderBtn" class="header-btn editHeaderBtn" data-day-id="<?php echo $day['id']; ?>">Edit</button>
+                            <button id="editHeaderBtn" class="header-btn editHeaderBtn" data-day-id="<?php echo $day['id']; ?>" data-day-date="<?php echo $day['day_date']; ?>">Edit</button>
                             <button id="deleteHeaderBtn" class="header-btn deleteHeaderBtn" data-day-id="<?php echo $day['id']; ?>">Delete</button>
                         </div>
 
@@ -854,15 +854,13 @@ usort($scheduled_days, function ($a, $b) {
         //edit date
         document.querySelectorAll('.editHeaderBtn').forEach(button => {
             button.addEventListener('click', function() {
-                const dayId = this.getAttribute('data-day-id');
-
-                const currentDayElement = document.getElementById(dayId);
-                const currentDayDate = currentDayElement ? currentDayElement.textContent : '';
+                const dayId = this.getAttribute('data-day-id'); // ID of the day
+                const dateDay = this.getAttribute('data-day-date'); // Date of the day
 
                 Swal.fire({
                     title: 'Edit Date',
                     html: ` 
-                        <input id="new-day-date" class="swal2-input1" type="date" value="${currentDayDate}">
+                        <input id="new-day-date" class="swal2-input1" type="date" value="${dateDay}">
                     `,
                     confirmButtonText: 'Save',
                     showCancelButton: true,
@@ -939,7 +937,7 @@ usort($scheduled_days, function ($a, $b) {
                                 }
                             }
                         };
-                        xhrCheck.send(`day_date=${dayDate}`);
+                        xhrCheck.send(`day_date=${dayDate}&&day_id=${dayId}`);
                     }
                 });
             });

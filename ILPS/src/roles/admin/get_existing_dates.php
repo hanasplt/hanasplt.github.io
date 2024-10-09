@@ -3,10 +3,11 @@ include '../../../config/db.php';
 
     if (isset($_POST['day_date'])) {
         $dayDate = $_POST['day_date'];
+        $dayId = $_POST['day_id'];
 
-        $query = "SELECT COUNT(*) AS dateCount FROM scheduled_days WHERE day_date = ?";
+        $query = "SELECT COUNT(*) AS dateCount FROM scheduled_days WHERE day_date = ? AND id != ?";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("s", $dayDate);
+        $stmt->bind_param("si", $dayDate, $dayId);
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
