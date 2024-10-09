@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 require_once '../../../config/sessionConfig.php';
 $conn = require_once '../../../config/db.php';
@@ -393,7 +396,6 @@ usort($scheduled_days, function ($a, $b) {
                             }
                         };
 
-                        // Send the ID of the day to be deleted
                         xhr.send(`day_id=${dayId}`);
                     }
                 });
