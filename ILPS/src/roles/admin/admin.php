@@ -27,6 +27,44 @@ $admin_name = $row['firstName'];
 $retname->free();
 $stmt->close();
 
+// get the total accounts
+$search_query = "%";
+$sql_count = "CALL sp_getAccountCount(?)";
+$stmt = $conn->prepare($sql_count);
+$stmt->bind_param("s", $search_query);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+$total_accounts = $row['total'];
+
+$result->free();
+$stmt->close();
+
+// get the total number of teams
+$sql_count_teams = "CALL sp_getTeamCount();";
+$stmt = $conn->prepare($sql_count_teams);
+$stmt->execute();
+$result_teams = $stmt->get_result();
+
+
+$row = $result_teams->fetch_assoc();
+$total_teams = $row['total'];
+
+$result_teams->free();
+$stmt->close();
+
+// get the total number of events
+$sql_count_events = "CALL sp_getEvents();";
+$stmt = $conn->prepare($sql_count_events);
+$stmt->execute();
+$result_events = $stmt->get_result();
+
+$total_events = $result_events->num_rows;
+
+$result_events->free();
+$stmt->close();
+
+// display 3 accounts
 $sql = "CALL sp_getAcc(?);"; // display only 3 accounts for display
 $limit = 3;
 $stmt = $conn->prepare($sql);
@@ -73,22 +111,74 @@ $result = $stmt->get_result();
             <p onclick="window.location.href = 'EventTeam.php';" class="navbar">Events</p>
             <p onclick="window.location.href = 'schedule.php';" class="navbar">Schedule</p>
         </nav>
-        <nav class="nav-link">
+        <nav class="nav-link-1">
             <div class="dropdown">
                 <button class="dropbtn">
-                    <img class="icon-img" src="../../../public/assets/icons/icon.png">
-                    <p><?php echo $admin_name; ?></p>
+                    <img class="icon-img" src="../../../public/assets/icons/icon-user.jpg">
+                    <div>
+                        <p class="user-name"><?php echo $admin_name; ?></p>
+                        <p class="administrator">ADMINISTRATOR</p>
+                    </div>
                 </button>
                 <div class="dropdown-content">
-                    <p onclick="window.location.href = '';" class="navbar">View Profile</p>
-                    <p onclick="window.location.href = 'reports.php';" class="navbar">Reports</p>
-                    <p onclick="window.location.href = '../admin/logs/accesslog.html';" class="navbar">Logs</p>
+                    <p onclick="window.location.href = '';" class="dc-text">View Profile</p>
+                    <p onclick="window.location.href = 'reports.php';" class="dc-text">Reports</p>
+                    <p onclick="window.location.href = '../admin/logs/accesslog.html';" class="dc-text">Logs</p>
                     <div class="menu-icon">
-                        <p id="logoutIcon">Logout</p>
+                        <p id="logout">Logout</p>
                     </div>
                 </div>
             </div>
         </nav>
+    </div>
+
+    <div class="dashboard">
+        <p class="welcome">Welcome Back, <a><?php echo $admin_name; ?></a>👋</p>
+        <div class="dash-number">
+            <div class="number-dash">
+                <div class="num-accounts">
+                    <img class="dash-img" src="../../../public/assets/icons/num-of-accs.jpg">
+                    <div class="number-deets">
+                        <p class="total-accounts">TOTAL ACCOUNTS</p>
+                        <p class="total-number"><?php echo $total_accounts; ?></p>
+                    </div>
+                    <div class="view-btn">
+                        <button onclick="window.location.href = 'accounts.php';" class="view-button">VIEW</button>
+                    </div>
+                </div>
+                <div class="num-teams">
+                    <img class="dash-img" src="../../../public/assets/icons/num-of-teams.jpg">
+                    <div class="number-deets">
+                        <p class="total-teams">TOTAL TEAMS</p>
+                        <p class="total-number"><?php echo $total_teams; ?></p>
+                    </div>
+                    <div class="view-btn">
+                        <button onclick="window.location.href = 'teams.php';" class="view-button">VIEW</button>
+                    </div>
+                </div>
+                <div class="num-events">
+                    <img class="dash-img" src="../../../public/assets/icons/num-of-events.jpg">
+                    <div class="number-deets">
+                        <p class="total-events">TOTAL EVENTS</p>
+                        <p class="total-number"><?php echo $total_events; ?></p>
+                    </div>
+                    <div class="view-btn">
+                        <button onclick="window.location.href = 'EventTeam.php';" class="view-button">VIEW</button>
+                    </div>
+                </div>
+            </div>
+            <div class="dash-banner">
+                <div class="banner">
+                    <div class="banner-left">
+                        <h1>Compete, Unite, and Celebrate; Where Achievements Are Recognized!</h1>
+                        <p>The Official Intramural Leaderboard and Points System of the University of Southeastern Philippines Tagum-Mabini Campus. This provides a transparent platform for tracking individual and team achievements, fostering a sense of community and camaraderie among participants.</p>
+                    </div>
+                    <div class="banner-right">
+                        <img src="../../../public/assets/icons/dash-banner.png">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="accounts">
