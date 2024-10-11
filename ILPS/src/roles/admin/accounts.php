@@ -1,74 +1,97 @@
 <?php
-    require_once '../../../config/sessionConfig.php'; // session Cookie
-    $conn = require_once '../../../config/db.php'; // database connection
-    require_once '../admin/verifyLoginSession.php'; // logged in or not
+require_once '../../../config/sessionConfig.php'; // session Cookie
+$conn = require_once '../../../config/db.php'; // database connection
+require_once '../admin/verifyLoginSession.php'; // logged in or not
 
-    // pagination setup
-    $recordsPerPage = 5;
-    $currentPage = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
-    $currentPage = max(1, $currentPage);
-    $offset = ($currentPage - 1) * $recordsPerPage;
+// pagination setup
+$recordsPerPage = 5;
+$currentPage = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+$currentPage = max(1, $currentPage);
+$offset = ($currentPage - 1) * $recordsPerPage;
 
-    $searchQuery = isset($_GET['search']) ? "%" . $_GET['search'] . "%" : "%%";  // if no search term, use '%%' (matches everything)
+$searchQuery = isset($_GET['search']) ? "%" . $_GET['search'] . "%" : "%%";  // if no search term, use '%%' (matches everything)
 
-    try {
-        // count accounts
-        $countSql = "CALL sp_getAccountCount(?)";
-        $countStmt = $conn->prepare($countSql);
-        if (!$countStmt) {
-            throw new Exception("Prepare failed: " . $conn->error);
-        }
-
-        $countStmt->bind_param("s", $searchQuery);
-        $countStmt->execute();
-        $countResult = $countStmt->get_result();
-        if (!$countResult) {
-            throw new Exception("Error retrieving account count: " . $countStmt->error);
-        }
-
-        $totalAccounts = $countResult->fetch_assoc()['total'];
-        $totalPages = ceil($totalAccounts / $recordsPerPage);
-
-        $countResult->free_result();
-        $conn->next_result();
-
-    } catch (Exception $e) {
-        die("Error: " . $e->getMessage());
+try {
+    // count accounts
+    $countSql = "CALL sp_getAccountCount(?)";
+    $countStmt = $conn->prepare($countSql);
+    if (!$countStmt) {
+        throw new Exception("Prepare failed: " . $conn->error);
     }
 
-    try {
-        $sql = "CALL sp_getAccount(?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        if (!$stmt) {
-            throw new Exception("Prepare failed: " . $conn->error);
-        }
-
-        $stmt->bind_param("ssi", $searchQuery, $recordsPerPage, $offset);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if (!$result) {
-            throw new Exception("Execute failed: " . $stmt->error);
-        }
-
-        $accounts = [];
-        while ($row = $result->fetch_assoc()) {
-            $accounts[] = $row;
-        }
-
-        $result->free_result();
-        $stmt->close();
-
-    } catch (Exception $e) {
-        die("Error: " . $e->getMessage());
+    $countStmt->bind_param("s", $searchQuery);
+    $countStmt->execute();
+    $countResult = $countStmt->get_result();
+    if (!$countResult) {
+        throw new Exception("Error retrieving account count: " . $countStmt->error);
     }
 
-    $conn->close();
+    $totalAccounts = $countResult->fetch_assoc()['total'];
+    $totalPages = ceil($totalAccounts / $recordsPerPage);
+
+    $countResult->free_result();
+    $conn->next_result();
+} catch (Exception $e) {
+    die("Error: " . $e->getMessage());
+}
+
+try {
+    $sql = "CALL sp_getAccount(?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        throw new Exception("Prepare failed: " . $conn->error);
+    }
+
+    $stmt->bind_param("ssi", $searchQuery, $recordsPerPage, $offset);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if (!$result) {
+        throw new Exception("Execute failed: " . $stmt->error);
+    }
+
+    $accounts = [];
+    while ($row = $result->fetch_assoc()) {
+        $accounts[] = $row;
+    }
+
+    $result->free_result();
+    $stmt->close();
+} catch (Exception $e) {
+    die("Error: " . $e->getMessage());
+}
+
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    $user_id = isset($_GET['id']);
+    $_SESSION['userId'] = $user_id;
+}
+
+try {
+    $getAdmin = "CALL sp_getAnAcc(?)";
+
+    $iddd = $_SESSION['userId'];
+    $stmt = $conn->prepare($getAdmin);
+    $stmt->bind_param("i", $iddd);
+    $stmt->execute();
+    $retname = $stmt->get_result();
+
+    // Retrieve Admin Name
+    $row = $retname->fetch_assoc();
+    $admin_name = $row['firstName'];
+
+    $retname->free();
+    $stmt->close();
+} catch (Exception $e) {
+    die("Error: " . $e->getMessage());
+}
+
+$conn->close();
 
 ?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Accounts</title>
     <meta charset="UTF-8">
@@ -90,27 +113,35 @@
 </head>
 
 <body>
-    <div class="nav-bar">
-        <img class="logo-img" src="../../../public/assets/icons/logoo.png">
-        <div class="logo-bar">
-            <p>Intramural Leaderboard</p>
-            <p>and Points System</p>
-            <p id="administrator"><i>ADMINISTRATOR</i></p>
-        </div>
-        <div class="links">
-            <p onclick="window.location.href = 'admin.php';">Home</p>
-            <p onclick="window.location.href = 'accounts.php';"><b>Accounts</b></p>
-            <p onclick="window.location.href = 'teams.php';">Teams</p>
-            <p onclick="window.location.href = 'EventTeam.php';">Events</p>
-            <p onclick="window.location.href = 'schedule.php';">Schedule</p>
-            <p onclick="window.location.href = 'reports.php';">Reports</p>
-            <p onclick="window.location.href = '../admin/logs/accesslog.html';">Logs</p>
-        </div>
-        <div class="menu-icon">
-            <i class="fas fa-sign-out-alt" id="logoutIcon"></i>
-        </div>
+    <div class="navigation-bar">
+        <img class="logo-img" src="../../../public/assets/icons/ilps-logo.png">
+        <nav class="nav-link">
+            <p onclick="window.location.href = 'admin.php';" class="navbar" title="Home">Home</p>
+            <p onclick="window.location.href = 'accounts.php';" class="navbarbie" ; title="Accounts">Accounts</p>
+            <p onclick="window.location.href = 'teams.php';" class="navbar" title="Teams">Teams</p>
+            <p onclick="window.location.href = 'EventTeam.php';" class="navbar" title="Events">Events</p>
+            <p onclick="window.location.href = 'schedule.php';" class="navbar" title="Schedule">Schedule</p>
+        </nav>
+        <nav class="nav-link-1">
+            <div class="dropdown">
+                <button class="dropbtn">
+                    <img class="icon-img" src="../../../public/assets/icons/icon-user.jpg">
+                    <div>
+                        <p class="user-name"><?php echo $admin_name; ?></p>
+                        <p class="administrator">ADMINISTRATOR</p>
+                    </div>
+                </button>
+                <div class="dropdown-content">
+                    <p onclick="window.location.href = '';" class="dc-text" title="Profile">View Profile</p>
+                    <p onclick="window.location.href = 'reports.php';" class="dc-text" title="Reports">Reports</p>
+                    <p onclick="window.location.href = '../admin/logs/accesslog.html';" class="dc-text" title="Logs">Logs</p>
+                    <div class="menu-icon">
+                        <p id="logout" title="Logout">Logout</p>
+                    </div>
+                </div>
+            </div>
+        </nav>
     </div>
-
     <div class="new-account" id="openPopup">
         <div class="plus-icon">
             <i class="fas fa-plus"></i>
@@ -130,13 +161,13 @@
             <div class="export-button">
                 <form method="post" id="exportForm">
                     <button type="button" onclick="submitForm('export/exportAccXlxs.php')" name="exportlog_xsls" id="exportlog_xsls">
-                        Export to Excel
+                        Export as Excel
                     </button>
                     <button type="button" onclick="submitForm('export/exportAccpdf.php')" name="exportlog_pdf" id="exportlog_pdf">
-                        Export to PDF
+                        Export as PDF
                     </button>
                 </form>
-                
+
             </div>
         </div>
         <div class="accounts-title">
@@ -173,7 +204,7 @@
                 if (!empty($row['suffix'])) {
                     $fullName .= " " . $row['suffix'];
                 }
-                ?>
+        ?>
                 <div class="account" data-name="<?php echo strtolower($fullName); ?>">
                     <div class="left-deets">
                         <div class="acc-img">
@@ -196,20 +227,20 @@
                         </div>
                     </div>
                     <div class="acc-buttons">
-                        <?php 
+                        <?php
                         // Display delete icon if not the main Admin
                         if ($check_id != 1) {
                             echo '
-                            <form action="delete-account.php" method="POST" id="deleteForm_'.$row["userId"].';">
-                                <input type="hidden" name="userId" value="'.$row["userId"].'">
-                                <button type="button" class="trash-icon" style="cursor: pointer;" onclick="confirmDelete('.$row["userId"].', \''.$fullName.'\')">
+                            <form action="delete-account.php" method="POST" id="deleteForm_' . $row["userId"] . ';">
+                                <input type="hidden" name="userId" value="' . $row["userId"] . '">
+                                <button type="button" class="trash-icon" style="cursor: pointer;" onclick="confirmDelete(' . $row["userId"] . ', \'' . $fullName . '\')">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </form>
                             ';
                         } // else don't display delete button, removing the main admin is not allowed
                         ?>
-                        
+
                         <div class="edit-icon" data-user-id="<?php echo $row['userId']; ?>">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </div>
@@ -233,7 +264,7 @@
                         </script>
                     </div>
                 </div>
-                <?php
+            <?php
             }
         } else {
             ?>
@@ -241,13 +272,13 @@
                 <i class="fas fa-search"></i>
                 <p>No accounts found matching your search.</p>
             </div>
-            <?php
+        <?php
         }
         ?>
     </div>
 
-     <!-- Pagination Controls -->
-     <div class="pagination">
+    <!-- Pagination Controls -->
+    <div class="pagination">
         <?php if ($currentPage > 1): ?>
             <a href="?page=<?php echo $currentPage - 1; ?>" class="arrow">&laquo; Previous</a>
         <?php else: ?>
@@ -269,4 +300,5 @@
 
     <script src="../admin/js/accounts.js"></script>
 </body>
+
 </html>

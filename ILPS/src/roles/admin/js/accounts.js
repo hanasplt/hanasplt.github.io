@@ -9,8 +9,8 @@ window.addEventListener("message", function(event) {
     }
 });
 
-//LOGOUT CONFIRMATION
-document.getElementById('logoutIcon').addEventListener('click', function() {
+// LOGOUT CONFIRMATION
+document.getElementById('logout').addEventListener('click', function() {
     Swal.fire({
         title: 'Are you sure?',
         text: "You will be logged out!",
@@ -23,7 +23,7 @@ document.getElementById('logoutIcon').addEventListener('click', function() {
     }).then((result) => {
         if (result.isConfirmed) {
             // mag redirect siya to the login page
-            window.location.href = '../admin/accounts.php?logout';
+            window.location.href = '../admin/admin.php?logout';
         }
     });
 });
