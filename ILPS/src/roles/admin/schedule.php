@@ -586,7 +586,7 @@ usort($scheduled_days, function ($a, $b) {
                                         <td>${location}</td>
                                         <td>${status}</td>
                                         <td>
-                                            <button class="edit-btn" data-event-id="<?php echo $event['id']; ?>">Edit</button>
+                                            <button class="edit-btn" data-event-id="${dayId}">Edit</button>
                                             <button class="delete-btn">Delete</button>
                                         </td>
                                     `;
@@ -594,6 +594,8 @@ usort($scheduled_days, function ($a, $b) {
                                         title: 'Success!',
                                         text: response.message,
                                         icon: 'success'
+                                    }).then(() => {
+                                        window.location.reload(); // Reload the page to reflect changes
                                     });
                                 } else {
                                     Swal.fire({
@@ -742,142 +744,163 @@ usort($scheduled_days, function ($a, $b) {
         document.querySelectorAll('.edit-btn').forEach(function(button) {
             button.addEventListener('click', function() {
                 const row = this.closest('tr');
-                const cells = row.getElementsByTagName('td');
                 const eventId = row.getAttribute('data-event-id');
 
-                const time24 = cells[0].textContent.trim();
-                const type = cells[1].textContent.trim().toLowerCase(); // Convert to lowercase to match value in select
-                const event = cells[2].textContent.trim();
-                const gameNo = cells[3].textContent.trim();
-                const teamA = cells[4].textContent.trim();
-                const teamB = cells[5].textContent.trim();
-                const location = cells[6].textContent.trim();
-                const status = cells[7].textContent.trim();
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "get_existing_sched_events.php", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.success) {
+                            const event = response.event;
 
-                Swal.fire({
-                    title: 'Edit Event',
-                    html: `
-                        <input id="edit-time" class="swal2-input1" type="time" value="${time24}">
-                        <select id="edit-event-category" class="swal2-input3">
-                            <option value="" disabled ${!type ? 'selected' : ''}>Type</option>
-                            <option value="socio-cultural" ${type === 'socio-cultural' ? 'selected' : ''}>Socio-cultural</option>
-                            <option value="sports" ${type === 'sports' ? 'selected' : ''}>Sports</option>
-                            <option value="others" ${type === 'others' ? 'selected' : ''}>Others</option>
-                        </select>
-                        <select id="edit-event-sports" class="swal2-input3" style="display: none;">
-                            <option value="" disabled selected>Event</option>
-                            <!-- Add sports-specific events -->
-                        </select>
-                        <select id="edit-event-socio" class="swal2-input3" style="display: none;">
-                            <option value="" disabled selected>Event</option>
-                        </select>
-                        <input id="edit-event-activity-others" class="swal2-input2" placeholder="Activity" style="display: none;" value="${event}">
-                        <input id="edit-location" class="swal2-input2" placeholder="Location" value="${location}">
-                        <select id="edit-status" class="swal2-input3">
-                            <option value="Pending" ${status === 'Pending' ? 'selected' : ''}>Pending</option>
-                            <option value="Ongoing" ${status === 'Ongoing' ? 'selected' : ''}>On-going</option>
-                            <option value="Ended" ${status === 'Ended' ? 'selected' : ''}>Ended</option>
-                            <option value="Cancelled" ${status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
-                            <option value="Moved" ${status === 'Moved' ? 'selected' : ''}>Moved</option>
-                        </select>
-                    `,
-                    confirmButtonText: 'Save',
-                    showCancelButton: true,
-                    preConfirm: () => {
-                        const time24 = document.getElementById('edit-time').value;
-                        const activity = document.getElementById('edit-event-category').value === 'others' ?
-                            document.getElementById('edit-event-activity-others').value :
-                            (document.getElementById('edit-event-sports').value || document.getElementById('edit-event-socio').value);
-                        const location = document.getElementById('edit-location').value;
-                        const status = document.getElementById('edit-status').value;
+                            Swal.fire({
+                                title: 'Edit Event',
+                                html: `
+                                    <input id="edit-time" class="swal2-input1" type="time" value="${event.time}">
+                                    <select id="edit-event-category" class="swal2-input3">
+                                        <option value="" disabled ${!event.type ? 'selected' : ''}>Type</option>
+                                        <option value="socio-cultural" ${event.type === 'socio-cultural' ? 'selected' : ''}>Socio-cultural</option>
+                                        <option value="sports" ${event.type === 'sports' ? 'selected' : ''}>Sports</option>
+                                        <option value="others" ${event.type === 'others' ? 'selected' : ''}>Others</option>
+                                    </select>
+                                    <input id="edit-event-activity-others" class="swal2-input2" placeholder="Activity" value="${event.activity}">
+                                    <input id="edit-game-no" class="swal2-input2" placeholder="Game Number" value="${event.gameNo}" style="display: none;">
+                                    <input id="edit-team-a" class="swal2-input2" placeholder="Team A" value="${event.teamA}" style="display: none;">
+                                    <input id="edit-team-b" class="swal2-input2" placeholder="Team B" value="${event.teamB}" style="display: none;">
+                                    <input id="edit-location" class="swal2-input2" placeholder="Location" value="${event.location}">
+                                    <select id="edit-status" class="swal2-input3">
+                                        <option value="Pending" ${event.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                        <option value="Ongoing" ${event.status === 'Ongoing' ? 'selected' : ''}>On-going</option>
+                                        <option value="Ended" ${event.status === 'Ended' ? 'selected' : ''}>Ended</option>
+                                        <option value="Cancelled" ${event.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                                        <option value="Moved" ${event.status === 'Moved' ? 'selected' : ''}>Moved</option>
+                                    </select>
+                                `,
+                                confirmButtonText: 'Save',
+                                showCancelButton: true,
+                                preConfirm: () => {
+                                    const time24 = document.getElementById('edit-time').value;
+                                    const activity = document.getElementById('edit-event-activity-others').value;
+                                    const gameNo = document.getElementById('edit-game-no').value;
+                                    const teamA = document.getElementById('edit-team-a').value;
+                                    const teamB = document.getElementById('edit-team-b').value;
+                                    const location = document.getElementById('edit-location').value;
+                                    const status = document.getElementById('edit-status').value;
 
-                        if (!time24 || !activity || !location) {
-                            Swal.showValidationMessage('Please fill in all fields');
-                            return false;
-                        }
+                                    if (!time24 || !activity || !location) {
+                                        Swal.showValidationMessage('Please fill in all fields');
+                                        return false;
+                                    }
 
-                        return {
-                            time24,
-                            activity,
-                            location,
-                            status
-                        };
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const {
-                            time24,
-                            activity,
-                            location,
-                            status
-                        } = result.value;
+                                    return {
+                                        time24,
+                                        activity,
+                                        gameNo,
+                                        teamA,
+                                        teamB,
+                                        location,
+                                        status
+                                    };
+                                }
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    const {
+                                        time24,
+                                        activity,
+                                        gameNo,
+                                        teamA,
+                                        teamB,
+                                        location,
+                                        status
+                                    } = result.value;
 
-                        const xhr = new XMLHttpRequest();
-                        xhr.open("POST", "edit_event.php", true);
-                        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                        xhr.onload = function() {
-                            if (xhr.status === 200) {
-                                const response = JSON.parse(xhr.responseText);
-                                if (response.success) {
-                                    cells[0].textContent = time24;
-                                    cells[1].textContent = activity;
-                                    cells[2].textContent = location;
-                                    cells[3].textContent = status;
-                                    location.reload();
-                                    Swal.fire({
-                                        title: 'Success!',
-                                        text: 'Event updated successfully.',
-                                        icon: 'success',
-                                        confirmButtonColor: '#7FD278',
-                                        confirmButtonText: 'OK'
-                                    });
+                                    const xhrUpdate = new XMLHttpRequest();
+                                    xhrUpdate.open("POST", "edit_event.php", true);
+                                    xhrUpdate.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                                    xhrUpdate.onload = function() {
+                                        if (xhrUpdate.status === 200) {
+                                            const updateResponse = JSON.parse(xhrUpdate.responseText);
+                                            if (updateResponse.success) {
+                                                Swal.fire({
+                                                    title: 'Success!',
+                                                    text: 'Event updated successfully.',
+                                                    icon: 'success'
+                                                }).then(() => {
+                                                    window.location.reload();
+                                                });
+                                            } else {
+                                                Swal.fire({
+                                                    title: 'Error!',
+                                                    text: updateResponse.message,
+                                                    icon: 'error'
+                                                });
+                                            }
+                                        }
+                                    };
+                                    xhrUpdate.send(`event_id=${eventId}&time=${time24}&activity=${activity}&gameNo=${gameNo}&teamA=${teamA}&teamB=${teamB}&location=${location}&status=${status}`);
+                                }
+                            });
+
+                            // JavaScript to toggle visibility of Game No, Team A, and Team B based on category
+                            const categorySelect = document.getElementById('edit-event-category');
+                            const gameNoField = document.getElementById('edit-game-no');
+                            const teamAField = document.getElementById('edit-team-a');
+                            const teamBField = document.getElementById('edit-team-b');
+
+                            function toggleGameFields(category) {
+                                if (this.value === 'sports') {
+                                    activitySports.style.display = 'block';
+                                    gameNo.style.display = 'none';
+                                    teamA.style.display = 'none';
+                                    activityOthers.style.display = 'none';
+                                    activitySocio.style.display = 'none';
+                                } else if (this.value === 'others') {
+                                    activitySports.style.display = 'none';
+                                    activitySocio.style.display = 'none';
+                                    gameNo.style.display = 'none';
+                                    teamA.style.display = 'none';
+                                    teamB.style.display = 'none';
+                                    activityOthers.style.display = 'block';
+                                } else if (this.value === 'socio-cultural') {
+                                    teamA.style.display = 'none';
+                                    activitySports.style.display = 'none';
+                                    activitySocio.style.display = 'block';
+                                    teamB.style.display = 'none';
+                                    activityOthers.style.display = 'none';
+                                    gameNo.style.display = 'none';
                                 } else {
-                                    Swal.fire({
-                                        title: 'Error!',
-                                        text: response.message,
-                                        icon: 'error',
-                                        confirmButtonColor: '#d33',
-                                        confirmButtonText: 'OK'
-                                    });
+                                    teamA.style.display = 'none';
+                                    gameNo.style.display = 'none';
+                                    teamB.style.display = 'none';
+                                    activitySocio.style.display = 'none';
+                                    activitySports.style.display = 'none';
+                                    activityOthers.style.display = 'none';
                                 }
                             }
-                        };
-                        xhr.send(`event_id=${eventId}&time=${time24}&activity=${activity}&location=${location}&status=${status}`);
+
+                            // Initialize visibility based on existing event type
+                            toggleGameFields(event.type);
+
+                            // Add event listener to handle category change
+                            categorySelect.addEventListener('change', function() {
+                                toggleGameFields(this.value);
+                            });
+
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: response.message,
+                                icon: 'error'
+                            });
+                        }
                     }
-                });
-
-                // JavaScript to toggle visibility of the activity inputs based on category selection
-                const categorySelect = document.getElementById('edit-event-category');
-                const sportsSelect = document.getElementById('edit-event-sports');
-                const socioSelect = document.getElementById('edit-event-socio');
-                const othersInput = document.getElementById('edit-event-activity-others');
-
-                function toggleFieldsBasedOnCategory(category) {
-                    if (category === 'sports') {
-                        sportsSelect.style.display = 'block';
-                        socioSelect.style.display = 'none';
-                        othersInput.style.display = 'none';
-                    } else if (category === 'socio-cultural') {
-                        socioSelect.style.display = 'block';
-                        sportsSelect.style.display = 'none';
-                        othersInput.style.display = 'none';
-                    } else if (category === 'others') {
-                        othersInput.style.display = 'block';
-                        sportsSelect.style.display = 'none';
-                        socioSelect.style.display = 'none';
-                    } else {
-                        sportsSelect.style.display = 'none';
-                        socioSelect.style.display = 'none';
-                        othersInput.style.display = 'none';
-                    }
-                }
-                toggleFieldsBasedOnCategory(type);
-
-                categorySelect.addEventListener('change', function() {
-                    toggleFieldsBasedOnCategory(this.value);
-                });
+                };
+                xhr.send(`event_id=${eventId}`);
             });
         });
+
 
 
         //edit date
