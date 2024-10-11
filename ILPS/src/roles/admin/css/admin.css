@@ -38,14 +38,14 @@ body {
 }
 
 .navbar {
-    font-family: Inter, sans-serif;
-    font-weight: 800;
+    font-family: Poppins, sans-serif;
+    font-weight: 600;
     color: #a3a3a3;
     cursor: pointer;
 }
 
 .navbarbie {
-    font-family: Inter, sans-serif;
+    font-family: Poppins, sans-serif;
     font-weight: 800;
     color: #2B2B2B;
     cursor: pointer;
@@ -290,6 +290,14 @@ body {
     flex-direction: row;
 }
 
+.intra-list {
+    display: flex;
+    flex-direction: row;
+    margin-left: 5%;
+    margin-right: 5%;
+    gap: 20px;
+}
+
 .accounts-title, .teams-title, .events-title {
     font-family: Inter, sans-serif;
     font-weight: 800;
@@ -297,8 +305,6 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-left: 5vw;
-    margin-right: 5vw;
 }
 
 #accs, #team, #event{
@@ -309,6 +315,9 @@ body {
 }
 
 #vwall {
+    font-family: Inter, sans-serif;
+    font-weight: 500;
+    font-size: 12px;
     color: #2B2B2B;
     cursor: pointer;
 }
@@ -317,12 +326,18 @@ body {
     text-decoration: underline;
 }
 
+.accounts, .teams, .events {
+    flex: 1;
+    justify-content: space-between;
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+
 .account, .tim, .ebent {
     display: flex;
     background-color: #ffffff;
-    width: 88%;
     align-items: center;
-    margin: auto;
+    width: 90%;
     padding: 1vw;
     border-radius: 1vw;
     box-shadow: 0px 0px 10px 0px rgba(48, 48, 48, 0.222);
@@ -343,7 +358,7 @@ body {
     width: 3vw;
     height: 3vw;
     border-radius: 50%;
-    background-color: #B1F0AB;
+    background-color: #FCCE42;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -366,6 +381,13 @@ body {
 
 #name {
     font-weight: 700;
+    margin-bottom: none;
+}
+
+#acc-type {
+    font-weight: 500;
+    font-size: 12px;
+    margin-top: none;
 }
         
 .acc-ellips {
