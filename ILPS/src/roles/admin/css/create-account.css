@@ -1,10 +1,14 @@
 body {
-    font-family: 'Poppins';
+    font-family: Inter, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
 }
 
 .container {
     max-width: 62vw;
-    margin: 50px auto;
     padding: 20px;
     background-color: #ffffff;
     border-radius: 8px;
@@ -12,164 +16,146 @@ body {
 }
 
 .title p {
+    font-family: Inter, sans-serif;
     text-align: center;
-    color: #2D4D2A;
-    font-weight: bold;
-    font-size: 1.5vw;
+    color: #2B2B2B;
+    font-weight: 800;
+    font-size: 26px;
+}
+
+.edit-form {
+    display: flex;
+    flex-direction: row;
+    margin-left: 1.5vw;
+    gap: 20px;
+}
+
+.edit-form label{
+    font-family: Inter, sans-serif;
+    color: #2B2B2B;
+    font-size: 12px;
 }
 
 .add-form {
     display: flex;
-    margin-left: 1.5vw; 
+    flex-direction: row;
+    margin-left: 1.5vw;
+    gap: 20px;
 }
 
-.add-img {
+.add-form label{
+    font-family: Inter, sans-serif;
+    color: #2B2B2B;
+    font-size: 12px;
+}
+
+.add-left, .add-right {
+    flex: 1;
     display: flex;
-    position: relative;
-    margin-right: 0.5vw;
+    flex-direction: column;
 }
 
-    .acc-img {
-        width: 6vw;
-        height: 6vw;
-        border-radius: 50%;
-        background-color: #B1F0AB;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-    }
-
-        .acc-img i {
-            font-size: 4vw;
-            color: #2D4D2A;
-        }
-
-    .edit-img {
-        position: absolute;
-        bottom: 5vw;
-        right: 0;
-        background-color: #466543;
-        width: 1.8vw;
-        height: 1.8vw;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 50%;
-    }
-
-        .edit-img i {
-            font-size: 1vw;
-            text-align: right;
-            color: #ffffff;
-        }
-
-.add-deets {
+.labels {
     display: flex;
-    color: #2D4D2A;
+    flex-direction: column;
 }
 
-    .add-left, .add-right {
-        display: flex;
-        margin-left: 1.5vw;
-    }
-
-        .labels, .fields {
-            display: flex;
-            flex-direction: column;
-            margin-right: 1vw;
-        }
-
-        .labels label, .fields label{
-            font-weight: bold;
-            margin-bottom: 0.8vw;
-        }
+.labels label {
+    font-weight: bold;
+    margin-bottom: 0.5vh;
+    font-size: 14px;
+}
 
 input[type="text"],
 input[type="password"],
 input[type="email"] {
-    border: #F2F2F2 solid 1px;
+    font-family: Inter, sans-serif;
+    border: 1px solid #ccc;
     height: 3.5vh;
-    margin-bottom: 1vh;
-    width: 15vw;
-    border-radius: 0.4vw;
-    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2vh;
+    width: 90%;
+    border-radius: 4px;
+    padding: 0.5vw;
+    font-size: 14px;
+    box-shadow: none;
 }
 
-        #sort {
-            background-color: #7FD278; 
-            color: #2D4D2A;
-            border: none;
-            border-radius: 5px; 
-            font-size: 16px;
-            font-weight: bold;
-            font-family: 'Poppins';
-            box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.1);
-            width: 15.4vw;
-            height: 3.5vh;
-            cursor: pointer;
-        }
+#sort {
+    font-family: Inter, sans-serif;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    height: 6vh;
+    width: 94%;
+    padding: 0.5vw;
+}
 
-        #sort option {
-            background-color: #fff;
-            color: #333;
-        }
+#sort option {
+    font-family: Inter, sans-serif;
+    background-color: #fff;
+    color: #2b2b2b;
+}
 
-    .button-group {
-        display: flex;
-        gap: 1vw;
-        margin-top: 3vw;
-        margin-left: 3vw;
-    }
+.button-group {
+    display: flex;
+    gap: 1vw;
+    margin-top: 1.5vw;
+    margin-left: 1.5vw;
+}
 
-        #cancelBtn {
-            background-color: #EBEBEB;
-            color: #333;
-            border: none;
-            border-radius: 5px;
-            font-size: 1vw;
-            height: 2vw;
-            width: 7vw;
-            cursor: pointer;
-        }
+#cancelBtn {
+    font-family: Inter, sans-serif;
+    background-color: #EBEBEB;
+    color: #2B2B2B;
+    border: none;
+    border-radius: 5px;
+    font-size: 1vw;
+    height: 2.3vw;
+    width: 8vw;
+    cursor: pointer;
+}
 
-        #cancelBtn:hover {
-            background-color: #e0e0e0;
-        }
+#cancelBtn:hover {
+    background-color: #e0e0e0;
+}
 
-        #saveBtn {
-            background-color: #7FD278;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1vw;
-            font-weight: bold;
-            height: 2vw;
-            width: 7vw;
-            cursor: pointer;
-        }
+#saveBtn {
+    font-family: Inter, sans-serif;
+    background-color: #D9F17F;
+    color: #2B2B2B;
+    border: none;
+    border-radius: 5px;
+    font-size: 1vw;
+    font-weight: bold;
+    height: 2.3vw;
+    width: 8vw;
+    cursor: pointer;
+}
 
-        #saveBtn:hover {
-            background-color: #96d890;
-        }
+#saveBtn:hover {
+    background-color: #adc45d;
+}
 
-        .password-container {
-            display: flex;
-            align-items: center;
-        }
-        
-        .eye-icon {
-            margin-left: -30px;
-            cursor: pointer;
-        }
+.password-container {
+    display: flex;
+    align-items: center;
+}
 
+.eye-icon i {
+    margin-left: -30px;
+    cursor: pointer;
+    vertical-align: middle;
+    margin-top: -11px;
+    color: #2b2b2b;
+}
 
-/* Start of container permissions CSS */
 .permissions {
     margin-left: 1.5vw;
     color: #2D4D2A;
     margin-top: 1.5vw;
 }
+
 .permTitle,
 .permission-container {
     margin-left: 1.5vw;
@@ -178,21 +164,24 @@ input[type="email"] {
 .permission {
     border-bottom: 1px solid lightgrey;
 }
+
 .home, .home_view {
     margin: 10px 0;
 }
+
 .moduleName, 
 .moduleFunc {
     margin: 10px 0;
 }
+
 .moduleFunc {
     border: 1px solid #7FD278;
     text-align: center;
     transition: 0.5s;
 }
+
 .permissionActive {
     background-color: #D9F17F;
     border: 1px solid transparent;
     transition: 0.5s;
 }
-/* End of container permissions CSS */

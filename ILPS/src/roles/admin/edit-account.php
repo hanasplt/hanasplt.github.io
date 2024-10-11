@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     $stmt->free_result();
     $stmt->close();
-    
+
     $found = false; // Initialize a variable for checking if there's a duplicate
     foreach ($emails as $acc) {
         if ($acc['email'] == $email && $acc['userid'] != $userId) {
@@ -53,10 +53,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Not a duplicate, updates the account
-    if(!$found) {
+    if (!$found) {
         $stmt = $conn->prepare("CALL sp_editAcc(?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssssss", $userId, $firstName, $middleName, $lastName, 
-                        $suffix, $email, $password, $type);
+        $stmt->bind_param(
+            "ssssssss",
+            $userId,
+            $firstName,
+            $middleName,
+            $lastName,
+            $suffix,
+            $email,
+            $password,
+            $type
+        );
 
         if ($stmt->execute()) {
             // Insert in the logs
@@ -73,8 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $stmt->close();
     }
-    
+
 
     $conn->close();
 }
-?>

@@ -6,6 +6,7 @@ document.getElementById("openPopup").addEventListener("click", function() {
 window.addEventListener("message", function(event) {
     if (event.data === "closePopup") {
         document.getElementById("iframeOverlay").style.display = "none";
+        document.getElementById("popupEdit").style.display = "none";
     }
 });
 
@@ -59,6 +60,7 @@ document.querySelectorAll('.edit-icon').forEach(function(editIcon) {
 
 window.addEventListener("message", function(event) {
     if (event.data === "closePopup") {
+        document.getElementById("popupEdit").style.display = "none";
         document.getElementById("popupEdit").style.display = "none";
     }
 });
