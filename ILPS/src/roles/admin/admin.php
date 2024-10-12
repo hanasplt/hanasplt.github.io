@@ -8,7 +8,7 @@ if ($conn->connect_error) {
 }
 
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-    $user_id = isset($_GET['id']);
+    $user_id = $_GET['id'];
     $_SESSION['userId'] = $user_id;
 }
 

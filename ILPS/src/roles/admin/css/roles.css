@@ -135,23 +135,130 @@ body {
         }
 
 
+.container {
+    margin-top: 8%;
+    margin-bottom: 5%;
+}
 .role-container {
-    overflow: auto;
+    /* overflow: auto; */
     padding: 0 10px;
     border-radius: 10px;
 }
+    .roleTitle {
+        margin: 0;
+        color: #466543;
+    }
+    .roleDescrip {
+        margin: 0;
+        padding-bottom: 25px;
+        color: #466543;
+        font-size: 15px;
+    }
+        .main-header {
+            background-color: #466543;
+            margin-right: 10px;
+            color: #FFFFFF;
+        }
+        .data-row {
+            background-color: #FFFFFF;
+            margin-right: 10px;
+            margin-top: 10px;
+            color: #2D4D2A;
+        }
+        .action {
+            text-align: center;
+        }
+            .fa-pen-to-square,
+            .user-name {
+                cursor: pointer;
+            }
 
-.row {
-    flex-wrap: nowrap;
-    border-bottom: 1px solid lightgray;
+
+/* UPDATE ROLE CSS */
+.update-role-body {
+    background: none;
 }
-.main-row {
-    background-color: #B1F0AB;
-    border-left: 1px solid #9dda97;
+.update-role-container {
+    max-width: 62vw;
+    margin: 50px auto;
+    padding: 10px 40px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
 }
-.col-1 {
-    width: 10%;
-}
-.col-1, .col-2 {
-    border-left: 1px solid #9dda97;
-}
+    .update-role-title {
+        font-size: 20px;
+        font-weight: bold;
+        color: #466543;
+    }
+        .moduleTitle {
+            font-weight: bold;
+            color: #557752;
+        }
+        .activeModule {
+            background-color: #4B8946;
+            color: #FFFFFF;
+        }
+            .rights {
+                text-align: center;
+            }
+            .rights span {
+                font-weight: 400;
+            }
+            .modules {
+                margin-top: 5px;
+                margin-bottom: 5px;
+                text-align: center;
+                border: 1px solid #e4e4e4;
+                border-radius: 10px;
+                padding: 5px 0;
+                box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+                cursor: pointer;
+                transition: 0.4s;
+            }
+            .modules:hover {
+                background-color: #4B8946;
+                color: #FFFFFF;
+                transition: 0.4s;
+            }
+    
+    .permissions-container,
+    .button-container {
+        margin-top: 10px;
+        margin-bottom: 30px;
+    }
+    .button-container {
+        display: flex;
+        justify-content: right;
+        margin-right: 20px;
+    }
+        .button-container button {
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        #cancelBtn {
+            background-color: #EBEBEB;
+            color: #2D4D2A;
+            border: none;
+            padding: 3px 20px;
+            border-radius: 5px;
+        }
+        #saveBtn {
+            background-color: #7FD278;
+            color: #FFFFFF;
+            font-weight: bold;
+            border: none;
+            padding: 3px 20px;
+            border-radius: 5px;
+        }
+        .col-1 {
+            width: 9%;
+            text-align: center;
+        }
+        .col-2 {
+            width: 11%;
+            text-align: center;
+        }
+        .col-5 {
+            width: 55.55%;
+        }

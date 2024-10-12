@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="../css/roles.css">
+
+   <!-- Fonts -->
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+
+   <!--Web-logo-->
+   <link rel="icon" href="../../../public/assets/icons/logo.svg">
+
+   <!-- icons -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+
+   <!-- SweetAlert CSS and JS -->
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="update-role-body">
+    <div class="update-role-container">
+        <form method="post" class="roleForm" id="editRoleForm">
+            <input type="hidden" id="userId" name="userId">
+            <input type="hidden" id="userRole" name="userRole">
+            <div class="update-role-title">
+                <p>Update User's Access</p>
+            </div>
+            <!-- Display Permissions from admin modules  -->
+            <div class="permissions-container" id="adminPermissions" style="display: none;">
+                <!-- MAIN HEADER -->
+                <div class="row">
+                    <div class="col-5">
+                        <p class="moduleTitle">Object</p>
+                    </div>
+                    <div class="col-2">
+                        <p class="moduleTitle">Read</p>
+                    </div>
+                    <div class="col-1">
+                        <p class="moduleTitle">Add</p>
+                    </div>
+                    <div class="col-2">
+                        <p class="moduleTitle">Update</p>
+                    </div>
+                    <div class="col-2">
+                        <p class="moduleTitle">Delete</p>
+                    </div>
+                </div>
+                <!-- Data -->
+                 <div class="row">
+                    <div class="col-5">
+                        User Management
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="user_read">
+                    </div>
+                    <div class="col-1">
+                        <input type="checkbox" name="admin_permissions[]" value="user_add">
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="user_update">
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="user_delete">
+                    </div>
+                 </div>
+                 <div class="row">
+                    <div class="col-5">
+                        Team Management
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="team_read">
+                    </div>
+                    <div class="col-1">
+                        <input type="checkbox" name="admin_permissions[]" value="team_add">
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="team_update">
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="team_delete">
+                    </div>
+                 </div>
+                 <div class="row">
+                    <div class="col-5">
+                        Event Management
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="event_read">
+                    </div>
+                    <div class="col-1">
+                        <input type="checkbox" name="admin_permissions[]" value="event_add">
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="event_update">
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="event_delete">
+                    </div>
+                 </div>
+                 <div class="row">
+                    <div class="col-5">
+                        Contestant Management
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="contestant_read">
+                    </div>
+                    <div class="col-1">
+                        <input type="checkbox" name="admin_permissions[]" value="contestant_add">
+                    </div>
+                    <div class="col-2"></div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="contestant_delete">
+                    </div>
+                 </div>
+                 <div class="row">
+                    <div class="col-5">
+                        Committee Management
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="committee_read">
+                    </div>
+                    <div class="col-1">
+                        <input type="checkbox" name="admin_permissions[]" value="committee_add">
+                    </div>
+                    <div class="col-2"></div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="committee_delete">
+                    </div>
+                 </div>
+                 <div class="row">
+                    <div class="col-5">
+                        Judge Management
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="judge_read">
+                    </div>
+                    <div class="col-1">
+                        <input type="checkbox" name="admin_permissions[]" value="judge_add">
+                    </div>
+                    <div class="col-2"></div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="judge_delete">
+                    </div>
+                 </div>
+                 <div class="row">
+                    <div class="col-5">
+                        Criteria Management
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="criteria_read">
+                    </div>
+                    <div class="col-1">
+                        <input type="checkbox" name="admin_permissions[]" value="criteria_add">
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="criteria_update">
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="criteria_delete">
+                    </div>
+                 </div>
+                 <div class="row">
+                    <div class="col-5">
+                        Scoring Management
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="scoring_read">
+                    </div>
+                    <div class="col-1">
+                        <input type="checkbox" name="admin_permissions[]" value="scoring_add">
+                    </div>
+                    <div class="col-2"></div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="scoring_delete">
+                    </div>
+                 </div>
+                 <div class="row">
+                    <div class="col-5">
+                        Role Management
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="role_read">
+                    </div>
+                    <div class="col-1"></div>
+                    <div class="col-2">
+                        <input type="checkbox" name="admin_permissions[]" value="role_update">
+                    </div>
+                    <div class="col-2"></div>
+                 </div>
+            </div>
+            <!-- Display Permissions from committee modules  -->
+            <div class="permissions-container" id="committeePermissions" style="display: none;">
+                <!-- MAIN HEADER -->
+                <div class="row">
+                    <div class="col-5">
+                        <p class="moduleTitle">Object</p>
+                    </div>
+                    <div class="col-2">
+                        <p class="moduleTitle">Read</p>
+                    </div>
+                    <div class="col-1">
+                        <p class="moduleTitle">Add</p>
+                    </div>
+                    <div class="col-2">
+                        <p class="moduleTitle">Update</p>
+                    </div>
+                    <div class="col-2">
+                        <p class="moduleTitle">Delete</p>
+                    </div>
+                </div>
+                <!-- Data -->
+                 <div class="row">
+                    <div class="col-5">
+                        Managed Events
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="committee_permissions[]" value="committee_event_read">
+                    </div>
+                 </div>
+                 <div class="row">
+                    <div class="col-5">
+                        Scoring Management
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="committee_permissions[]" value="committee_scoring_read">
+                    </div>
+                    <div class="col-1">
+                        <input type="checkbox" name="committee_permissions[]" value="committee_scoring_add">
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="committee_permissions[]" value="committee_scoring_update">
+                    </div>
+                 </div>
+            </div>
+            <!-- Display Permissions from judge modules  -->
+            <div class="permissions-container" id="judgePermissions" style="display: none;">
+                <!-- MAIN HEADER -->
+                <div class="row">
+                    <div class="col-5">
+                        <p class="moduleTitle">Object</p>
+                    </div>
+                    <div class="col-2">
+                        <p class="moduleTitle">Read</p>
+                    </div>
+                    <div class="col-1">
+                        <p class="moduleTitle">Add</p>
+                    </div>
+                    <div class="col-2">
+                        <p class="moduleTitle">Update</p>
+                    </div>
+                    <div class="col-2">
+                        <p class="moduleTitle">Delete</p>
+                    </div>
+                </div>
+                <!-- Data -->
+                 <div class="row">
+                    <div class="col-5">
+                        Judging Events
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="judge_permissions[]" value="judge_event_read">
+                    </div>
+                 </div>
+                 <div class="row">
+                    <div class="col-5">
+                        Judging Forms
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="judge_permissions[]" value="judge_form_read">
+                    </div>
+                 </div>
+                 <div class="row">
+                    <div class="col-5">
+                        Scoring Management
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" name="judge_permissions[]" value="judge_scoring_read">
+                    </div>
+                    <div class="col-1">
+                        <input type="checkbox" name="judge_permissions[]" value="judge_scoring_add">
+                    </div>
+                 </div>
+            </div>
+            <!-- Save and Cancel button -->
+            <div class="button-container">
+                <button type="button" id="cancelBtn">Cancel</button>
+                <button type="submit" id="saveBtn">Save</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="../js/update-roles.js"></script>
+</body>
+</html>

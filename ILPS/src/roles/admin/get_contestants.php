@@ -4,11 +4,9 @@ ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
 error_reporting(E_ALL);
 
-$conn = require_once '../../../config/db.php';
-
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
+require_once '../../../config/sessionConfig.php'; // session Cookie
+require_once '../../../config/db.php';
+require_once 'adminPermissions.php'; // Retrieves admin permissions
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['evId'];
@@ -21,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->execute();
     $result = $stmt->get_result();
 
+    if (in_array('contestant_read', $admin_rights)) {
     echo '<div class="accounts-title" style="margin-left: 0vw;">';
     echo '<p id="event">Contestant Table</p>';
     echo '</div>';
@@ -59,13 +58,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 echo '<tr>';
                 echo '<td>' . $count++ . '</td>';
                 echo '<td>' . $team . '</td>';
+
+                if (in_array('contestant_delete', $admin_rights)) {
                 echo '<td><i class="fa-solid fa-trash-can delete-icon" data-cont="'.$conId.'" data-name="'.$team.'" data-event-name="'.$eventname.'" data-id="'.$teamid.'" style="cursor: pointer;"></i></td>';
+                } else {
+                    echo '<td style="color: darkgrey;">Feature denied.</td>';
+                }
                 echo '</tr>';
             } else {
                 echo '<tr>';
                 echo '<td>' . $contNum . '</td>';
                 echo '<td>' . $team . '</td>';
+
+                if (in_array('contestant_delete', $admin_rights)) {
                 echo '<td><i class="fa-solid fa-trash-can delete-icon" data-cont="'.$conId.'" data-name="'.$team.'" data-event-name="'.$eventname.'" data-id="'.$teamid.'" style="cursor: pointer;"></i></td>';
+                } else {
+                    echo '<td style="color: darkgrey;">Feature denied.</td>';
+                }
                 echo '</tr>';
             }
 
@@ -79,7 +88,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     echo '</tbody>';
     echo '</table>'; 
-    
+    } else {
+        echo '
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Oops!</strong> You lack the permission to view the Contestants.
+            </div>
+        ';
+    }
 }
 $conn->close();
 ?>
