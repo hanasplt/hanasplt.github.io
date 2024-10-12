@@ -445,7 +445,7 @@ $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAccount(
         IN offset_num INT)
     BEGIN
         SELECT * FROM vw_accounts
-        WHERE status IS NULL AND (CONCAT(firstName, ' ', lastName) LIKE search_query
+        WHERE userId != 1 AND status IS NULL AND (CONCAT(firstName, ' ', lastName) LIKE search_query
         OR CONCAT(firstName, ' ', middleName, ' ', lastName) LIKE search_query)
         LIMIT limit_num OFFSET offset_num;
     END ;";
@@ -460,7 +460,7 @@ $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAccountCount(
         IN search_query VARCHAR(255))
     BEGIN
         SELECT COUNT(*) AS total FROM vw_accounts
-        WHERE status IS NULL AND (CONCAT(firstName, ' ', lastName) LIKE search_query
+        WHERE userId != 1 AND status IS NULL AND (CONCAT(firstName, ' ', lastName) LIKE search_query
         OR CONCAT(firstName, ' ', middleName, ' ', lastName) LIKE search_query);
     END ;";
 
@@ -1200,7 +1200,7 @@ if ($conn->query($sqlT) === TRUE) {
 // STORED FUNCTION
 try {
     // Stored Function for count logs
-    $sqlT = "CREATE FUNCTION fn_getLogCount(yearFilter INT) 
+    $sqlT = "CREATE FUNCTION IF NOT EXISTS fn_getLogCount(yearFilter INT) 
             RETURNS INT 
             DETERMINISTIC
             BEGIN

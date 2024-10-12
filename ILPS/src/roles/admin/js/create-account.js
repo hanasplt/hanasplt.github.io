@@ -90,23 +90,3 @@ document.getElementById('toggleConPassword').addEventListener('click', function(
     icon.classList.toggle('fa-eye');
     icon.classList.toggle('fa-eye-slash');
 });
-
-
-// CLICK EVENT LISTENER FOR PERMISSIONS
-document.addEventListener('click', function(e) {
-    let target = e.target;
-
-    // Check if class name = moduleFunc is clicked
-    if (target.classList.contains('moduleFunc')) {
-        // Deselect target permission
-        if (target.classList.contains('permissionActive')) {
-            target.classList.remove('permissionActive');
-        } else { // Select the target permission
-            target.classList.add('permissionActive');
-        }
-
-        // Get permission's value
-        let permission_val = target.dataset.value;
-        console.log(permission_val);
-    }
-});
