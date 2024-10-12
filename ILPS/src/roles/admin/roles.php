@@ -1,3 +1,13 @@
+<?php
+// log errors
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require_once '../../../config/sessionConfig.php'; // Session
+require_once '../../../config/db.php'; // Database connection
+require_once '../admin/verifyLoginSession.php'; // Login Verification
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +28,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
 
     <!--Web-logo-->
-    <link rel="icon" href="../../../../public/assets/icons/logo.svg">
+    <link rel="icon" href="../../../public/assets/icons/logo.svg">
 
     <!-- icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -50,196 +60,74 @@
         </div>
     </div>
     <!-- End of Navbar -->
-    <!-- Create New Role Popup -->
-    <div class="new-account" id="openPopup">
-        <div class="plus-icon">
-            <i class="fas fa-plus"></i>
-        </div>
-        <div class="new-account-info">
-            <p id="create">Create New Role</p>
-            <p id="add">Add a role for the users.</p>
-        </div>
+    <!-- Roles and Permissions -->
+     <div class="container">
+        <!-- Popup iFrame for editing user's permissions -->
         <div class="iframe-overlay" id="iframeOverlay">
             <iframe id="popupFrame"></iframe>
         </div>
-    </div>
-    <!-- End of Create New Role Popup -->
-    <!-- Roles and Permissions -->
-     <div class="container">
         <h2 class="roleTitle">Roles</h2>
+        <p class="roleDescrip">Modify user's access rights</p>
         <div class="role-container">
             <!-- Row Header -->
-            <div class="row">
-                <div class="col-3 main-row">
-                    <p class="roleName">Role</p>
+             <div class="row">
+                <div class="col-8 main-header">
+                    <p class="rowTitle">Users</p>
                 </div>
-                <!-- Change this, built in -->
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Create Account</p>
+                <div class="col main-header action">
+                    <p class="rowTitle">Action</p>
                 </div>
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Update Account</p>
-                </div>
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Delete Account</p>
-                </div>
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Create Teams</p>
-                </div>
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Update Teams</p>
-                </div>
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Delete Teams</p>
-                </div>
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Create Events</p>
-                </div>
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Update Events</p>
-                </div>
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Delete Events</p>
-                </div>
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Add Contestants</p>
-                </div>
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Delete Contestants</p>
-                </div>
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Add Committee</p>
-                </div>
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Delete Committee</p>
-                </div>
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Add Judge</p>
-                </div>
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Delete Judge</p>
-                </div>
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Create Criteria</p>
-                </div>
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Update Criteria</p>
-                </div>
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Delete Criteria</p>
-                </div>
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Add Scoring</p>
-                </div>
-                <div class="col-1 main-row">
-                    <p class="roleFuncName">Delete Scoring</p>
-                </div>
-                <div class="col-2 main-row">
-                    <p class="roleFuncName">Create Scheduled Day</p>
-                </div>
-                <div class="col-2 main-row">
-                    <p class="roleFuncName">Update Scheduled Day</p>
-                </div>
-                <div class="col-2 main-row">
-                    <p class="roleFuncName">Delete Scheduled Day</p>
-                </div>
-                <div class="col-2 main-row">
-                    <p class="roleFuncName">Create Scheduled Event</p>
-                </div>
-                <div class="col-2 main-row">
-                    <p class="roleFuncName">Update Scheduled Event</p>
-                </div>
-                <div class="col-2 main-row">
-                    <p class="roleFuncName">Delete Scheduled Event</p>
-                </div>
-            </div>
-            <!-- Data Row -->
-            <div class="row">
-                <div class="col-3">
-                    <p class="roleName">RoleName</p>
-                </div>
-                <!-- Change this, built in -->
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-1">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-2">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-2">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-2">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-2">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-2">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-                <div class="col-2">
-                    <p class="roleFuncName">Yes</p>
-                </div>
-            </div>
+             </div>
+            
+            <!-- Row Data -->
+             <?php
+             try {
+                 // Retrieve users from the database
+                 $getUsers = "CALL sp_getAllAcc";
+    
+                 $stmt = $conn->prepare($getUsers);
+                 $stmt->execute();
+                 $retval = $stmt->get_result();
+    
+                 if ($retval->num_rows > 0) {
+                    // Display Users
+                    while ($row = $retval->fetch_assoc()) {
+                        // Loop user's full name
+                        $userid = $row['userId'];
+                        $fname = $row['firstName'];
+                        $lname = $row['lastName'];
+                        $fullname = $fname . " " . $lname;
+
+                        if ($userid != 1) {
+                            // Display all users except the main admin
+                        ?>
+                        <div class="row">
+                           <div class="col-8 data-row user-name" onclick="showRoleDetails(<?php echo $userid; ?>)" title="Click to view user's access rights.">
+                               <p class="rowData"><?php echo $fullname; ?></p>
+                           </div>
+                           <div class="col data-row action">
+                               <p class="rowData"><i class="fa-solid fa-pen-to-square fa-xl edit-icon" data-user-id="<?php echo $userid; ?>" id="openPopup" title="Click to update user's access rights."></i></p>
+                           </div>
+                        </div>
+                        <?php
+                        }
+                    }
+                 } else {
+                    // Display no user message
+                    ?>
+                    <div class="alert alert-primary" role="alert">
+                        No User/s exists!
+                    </div>
+                    <?php
+                 }
+             } catch (Exception $e) {
+                echo "<script>console.log(".$e->getMessage().")</script>";
+             }
+             ?>
         </div>
      </div>
     <!-- End of Roles and Permissions -->
+
+    <script src="js/role.js"></script>
 </body>
 </html>

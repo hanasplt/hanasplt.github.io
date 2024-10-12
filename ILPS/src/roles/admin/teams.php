@@ -1,11 +1,8 @@
 <?php
 require_once '../../../config/sessionConfig.php'; // Session Cookie
-$conn = require_once '../../../config/db.php'; // Database connection
+require_once '../../../config/db.php'; // Database connection
 require_once '../admin/verifyLoginSession.php'; // Logged in or not
-
-if (!$conn) {
-  die("Connection failed: " . mysqli_connect_error());
-}
+require_once 'adminPermissions.php'; // Retrieves admin permissions
 
 // Pagination setup
 $recordsPerPage = 3;
@@ -69,12 +66,21 @@ try {
     </div>
   </div>
 
+  <?php if (in_array('team_read', $admin_rights)) { ?>
   <div class="container">
     <div class="main-card" style="padding: 5%;">
     <div class="titlename">
         <b>INTRAMURALS 2024</b>
         </div>
-      <button class="addteam" onclick="openAddModal()">ADD TEAM</button>
+      <?php if (in_array('team_add', $admin_rights)) { ?>
+      <button class="addteam" onclick="openAddModal()">Add Team</button>
+      <?php } else {
+        echo '
+          <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <strong>FYI!</strong> \'Add Team\' feature is hidden as you don\'t have the permission.
+          </div>
+        ';
+      } ?>
       <div class="cards" id="cardContainer">
         <?php
         if ($result->num_rows > 0) {
@@ -89,8 +95,13 @@ try {
             echo "<div class='img'><img src='$teamImageSrc' alt='Team Image'></div>";
             echo "<div class='details'><div class='name'>$teamName</div></div>";
             echo "<div class='media-icons'>";
+
+            if (in_array('team_update', $admin_rights)) {
             echo "<a href='#' class='delete-btn' data-id='$teamId' data-name='$teamName'><i class='fas fa-trash'></i></a>";
+            }
+            if (in_array('team_delete', $admin_rights)) {
             echo "<a href='#' class='editteam-btn' data-id='$teamId' data-name='$teamName'><i class='fas fa-pen'></i></a>";
+            }
             echo "</div></div></div>";
           }
         } else {
@@ -251,5 +262,12 @@ try {
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="../admin/js/teams.js"></script>
+  <?php } else {
+    echo '
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Oops!</strong> You lack the permission to view \'Teams\' features.
+      </div>
+    ';
+  }?>
 </body>
 </html>

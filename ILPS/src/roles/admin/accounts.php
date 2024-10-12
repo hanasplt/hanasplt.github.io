@@ -1,7 +1,8 @@
 <?php
 require_once '../../../config/sessionConfig.php'; // session Cookie
-$conn = require_once '../../../config/db.php'; // database connection
+require_once '../../../config/db.php'; // database connection
 require_once '../admin/verifyLoginSession.php'; // logged in or not
+require_once 'adminPermissions.php'; // Retrieves admin permissions
 
 // pagination setup
 $recordsPerPage = 5;
@@ -61,42 +62,16 @@ try {
     die("Error: " . $e->getMessage());
 }
 
-if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-    $user_id = isset($_GET['id']);
-    $_SESSION['userId'] = $user_id;
-}
-
-try {
-    $getAdmin = "CALL sp_getAnAcc(?)";
-
-    $iddd = $_SESSION['userId'];
-    $stmt = $conn->prepare($getAdmin);
-    $stmt->bind_param("i", $iddd);
-    $stmt->execute();
-    $retname = $stmt->get_result();
-
-    // Retrieve Admin Name
-    $row = $retname->fetch_assoc();
-    $admin_name = $row['firstName'];
-
-    $retname->free();
-    $stmt->close();
-} catch (Exception $e) {
-    die("Error: " . $e->getMessage());
-}
-
 $conn->close();
 
 ?>
 
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Accounts</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="stylesheet" href="../admin/css/accounts.css">
 
     <!-- font -->
@@ -112,13 +87,19 @@ $conn->close();
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-
 <body>
     <div class="navigation-bar">
         <img class="logo-img" src="../../../public/assets/icons/ilps-logo.png">
         <nav class="nav-link">
             <p onclick="window.location.href = 'admin.php';" class="navbar" title="Home">Home</p>
-            <p onclick="window.location.href = 'accounts.php';" class="navbarbie" ; title="Accounts">Accounts</p>
+            <div class="acc-hover">
+                <div class="acc-btn-container">
+                    <p onclick="window.location.href = 'accounts.php';" class="navbarbie" ; title="Accounts">Accounts</p>
+                </div>
+                <div class="account-dropdown">
+                    <p onclick="window.location.href = 'roles.php';" class="dc-text">Role</p>
+                </div>
+            </div>
             <p onclick="window.location.href = 'teams.php';" class="navbar" title="Teams">Teams</p>
             <p onclick="window.location.href = 'EventTeam.php';" class="navbar" title="Events">Events</p>
             <p onclick="window.location.href = 'schedule.php';" class="navbar" title="Schedule">Schedule</p>
@@ -143,6 +124,9 @@ $conn->close();
             </div>
         </nav>
     </div>
+    <?php if (in_array('user_read', $admin_rights)) { ?>
+    <?php if (in_array('user_add', $admin_rights)) { ?>
+        <!-- Display Create Account Button -->
     <div class="new-account" id="openPopup">
         <div class="plus-icon">
             <i class="fas fa-plus"></i>
@@ -155,7 +139,14 @@ $conn->close();
             <iframe id="popupFrame"></iframe>
         </div>
     </div>
-
+        <!-- Display Message - no permission - create account -->
+    <?php } else {
+        echo '
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <strong>FYI: </strong> \'Create a New Account\' feature is hidden as you don\'t have the permission.
+            </div>
+        ';
+    } ?>
     <div class="accounts">
         <div class="name-export-container">
             <p id="accs">Accounts</p>
@@ -227,16 +218,20 @@ $conn->close();
                         </div>
                     </div>
                     <div class="acc-buttons">
+                        <?php if (in_array('user_delete', $admin_rights)) { ?>
                         <form action="delete-account.php" method="POST" id="deleteForm_<?php echo $row['userId']; ?>">
                             <input type="hidden" name="userId" value="<?php echo $row['userId']; ?>">
                             <button type="button" class="trash-icon" style="cursor: pointer;" onclick="confirmDelete('<?php echo $row['userId']; ?>', '<?php echo $fullName; ?>')">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </form>
+                        <?php } ?>
                 
+                        <?php if (in_array('user_update', $admin_rights)) { ?>
                         <div class="edit-icon" data-user-id="<?php echo $row['userId']; ?>">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </div>
+                        <?php } ?>
                         <div class="popup" id="popupEdit">
                             <iframe id="editIframe"></iframe>
                         </div>
@@ -292,6 +287,13 @@ $conn->close();
     </div>
 
     <script src="../admin/js/accounts.js"></script>
+    <?php } else {
+        echo '
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Oops!</strong> You lack the permission to view \'Accounts\' features.
+            </div>
+        ';
+    } ?>
 </body>
 
 </html>

@@ -40,13 +40,13 @@ if($result -> num_rows > 0) {
         $mail->isSMTP();                                            //Send using SMTP
         $mail->Host       = 'smtp.gmail.com';                       //Set the SMTP server to send through
         $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-        $mail->Username   = 'sawatdeka10@gmail.com';                //SMTP username
-        $mail->Password   = 'fbsguftwlpwbupxu';                     //SMTP password
+        $mail->Username   = 'ilps.usep@gmail.com';                //SMTP username
+        $mail->Password   = 'utpzfaowgrgmbypy';                     //SMTP password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable implicit TLS encryption
         $mail->Port       = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
         //Recipients
-        $mail->setFrom('sawatdeka10@gmail.com', 'Intramural Leaderboard Point System - Reset Password');
+        $mail->setFrom('ilps.usep@gmail.com', 'Intramural Leaderboard Point System - Reset Password');
         $mail->addAddress($email);               //Name is optional
 
         //Content

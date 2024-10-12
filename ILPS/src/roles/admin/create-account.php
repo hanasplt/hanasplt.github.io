@@ -52,9 +52,22 @@
             }
     
             if(!$found) { 
+                $user_permissions = ""; // Initialize to store access rights of user
+                // Check user role
+                if ($type == 'Admin') {
+                    // Admin's access rights
+                    $user_permissions = "user_read,user_add,user_update,user_delete,team_read,team_add,team_update,team_delete,event_read,event_add,event_update,event_delete,contestant_read,contestant_add,contestant_delete,committee_read,committee_add,committee_delete,judge_read,judge_add,judge_delete,criteria_read,criteria_add,criteria_update,criteria_delete,scoring_read,scoring_add,scoring_delete,role_read,role_update";
+                } else if ($type == 'Committee') {
+                    // Committee's access rights
+                    $user_permissions = "committee_event_read,committee_scoring_read,committee_scoring_add,committee_scoring_update";
+                } else if ($type == 'Judge') {
+                    // Judge's access rights
+                    $user_permissions = "judge_event_read,judge_form_read,judge_scoring_read,judge_scoring_add";
+                }
+
                 // No duplication, account will be inserted
-                $stmt = $conn->prepare("CALL sp_insertAcc(?, ?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param("sssssss", $firstName, $middleName, $lastName, $suffix, $email, $password, $type);
+                $stmt = $conn->prepare("CALL sp_insertAcc(?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("ssssssss", $firstName, $middleName, $lastName, $suffix, $email, $password, $type, $user_permissions);
     
                 if ($stmt->execute()) {
                     // Insert in the logs

@@ -5,11 +5,7 @@
 
     require_once '../config/sessionConfig.php';
     require_once '../config/encryption.php';
-    $conn = require_once '../config/db.php';
-
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+    require_once '../config/db.php';
 
     if (isset($_POST['login'])) {
         $uzr = $_POST['email']; // user input--username (this is email)

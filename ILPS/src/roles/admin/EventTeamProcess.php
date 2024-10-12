@@ -4,8 +4,9 @@
 
   require_once '../../../config/sessionConfig.php'; // Session Cookie
   require_once '../../../config/encryption.php';
-  $conn = require_once '../../../config/db.php'; // Database connection
+  require_once '../../../config/db.php'; // Database connection
   require_once '../admin/verifyLoginSession.php'; // Logged in or not
+  require_once 'adminPermissions.php'; // Retrieves admin permissions
 
   $accId = $_SESSION['userId'];
 

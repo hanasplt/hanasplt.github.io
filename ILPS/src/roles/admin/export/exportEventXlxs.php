@@ -1,7 +1,9 @@
 <?php
     date_default_timezone_set('Asia/Manila');
 
-    $conn = require_once '../../../../config/db.php'; // Database connection
+    session_start();
+    require_once '../../../../config/db.php'; // Database connection
+    require_once '../adminPermissions.php'; // Retrieves admin permissions
 
     $output = ''; // Initialize variable for compiling data output
     $dt_exported = date("Y-m-d H:i:s"); // Extend as file name
@@ -47,6 +49,7 @@
             $stmt->close();
     
             // Retrieve contestant for this event
+            if (in_array('contestant_read', $admin_rights)) { // Export if permitted
             $getCont = "CALL sp_getEventContestant(?)";
             $stmt = $conn->prepare($getCont);
             $stmt->bind_param("i", $evid);
@@ -85,11 +88,12 @@
     
             $result->free();
             $stmt->close();
-    
+            }
     
             // Validate which table(s) to display
             if ($type == 'Sports') {
                 // Display Committee table
+                if (in_array('committee_read', $admin_rights)) { // Export if permitted
                 $sql = "CALL sp_getEventComt(?)";  
     
                 $stmt = $conn->prepare($sql);
@@ -125,12 +129,14 @@
                         <tr><td colspan="2">No Committee/s.</td></tr>
                     ';
                 }
+                }
             }
             
             else if ($type == 'Socio-Cultural') {
                 // Display Judge and Criteria Table
     
                 // Retrieve Judge Table
+                if (in_array('judge_read', $admin_rights)) { // Export if permitted
                 $sql = "CALL sp_getEventJudge(?)";
     
                 $stmt = $conn->prepare($sql);
@@ -166,12 +172,14 @@
                         <tr><td colspan="2">No Judge/s.</td></tr>
                     ';
                 }
+                }
     
                 $output .= '<tr></tr>';
                 $result->free();
                 $stmt->close();
     
                 // Retrieve Criteria Table
+                if (in_array('criteria_read', $admin_rights)) { // Export if permitted
                 $sql = "CALL sp_getCriteria(?)";
     
                 $stmt = $conn->prepare($sql);
@@ -208,6 +216,7 @@
                     $output .= '
                         <tr><td colspan="3">No Criteria/s.</td></tr>
                     ';
+                }
                 }
             }
             

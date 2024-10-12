@@ -55,6 +55,8 @@
             <i class="fas fa-sign-out-alt" id="logoutIcon"></i>
         </div>
     </div>
+    <?php if (in_array('event_read', $admin_rights)) { ?>
+    <?php if (in_array('event_add', $admin_rights)) { ?>
     <div class="dash">
         <div class="create" id="openModal">
             <div class="new-account" id="openPopup">
@@ -69,6 +71,13 @@
             </div>
         </div>
     </div>
+    <?php } else {
+        echo '
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <strong>FYI: </strong> \'Create an Event\' feature is hidden as you don\'t have the permission.
+            </div>
+        ';
+    } ?>
     <div class="accounts">
         <div class="accounts-title">
             <div>
@@ -79,21 +88,31 @@
             <iframe id="popupFrame"></iframe>
         </div>
         <div class="button-group">
+            <?php if (in_array('contestant_add', $admin_rights)) { ?>
             <button class="group-btn" onclick="openContestantModal(this)">
                 <i class="fa-solid fa-user-plus"></i> Add Contestant
             </button>
+            <?php } ?>
+            <?php if (in_array('committee_add', $admin_rights)) { ?>
             <button class="group-btn" onclick="openCommitteeModal(this)">
                 <i class="fa-solid fa-users"></i> Add Committee
             </button>
+            <?php } ?>
+            <?php if (in_array('judge_add', $admin_rights)) { ?>
             <button class="group-btn" onclick="openJudgesModal(this)">
                 <i class="fa-solid fa-gavel"></i> Add Judge
             </button>
+            <?php } ?>
+            <?php if (in_array('criteria_add', $admin_rights)) { ?>
             <button class="group-btn" id="openCriteriaPopup">
                 <i class="fa-solid fa-list-check"></i> Add Criteria
             </button>
+            <?php } ?>
+            <?php if (in_array('scoring_add', $admin_rights)) { ?>
             <button class="group-btn" onclick="openScoringTable(this)">
                 <i class="fa-solid fa-chart-bar"></i> Scoring Table
             </button>
+            <?php } ?>
         </div>
         <div class="details">
             <div class="account-header">
@@ -136,13 +155,17 @@
                             <div style="float: left; width: 15%;"><?php echo $db_evType; ?></div>
                             <div style="float: left; width: 10%;"><?php echo $db_evCatg; ?></div>
                             <div class="acc-buttons">
+                                <?php if (in_array('event_delete', $admin_rights)) { ?>
                                 <div class="subtrash-icon" onclick="deleteThis(<?php echo $db_evID; ?>, '<?php echo $db_evName; ?>')">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </div>
+                                <?php }?>
 
+                                <?php if (in_array('event_edit', $admin_rights)) { ?>
                                 <div class="subedit-icon" onclick="openEditEventModal(this)">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </div>
+                                <?php }?>
                             </div>
                         </div>
 
@@ -598,6 +621,13 @@
     <script src="../admin/js/EventTeamJS.js"></script>
 
     <?php
+    } else {
+        echo '
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Oops!</strong> You lack the permission to view \'Events\' features.
+            </div>
+        ';
+    }
     $conn->close();
     ?>
 </body>

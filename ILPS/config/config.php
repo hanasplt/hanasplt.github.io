@@ -55,6 +55,7 @@ try {
         password VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL,
         type VARCHAR(50) NOT NULL,
+        permissions VARCHAR(500) NOT NULL,
         log_status VARCHAR(50),
         status INT,
         reset_token VARCHAR(64),
@@ -73,7 +74,8 @@ try {
 // Method to avoid admin account duplication and error
 $adminW = "Admin";
 $adminPass = encrypt("us3p@admin", $encryption_key);
-$adminEmail = "hughlenecabanatan101@gmail.com";
+$adminEmail = "ilps.usep@gmail.com";
+$user_permissions = "user_read,user_add,user_update,user_delete,team_read,team_add,team_update,team_delete,event_read,event_add,event_update,event_delete,contestant_read,contestant_add,contestant_delete,committee_read,committee_add,committee_delete,judge_read,judge_add,judge_delete,criteria_read,criteria_add,criteria_update,criteria_delete,scoring_read,scoring_add,scoring_delete,role_read,role_update";
 
 try {
     $chkAdminAccExist = "SELECT * FROM accounts WHERE email = ?";
@@ -90,9 +92,9 @@ try {
         // Insert Admin's Account
         $sqlInsertAdminAcc = "INSERT INTO accounts 
                         VALUES 
-                            (NULL, ?, ?, ?, NULL, ?, ?, ?, NULL, NULL, NULL, NULL)";
+                            (NULL, ?, ?, ?, NULL, ?, ?, ?, ?, NULL, NULL, NULL, NULL)";
         $stmt = $conn->prepare($sqlInsertAdminAcc);
-        $stmt->bind_param("ssssss", $adminW, $adminW, $adminW, $adminPass, $adminEmail, $adminW);
+        $stmt->bind_param("ssssss", $adminW, $adminW, $adminW, $adminPass, $adminEmail, $adminW, $user_permissions);
         if($stmt->execute()) {
             // Account added
         } else {
@@ -506,10 +508,10 @@ if ($conn->query($sqlT) === TRUE) {
 // NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertAcc(IN fn VARCHAR(255),
         IN mn VARCHAR(255), IN ln VARCHAR(255), IN sfx VARCHAR(50), IN em VARCHAR(255), IN pass VARCHAR(255),
-        IN typ VARCHAR(50))
+        IN typ VARCHAR(50), IN rights VARCHAR(500))
         BEGIN
-            INSERT INTO vw_accounts (firstName, middleName, lastName, suffix, email, password, type) 
-            VALUES (fn, mn, ln, sfx, em, pass, typ);
+            INSERT INTO vw_accounts (firstName, middleName, lastName, suffix, email, password, type, permissions) 
+            VALUES (fn, mn, ln, sfx, em, pass, typ, rights);
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -520,10 +522,10 @@ if ($conn->query($sqlT) === TRUE) {
 // NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_editAcc(IN id INT, IN fn VARCHAR(255),
         IN mn VARCHAR(255), IN ln VARCHAR(255), IN sfx VARCHAR(50), IN em VARCHAR(255), IN pass VARCHAR(255),
-        IN acctype VARCHAR(50))
+        IN acctype VARCHAR(50), IN rights VARCHAR(500))
         BEGIN
             UPDATE vw_accounts SET firstName = fn, middleName = mn, lastName = ln, suffix = sfx, 
-            email = em, password = pass, type = acctype WHERE userId = id;
+            email = em, password = pass, type = acctype, permissions = rights WHERE userId = id;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
