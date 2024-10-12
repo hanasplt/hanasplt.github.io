@@ -16,16 +16,45 @@
     <!-- css --> 
     <link rel="stylesheet" href="../public/assets/css/style.css">
 </head>
+
 <body>
     <header>
         <div class="logo"><img src="../public/assets/icons/logo.png" alt="Logo"></div>
-        <nav>
-            <a href="index.html" class="navbarbie">Home</a>
-            <a href="../src/roles/spectator/spectator-sched.php" class="navbar">Schedule</a>
-            <a href="../src/roles/spectator/spectator.php" class="navbar">Dashboard</a>
-            <a href="../public/login.php" class="login-btn">LOGIN</a>
+        <nav class="navbar">
+            <div class="navbar-container">
+                <div class="hamburger" id="hamburger">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+                <div class="nav-links" id="nav-links">
+                    <a href="index.html" class="navbarbie">Home</a>
+                    <a href="../src/roles/spectator/spectator-sched.php" class="navbar">Schedule</a>
+                    <a href="../src/roles/spectator/spectator.php" class="navbar">Dashboard</a>
+                    <a href="../public/login.php" class="login-btn">LOGIN</a>
+                </div>
+            </div>
         </nav>
     </header>
+    
+    <script>
+        const navLinks = document.querySelector('.nav-links');
+        const hamburger = document.querySelector('.hamburger');
+    
+        function toggleNav() {
+            navLinks.classList.toggle('active');
+        }
+    
+        hamburger.addEventListener('click', toggleNav);
+    
+        document.addEventListener('click', function(event) {
+            if (!navLinks.contains(event.target) && !hamburger.contains(event.target)) {
+                navLinks.classList.remove('active');
+            }
+        });
+    </script>
+    
+    
     <div class="container">
         <div class="text-section">
             <h1>Compete, Rise, Repeat: Where Intramural Excellence Meets Friendly Competition!</h1>
@@ -62,3 +91,5 @@
     </div>
 </body>
 </html>
+
+
