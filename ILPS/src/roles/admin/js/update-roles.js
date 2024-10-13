@@ -21,6 +21,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 // Check user's role
                 var role = data.type;
 
+                // Set full name of the user in the hidden input
+                document.getElementById('fullname').value = data.fullname;
+                
                 // Set the role of the user in the hidden input
                 document.getElementById('userRole').value = role;
 

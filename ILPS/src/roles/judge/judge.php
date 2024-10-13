@@ -1,11 +1,8 @@
 <?php
     require_once '../../../config/sessionConfig.php'; // Session Cookie
-    $conn = require_once '../../../config/db.php'; // Database connection
+    require_once '../../../config/db.php'; // Database connection
     require_once '../admin/verifyLoginSession.php'; // Logged in or not
-
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+    require_once 'judgePermissions.php'; // Retrieves judge permissions
 
     if(isset($_GET['id'])) {
         $id = $_GET['id'];
@@ -66,6 +63,8 @@
         </div>
     </div>
 
+    <?php // Display Events - permitted to view
+    if (in_array('judge_event_read', $judge_rights)) {?>
     <div class="eventsDropdown">
         <h4>Events </h4>
             <?php
@@ -94,6 +93,13 @@
     </div>
 
     <script src="../judge/js/judge.js"></script>
+    <?php } else { // Display message - not permitted to view
+        echo '
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Oops!</strong> You lack the permission to view the Judging Events.
+            </div>
+        ';
+    } ?>
 </body>
 
 </html>

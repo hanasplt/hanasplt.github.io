@@ -1,12 +1,9 @@
 <?php
 
 require_once '../../../config/sessionConfig.php';
-$conn = require_once '../../../config/db.php'; // Include Database Connection
+require_once '../../../config/db.php'; // Include Database Connection
 require_once '../admin/verifyLoginSession.php'; // Logged in or not
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once 'judgePermissions.php'; // Retrieves judge permissions
 
 $id = $_SESSION['userId'];
 
@@ -46,10 +43,20 @@ $id = $_SESSION['userId'];
         </div>
     </div>
 
-
+    <?php // Display criteria for judging - permitted to view
+    if (in_array('judge_form_read', $judge_rights)) {?>
     <!-- GENERAL CRITERIA -->
     <form method="post" enctype="multipart/form-data" id="criteriaForm">
     </form>
+    <?php } else {
+        echo '
+        <div class="alert-container">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Oops!</strong> You lack the permission to view the Criteria for Judging.
+            </div>
+        </div>
+        ';
+    } ?>
 
     <script src="../judge/js/SCevents.js"></script>
 
@@ -59,7 +66,9 @@ $id = $_SESSION['userId'];
             $evId = $_GET['event'];
             $evname = $_GET['name'];
 
+            if (in_array('judge_form_read', $judge_rights)) {
             echo "<script>loadEventCriteria($evId, '$evname')</script>";
+            }
         }
 
         $conn->close();

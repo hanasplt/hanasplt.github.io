@@ -32,6 +32,7 @@
         <form method="post" class="roleForm" id="editRoleForm">
             <input type="hidden" id="userId" name="userId">
             <input type="hidden" id="userRole" name="userRole">
+            <input type="hidden" id="fullname" name="fullname">
             <div class="update-role-title">
                 <p>Update User's Access</p>
             </div>
@@ -334,16 +335,16 @@
                     <div class="col-2">
                         <input type="checkbox" name="judge_permissions[]" value="judge_form_read">
                     </div>
+                    <div class="col-1">
+                        <input type="checkbox" name="judge_permissions[]" value="judge_form_add">
+                    </div>
                  </div>
                  <div class="row">
                     <div class="col-5">
-                        Scoring Management
+                        Scored Events
                     </div>
                     <div class="col-2">
-                        <input type="checkbox" name="judge_permissions[]" value="judge_scoring_read">
-                    </div>
-                    <div class="col-1">
-                        <input type="checkbox" name="judge_permissions[]" value="judge_scoring_add">
+                        <input type="checkbox" name="judge_permissions[]" value="judge_score_read">
                     </div>
                  </div>
             </div>

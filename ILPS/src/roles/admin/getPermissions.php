@@ -25,7 +25,11 @@ if (isset($_GET['userId'])) {
 
         $rights = explode(',', $user['permissions']); // Separate comma-separated string
 
-        echo json_encode(["permissions" => $rights, "type" => $user['type']]);
+        echo json_encode([
+            "permissions" => $rights, 
+            "type" => $user['type'], 
+            "fullname" => $user['firstName'].' '.$user['lastName']
+        ]);
     } else {
         echo json_encode(["status" => "error", "message" => "User not found"]);
     }

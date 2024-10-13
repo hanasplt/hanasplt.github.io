@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $user_permissions = "committee_event_read,committee_scoring_read,committee_scoring_add,committee_scoring_update";
         } else if ($type == 'Judge') {
             // Judge's access rights
-            $user_permissions = "judge_event_read,judge_form_read,judge_scoring_read,judge_scoring_add";
+            $user_permissions = "judge_event_read,judge_form_read,judge_form_add,judge_score_read";
         }
 
         $stmt = $conn->prepare("CALL sp_editAcc(?, ?, ?, ?, ?, ?, ?, ?, ?)");

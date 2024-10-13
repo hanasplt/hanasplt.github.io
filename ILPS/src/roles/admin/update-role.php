@@ -14,6 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         $id = $_POST['userId'];
         $role = $_POST['userRole'];
+        $fullname = $_POST['fullname'];
         $permissions = ""; // Get checkbox from - role
         
         // Check what checkbox to retrieve
@@ -40,6 +41,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("si", $accessRights, $id);
         
         if ($stmt->execute()) {
+            // Insert in the logs
+            $action = "Updated access rights of $fullname";
+            $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+            $stmt = $conn->prepare($insertLogAct);
+            $stmt->bind_param("is", $accId, $action);
+            $stmt->execute();
+
             // Return success message
             echo json_encode(['status' => 'success', 'message' => 'User\'s Role Updated Successfully!']);
         } else {

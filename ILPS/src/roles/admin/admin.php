@@ -1,11 +1,8 @@
 <?php
 require_once '../../../config/sessionConfig.php'; // Session Cookie
-$conn = require_once '../../../config/db.php'; // Database connection
+require_once '../../../config/db.php'; // Database connection
 require_once '../admin/verifyLoginSession.php'; // Logged in or not
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once 'adminPermissions.php'; // Retrieves admin permissions
 
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $user_id = $_GET['id'];
@@ -135,7 +132,9 @@ $result = $stmt->get_result();
     <div class="dashboard">
         <p class="welcome">Welcome, <a> <?php echo $admin_name; ?></a>👋</p>
         <div class="dash-number">
+            <?php if (in_array('user_read', $admin_rights) || in_array('team_read', $admin_rights) || in_array('event_read', $admin_rights)) {?>
             <div class="number-dash">
+                <?php if (in_array('user_read', $admin_rights)) {?>
                 <div class="num-accounts">
                     <img class="dash-img" src="../../../public/assets/icons/num-of-accs.jpg">
                     <div class="number-deets">
@@ -146,6 +145,8 @@ $result = $stmt->get_result();
                         <button onclick="window.location.href = 'accounts.php';" class="view-button">VIEW</button>
                     </div>
                 </div>
+                <?php }
+                if (in_array('team_read', $admin_rights)) {?>
                 <div class="num-teams">
                     <img class="dash-img" src="../../../public/assets/icons/num-of-teams.jpg">
                     <div class="number-deets">
@@ -156,6 +157,8 @@ $result = $stmt->get_result();
                         <button onclick="window.location.href = 'teams.php';" class="view-button">VIEW</button>
                     </div>
                 </div>
+                <?php }
+                if (in_array('event_read', $admin_rights)) {?>
                 <div class="num-events">
                     <img class="dash-img" src="../../../public/assets/icons/num-of-events.jpg">
                     <div class="number-deets">
@@ -166,7 +169,9 @@ $result = $stmt->get_result();
                         <button onclick="window.location.href = 'EventTeam.php';" class="view-button">VIEW</button>
                     </div>
                 </div>
+                <?php }?>
             </div>
+            <?php }?>
             <div class="dash-banner">
                 <div class="banner">
                     <div class="banner-left">
@@ -182,6 +187,7 @@ $result = $stmt->get_result();
     </div>
 
     <div class="intra-list">
+        <?php if (in_array('user_read', $admin_rights)) {?>
         <div class="accounts">
             <div class="accounts-title">
                 <p id="accs">Accounts</p>
@@ -205,12 +211,15 @@ $result = $stmt->get_result();
             <?php
                 }
             }
-            $result->free();
-            $stmt->close();
             ?>
             <p id="vwall" onclick="window.location.href = 'accounts.php';">View All</p>
         </div>
+        <?php }
+        
+        $result->free();
+        $stmt->close();
 
+        if (in_array('team_read', $admin_rights)) {?>
         <div class="teams">
             <div class="teams-title">
                 <p id="team">Teams</p>
@@ -250,7 +259,8 @@ $result = $stmt->get_result();
             ?>
             <p id="vwall" onclick="window.location.href = 'teams.php';">View All</p>
         </div>
-
+        <?php }
+        if (in_array('event_read', $admin_rights)) {?>
         <div class="events">
             <div class="events-title">
                 <p id="event">Events</p>
@@ -289,6 +299,7 @@ $result = $stmt->get_result();
             ?>
             <p id="vwall" onclick="window.location.href = 'EventTeam.php';">View All</p>
         </div>
+        <?php }?>
     </div>
     <script src="../admin/js/admin.js"></script>
 </body>
