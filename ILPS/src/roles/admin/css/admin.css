@@ -92,6 +92,8 @@ body {
     color: #2B2B2B;
 }
 
+/* drop down navbar*/
+
 .dropdown .dropbtn {
     display: flex;
     flex-direction: row;
@@ -108,7 +110,8 @@ body {
     cursor: pointer;
 }
 
-.dropdown-content {
+.dropdown-content,
+.account-dropdown {
     background-color: #f4f4f4;
     display: none;
     position: absolute;
@@ -116,6 +119,10 @@ body {
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
     border: none;
+}
+
+.account-dropdown {
+    min-width: 90px;
 }
 
 .dc-text, #logout{
@@ -138,9 +145,12 @@ body {
     background-color: #ddd;
 }
 
-.dropdown:hover .dropdown-content {
+.dropdown:hover .dropdown-content,
+.acc-hover:hover .account-dropdown {
     display: block;
 }
+
+/* end of drop down navbar*/
 
 .dash {
     display: flex;

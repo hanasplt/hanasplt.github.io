@@ -104,7 +104,14 @@ $result = $stmt->get_result();
         <img class="logo-img" src="../../../public/assets/icons/ilps-logo.png">
         <nav class="nav-link">
             <p onclick="window.location.href = 'admin.php';" class="navbarbie" title="Home">Home</p>
-            <p onclick="window.location.href = 'accounts.php';" class="navbar" ; title="Accounts">Accounts</p>
+            <div class="acc-hover">
+                <div class="acc-btn-container">
+                    <p onclick="window.location.href = 'accounts.php';" class="navbar" ; title="Accounts">Accounts</p>
+                </div>
+                <div class="account-dropdown">
+                    <p onclick="window.location.href = 'roles.php';" class="dc-text">Role</p>
+                </div>
+            </div>
             <p onclick="window.location.href = 'teams.php';" class="navbar" title="Teams">Teams</p>
             <p onclick="window.location.href = 'EventTeam.php';" class="navbar" title="Events">Events</p>
             <p onclick="window.location.href = 'schedule.php';" class="navbar" title="Schedule">Schedule</p>
@@ -133,46 +140,46 @@ $result = $stmt->get_result();
     <div class="dashboard">
         <p class="welcome">Welcome, <a> <?php echo $admin_name; ?></a>👋</p>
         <div class="dash-number">
-            <?php if (in_array('user_read', $admin_rights) || in_array('team_read', $admin_rights) || in_array('event_read', $admin_rights)) {?>
-            <div class="number-dash">
-                <?php if (in_array('user_read', $admin_rights)) {?>
-                <div class="num-accounts">
-                    <img class="dash-img" src="../../../public/assets/icons/num-of-accs.jpg">
-                    <div class="number-deets">
-                        <p class="total-accounts">TOTAL ACCOUNTS</p>
-                        <p class="total-number"><?php echo $total_accounts; ?></p>
-                    </div>
-                    <div class="view-btn">
-                        <button onclick="window.location.href = 'accounts.php';" class="view-button">VIEW</button>
-                    </div>
+            <?php if (in_array('user_read', $admin_rights) || in_array('team_read', $admin_rights) || in_array('event_read', $admin_rights)) { ?>
+                <div class="number-dash">
+                    <?php if (in_array('user_read', $admin_rights)) { ?>
+                        <div class="num-accounts">
+                            <img class="dash-img" src="../../../public/assets/icons/num-of-accs.jpg">
+                            <div class="number-deets">
+                                <p class="total-accounts">TOTAL ACCOUNTS</p>
+                                <p class="total-number"><?php echo $total_accounts; ?></p>
+                            </div>
+                            <div class="view-btn">
+                                <button onclick="window.location.href = 'accounts.php';" class="view-button">VIEW</button>
+                            </div>
+                        </div>
+                    <?php }
+                    if (in_array('team_read', $admin_rights)) { ?>
+                        <div class="num-teams">
+                            <img class="dash-img" src="../../../public/assets/icons/num-of-teams.jpg">
+                            <div class="number-deets">
+                                <p class="total-teams">TOTAL TEAMS</p>
+                                <p class="total-number"><?php echo $total_teams; ?></p>
+                            </div>
+                            <div class="view-btn">
+                                <button onclick="window.location.href = 'teams.php';" class="view-button">VIEW</button>
+                            </div>
+                        </div>
+                    <?php }
+                    if (in_array('event_read', $admin_rights)) { ?>
+                        <div class="num-events">
+                            <img class="dash-img" src="../../../public/assets/icons/num-of-events.jpg">
+                            <div class="number-deets">
+                                <p class="total-events">TOTAL EVENTS</p>
+                                <p class="total-number"><?php echo $total_events; ?></p>
+                            </div>
+                            <div class="view-btn">
+                                <button onclick="window.location.href = 'EventTeam.php';" class="view-button">VIEW</button>
+                            </div>
+                        </div>
+                    <?php } ?>
                 </div>
-                <?php }
-                if (in_array('team_read', $admin_rights)) {?>
-                <div class="num-teams">
-                    <img class="dash-img" src="../../../public/assets/icons/num-of-teams.jpg">
-                    <div class="number-deets">
-                        <p class="total-teams">TOTAL TEAMS</p>
-                        <p class="total-number"><?php echo $total_teams; ?></p>
-                    </div>
-                    <div class="view-btn">
-                        <button onclick="window.location.href = 'teams.php';" class="view-button">VIEW</button>
-                    </div>
-                </div>
-                <?php }
-                if (in_array('event_read', $admin_rights)) {?>
-                <div class="num-events">
-                    <img class="dash-img" src="../../../public/assets/icons/num-of-events.jpg">
-                    <div class="number-deets">
-                        <p class="total-events">TOTAL EVENTS</p>
-                        <p class="total-number"><?php echo $total_events; ?></p>
-                    </div>
-                    <div class="view-btn">
-                        <button onclick="window.location.href = 'EventTeam.php';" class="view-button">VIEW</button>
-                    </div>
-                </div>
-                <?php }?>
-            </div>
-            <?php }?>
+            <?php } ?>
             <div class="dash-banner">
                 <div class="banner">
                     <div class="banner-left">
@@ -188,119 +195,119 @@ $result = $stmt->get_result();
     </div>
 
     <div class="intra-list">
-        <?php if (in_array('user_read', $admin_rights)) {?>
-        <div class="accounts">
-            <div class="accounts-title">
-                <p id="accs">Accounts</p>
-            </div>
-            <?php
-            if ($result->num_rows > 0) { // fetch and display the results from database
-                while ($row = $result->fetch_assoc()) {
-            ?>
-                    <div class="account">
-                        <div class="left-deets">
-                            <div class="acc-img">
-                                <i class="fas fa-user"></i>
-                            </div>
+        <?php if (in_array('user_read', $admin_rights)) { ?>
+            <div class="accounts">
+                <div class="accounts-title">
+                    <p id="accs">Accounts</p>
+                </div>
+                <?php
+                if ($result->num_rows > 0) { // fetch and display the results from database
+                    while ($row = $result->fetch_assoc()) {
+                ?>
+                        <div class="account">
+                            <div class="left-deets">
+                                <div class="acc-img">
+                                    <i class="fas fa-user"></i>
+                                </div>
 
-                            <div class="acc-deets">
-                                <p id="name"><?php echo $row['firstName']; ?></p>
-                                <p id="acc-type"><?php echo $row['type']; ?></p>
+                                <div class="acc-deets">
+                                    <p id="name"><?php echo $row['firstName']; ?></p>
+                                    <p id="acc-type"><?php echo $row['type']; ?></p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-            <?php
+                <?php
+                    }
                 }
-            }
-            ?>
-            <p id="vwall" onclick="window.location.href = 'accounts.php';">View All</p>
-        </div>
+                ?>
+                <p id="vwall" onclick="window.location.href = 'accounts.php';">View All</p>
+            </div>
         <?php }
-        
+
         $result->free();
         $stmt->close();
 
-        if (in_array('team_read', $admin_rights)) {?>
-        <div class="teams">
-            <div class="teams-title">
-                <p id="team">Teams</p>
-            </div>
+        if (in_array('team_read', $admin_rights)) { ?>
+            <div class="teams">
+                <div class="teams-title">
+                    <p id="team">Teams</p>
+                </div>
 
-            <?php
-            try {
-                $sql = "CALL sp_getTeam(?, ?)"; // retrieving 3 teams for display
-                $opsit = 0;
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("ii", $limit, $opsit);
-                $stmt->execute();
-                $result = $stmt->get_result();
+                <?php
+                try {
+                    $sql = "CALL sp_getTeam(?, ?)"; // retrieving 3 teams for display
+                    $opsit = 0;
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("ii", $limit, $opsit);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
 
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-            ?>
-                        <div class="tim">
-                            <div class="left-deets">
-                                <div class="tim-img">
-                                    <i class="fa-solid fa-people-group"></i>
-                                </div>
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                ?>
+                            <div class="tim">
+                                <div class="left-deets">
+                                    <div class="tim-img">
+                                        <i class="fa-solid fa-people-group"></i>
+                                    </div>
 
-                                <div class="tim-deets">
-                                    <p id="name"><?php echo $row['teamName']; ?></p>
+                                    <div class="tim-deets">
+                                        <p id="name"><?php echo $row['teamName']; ?></p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-            <?php
+                <?php
+                        }
                     }
+                    $result->free();
+                    $stmt->close();
+                } catch (Exception $e) {
+                    die("Error: " . $e->getMessage());
                 }
-                $result->free();
-                $stmt->close();
-            } catch (Exception $e) {
-                die("Error: " . $e->getMessage());
-            }
-            ?>
-            <p id="vwall" onclick="window.location.href = 'teams.php';">View All</p>
-        </div>
+                ?>
+                <p id="vwall" onclick="window.location.href = 'teams.php';">View All</p>
+            </div>
         <?php }
-        if (in_array('event_read', $admin_rights)) {?>
-        <div class="events">
-            <div class="events-title">
-                <p id="event">Events</p>
-            </div>
+        if (in_array('event_read', $admin_rights)) { ?>
+            <div class="events">
+                <div class="events-title">
+                    <p id="event">Events</p>
+                </div>
 
-            <?php
-            try {
-                $sql = "CALL sp_getEventLimit(?)"; // retrieve 3 events for display
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("i", $limit);
-                $stmt->execute();
-                $result = $stmt->get_result();
+                <?php
+                try {
+                    $sql = "CALL sp_getEventLimit(?)"; // retrieve 3 events for display
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("i", $limit);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
 
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-            ?>
-                        <div class="ebent">
-                            <div class="left-deets">
-                                <div class="ebent-img">
-                                    <i class="fa-solid fa-calendar-check"></i>
-                                </div>
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                ?>
+                            <div class="ebent">
+                                <div class="left-deets">
+                                    <div class="ebent-img">
+                                        <i class="fa-solid fa-calendar-check"></i>
+                                    </div>
 
-                                <div class="event-deets">
-                                    <p id="name"><?php echo $row['eventName']; ?></p>
+                                    <div class="event-deets">
+                                        <p id="name"><?php echo $row['eventName']; ?></p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-            <?php
+                <?php
+                        }
                     }
+                    $result->free();
+                    $stmt->close();
+                } catch (Exception $e) {
+                    die("Error: " . $e->getMessage());
                 }
-                $result->free();
-                $stmt->close();
-            } catch (Exception $e) {
-                die("Error: " . $e->getMessage());
-            }
-            ?>
-            <p id="vwall" onclick="window.location.href = 'EventTeam.php';">View All</p>
-        </div>
-        <?php }?>
+                ?>
+                <p id="vwall" onclick="window.location.href = 'EventTeam.php';">View All</p>
+            </div>
+        <?php } ?>
     </div>
     <script src="../admin/js/admin.js"></script>
 </body>

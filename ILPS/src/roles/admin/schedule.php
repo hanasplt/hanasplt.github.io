@@ -111,21 +111,21 @@ usort($scheduled_days, function ($a, $b) {
         </div>
     </div>
 
-    <?php 
+    <?php
     // Display Schedule - permitted to view
     if (in_array('schedule_read', $admin_rights)) {
         // Display Add Day - permitted to add
-        if (in_array('schedule_add', $admin_rights)) {?>
-        <!-- Add Day Popup -->
-        <div class="new-sched" id="openPopup">
-            <div class="plus-icon">
-                <i class="fas fa-plus"></i>
+        if (in_array('schedule_add', $admin_rights)) { ?>
+            <!-- Add Day Popup -->
+            <div class="new-sched" id="openPopup">
+                <div class="plus-icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div id="addDayBtn">
+                    <p id="create">Add Day</p>
+                    <p id="add">Add day for intramurals event.</p>
+                </div>
             </div>
-            <div id="addDayBtn">
-                <p id="create">Add Day</p>
-                <p id="add">Add day for intramurals event.</p>
-            </div>
-        </div>
         <?php } else {
             echo '
                 <div class="alert alert-info alert-dismissible fade show" role="alert">
@@ -133,315 +133,315 @@ usort($scheduled_days, function ($a, $b) {
                 </div>
             ';
         } ?>
-    <div class="schedule">
-        <div class="schedule-title">
-            <p id="sched">Schedule</p>
-        </div>
+        <div class="schedule">
+            <div class="schedule-title">
+                <p id="sched">Schedule</p>
+            </div>
 
-        <div class="schedule-history">
-            <?php if (count($scheduled_days) > 0): ?>
-                <?php $dayCounter = 1; ?>
+            <div class="schedule-history">
+                <?php if (count($scheduled_days) > 0): ?>
+                    <?php $dayCounter = 1; ?>
 
-                <?php foreach ($scheduled_days as $day): ?>
-                    <div class="new-sched day-schedule" id="daySchedule-<?php echo $day['id']; ?>" data-day-id="<?php echo $day['id']; ?>">
-                        <div class="day-info">
-                            <div class="day-icon">
-                                <i class="fas fa-calendar-day"></i>
+                    <?php foreach ($scheduled_days as $day): ?>
+                        <div class="new-sched day-schedule" id="daySchedule-<?php echo $day['id']; ?>" data-day-id="<?php echo $day['id']; ?>">
+                            <div class="day-info">
+                                <div class="day-icon">
+                                    <i class="fas fa-calendar-day"></i>
+                                </div>
+                                <p class="day-title">Day <?php echo $dayCounter++; ?></p>
+                                <p class="day-date"><?php echo date('F j, Y', strtotime($day['day_date'])); ?></p>
                             </div>
-                            <p class="day-title">Day <?php echo $dayCounter++; ?></p>
-                            <p class="day-date"><?php echo date('F j, Y', strtotime($day['day_date'])); ?></p>
+
+                            <div class="header-right">
+                                <?php // Display edit button - permitted to update
+                                if (in_array('schedule_update', $admin_rights)) { ?>
+                                    <button id="editHeaderBtn" class="header-btn editHeaderBtn" data-day-id="<?php echo $day['id']; ?>" data-day-date="<?php echo $day['day_date']; ?>">Edit</button>
+                                <?php }
+                                // Display delete button - permitted to delete
+                                if (in_array('schedule_delete', $admin_rights)) { ?>
+                                    <button id="deleteHeaderBtn" class="header-btn deleteHeaderBtn" data-day-id="<?php echo $day['id']; ?>">Delete</button>
+                                <?php } ?>
+                            </div>
                         </div>
 
-                        <div class="header-right">
-                            <?php // Display edit button - permitted to update
-                            if (in_array('schedule_update', $admin_rights)) {?>
-                            <button id="editHeaderBtn" class="header-btn editHeaderBtn" data-day-id="<?php echo $day['id']; ?>" data-day-date="<?php echo $day['day_date']; ?>">Edit</button>
-                            <?php }
-                            // Display delete button - permitted to delete
-                            if (in_array('schedule_delete', $admin_rights)) {?>
-                            <button id="deleteHeaderBtn" class="header-btn deleteHeaderBtn" data-day-id="<?php echo $day['id']; ?>">Delete</button>
-                            <?php }?>
-                        </div>
-                    </div>
-
-                    <!-- Events for the day (Initially hidden) -->
-                    <div class="day-events" id="dayEvents-<?php echo $day['id']; ?>" style="display: none;">
-                    <?php // Display scheduled event table - permitted to view
-                    if (in_array('scheduledEvent_read', $admin_rights)) {?>
-                        <table id="scheduleTable-<?php echo $day['id']; ?>">
-                            <thead>
-                                <tr>
-                                    <th>Time</th>
-                                    <th>Type</th>
-                                    <th>Activity</th>
-                                    <th>Game No.</th>
-                                    <th>Team A</th>
-                                    <th>Team B</th>
-                                    <th>Location</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (count($day['events']) == 0): ?>
-                                    <tr>
-                                        <td colspan="10" style="text-align: center;">No events scheduled for this day.</td>
-                                    </tr>
-                                <?php else: ?>
-                                    <?php foreach ($day['events'] as $event): ?>
-                                        <tr data-event-id="<?php echo $event['id']; ?>">
-                                            <td><?php echo date('h:i A', strtotime($event['time'])); ?></td>
-                                            <td><?php echo $event['type']; ?></td>
-                                            <td><?php echo $event['activity']; ?></td>
-                                            <td><?php echo $event['gameNo']; ?></td>
-                                            <td><?php echo $event['teamA_name']; ?></td>
-                                            <td><?php echo $event['teamB_name']; ?></td>
-                                            <td><?php echo $event['location']; ?></td>
-                                            <td><?php echo $event['status']; ?></td>
-                                            <td>
-                                                <?php // Display edit button - permitted to update
-                                                if (in_array('scheduledEvent_update', $admin_rights)) {?>
-                                                <button class="edit-btn" data-event-id="<?php echo $event['id']; ?>">Edit</button>
-                                                <?php }
-                                                // Display delete button - permitted to delete
-                                                if (in_array('scheduledEvent_delete', $admin_rights)) {?>
-                                                <button class="delete-btn">Delete</button>
-                                                <?php }?>
-                                            </td>
+                        <!-- Events for the day (Initially hidden) -->
+                        <div class="day-events" id="dayEvents-<?php echo $day['id']; ?>" style="display: none;">
+                            <?php // Display scheduled event table - permitted to view
+                            if (in_array('scheduledEvent_read', $admin_rights)) { ?>
+                                <table id="scheduleTable-<?php echo $day['id']; ?>">
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>Type</th>
+                                            <th>Activity</th>
+                                            <th>Game No.</th>
+                                            <th>Team A</th>
+                                            <th>Team B</th>
+                                            <th>Location</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
                                         </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                        <?php // Display add event button - permitted to add
-                        if (in_array('scheduledEvent_add', $admin_rights)) {?>
-                        <button class="addEventBtn" id="addEventBtn" data-day-id="<?php echo $day['id']; ?>">Add Event</button>
-                        <?php }?>
-                    <?php } else {
-                        echo '
+                                    </thead>
+                                    <tbody>
+                                        <?php if (count($day['events']) == 0): ?>
+                                            <tr>
+                                                <td colspan="10" style="text-align: center;">No events scheduled for this day.</td>
+                                            </tr>
+                                        <?php else: ?>
+                                            <?php foreach ($day['events'] as $event): ?>
+                                                <tr data-event-id="<?php echo $event['id']; ?>">
+                                                    <td><?php echo date('h:i A', strtotime($event['time'])); ?></td>
+                                                    <td><?php echo $event['type']; ?></td>
+                                                    <td><?php echo $event['activity']; ?></td>
+                                                    <td><?php echo $event['gameNo']; ?></td>
+                                                    <td><?php echo $event['teamA_name']; ?></td>
+                                                    <td><?php echo $event['teamB_name']; ?></td>
+                                                    <td><?php echo $event['location']; ?></td>
+                                                    <td><?php echo $event['status']; ?></td>
+                                                    <td>
+                                                        <?php // Display edit button - permitted to update
+                                                        if (in_array('scheduledEvent_update', $admin_rights)) { ?>
+                                                            <button class="edit-btn" data-event-id="<?php echo $event['id']; ?>">Edit</button>
+                                                        <?php }
+                                                        // Display delete button - permitted to delete
+                                                        if (in_array('scheduledEvent_delete', $admin_rights)) { ?>
+                                                            <button class="delete-btn">Delete</button>
+                                                        <?php } ?>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </tbody>
+                                </table>
+                                <?php // Display add event button - permitted to add
+                                if (in_array('scheduledEvent_add', $admin_rights)) { ?>
+                                    <button class="addEventBtn" id="addEventBtn" data-day-id="<?php echo $day['id']; ?>">Add Event</button>
+                                <?php } ?>
+                            <?php } else {
+                                echo '
                             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                                 <strong>Oops!</strong> You lack the permission to view the Scheduled Event/s.
                             </div>
                         ';
-                    } ?>
-                    </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p style="text-align: center;">No schedule available. Please add new days.</p>
-            <?php endif; ?>
+                            } ?>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p style="text-align: center;">No schedule available. Please add new days.</p>
+                <?php endif; ?>
+            </div>
         </div>
-    </div>
 
-    <script>
-        document.querySelectorAll('.day-schedule').forEach(daySchedule => {
-            daySchedule.addEventListener('click', function() {
-                const dayId = this.getAttribute('data-day-id');
-                const eventsDiv = document.getElementById(`dayEvents-${dayId}`);
+        <script>
+            document.querySelectorAll('.day-schedule').forEach(daySchedule => {
+                daySchedule.addEventListener('click', function() {
+                    const dayId = this.getAttribute('data-day-id');
+                    const eventsDiv = document.getElementById(`dayEvents-${dayId}`);
 
-                if (eventsDiv.style.display === 'block') {
-                    eventsDiv.style.display = 'none';
-                } else {
-                    document.querySelectorAll('[id^="dayEvents-"]').forEach(eventDiv => {
-                        eventDiv.style.display = 'none';
-                    });
-                    eventsDiv.style.display = 'block';
-                }
-            });
-        });
-
-        // Prevent toggle when clicking Edit or Delete buttons
-        document.querySelectorAll('.header-btn').forEach(button => {
-            button.addEventListener('click', function(event) {
-                event.stopPropagation();
-            });
-        });
-
-        /* TIME SORTING */
-        function sortTableByTime(tableId) {
-            const table = document.getElementById(tableId);
-            const rows = Array.from(table.rows).slice(1);
-
-            rows.sort((a, b) => {
-                const timeA = a.cells[0].getAttribute('data-time');
-                const timeB = b.cells[0].getAttribute('data-time');
-
-                return timeA.localeCompare(timeB);
-            });
-
-            rows.forEach(row => table.appendChild(row));
-        }
-
-        /* LOGOUT CONFIRMATION */
-        document.getElementById('logoutIcon').addEventListener('click', function() {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You will be logged out!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#7FD278',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, log me out',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = 'index.html';
-                }
-            });
-        });
-
-
-        document.getElementById('openPopup').addEventListener('click', function() {
-            Swal.fire({
-                title: 'Add New Day',
-                html: ` 
-                    <input id="new-day-date" class="swal2-input1" placeholder="Date" type="date">
-                `,
-                confirmButtonText: 'Add',
-                showCancelButton: true,
-                preConfirm: () => {
-                    const dayDate = document.getElementById('new-day-date').value;
-                    const today = new Date().toISOString().split('T')[0];
-
-                    if (!dayDate) {
-                        Swal.showValidationMessage('Please enter a Date');
-                        return false;
+                    if (eventsDiv.style.display === 'block') {
+                        eventsDiv.style.display = 'none';
+                    } else {
+                        document.querySelectorAll('[id^="dayEvents-"]').forEach(eventDiv => {
+                            eventDiv.style.display = 'none';
+                        });
+                        eventsDiv.style.display = 'block';
                     }
-
-                    if (dayDate < today) {
-                        Swal.showValidationMessage('Date cannot be in the past');
-                        return false;
-                    }
-
-                    return {
-                        dayDate: dayDate
-                    };
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const {
-                        dayDate
-                    } = result.value;
-
-                    const xhrCheck = new XMLHttpRequest();
-                    xhrCheck.open("POST", "get_existing_dates.php", true);
-                    xhrCheck.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                    xhrCheck.onload = function() {
-                        if (xhrCheck.status === 200) {
-                            const response = JSON.parse(xhrCheck.responseText);
-
-                            if (response.exists) {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: 'This date already exists. Please choose another date.',
-                                    icon: 'error',
-                                    confirmButtonColor: '#d33',
-                                    confirmButtonText: 'OK'
-                                });
-                            } else {
-                                const xhrAdd = new XMLHttpRequest();
-                                xhrAdd.open("POST", "add_day.php", true);
-                                xhrAdd.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                                xhrAdd.onload = function() {
-                                    if (xhrAdd.status === 200) {
-                                        const addResponse = JSON.parse(xhrAdd.responseText);
-                                        if (addResponse.success) {
-                                            Swal.fire({
-                                                title: 'Success!',
-                                                text: 'New day added successfully.',
-                                                icon: 'success',
-                                                confirmButtonColor: '#7FD278',
-                                                confirmButtonText: 'OK'
-                                            }).then(() => {
-                                                location.reload();
-                                            });
-                                        } else {
-                                            Swal.fire({
-                                                title: 'Error!',
-                                                text: addResponse.message,
-                                                icon: 'error',
-                                                confirmButtonColor: '#d33',
-                                                confirmButtonText: 'OK'
-                                            });
-                                        }
-                                    }
-                                };
-                                xhrAdd.send(`day_date=${dayDate}`);
-                            }
-                        }
-                    };
-                    xhrCheck.send(`day_date=${dayDate}`);
-                }
+                });
             });
-        });
 
+            // Prevent toggle when clicking Edit or Delete buttons
+            document.querySelectorAll('.header-btn').forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                });
+            });
 
-        // Delete date
-        document.querySelectorAll('.deleteHeaderBtn').forEach(button => {
-            button.addEventListener('click', function() {
-                const dayId = this.getAttribute('data-day-id');
+            /* TIME SORTING */
+            function sortTableByTime(tableId) {
+                const table = document.getElementById(tableId);
+                const rows = Array.from(table.rows).slice(1);
 
+                rows.sort((a, b) => {
+                    const timeA = a.cells[0].getAttribute('data-time');
+                    const timeB = b.cells[0].getAttribute('data-time');
+
+                    return timeA.localeCompare(timeB);
+                });
+
+                rows.forEach(row => table.appendChild(row));
+            }
+
+            /* LOGOUT CONFIRMATION */
+            document.getElementById('logoutIcon').addEventListener('click', function() {
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
+                    text: "You will be logged out!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#7FD278',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
+                    confirmButtonText: 'Yes, log me out',
+                    cancelButtonText: 'Cancel'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        const xhr = new XMLHttpRequest();
-                        xhr.open("POST", "delete_day.php", true);
-                        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                        window.location.href = 'index.html';
+                    }
+                });
+            });
 
-                        xhr.onload = function() {
-                            if (xhr.status === 200) {
-                                const response = JSON.parse(xhr.responseText);
-                                if (response.success) {
+
+            document.getElementById('openPopup').addEventListener('click', function() {
+                Swal.fire({
+                    title: 'Add New Day',
+                    html: ` 
+                    <input id="new-day-date" class="swal2-input1" placeholder="Date" type="date">
+                `,
+                    confirmButtonText: 'Add',
+                    showCancelButton: true,
+                    preConfirm: () => {
+                        const dayDate = document.getElementById('new-day-date').value;
+                        const today = new Date().toISOString().split('T')[0];
+
+                        if (!dayDate) {
+                            Swal.showValidationMessage('Please enter a Date');
+                            return false;
+                        }
+
+                        if (dayDate < today) {
+                            Swal.showValidationMessage('Date cannot be in the past');
+                            return false;
+                        }
+
+                        return {
+                            dayDate: dayDate
+                        };
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const {
+                            dayDate
+                        } = result.value;
+
+                        const xhrCheck = new XMLHttpRequest();
+                        xhrCheck.open("POST", "get_existing_dates.php", true);
+                        xhrCheck.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                        xhrCheck.onload = function() {
+                            if (xhrCheck.status === 200) {
+                                const response = JSON.parse(xhrCheck.responseText);
+
+                                if (response.exists) {
                                     Swal.fire({
-                                        title: 'Deleted!',
-                                        text: 'Schedule has been deleted.',
-                                        icon: 'success',
-                                        confirmButtonColor: '#7FD278',
+                                        title: 'Error!',
+                                        text: 'This date already exists. Please choose another date.',
+                                        icon: 'error',
+                                        confirmButtonColor: '#d33',
                                         confirmButtonText: 'OK'
-                                    }).then(() => {
-                                        location.reload(); // Reload the page to reflect changes
                                     });
+                                } else {
+                                    const xhrAdd = new XMLHttpRequest();
+                                    xhrAdd.open("POST", "add_day.php", true);
+                                    xhrAdd.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                                    xhrAdd.onload = function() {
+                                        if (xhrAdd.status === 200) {
+                                            const addResponse = JSON.parse(xhrAdd.responseText);
+                                            if (addResponse.success) {
+                                                Swal.fire({
+                                                    title: 'Success!',
+                                                    text: 'New day added successfully.',
+                                                    icon: 'success',
+                                                    confirmButtonColor: '#7FD278',
+                                                    confirmButtonText: 'OK'
+                                                }).then(() => {
+                                                    location.reload();
+                                                });
+                                            } else {
+                                                Swal.fire({
+                                                    title: 'Error!',
+                                                    text: addResponse.message,
+                                                    icon: 'error',
+                                                    confirmButtonColor: '#d33',
+                                                    confirmButtonText: 'OK'
+                                                });
+                                            }
+                                        }
+                                    };
+                                    xhrAdd.send(`day_date=${dayDate}`);
+                                }
+                            }
+                        };
+                        xhrCheck.send(`day_date=${dayDate}`);
+                    }
+                });
+            });
+
+
+            // Delete date
+            document.querySelectorAll('.deleteHeaderBtn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const dayId = this.getAttribute('data-day-id');
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#7FD278',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const xhr = new XMLHttpRequest();
+                            xhr.open("POST", "delete_day.php", true);
+                            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+                            xhr.onload = function() {
+                                if (xhr.status === 200) {
+                                    const response = JSON.parse(xhr.responseText);
+                                    if (response.success) {
+                                        Swal.fire({
+                                            title: 'Deleted!',
+                                            text: 'Schedule has been deleted.',
+                                            icon: 'success',
+                                            confirmButtonColor: '#7FD278',
+                                            confirmButtonText: 'OK'
+                                        }).then(() => {
+                                            location.reload(); // Reload the page to reflect changes
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: 'Error!',
+                                            text: response.message,
+                                            icon: 'error',
+                                            confirmButtonColor: '#d33',
+                                            confirmButtonText: 'OK'
+                                        });
+                                    }
                                 } else {
                                     Swal.fire({
                                         title: 'Error!',
-                                        text: response.message,
+                                        text: 'Failed to delete the schedule.',
                                         icon: 'error',
                                         confirmButtonColor: '#d33',
                                         confirmButtonText: 'OK'
                                     });
                                 }
-                            } else {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: 'Failed to delete the schedule.',
-                                    icon: 'error',
-                                    confirmButtonColor: '#d33',
-                                    confirmButtonText: 'OK'
-                                });
-                            }
-                        };
+                            };
 
-                        xhr.send(`day_id=${dayId}`);
-                    }
+                            xhr.send(`day_id=${dayId}`);
+                        }
+                    });
                 });
             });
-        });
 
 
-        // Add event to specific date
-        document.querySelectorAll('.addEventBtn').forEach(function(button) {
-            button.addEventListener('click', function() {
-                const dayId = button.getAttribute('data-day-id');
+            // Add event to specific date
+            document.querySelectorAll('.addEventBtn').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    const dayId = button.getAttribute('data-day-id');
 
-                Swal.fire({
-                    title: 'Add New Event',
-                    html: `
+                    Swal.fire({
+                        title: 'Add New Event',
+                        html: `
                         <input id="event-time" class="swal2-input1" placeholder="Time" type="time">
                         <select id="event-category" class="swal2-input3">
                             <option value="" disabled selected>Type</option>
@@ -514,99 +514,84 @@ usort($scheduled_days, function ($a, $b) {
                         </select>
                         <input id="event-location" class="swal2-input2" placeholder="Location">
                     `,
-                    confirmButtonText: 'Add',
-                    showCancelButton: true,
-                    preConfirm: () => {
-                        const time24 = document.getElementById('event-time').value;
-                        const type = document.getElementById('event-category').value;
-                        const eventSports = document.getElementById('event-sports').selectedOptions[0].getAttribute('data-event-name');
-                        const eventSocio = document.getElementById('event-socio').value;
-                        const activityOthers = document.getElementById('event-activity-others').value;
-                        const gameNumber = document.getElementById('event-game-number').value;
-                        const teamA = document.getElementById('team-a').value;
-                        const teamB = document.getElementById('team-b').value;
-                        const location = document.getElementById('event-location').value
-                            .toLowerCase()
-                            .replace(/\b\w/g, char => char.toUpperCase());
-                        const status = "Pending";
+                        confirmButtonText: 'Add',
+                        showCancelButton: true,
+                        preConfirm: () => {
+                            const time24 = document.getElementById('event-time').value;
+                            const type = document.getElementById('event-category').value;
+                            const eventSports = document.getElementById('event-sports').selectedOptions[0].getAttribute('data-event-name');
+                            const eventSocio = document.getElementById('event-socio').value;
+                            const activityOthers = document.getElementById('event-activity-others').value;
+                            const gameNumber = document.getElementById('event-game-number').value;
+                            const teamA = document.getElementById('team-a').value;
+                            const teamB = document.getElementById('team-b').value;
+                            const location = document.getElementById('event-location').value
+                                .toLowerCase()
+                                .replace(/\b\w/g, char => char.toUpperCase());
+                            const status = "Pending";
 
-                        if (!time24 || !type || !location || (!eventSports && !eventSocio && !activityOthers)) {
-                            Swal.showValidationMessage('Please fill in all required fields');
-                            return false;
-                        }
-
-                        if (type === 'sports') {
-                            if (!gameNumber || isNaN(gameNumber) || gameNumber < 1) {
+                            if (!time24 || !type || !location || (!eventSports && !eventSocio && !activityOthers)) {
                                 Swal.showValidationMessage('Please fill in all required fields');
                                 return false;
                             }
-                            if (!teamA) {
-                                Swal.showValidationMessage('Please select Team A');
-                                return false;
+
+                            const [hour, minute] = time24.split(':');
+                            const hours = parseInt(hour);
+                            const period = hours >= 12 ? 'PM' : 'AM';
+                            const hour12 = (hours % 12) || 12;
+                            const time12 = `${hour12}:${minute} ${period}`;
+
+                            let activity;
+                            if (type === 'sports') {
+                                activity = eventSports;
+                            } else if (type === 'socio-cultural') {
+                                activity = eventSocio;
+                            } else if (type === 'others') {
+                                activity = activityOthers;
+                                activity = activity.replace(/\b\w/g, char => char.toUpperCase()); // capitalize other events
                             }
-                            if (!teamB) {
-                                Swal.showValidationMessage('Please select Team B');
-                                return false;
-                            }
+
+                            return {
+                                time: time12,
+                                type,
+                                activity,
+                                gameNumber,
+                                teamA,
+                                teamB,
+                                location,
+                                status
+                            };
                         }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const {
+                                time,
+                                type,
+                                activity,
+                                gameNumber,
+                                teamA,
+                                teamB,
+                                location,
+                                status
+                            } = result.value;
 
-                        const [hour, minute] = time24.split(':');
-                        const hours = parseInt(hour);
-                        const period = hours >= 12 ? 'PM' : 'AM';
-                        const hour12 = (hours % 12) || 12;
-                        const time12 = `${hour12}:${minute} ${period}`;
+                            const xhr = new XMLHttpRequest();
+                            xhr.open("POST", "add_event.php", true);
+                            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                            xhr.onload = function() {
+                                console.log(xhr.responseText); // log the response for debugging
+                                if (xhr.status === 200) {
+                                    const response = JSON.parse(xhr.responseText);
+                                    if (response.success) {
+                                        const table = document.querySelector(`#scheduleTable-${dayId} tbody`);
 
-                        let activity;
-                        if (type === 'sports') {
-                            activity = eventSports;
-                        } else if (type === 'socio-cultural') {
-                            activity = eventSocio;
-                        } else if (type === 'others') {
-                            activity = activityOthers;
-                            activity = activity.replace(/\b\w/g, char => char.toUpperCase()); // capitalize other events
-                        }
+                                        const noEventsRow = table.querySelector('tr td[colspan="10"]');
+                                        if (noEventsRow) {
+                                            noEventsRow.parentNode.removeChild(noEventsRow);
+                                        }
 
-                        return {
-                            time: time12,
-                            type,
-                            activity,
-                            gameNumber,
-                            teamA,
-                            teamB,
-                            location,
-                            status
-                        };
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const {
-                            time,
-                            type,
-                            activity,
-                            gameNumber,
-                            teamA,
-                            teamB,
-                            location,
-                            status
-                        } = result.value;
-
-                        const xhr = new XMLHttpRequest();
-                        xhr.open("POST", "add_event.php", true);
-                        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                        xhr.onload = function() {
-                            console.log(xhr.responseText); // log the response for debugging
-                            if (xhr.status === 200) {
-                                const response = JSON.parse(xhr.responseText);
-                                if (response.success) {
-                                    const table = document.querySelector(`#scheduleTable-${dayId} tbody`);
-
-                                    const noEventsRow = table.querySelector('tr td[colspan="10"]');
-                                    if (noEventsRow) {
-                                        noEventsRow.parentNode.removeChild(noEventsRow);
-                                    }
-
-                                    const newRow = table.insertRow();
-                                    newRow.innerHTML = `
+                                        const newRow = table.insertRow();
+                                        newRow.innerHTML = `
                                         <td>${time}</td>
                                         <td>${type.charAt(0).toUpperCase() + type.slice(1)}</td>
                                         <td>${activity}</td>
@@ -620,174 +605,174 @@ usort($scheduled_days, function ($a, $b) {
                                             <button class="delete-btn">Delete</button>
                                         </td>
                                     `;
-                                    Swal.fire({
-                                        title: 'Success!',
-                                        text: response.message,
-                                        icon: 'success'
-                                    }).then(() => {
-                                        window.location.reload(); // Reload the page to reflect changes
-                                    });
+                                        Swal.fire({
+                                            title: 'Success!',
+                                            text: response.message,
+                                            icon: 'success'
+                                        }).then(() => {
+                                            window.location.reload(); // Reload the page to reflect changes
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: 'Error!',
+                                            text: response.message,
+                                            icon: 'error'
+                                        });
+                                    }
                                 } else {
                                     Swal.fire({
                                         title: 'Error!',
-                                        text: response.message,
+                                        text: 'Failed to communicate with server.',
                                         icon: 'error'
                                     });
                                 }
-                            } else {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: 'Failed to communicate with server.',
-                                    icon: 'error'
-                                });
-                            }
-                        };
-                        xhr.send(`day_id=${dayId}&time=${time}&type=${type}&activity=${activity}&location=${location}&game_number=${gameNumber}&teamA=${teamA}&teamB=${teamB}&status=${status}`);
-                    }
-                });
+                            };
+                            xhr.send(`day_id=${dayId}&time=${time}&type=${type}&activity=${activity}&location=${location}&game_number=${gameNumber}&teamA=${teamA}&teamB=${teamB}&status=${status}`);
+                        }
+                    });
 
 
-                document.getElementById('event-sports').addEventListener('change', function() {
-                    const eventId = this.value;
-                    if (eventId) {
-                        const xhr = new XMLHttpRequest();
-                        xhr.open("POST", "get_eventContestants.php", true);
-                        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    document.getElementById('event-sports').addEventListener('change', function() {
+                        const eventId = this.value;
+                        if (eventId) {
+                            const xhr = new XMLHttpRequest();
+                            xhr.open("POST", "get_eventContestants.php", true);
+                            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-                        xhr.onload = function() {
-                            if (xhr.status === 200) {
-                                const response = JSON.parse(xhr.responseText);
-                                const teamASelect = document.getElementById('team-a');
-                                const teamBSelect = document.getElementById('team-b');
-                                const gameNo = document.getElementById('event-game-number');
+                            xhr.onload = function() {
+                                if (xhr.status === 200) {
+                                    const response = JSON.parse(xhr.responseText);
+                                    const teamASelect = document.getElementById('team-a');
+                                    const teamBSelect = document.getElementById('team-b');
+                                    const gameNo = document.getElementById('event-game-number');
 
-                                teamASelect.innerHTML = '<option value="" disabled selected>Team A</option>';
-                                teamBSelect.innerHTML = '<option value="" disabled selected>Team B</option>';
+                                    teamASelect.innerHTML = '<option value="" disabled selected>Team A</option>';
+                                    teamBSelect.innerHTML = '<option value="" disabled selected>Team B</option>';
 
-                                if (response.success && response.teams.length > 0) {
-                                    response.teams.forEach(team => {
-                                        const optionA = document.createElement('option');
-                                        optionA.value = team.teamId;
-                                        optionA.textContent = `${team.teamName}`;
-                                        teamASelect.appendChild(optionA);
+                                    if (response.success && response.teams.length > 0) {
+                                        response.teams.forEach(team => {
+                                            const optionA = document.createElement('option');
+                                            optionA.value = team.teamId;
+                                            optionA.textContent = `${team.teamName}`;
+                                            teamASelect.appendChild(optionA);
 
-                                        const optionB = document.createElement('option');
-                                        optionB.value = team.teamId;
-                                        optionB.textContent = `${team.teamName}`;
-                                        teamBSelect.appendChild(optionB);
-                                    });
+                                            const optionB = document.createElement('option');
+                                            optionB.value = team.teamId;
+                                            optionB.textContent = `${team.teamName}`;
+                                            teamBSelect.appendChild(optionB);
+                                        });
 
-                                    // Show the team dropdowns
-                                    teamASelect.style.display = 'block';
-                                    teamBSelect.style.display = 'block';
-                                    gameNo.style.display = 'block';
+                                        // Show the team dropdowns
+                                        teamASelect.style.display = 'block';
+                                        teamBSelect.style.display = 'block';
+                                        gameNo.style.display = 'block';
 
 
-                                    // Clear any validation messages
-                                    if (Swal.isVisible()) {
-                                        Swal.resetValidationMessage();
+                                        // Clear any validation messages
+                                        if (Swal.isVisible()) {
+                                            Swal.resetValidationMessage();
+                                        }
+                                    } else {
+                                        // Hide the dropdowns if no teams are found
+                                        teamASelect.style.display = 'none';
+                                        teamBSelect.style.display = 'none';
+                                        gameNo.style.display = 'none';
+
+                                        // Show validation message only when no teams are found
+                                        Swal.showValidationMessage("No teams found for the selected event.");
                                     }
                                 } else {
-                                    // Hide the dropdowns if no teams are found
-                                    teamASelect.style.display = 'none';
-                                    teamBSelect.style.display = 'none';
-                                    gameNo.style.display = 'none';
-
-                                    // Show validation message only when no teams are found
-                                    Swal.showValidationMessage("No teams found for the selected event.");
+                                    alert('Error communicating with the server.');
                                 }
-                            } else {
-                                alert('Error communicating with the server.');
-                            }
-                        };
+                            };
 
-                        xhr.send(`event_id=${eventId}`);
-                    }
-                });
-
-
-                // JavaScript to toggle visibility of the activity inputs based on category selection
-                document.getElementById('event-category').addEventListener('change', function() {
-                    const activitySports = document.getElementById('event-sports');
-                    const activitySocio = document.getElementById('event-socio');
-                    const activityOthers = document.getElementById('event-activity-others');
-                    const gameNo = document.getElementById('event-game-number');
-                    const teamA = document.getElementById('team-a');
-                    const teamB = document.getElementById('team-b');
-
-                    if (this.value === 'sports') {
-                        activitySports.style.display = 'block';
-                        gameNo.style.display = 'none';
-                        teamA.style.display = 'none';
-                        activityOthers.style.display = 'none';
-                        activitySocio.style.display = 'none';
-                    } else if (this.value === 'others') {
-                        activitySports.style.display = 'none';
-                        activitySocio.style.display = 'none';
-                        gameNo.style.display = 'none';
-                        teamA.style.display = 'none';
-                        teamB.style.display = 'none';
-                        activityOthers.style.display = 'block';
-                    } else if (this.value === 'socio-cultural') {
-                        teamA.style.display = 'none';
-                        activitySports.style.display = 'none';
-                        activitySocio.style.display = 'block';
-                        teamB.style.display = 'none';
-                        activityOthers.style.display = 'none';
-                        gameNo.style.display = 'none';
-                    } else {
-                        teamA.style.display = 'none';
-                        gameNo.style.display = 'none';
-                        teamB.style.display = 'none';
-                        activitySocio.style.display = 'none';
-                        activitySports.style.display = 'none';
-                        activityOthers.style.display = 'none';
-                    }
-                });
-
-                document.getElementById('team-a').addEventListener('change', function() {
-                    const selectedTeamA = this.value;
-                    const teamB = document.getElementById('team-b');
-
-                    teamB.style.display = 'block';
-
-                    // clear previous options in Team B
-                    teamB.innerHTML = '<option value="" disabled selected>Team B</option>';
-
-                    // get all options from Team A
-                    const teamAOptions = document.querySelectorAll('#team-a option');
-
-                    // add options to Team B excluding the selected Team A option
-                    teamAOptions.forEach(option => {
-                        if (option.value && option.value !== selectedTeamA) {
-                            const newOption = document.createElement('option');
-                            newOption.value = option.value;
-                            newOption.textContent = option.textContent;
-                            teamB.appendChild(newOption);
+                            xhr.send(`event_id=${eventId}`);
                         }
+                    });
+
+
+                    // JavaScript to toggle visibility of the activity inputs based on category selection
+                    document.getElementById('event-category').addEventListener('change', function() {
+                        const activitySports = document.getElementById('event-sports');
+                        const activitySocio = document.getElementById('event-socio');
+                        const activityOthers = document.getElementById('event-activity-others');
+                        const gameNo = document.getElementById('event-game-number');
+                        const teamA = document.getElementById('team-a');
+                        const teamB = document.getElementById('team-b');
+
+                        if (this.value === 'sports') {
+                            activitySports.style.display = 'block';
+                            gameNo.style.display = 'none';
+                            teamA.style.display = 'none';
+                            activityOthers.style.display = 'none';
+                            activitySocio.style.display = 'none';
+                        } else if (this.value === 'others') {
+                            activitySports.style.display = 'none';
+                            activitySocio.style.display = 'none';
+                            gameNo.style.display = 'none';
+                            teamA.style.display = 'none';
+                            teamB.style.display = 'none';
+                            activityOthers.style.display = 'block';
+                        } else if (this.value === 'socio-cultural') {
+                            teamA.style.display = 'none';
+                            activitySports.style.display = 'none';
+                            activitySocio.style.display = 'block';
+                            teamB.style.display = 'none';
+                            activityOthers.style.display = 'none';
+                            gameNo.style.display = 'none';
+                        } else {
+                            teamA.style.display = 'none';
+                            gameNo.style.display = 'none';
+                            teamB.style.display = 'none';
+                            activitySocio.style.display = 'none';
+                            activitySports.style.display = 'none';
+                            activityOthers.style.display = 'none';
+                        }
+                    });
+
+                    document.getElementById('team-a').addEventListener('change', function() {
+                        const selectedTeamA = this.value;
+                        const teamB = document.getElementById('team-b');
+
+                        teamB.style.display = 'block';
+
+                        // clear previous options in Team B
+                        teamB.innerHTML = '<option value="" disabled selected>Team B</option>';
+
+                        // get all options from Team A
+                        const teamAOptions = document.querySelectorAll('#team-a option');
+
+                        // add options to Team B excluding the selected Team A option
+                        teamAOptions.forEach(option => {
+                            if (option.value && option.value !== selectedTeamA) {
+                                const newOption = document.createElement('option');
+                                newOption.value = option.value;
+                                newOption.textContent = option.textContent;
+                                teamB.appendChild(newOption);
+                            }
+                        });
                     });
                 });
             });
-        });
 
-        // Edit event specific to date
-        document.querySelectorAll('.edit-btn').forEach(function(button) {
-            button.addEventListener('click', function() {
-                const row = this.closest('tr');
-                const eventId = row.getAttribute('data-event-id');
+            // Edit event specific to date
+            document.querySelectorAll('.edit-btn').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const eventId = row.getAttribute('data-event-id');
 
-                const xhr = new XMLHttpRequest();
-                xhr.open("POST", "get_existing_sched_events.php", true);
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        const response = JSON.parse(xhr.responseText);
-                        if (response.success) {
-                            const event = response.event;
+                    const xhr = new XMLHttpRequest();
+                    xhr.open("POST", "get_existing_sched_events.php", true);
+                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            const response = JSON.parse(xhr.responseText);
+                            if (response.success) {
+                                const event = response.event;
 
-                            Swal.fire({
-                                title: 'Edit Event',
-                                html: `
+                                Swal.fire({
+                                    title: 'Edit Event',
+                                    html: `
                                     <input id="edit-time" class="swal2-input1" type="time" value="${event.time}">
                                     <select id="edit-event-category" class="swal2-input3">
                                         <option value="" disabled ${!event.type ? 'selected' : ''}>Type</option>
@@ -808,314 +793,315 @@ usort($scheduled_days, function ($a, $b) {
                                         <option value="Moved" ${event.status === 'Moved' ? 'selected' : ''}>Moved</option>
                                     </select>
                                 `,
-                                confirmButtonText: 'Save',
-                                showCancelButton: true,
-                                preConfirm: () => {
-                                    const time24 = document.getElementById('edit-time').value;
-                                    const activity = document.getElementById('edit-event-activity-others').value;
-                                    const gameNo = document.getElementById('edit-game-no').value;
-                                    const teamA = document.getElementById('edit-team-a').value;
-                                    const teamB = document.getElementById('edit-team-b').value;
-                                    const location = document.getElementById('edit-location').value;
-                                    const status = document.getElementById('edit-status').value;
+                                    confirmButtonText: 'Save',
+                                    showCancelButton: true,
+                                    preConfirm: () => {
+                                        const time24 = document.getElementById('edit-time').value;
+                                        const activity = document.getElementById('edit-event-activity-others').value;
+                                        const gameNo = document.getElementById('edit-game-no').value;
+                                        const teamA = document.getElementById('edit-team-a').value;
+                                        const teamB = document.getElementById('edit-team-b').value;
+                                        const location = document.getElementById('edit-location').value;
+                                        const status = document.getElementById('edit-status').value;
 
-                                    if (!time24 || !activity || !location) {
-                                        Swal.showValidationMessage('Please fill in all fields');
-                                        return false;
+                                        if (!time24 || !activity || !location) {
+                                            Swal.showValidationMessage('Please fill in all fields');
+                                            return false;
+                                        }
+
+                                        return {
+                                            time24,
+                                            activity,
+                                            gameNo,
+                                            teamA,
+                                            teamB,
+                                            location,
+                                            status
+                                        };
                                     }
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        const {
+                                            time24,
+                                            activity,
+                                            gameNo,
+                                            teamA,
+                                            teamB,
+                                            location,
+                                            status
+                                        } = result.value;
 
-                                    return {
-                                        time24,
-                                        activity,
-                                        gameNo,
-                                        teamA,
-                                        teamB,
-                                        location,
-                                        status
-                                    };
-                                }
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    const {
-                                        time24,
-                                        activity,
-                                        gameNo,
-                                        teamA,
-                                        teamB,
-                                        location,
-                                        status
-                                    } = result.value;
-
-                                    const xhrUpdate = new XMLHttpRequest();
-                                    xhrUpdate.open("POST", "edit_event.php", true);
-                                    xhrUpdate.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                                    xhrUpdate.onload = function() {
-                                        if (xhrUpdate.status === 200) {
-                                            const updateResponse = JSON.parse(xhrUpdate.responseText);
-                                            if (updateResponse.success) {
-                                                Swal.fire({
-                                                    title: 'Success!',
-                                                    text: 'Event updated successfully.',
-                                                    icon: 'success'
-                                                }).then(() => {
-                                                    window.location.reload();
-                                                });
-                                            } else {
-                                                Swal.fire({
-                                                    title: 'Error!',
-                                                    text: updateResponse.message,
-                                                    icon: 'error'
-                                                });
+                                        const xhrUpdate = new XMLHttpRequest();
+                                        xhrUpdate.open("POST", "edit_event.php", true);
+                                        xhrUpdate.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                                        xhrUpdate.onload = function() {
+                                            if (xhrUpdate.status === 200) {
+                                                const updateResponse = JSON.parse(xhrUpdate.responseText);
+                                                if (updateResponse.success) {
+                                                    Swal.fire({
+                                                        title: 'Success!',
+                                                        text: 'Event updated successfully.',
+                                                        icon: 'success'
+                                                    }).then(() => {
+                                                        window.location.reload();
+                                                    });
+                                                } else {
+                                                    Swal.fire({
+                                                        title: 'Error!',
+                                                        text: updateResponse.message,
+                                                        icon: 'error'
+                                                    });
+                                                }
                                             }
-                                        }
-                                    };
-                                    xhrUpdate.send(`event_id=${eventId}&time=${time24}&activity=${activity}&gameNo=${gameNo}&teamA=${teamA}&teamB=${teamB}&location=${location}&status=${status}`);
-                                }
-                            });
+                                        };
+                                        xhrUpdate.send(`event_id=${eventId}&time=${time24}&activity=${activity}&gameNo=${gameNo}&teamA=${teamA}&teamB=${teamB}&location=${location}&status=${status}`);
+                                    }
+                                });
 
-                            // JavaScript to toggle visibility of Game No, Team A, and Team B based on category
-                            const categorySelect = document.getElementById('edit-event-category');
-                            const gameNoField = document.getElementById('edit-game-no');
-                            const teamAField = document.getElementById('edit-team-a');
-                            const teamBField = document.getElementById('edit-team-b');
+                                // JavaScript to toggle visibility of Game No, Team A, and Team B based on category
+                                const categorySelect = document.getElementById('edit-event-category');
+                                const gameNoField = document.getElementById('edit-game-no');
+                                const teamAField = document.getElementById('edit-team-a');
+                                const teamBField = document.getElementById('edit-team-b');
 
-                            function toggleGameFields(category) {
-                                if (this.value === 'sports') {
-                                    activitySports.style.display = 'block';
-                                    gameNo.style.display = 'none';
-                                    teamA.style.display = 'none';
-                                    activityOthers.style.display = 'none';
-                                    activitySocio.style.display = 'none';
-                                } else if (this.value === 'others') {
-                                    activitySports.style.display = 'none';
-                                    activitySocio.style.display = 'none';
-                                    gameNo.style.display = 'none';
-                                    teamA.style.display = 'none';
-                                    teamB.style.display = 'none';
-                                    activityOthers.style.display = 'block';
-                                } else if (this.value === 'socio-cultural') {
-                                    teamA.style.display = 'none';
-                                    activitySports.style.display = 'none';
-                                    activitySocio.style.display = 'block';
-                                    teamB.style.display = 'none';
-                                    activityOthers.style.display = 'none';
-                                    gameNo.style.display = 'none';
-                                } else {
-                                    teamA.style.display = 'none';
-                                    gameNo.style.display = 'none';
-                                    teamB.style.display = 'none';
-                                    activitySocio.style.display = 'none';
-                                    activitySports.style.display = 'none';
-                                    activityOthers.style.display = 'none';
+                                function toggleGameFields(category) {
+                                    if (this.value === 'sports') {
+                                        activitySports.style.display = 'block';
+                                        gameNo.style.display = 'none';
+                                        teamA.style.display = 'none';
+                                        activityOthers.style.display = 'none';
+                                        activitySocio.style.display = 'none';
+                                    } else if (this.value === 'others') {
+                                        activitySports.style.display = 'none';
+                                        activitySocio.style.display = 'none';
+                                        gameNo.style.display = 'none';
+                                        teamA.style.display = 'none';
+                                        teamB.style.display = 'none';
+                                        activityOthers.style.display = 'block';
+                                    } else if (this.value === 'socio-cultural') {
+                                        teamA.style.display = 'none';
+                                        activitySports.style.display = 'none';
+                                        activitySocio.style.display = 'block';
+                                        teamB.style.display = 'none';
+                                        activityOthers.style.display = 'none';
+                                        gameNo.style.display = 'none';
+                                    } else {
+                                        teamA.style.display = 'none';
+                                        gameNo.style.display = 'none';
+                                        teamB.style.display = 'none';
+                                        activitySocio.style.display = 'none';
+                                        activitySports.style.display = 'none';
+                                        activityOthers.style.display = 'none';
+                                    }
                                 }
+
+                                // Initialize visibility based on existing event type
+                                toggleGameFields(event.type);
+
+                                // Add event listener to handle category change
+                                categorySelect.addEventListener('change', function() {
+                                    toggleGameFields(this.value);
+                                });
+
+                            } else {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: response.message,
+                                    icon: 'error'
+                                });
                             }
-
-                            // Initialize visibility based on existing event type
-                            toggleGameFields(event.type);
-
-                            // Add event listener to handle category change
-                            categorySelect.addEventListener('change', function() {
-                                toggleGameFields(this.value);
-                            });
-
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: response.message,
-                                icon: 'error'
-                            });
                         }
-                    }
-                };
-                xhr.send(`event_id=${eventId}`);
-            });
-        });
-
-
-
-        //edit date
-        document.querySelectorAll('.editHeaderBtn').forEach(button => {
-            button.addEventListener('click', function() {
-                const dayId = this.getAttribute('data-day-id'); // ID of the day
-                const dateDay = this.getAttribute('data-day-date'); // Date of the day
-
-                Swal.fire({
-                    title: 'Edit Date',
-                    html: ` 
-                        <input id="new-day-date" class="swal2-input1" type="date" value="${dateDay}">
-                    `,
-                    confirmButtonText: 'Save',
-                    showCancelButton: true,
-                    preConfirm: () => {
-                        const dayDate = document.getElementById('new-day-date').value;
-                        const today = new Date().toISOString().split('T')[0];
-
-                        if (!dayDate) {
-                            Swal.showValidationMessage('Please enter a Date');
-                            return false;
-                        }
-
-                        if (dayDate < today) {
-                            Swal.showValidationMessage('Date cannot be in the past');
-                            return false;
-                        }
-
-                        return {
-                            dayId: dayId,
-                            dayDate: dayDate
-                        };
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const {
-                            dayId,
-                            dayDate
-                        } = result.value;
-
-                        const xhrCheck = new XMLHttpRequest();
-                        xhrCheck.open("POST", "get_existing_dates.php", true);
-                        xhrCheck.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                        xhrCheck.onload = function() {
-                            if (xhrCheck.status === 200) {
-                                const response = JSON.parse(xhrCheck.responseText);
-
-                                if (response.exists) {
-                                    Swal.fire({
-                                        title: 'Error!',
-                                        text: 'This date already exists. Please choose another date.',
-                                        icon: 'error',
-                                        confirmButtonColor: '#d33',
-                                        confirmButtonText: 'OK'
-                                    });
-                                } else {
-                                    const xhrUpdate = new XMLHttpRequest();
-                                    xhrUpdate.open("POST", "edit_day.php", true);
-                                    xhrUpdate.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                                    xhrUpdate.onload = function() {
-                                        if (xhrUpdate.status === 200) {
-                                            const updateResponse = JSON.parse(xhrUpdate.responseText);
-                                            if (updateResponse.success) {
-                                                Swal.fire({
-                                                    title: 'Success!',
-                                                    text: 'Day updated successfully.',
-                                                    icon: 'success',
-                                                    confirmButtonColor: '#7FD278',
-                                                    confirmButtonText: 'OK'
-                                                }).then(() => {
-                                                    location.reload();
-                                                });
-                                            } else {
-                                                Swal.fire({
-                                                    title: 'Error!',
-                                                    text: updateResponse.message,
-                                                    icon: 'error',
-                                                    confirmButtonColor: '#d33',
-                                                    confirmButtonText: 'OK'
-                                                });
-                                            }
-                                        }
-                                    };
-                                    xhrUpdate.send(`day_id=${dayId}&day_date=${dayDate}`);
-                                }
-                            }
-                        };
-                        xhrCheck.send(`day_date=${dayDate}&&day_id=${dayId}`);
-                    }
+                    };
+                    xhr.send(`event_id=${eventId}`);
                 });
             });
-        });
 
 
-        function reattachEventListeners() {
 
-            document.querySelectorAll('.delete-btn').forEach(button => {
+            //edit date
+            document.querySelectorAll('.editHeaderBtn').forEach(button => {
                 button.addEventListener('click', function() {
-                    const row = this.closest('tr');
-                    const eventId = row.getAttribute('data-event-id');
+                    const dayId = this.getAttribute('data-day-id'); // ID of the day
+                    const dateDay = this.getAttribute('data-day-date'); // Date of the day
 
                     Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
-                        icon: 'warning',
+                        title: 'Edit Date',
+                        html: ` 
+                        <input id="new-day-date" class="swal2-input1" type="date" value="${dateDay}">
+                    `,
+                        confirmButtonText: 'Save',
                         showCancelButton: true,
-                        confirmButtonColor: '#7FD278',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
+                        preConfirm: () => {
+                            const dayDate = document.getElementById('new-day-date').value;
+                            const today = new Date().toISOString().split('T')[0];
+
+                            if (!dayDate) {
+                                Swal.showValidationMessage('Please enter a Date');
+                                return false;
+                            }
+
+                            if (dayDate < today) {
+                                Swal.showValidationMessage('Date cannot be in the past');
+                                return false;
+                            }
+
+                            return {
+                                dayId: dayId,
+                                dayDate: dayDate
+                            };
+                        }
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            const xhr = new XMLHttpRequest();
-                            xhr.open('POST', 'delete_event.php', true);
-                            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                            xhr.onload = function() {
-                                if (xhr.status === 200) {
-                                    const response = JSON.parse(xhr.responseText);
-                                    if (response.success) {
-                                        row.remove();
-                                        sortTableByTime(`scheduleTable-${dayId}`);
+                            const {
+                                dayId,
+                                dayDate
+                            } = result.value;
 
-                                        Swal.fire({
-                                            title: 'Deleted!',
-                                            text: 'Your event has been deleted.',
-                                            icon: 'success',
-                                            confirmButtonColor: '#7FD278',
-                                            confirmButtonText: 'OK'
-                                        });
-                                    } else {
+                            const xhrCheck = new XMLHttpRequest();
+                            xhrCheck.open("POST", "get_existing_dates.php", true);
+                            xhrCheck.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                            xhrCheck.onload = function() {
+                                if (xhrCheck.status === 200) {
+                                    const response = JSON.parse(xhrCheck.responseText);
+
+                                    if (response.exists) {
                                         Swal.fire({
                                             title: 'Error!',
-                                            text: response.message,
+                                            text: 'This date already exists. Please choose another date.',
                                             icon: 'error',
                                             confirmButtonColor: '#d33',
                                             confirmButtonText: 'OK'
                                         });
+                                    } else {
+                                        const xhrUpdate = new XMLHttpRequest();
+                                        xhrUpdate.open("POST", "edit_day.php", true);
+                                        xhrUpdate.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                                        xhrUpdate.onload = function() {
+                                            if (xhrUpdate.status === 200) {
+                                                const updateResponse = JSON.parse(xhrUpdate.responseText);
+                                                if (updateResponse.success) {
+                                                    Swal.fire({
+                                                        title: 'Success!',
+                                                        text: 'Day updated successfully.',
+                                                        icon: 'success',
+                                                        confirmButtonColor: '#7FD278',
+                                                        confirmButtonText: 'OK'
+                                                    }).then(() => {
+                                                        location.reload();
+                                                    });
+                                                } else {
+                                                    Swal.fire({
+                                                        title: 'Error!',
+                                                        text: updateResponse.message,
+                                                        icon: 'error',
+                                                        confirmButtonColor: '#d33',
+                                                        confirmButtonText: 'OK'
+                                                    });
+                                                }
+                                            }
+                                        };
+                                        xhrUpdate.send(`day_id=${dayId}&day_date=${dayDate}`);
                                     }
                                 }
                             };
-
-                            xhr.send(`event_id=${eventId}`);
+                            xhrCheck.send(`day_date=${dayDate}&&day_id=${dayId}`);
                         }
                     });
                 });
             });
 
-        }
 
-        reattachEventListeners();
-    </script>
+            function reattachEventListeners() {
 
-    <!-- Edit Event Modal -->
-    <div id="editEventModal" style="display:none;">
-        <div class="modal-content">
-            <h2>Edit Event</h2>
-            <input type="hidden" id="edit-event-id">
-            <input id="edit-event-time" class="swal2-input" placeholder="Time" type="time">
-            <input id="edit-event-activity" class="swal2-input" placeholder="Activity">
-            <input id="edit-event-location" class="swal2-input" placeholder="Location">
-            <select id="edit-event-status" class="swal2-input" placeholder="Status">
-                <option value="Pending">Pending</option>
-                <option value="Ongoing">On-going</option>
-                <option value="Ended">Ended</option>
-                <option value="Cancelled">Cancelled</option>
-                <option value="Moved">Moved</option>
-            </select>
-            <button id="saveEditBtn">Save Changes</button>
+                document.querySelectorAll('.delete-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const row = this.closest('tr');
+                        const eventId = row.getAttribute('data-event-id');
+
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: "You won't be able to revert this!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#7FD278',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, delete it!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                const xhr = new XMLHttpRequest();
+                                xhr.open('POST', 'delete_event.php', true);
+                                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                                xhr.onload = function() {
+                                    if (xhr.status === 200) {
+                                        const response = JSON.parse(xhr.responseText);
+                                        if (response.success) {
+                                            row.remove();
+                                            sortTableByTime(`scheduleTable-${dayId}`);
+
+                                            Swal.fire({
+                                                title: 'Deleted!',
+                                                text: 'Your event has been deleted.',
+                                                icon: 'success',
+                                                confirmButtonColor: '#7FD278',
+                                                confirmButtonText: 'OK'
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                title: 'Error!',
+                                                text: response.message,
+                                                icon: 'error',
+                                                confirmButtonColor: '#d33',
+                                                confirmButtonText: 'OK'
+                                            });
+                                        }
+                                    }
+                                };
+
+                                xhr.send(`event_id=${eventId}`);
+                            }
+                        });
+                    });
+                });
+
+            }
+
+            reattachEventListeners();
+        </script>
+
+        <!-- Edit Event Modal -->
+        <div id="editEventModal" style="display:none;">
+            <div class="modal-content">
+                <h2>Edit Event</h2>
+                <input type="hidden" id="edit-event-id">
+                <input id="edit-event-time" class="swal2-input" placeholder="Time" type="time">
+                <input id="edit-event-activity" class="swal2-input" placeholder="Activity">
+                <input id="edit-event-location" class="swal2-input" placeholder="Location">
+                <select id="edit-event-status" class="swal2-input" placeholder="Status">
+                    <option value="Pending">Pending</option>
+                    <option value="Ongoing">On-going</option>
+                    <option value="Ended">Ended</option>
+                    <option value="Cancelled">Cancelled</option>
+                    <option value="Moved">Moved</option>
+                </select>
+                <button id="saveEditBtn">Save Changes</button>
+            </div>
         </div>
-    </div>
-    <!-- Edit Day Modal -->
-    <div id="editDayModal" style="display:none;">
-        <div class="modal-content">
-            <h2>Edit Day</h2>
-            <input type="hidden" id="edit-day-id">
-            <input id="edit-day-name" class="swal2-input" placeholder="Day Name">
-            <button id="saveEditDayBtn">Save Changes</button>
+        <!-- Edit Day Modal -->
+        <div id="editDayModal" style="display:none;">
+            <div class="modal-content">
+                <h2>Edit Day</h2>
+                <input type="hidden" id="edit-day-id">
+                <input id="edit-day-name" class="swal2-input" placeholder="Day Name">
+                <button id="saveEditDayBtn">Save Changes</button>
+            </div>
         </div>
-    </div>
     <?php } else { // Display message - not permitted to view
-    echo '
+        echo '
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
             <strong>Oops!</strong> You lack the permission to view the \'Schedule\' features.
         </div>
     ';
-    }?>
+    } ?>
 </body>
+
 </html>

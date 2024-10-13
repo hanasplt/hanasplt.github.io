@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
@@ -84,7 +84,7 @@ try {
     $stmt->execute();
     $retval = $stmt->get_result();
 
-    if($retval->num_rows > 0) {
+    if ($retval->num_rows > 0) {
         // Then don't insert admin's account
     } else {
         $stmt->close();
@@ -94,8 +94,8 @@ try {
                         VALUES 
                             (NULL, ?, ?, ?, NULL, ?, ?, ?, ?, NULL, NULL, NULL, NULL)";
         $stmt = $conn->prepare($sqlInsertAdminAcc);
-        $stmt->bind_param("ssssss", $adminW, $adminW, $adminW, $adminPass, $adminEmail, $adminW, $user_permissions);
-        if($stmt->execute()) {
+        $stmt->bind_param("sssssss", $adminW, $adminW, $adminW, $adminPass, $adminEmail, $adminW, $user_permissions);
+        if ($stmt->execute()) {
             // Account added
         } else {
             echo 'Error: ' . $sql . "<br>" . $conn->error;
@@ -138,7 +138,6 @@ try {
     } else {
         echo "Error creating table: " . $conn->error;
     }
-
 } catch (Exception $e) {
     echo $e->getMessage();
 }
@@ -258,7 +257,7 @@ $sqlEvDay = "CREATE TABLE IF NOT EXISTS scheduled_eventstoday ( #schedule event/
     FOREIGN KEY (teamA) REFERENCES contestant(teamId) ON DELETE CASCADE,
     FOREIGN KEY (teamB) REFERENCES contestant(teamId) ON DELETE CASCADE
     );";
-    #if the day is deleted, all the events linked to the day is also deleted
+#if the day is deleted, all the events linked to the day is also deleted
 
 if ($conn->query($sqlEvDay) === TRUE) {
 } else {
@@ -454,8 +453,8 @@ $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAccount(
         LIMIT limit_num OFFSET offset_num;
     END ;";
 
-    if ($conn->query($sqlT) === TRUE) {
-    } else {
+if ($conn->query($sqlT) === TRUE) {
+} else {
     echo "Error creating procedure: " . $conn->error;
 }
 
@@ -468,8 +467,8 @@ $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAccountCount(
         OR CONCAT(firstName, ' ', middleName, ' ', lastName) LIKE search_query);
     END ;";
 
-    if ($conn->query($sqlT) === TRUE) {
-    } else {
+if ($conn->query($sqlT) === TRUE) {
+} else {
     echo "Error creating procedure: " . $conn->error;
 }
 
@@ -1231,5 +1230,3 @@ try {
 
 
 $conn->close();
-
-?>

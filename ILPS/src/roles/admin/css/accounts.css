@@ -92,6 +92,8 @@ body {
     color: #2B2B2B;
 }
 
+/* drop down navbar*/
+
 .dropdown .dropbtn {
     display: flex;
     flex-direction: row;
@@ -118,6 +120,7 @@ body {
     z-index: 1;
     border: none;
 }
+
 .account-dropdown {
     min-width: 90px;
 }
@@ -146,6 +149,8 @@ body {
 .acc-hover:hover .account-dropdown {
     display: block;
 }
+
+/* drop down navbar*/
 
 
 .new-account {
