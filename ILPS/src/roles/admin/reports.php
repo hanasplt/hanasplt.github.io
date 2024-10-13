@@ -1,11 +1,9 @@
 <?php
 require_once '../../../config/sessionConfig.php'; // Session Cookie
-$conn = require_once '../../../config/db.php'; // Database connection
+require_once '../../../config/db.php'; // Database connection
 require_once '../admin/verifyLoginSession.php'; // Logged in or not
+require_once 'adminPermissions.php'; // Retrieves admin permissions
 
-if (!$conn) {
-  die("Connection failed: " . mysqli_connect_error());
-}
 ?>
 
 <!DOCTYPE html>
@@ -13,7 +11,7 @@ if (!$conn) {
 
 <head>
   <meta charset="UTF-8">
-  <title>Teams</title>
+  <title>Reports</title>
   <link rel="stylesheet" href="../admin/css/report.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,11 +40,8 @@ if (!$conn) {
       <i class="fas fa-sign-out-alt" id="logoutIcon"></i>
     </div>
   </div>
-
-
-
-
-
+  <?php // Display reports - permitted to view 
+  if (in_array('reports_read', $admin_rights)) {?>
   <div class="events-scoresheet-container" style="margin-top: 10%;">
     <div class="table-container">
     <table>
@@ -55,10 +50,9 @@ if (!$conn) {
             <th>View Score Sheet</th>
         </tr>
         <?php
-            $events = array();
-            $links = array();
+            $events = array(); // Array to store all events
 
-            #retrieve event name
+            // Retrieve events information
             $sql = "CALL sp_getEvents";
             $stmt = $conn->prepare($sql);
             $stmt->execute();
@@ -66,13 +60,14 @@ if (!$conn) {
 
             if ($retval->num_rows > 0) {
               while($row = $retval->fetch_assoc()) {
-                $evid = $row['eventID'];
-                $evname = $row['eventName'];
-                $catg = $row['eventType'];
+                $evid = $row['eventID']; // Event ID from the database
+                $evname = $row['eventName']; // Event Name from the database
+                $catg = $row['eventType']; // Event Type from the database
 
+                // Populate $events array
                 $events[] = array('evid' => $evid, 'evname' => $evname, 'type' => $catg);
               }
-            } else {
+            } else { // Display message - no events
               echo '
               <tr>
                 <td colspan=2>No event/s exists.</td>
@@ -83,7 +78,7 @@ if (!$conn) {
             $retval->free();
             $stmt->close();
 
-
+            // Display events and links
             foreach($events as $ev) {
               $eventId = $ev['evid'];
               $evName = $ev['evname'];
@@ -95,21 +90,21 @@ if (!$conn) {
               <?php
 
               if($evType == "Socio-Cultural") {
-                #display judges
+                // Checks if the Socio-Cultural Event is scored
                 $sql = "CALL sp_getJudges(?);";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("i", $eventId);
                 $stmt->execute();
                 $retval = $stmt->get_result();
-
+                
+                // Display clickable links to show scoresheet
                 if ($retval->num_rows > 0) {
-                  $pernum = 0;
                   echo "<td>";
                   echo "<a href='viewScoresheet.php?event=$eventId
                           &&evname=$evName' target='_blank'>View Summary
                         </a>";
                   echo "</td>";
-                } else {
+                } else { // Display message - not scored
                   echo '<td style="color: gray;">No score yet.</td>';
                 }
                 $retval->free();
@@ -117,12 +112,14 @@ if (!$conn) {
               }
 
               if($evType == "Sports") {
+                // Checks if the Sports Event is scored
                 $sql = "CALL sp_getScoreSport(?)";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("i", $eventId);
                 $stmt->execute();
                 $retval = $stmt->get_result();
-
+                
+                // Display clickable links to show overall tally
                 if ($retval->num_rows > 0) {
                   ?>
                   <td>
@@ -132,7 +129,7 @@ if (!$conn) {
                   </td>
                   
                   <?php
-                } else {
+                } else { // Display message - not scored
                   echo '<td style="color: gray;">No score yet.</td>';
                 }
                 $retval->free();
@@ -145,6 +142,13 @@ if (!$conn) {
     </div>
 
   </div>
+  <?php } else { // Display message - not permitted to view
+  echo '
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+      <strong>FYI: </strong> You lack the permission to view Reports.
+    </div>
+  ';
+  }?>
 
   <!-- logout confirmation -->
   <script>

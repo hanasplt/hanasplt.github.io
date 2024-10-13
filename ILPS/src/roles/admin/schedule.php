@@ -3,9 +3,10 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once '../../../config/sessionConfig.php';
-$conn = require_once '../../../config/db.php';
-require_once '../admin/verifyLoginSession.php';
+require_once '../../../config/sessionConfig.php'; // session Cookie
+require_once '../../../config/db.php'; // database connection
+require_once '../admin/verifyLoginSession.php'; // logged in or not
+require_once 'adminPermissions.php'; // Retrieves admin permissions
 
 // call the stored procedure to get all teams
 $query_teams = "CALL sp_getAllTeam()";
@@ -110,16 +111,28 @@ usort($scheduled_days, function ($a, $b) {
         </div>
     </div>
 
-    <div class="new-sched" id="openPopup">
-        <div class="plus-icon">
-            <i class="fas fa-plus"></i>
+    <?php 
+    // Display Schedule - permitted to view
+    if (in_array('schedule_read', $admin_rights)) {
+        // Display Add Day - permitted to add
+        if (in_array('schedule_add', $admin_rights)) {?>
+        <!-- Add Day Popup -->
+        <div class="new-sched" id="openPopup">
+            <div class="plus-icon">
+                <i class="fas fa-plus"></i>
+            </div>
+            <div id="addDayBtn">
+                <p id="create">Add Day</p>
+                <p id="add">Add day for intramurals event.</p>
+            </div>
         </div>
-        <div id="addDayBtn">
-            <p id="create">Add Day</p>
-            <p id="add">Add day for intramurals event.</p>
-        </div>
-    </div>
-
+        <?php } else {
+            echo '
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <strong>FYI: </strong> \'Add Day\' feature is hidden as you don\'t have the permission.
+                </div>
+            ';
+        } ?>
     <div class="schedule">
         <div class="schedule-title">
             <p id="sched">Schedule</p>
@@ -140,14 +153,21 @@ usort($scheduled_days, function ($a, $b) {
                         </div>
 
                         <div class="header-right">
+                            <?php // Display edit button - permitted to update
+                            if (in_array('schedule_update', $admin_rights)) {?>
                             <button id="editHeaderBtn" class="header-btn editHeaderBtn" data-day-id="<?php echo $day['id']; ?>" data-day-date="<?php echo $day['day_date']; ?>">Edit</button>
+                            <?php }
+                            // Display delete button - permitted to delete
+                            if (in_array('schedule_delete', $admin_rights)) {?>
                             <button id="deleteHeaderBtn" class="header-btn deleteHeaderBtn" data-day-id="<?php echo $day['id']; ?>">Delete</button>
+                            <?php }?>
                         </div>
-
                     </div>
 
                     <!-- Events for the day (Initially hidden) -->
                     <div class="day-events" id="dayEvents-<?php echo $day['id']; ?>" style="display: none;">
+                    <?php // Display scheduled event table - permitted to view
+                    if (in_array('scheduledEvent_read', $admin_rights)) {?>
                         <table id="scheduleTable-<?php echo $day['id']; ?>">
                             <thead>
                                 <tr>
@@ -179,15 +199,31 @@ usort($scheduled_days, function ($a, $b) {
                                             <td><?php echo $event['location']; ?></td>
                                             <td><?php echo $event['status']; ?></td>
                                             <td>
+                                                <?php // Display edit button - permitted to update
+                                                if (in_array('scheduledEvent_update', $admin_rights)) {?>
                                                 <button class="edit-btn" data-event-id="<?php echo $event['id']; ?>">Edit</button>
+                                                <?php }
+                                                // Display delete button - permitted to delete
+                                                if (in_array('scheduledEvent_delete', $admin_rights)) {?>
                                                 <button class="delete-btn">Delete</button>
+                                                <?php }?>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
                             </tbody>
                         </table>
+                        <?php // Display add event button - permitted to add
+                        if (in_array('scheduledEvent_add', $admin_rights)) {?>
                         <button class="addEventBtn" id="addEventBtn" data-day-id="<?php echo $day['id']; ?>">Add Event</button>
+                        <?php }?>
+                    <?php } else {
+                        echo '
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <strong>Oops!</strong> You lack the permission to view the Scheduled Event/s.
+                            </div>
+                        ';
+                    } ?>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
@@ -219,10 +255,8 @@ usort($scheduled_days, function ($a, $b) {
                 event.stopPropagation();
             });
         });
-    </script>
 
-    <!-- time sorting-->
-    <script>
+        /* TIME SORTING */
         function sortTableByTime(tableId) {
             const table = document.getElementById(tableId);
             const rows = Array.from(table.rows).slice(1);
@@ -236,10 +270,8 @@ usort($scheduled_days, function ($a, $b) {
 
             rows.forEach(row => table.appendChild(row));
         }
-    </script>
 
-    <!-- logout confirmation -->
-    <script>
+        /* LOGOUT CONFIRMATION */
         document.getElementById('logoutIcon').addEventListener('click', function() {
             Swal.fire({
                 title: 'Are you sure?',
@@ -256,10 +288,8 @@ usort($scheduled_days, function ($a, $b) {
                 }
             });
         });
-    </script>
 
-    <!-- Add day popup -->
-    <script>
+
         document.getElementById('openPopup').addEventListener('click', function() {
             Swal.fire({
                 title: 'Add New Day',
@@ -1071,9 +1101,6 @@ usort($scheduled_days, function ($a, $b) {
             <button id="saveEditBtn">Save Changes</button>
         </div>
     </div>
-
-
-
     <!-- Edit Day Modal -->
     <div id="editDayModal" style="display:none;">
         <div class="modal-content">
@@ -1083,6 +1110,12 @@ usort($scheduled_days, function ($a, $b) {
             <button id="saveEditDayBtn">Save Changes</button>
         </div>
     </div>
+    <?php } else { // Display message - not permitted to view
+    echo '
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Oops!</strong> You lack the permission to view the \'Schedule\' features.
+        </div>
+    ';
+    }?>
 </body>
-
 </html>

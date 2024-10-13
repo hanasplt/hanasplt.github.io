@@ -3,12 +3,9 @@ error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
 require_once '../../../config/sessionConfig.php'; // Session Cookie
-$conn = require_once '../../../config/db.php'; // Database connection
+require_once '../../../config/db.php'; // Database connection
 require_once '../admin/verifyLoginSession.php'; // Logged in or not
 
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     // Get the requested page and year filter

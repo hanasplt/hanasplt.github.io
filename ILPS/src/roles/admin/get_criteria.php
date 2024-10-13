@@ -1,10 +1,8 @@
 <?php
 
-$conn = require_once '../../../config/db.php';
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once '../../../config/sessionConfig.php'; // session Cookie
+require_once '../../../config/db.php';
+require_once 'adminPermissions.php'; // Retrieves admin permissions
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $evid = $_POST['evid'];
@@ -16,20 +14,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->execute();
     $result = $stmt->get_result();
 
+    if (in_array('criteria_read', $admin_rights)) {
     echo '<div class="accounts-title" style="margin-left: 0vw;">';
     echo '<p id="event">Criteria Table</p>';
 
     if ($result->num_rows > 0) {
         echo '
-            <div>
+            <div>';
+            if (in_array('criteria_update', $admin_rights)) {
+        echo '
             <button type="button" id="openEditCriteriaPopup" data-evid="'.$evid.'" data-evname="'.$event.'" style="cursor: pointer;">
                 <i class="fa-solid fa-pen-to-square edit-icon-cri"></i>
                 Edit
-            </button>
+            </button>';
+            }
+            if (in_array('criteria_delete', $admin_rights)) {
+        echo '
             <button type="button" onclick="deleteCri('.$evid.', \''.$event.'\')" style="cursor: pointer;">
                 <i class="fa-solid fa-trash-can"></i>
                 Delete
-            </button>
+            </button>';
+            }
+        echo '
             </div>
         ';
     }
@@ -67,5 +73,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     echo '</tbody>';
     echo '<table>';
+    } else {
+        echo '
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Oops!</strong> You lack the permission to view the Criterias.
+            </div>
+        ';
+    }
 }
 ?>

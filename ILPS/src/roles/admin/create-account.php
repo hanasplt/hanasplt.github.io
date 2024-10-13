@@ -56,7 +56,7 @@
                 // Check user role
                 if ($type == 'Admin') {
                     // Admin's access rights
-                    $user_permissions = "user_read,user_add,user_update,user_delete,team_read,team_add,team_update,team_delete,event_read,event_add,event_update,event_delete,contestant_read,contestant_add,contestant_delete,committee_read,committee_add,committee_delete,judge_read,judge_add,judge_delete,criteria_read,criteria_add,criteria_update,criteria_delete,scoring_read,scoring_add,scoring_delete,role_read,role_update";
+                    $user_permissions = "user_read,user_add,user_update,user_delete,role_read,role_update,team_read,team_add,team_update,team_delete,event_read,event_add,event_update,event_delete,contestant_read,contestant_add,contestant_delete,committee_read,committee_add,committee_delete,judge_read,judge_add,judge_delete,criteria_read,criteria_add,criteria_update,criteria_delete,scoring_read,scoring_add,scoring_delete,schedule_read,schedule_add,schedule_update,schedule_delete,scheduledEvent_read,scheduledEvent_add,scheduledEvent_update,scheduledEvent_delete,reports_read,logs_read";
                 } else if ($type == 'Committee') {
                     // Committee's access rights
                     $user_permissions = "committee_event_read,committee_scoring_read,committee_scoring_add,committee_scoring_update";

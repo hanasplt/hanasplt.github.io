@@ -52,7 +52,7 @@ function loadAccessLog(page = 1, year = "") {
         }
     };
 
-    xhttp.open("POST", "../get_logs.php", true);
+    xhttp.open("POST", "get_logs.php", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("page=" + page + "&year=" + year); // Send the year filter as well
 }
@@ -138,7 +138,7 @@ document.getElementById('logoutIcon').addEventListener('click', function() {
     }).then((result) => {
         if (result.isConfirmed) {
             // Redirect to the login page
-            window.location.href = '../get_logs.php?logout';
+            window.location.href = 'get_logs.php?logout';
         }
     });
 });

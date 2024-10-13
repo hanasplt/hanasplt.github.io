@@ -7,6 +7,8 @@ error_reporting(E_ALL);
 require_once '../../../config/sessionConfig.php'; // Session
 require_once '../../../config/db.php'; // Database connection
 require_once '../admin/verifyLoginSession.php'; // Login Verification
+require_once 'adminPermissions.php'; // Retrieves admin permissions
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -60,6 +62,11 @@ require_once '../admin/verifyLoginSession.php'; // Login Verification
         </div>
     </div>
     <!-- End of Navbar -->
+    
+    <?php
+        // Display users - permitted to view
+        if (in_array('role_read', $admin_rights)) {
+    ?>
     <!-- Roles and Permissions -->
      <div class="container">
         <!-- Popup iFrame for editing user's permissions -->
@@ -105,9 +112,17 @@ require_once '../admin/verifyLoginSession.php'; // Login Verification
                            <div class="col-8 data-row user-name" onclick="showRoleDetails(<?php echo $userid; ?>)" title="Click to view user's access rights.">
                                <p class="rowData"><?php echo $fullname; ?></p>
                            </div>
+
+                           <?php // Display edit-icon - permitted to update
+                           if (in_array('role_update', $admin_rights)) {?>
                            <div class="col data-row action">
                                <p class="rowData"><i class="fa-solid fa-pen-to-square fa-xl edit-icon" data-user-id="<?php echo $userid; ?>" id="openPopup" title="Click to update user's access rights."></i></p>
                            </div>
+                           <?php } else { // Display message - not permitted to update
+                           echo '<div class="col data-row action">
+                               <p style="color: darkgrey;">Feature denied.</p>
+                           </div>';
+                           }?>
                         </div>
                         <?php
                         }
@@ -115,8 +130,8 @@ require_once '../admin/verifyLoginSession.php'; // Login Verification
                  } else {
                     // Display no user message
                     ?>
-                    <div class="alert alert-primary" role="alert">
-                        No User/s exists!
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        <strong>FYI: </strong> No User/s exists.
                     </div>
                     <?php
                  }
@@ -129,5 +144,12 @@ require_once '../admin/verifyLoginSession.php'; // Login Verification
     <!-- End of Roles and Permissions -->
 
     <script src="js/role.js"></script>
+    <?php } else { // Display message - not permitted to view
+        echo '
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <strong>FYI: </strong> You lack the permission to view the Role features.
+            </div>
+        ';
+    }?>
 </body>
 </html>

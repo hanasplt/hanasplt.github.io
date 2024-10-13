@@ -116,7 +116,7 @@ $conn->close();
                 <div class="dropdown-content">
                     <p onclick="window.location.href = '';" class="dc-text" title="Profile">View Profile</p>
                     <p onclick="window.location.href = 'reports.php';" class="dc-text" title="Reports">Reports</p>
-                    <p onclick="window.location.href = '../admin/logs/accesslog.html';" class="dc-text" title="Logs">Logs</p>
+                    <p onclick="window.location.href = 'accesslog.php';" class="dc-text" title="Logs">Logs</p>
                     <div class="menu-icon">
                         <p id="logout" title="Logout">Logout</p>
                     </div>

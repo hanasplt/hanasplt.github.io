@@ -55,7 +55,7 @@ try {
         password VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL,
         type VARCHAR(50) NOT NULL,
-        permissions VARCHAR(500) NOT NULL,
+        permissions VARCHAR(599) NOT NULL,
         log_status VARCHAR(50),
         status INT,
         reset_token VARCHAR(64),
@@ -75,7 +75,7 @@ try {
 $adminW = "Admin";
 $adminPass = encrypt("us3p@admin", $encryption_key);
 $adminEmail = "ilps.usep@gmail.com";
-$user_permissions = "user_read,user_add,user_update,user_delete,team_read,team_add,team_update,team_delete,event_read,event_add,event_update,event_delete,contestant_read,contestant_add,contestant_delete,committee_read,committee_add,committee_delete,judge_read,judge_add,judge_delete,criteria_read,criteria_add,criteria_update,criteria_delete,scoring_read,scoring_add,scoring_delete,role_read,role_update";
+$user_permissions = "user_read,user_add,user_update,user_delete,role_read,role_update,team_read,team_add,team_update,team_delete,event_read,event_add,event_update,event_delete,contestant_read,contestant_add,contestant_delete,committee_read,committee_add,committee_delete,judge_read,judge_add,judge_delete,criteria_read,criteria_add,criteria_update,criteria_delete,scoring_read,scoring_add,scoring_delete,schedule_read,schedule_add,schedule_update,schedule_delete,scheduledEvent_read,scheduledEvent_add,scheduledEvent_update,scheduledEvent_delete,reports_read,logs_read";
 
 try {
     $chkAdminAccExist = "SELECT * FROM accounts WHERE email = ?";

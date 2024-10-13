@@ -1,10 +1,8 @@
 <?php
 
-$conn = require_once '../../../config/db.php';
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once '../../../config/sessionConfig.php'; // session Cookie
+require_once '../../../config/db.php';
+require_once 'adminPermissions.php'; // Retrieves admin permissions
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Retrieve event scoring from the database
@@ -21,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $rank = $row['rank'];
         $category = $row['eventCategory'];
         $points = $row['points'];
-
+        
         // Two-dimensional array to achieve the tabl format
         $data[$num][] = [
             'rankname' => $rank,
@@ -29,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'points' => $points
         ];
     }
-
+    
     if (!empty($data)) {
         foreach ($data as $rank => $entries) {
             echo '<tr>';
@@ -51,7 +49,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             echo '<td>' . $rankname . '</td>';
             echo '<td>' . $individualPoints . '</td>';
             echo '<td>' . $teamPoints . '</td>';
+
+            // Display delete-icon - permitted to delete
+            if (in_array('scoring_delete', $admin_rights)) {
             echo '<td><i class="fa-solid fa-trash-can delete-icon-pts" data-rank="'.$rank.'" data-rank-name="'.$rankname.'" style="cursor: pointer;"></i></td>';
+            } else { // Display message - not permitted to delete
+                echo '<td style="color: darkgrey;">Feature denied.</td>';
+            }
             echo '</tr>';
         }
     } else {

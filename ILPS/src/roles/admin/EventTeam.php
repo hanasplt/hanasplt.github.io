@@ -108,7 +108,7 @@
                 <i class="fa-solid fa-list-check"></i> Add Criteria
             </button>
             <?php } ?>
-            <?php if (in_array('scoring_add', $admin_rights)) { ?>
+            <?php if (in_array('scoring_read', $admin_rights)) { ?>
             <button class="group-btn" onclick="openScoringTable(this)">
                 <i class="fa-solid fa-chart-bar"></i> Scoring Table
             </button>
@@ -161,7 +161,7 @@
                                 </div>
                                 <?php }?>
 
-                                <?php if (in_array('event_edit', $admin_rights)) { ?>
+                                <?php if (in_array('event_update', $admin_rights)) { ?>
                                 <div class="subedit-icon" onclick="openEditEventModal(this)">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </div>
@@ -433,10 +433,12 @@
                                 if ($result->num_rows > 0) {
                                     while ($row = $result->fetch_assoc()) {
                                         $userId = $row['userId'];
-                                        $name = $row['firstName'];
+                                        $name = $row['firstName'];                                        
+                                        $lname = $row['lastName'];
+                                        $fullname = $name .' '. $lname;
                                 ?>
                                         <option value="<?php echo $userId; ?>"
-                                            data-fname="<?php echo $name; ?>"><?php echo $name; ?>
+                                            data-fname="<?php echo $fullname; ?>"><?php echo $fullname; ?>
                                         </option>
                                 <?php
                                     }
@@ -522,8 +524,10 @@
                                     while ($row = $result->fetch_assoc()) {
                                         $userId = $row['userId'];
                                         $name = $row['firstName'];
+                                        $lname = $row['lastName'];
+                                        $fullname = $name .' '. $lname;
                                 ?>
-                                        <option value="<?php echo $userId; ?>"><?php echo $name; ?></option>
+                                        <option value="<?php echo $userId; ?>"><?php echo $fullname; ?></option>
                                 <?php
                                     }
                                 } else {
@@ -570,7 +574,9 @@
             </table>
             <div class="buttons">
                 <button type="button" id="cancelBtn" onclick="closeModal('eventScoringTable')">Cancel</button>
+                <?php if (in_array('scoring_add', $admin_rights)) {?>
                 <button type="button" id="saveBtn" onclick="openScoreModal()">Add Scoring</button>
+                <?php }?>
             </div>
         </div>
     </div>
