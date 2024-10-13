@@ -1,17 +1,17 @@
 <?php
-// Call this to retrieve judge's permissions
+// Call this to retrieve committee's permissions
 try {
-    $getJudge = "CALL sp_getAnAcc(?)";
+    $getCommittee = "CALL sp_getAnAcc(?)";
 
     $iddd = $_SESSION['userId'];
-    $stmt = $conn->prepare($getJudge);
+    $stmt = $conn->prepare($getCommittee);
     $stmt->bind_param("i", $iddd);
     $stmt->execute();
     $retname = $stmt->get_result();
 
     $row = $retname->fetch_assoc();
     
-    $judge_rights = explode(',', $row['permissions']);
+    $comt_rights = explode(',', $row['permissions']);
 
     $retname->free();
     $stmt->close();

@@ -2,12 +2,13 @@
 require_once '../../../config/sessionConfig.php'; // Session Cookie
 require_once '../../../config/db.php'; // Database connection
 require_once '../admin/verifyLoginSession.php'; // Logged in or not
-require_once 'adminPermissions.php'; // Retrieves admin permissions
 
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $user_id = $_GET['id'];
     $_SESSION['userId'] = $user_id;
 }
+
+require_once 'adminPermissions.php'; // Retrieves admin permissions
 
 $getAdmin = "CALL sp_getAnAcc(?)";
 

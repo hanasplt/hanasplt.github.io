@@ -1,12 +1,9 @@
 <?php
 
 require_once '../../../config/sessionConfig.php'; // Session Cookie
-$conn = require_once '../../../config/db.php'; // Database connection
+require_once '../../../config/db.php'; // Database connection
 require_once '../admin/verifyLoginSession.php'; // Logged in or not
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once 'committeePermissions.php'; // Retrieves committee permissions
 
 $id = $_SESSION['userId'];
 
@@ -31,6 +28,7 @@ $query_days = "SELECT * FROM scheduled_days";
 $result_days = $conn->query($query_days);
 
 $scheduled_days = [];
+$schedCount = 0;
 
 if ($result_days->num_rows > 0) {
     while ($row_day = $result_days->fetch_assoc()) {
@@ -57,6 +55,7 @@ if ($result_days->num_rows > 0) {
                 $row_event['teamB_name'] = $teamB_name;
 
                 $events[] = $row_event;
+                $schedCount++;
             }
 
             usort($events, function ($a, $b) {
@@ -132,7 +131,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </div>
 
-
     <div class="sub-head" style="margin-top: 8%;">
         <button id="backbtn-faci" onclick="window.location.href='committee.php?id=<?php echo $id; ?>'">
             <img src="../../../public/assets/icons/back.png" alt="back arrow button" width="20" style="margin-right: 5px;">
@@ -156,7 +154,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         ?>
     </div>
 
-
+    <?php // Display table - permitted to view
+    if (in_array('committee_scoring_read', $comt_rights)) {?>
     <!-- NEW INTERFACE -->
     <div class="recordTable">
         <table style="margin: auto">
@@ -173,6 +172,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <input type="text" class="event-status" value="<?php echo htmlspecialchars($event['status']); ?>" />
                 </td>
             </tr>
+            <?php 
+            if($schedCount == 0) { // Display message - no scheduled event(s)
+                echo '
+                <tr>
+                    <td colspan="9" style="text-align: center; color: red;">No Schedule.</td>
+                </tr>
+                ';
+            }
+            ?>
             <?php foreach ($scheduled_days as $day): ?>
                 <?php foreach ($day['events'] as $event): ?>
                     <tr>
@@ -197,13 +205,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </td>
                         <td>SCORE</td>
                         <td>
+                            <?php // Display Edit button - permitted to update
+                            if (in_array('committee_scoring_update', $comt_rights)) {?>
                             <button class="edit-btn" data-event-id="<?php echo $event['id']; ?>">Edit</button>
-                            <button class="save-btn" style="display: none;" data-event-id="<?php echo $event['id']; ?>">Save</button>
+                            <?php } else {
+                                echo '
+                                    <p style="color: darkgrey;">Feature denied.</p>
+                                ';
+                            }
+                            // Display Save button - permitted to add
+                            if (in_array('committee_scoring_add', $comt_rights)) {?>
+                            <button id="save-btn" class="save-btn" style="display: none;" data-event-id="<?php echo $event['id']; ?>">Save</button>
+                            <?php }?>
                             <button class="cancel-btn" style="display: none;" data-event-id="<?php echo $event['id']; ?>">Cancel</button>
                         </td>
                     </tr>
                 <?php endforeach; ?>
-            <?php endforeach; ?>
+            <?php endforeach;?>
         </table>
     </div>
 
@@ -273,9 +291,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     select.disabled = false;
                 });
 
+                var savebtn = document.getElementById('save-btn');
+
                 // Hide the Edit button and show the Save button again
                 row.querySelector('.edit-btn').style.display = 'none';
-                row.querySelector('.save-btn').style.display = 'inline-block';
+                if (savebtn) { // Ensures save button exists
+                    row.querySelector('.save-btn').style.display = 'inline-block';
+                }
                 row.querySelector('.cancel-btn').style.display = 'inline-block';
 
                 this.disabled = false; // Disable the Edit button
@@ -292,9 +314,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     select.disabled = true; // Disable dropdowns again
                 });
 
+                var savebtn = document.getElementById('save-btn');
+
                 // Show the Edit button and hide the Save and Cancel buttons
                 row.querySelector('.edit-btn').style.display = 'inline-block';
-                row.querySelector('.save-btn').style.display = 'none';
+                if (savebtn) { // Ensures save button exists
+                    row.querySelector('.save-btn').style.display = 'none';
+                }
                 row.querySelector('.cancel-btn').style.display = 'none';
 
                 this.disabled = false; // Keep the cancel button enabled
@@ -349,6 +375,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         });
     </script>
 
+    <?php } else { // Display message - not permitted to view
+        echo '
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Oops!</strong> You lack the permission to view the Scoring Table.
+            </div>
+        ';
+    } ?>
 
 </body>
 

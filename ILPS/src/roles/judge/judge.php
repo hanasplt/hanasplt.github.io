@@ -2,13 +2,14 @@
     require_once '../../../config/sessionConfig.php'; // Session Cookie
     require_once '../../../config/db.php'; // Database connection
     require_once '../admin/verifyLoginSession.php'; // Logged in or not
-    require_once 'judgePermissions.php'; // Retrieves judge permissions
-
+    
     if(isset($_GET['id'])) {
         $id = $_GET['id'];
         $_SESSION['userId'] = $id;
     }
-
+    
+    require_once 'judgePermissions.php'; // Retrieves judge permissions
+    
     $sql = "CALL sp_getAnAcc(?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $id);

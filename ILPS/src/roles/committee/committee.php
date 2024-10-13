@@ -1,16 +1,14 @@
 <?php
     require_once '../../../config/sessionConfig.php'; // Session Cookie
-    $conn = require_once '../../../config/db.php'; // Database connection
+    require_once '../../../config/db.php'; // Database connection
     require_once '../admin/verifyLoginSession.php'; // Logged in or not
-
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
 
     if(isset($_GET['id'])) {
         $id = $_GET['id'];
         $_SESSION['userId'] = $id;
     }
+
+    require_once 'committeePermissions.php'; // Retrieves committee permissions
 
     $sql = "CALL sp_getAnAcc(?)";
     $stmt = $conn->prepare($sql);
@@ -63,7 +61,8 @@
             <i class="fas fa-sign-out-alt" id="logoutIcon"></i>
         </div>
     </div>
-    
+    <?php // Display events - permitted to view
+    if (in_array('committee_event_read', $comt_rights)) {?>
     <div class="eventsDropdown">
         <h4>Events</h4>
         <?php
@@ -94,7 +93,14 @@
 
     <script src="../committee/js/committee.js"></script>
 
-    <?php $conn->close(); ?>
+    <?php } else {
+        echo '
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Oops!</strong> You lack the permission to view the Managed Events.
+            </div>
+        ';
+    }
+    $conn->close(); ?>
 </body>
 
 </html>
