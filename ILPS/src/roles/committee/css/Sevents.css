@@ -419,6 +419,10 @@ div .msg {
     background-color: #006eff;
 }
 
+.cancel-btn {
+    background-color: #ed3b3b;
+}
+
 .delete-btn {
     background-color: #FFA500;
 }
@@ -429,6 +433,10 @@ div .msg {
 
 .save-btn:hover {
     background-color: #0264e6;
+}
+
+.cancel-btn:hover {
+    background-color: #a62b2b;
 }
 
 .delete-btn:hover {

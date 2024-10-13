@@ -252,6 +252,8 @@ $sqlEvDay = "CREATE TABLE IF NOT EXISTS scheduled_eventstoday ( #schedule event/
     teamB INT,
     location VARCHAR(255) NOT NULL,
     status ENUM('Pending', 'Ongoing', 'Ended', 'Cancelled', 'Moved') DEFAULT 'Pending',
+    ResultA VARCHAR(255) NOT NULL,
+    ResultB VARCHAR(255) NOT NULL,
     FOREIGN KEY (day_id) REFERENCES scheduled_days(id) ON DELETE CASCADE,
     FOREIGN KEY (teamA) REFERENCES contestant(teamId) ON DELETE CASCADE,
     FOREIGN KEY (teamB) REFERENCES contestant(teamId) ON DELETE CASCADE
