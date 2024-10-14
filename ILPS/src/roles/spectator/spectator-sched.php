@@ -26,15 +26,25 @@
     <link rel="icon" href="../../../public/assets/icons/logo-1.png">
 </head>
 <body onload="updateTable()">
+    
     <header>
         <div class="logo">
             <img src="../../../public/assets/icons/logo.png" alt="Logo">
         </div>
-        <nav>
-            <a href="../../index.html" class="navbar">Home</a>
-            <a class="navbarbar" href="spectator.php">Schedule</a>
-            <a href="spectator.php" class="navbar">Dashboard</a>
-            <a href="../../../public/login.php" class="login-btn">LOGIN</a>
+        <nav class="navbar">
+            <div class="navbar-container">
+                    <div class="hamburger" id="hamburger">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div> 
+                    <div class="nav-links" id="nav-links">
+                        <a href="../../index.html" class="navbar">Home</a>
+                        <a class="navbarbar" href="spectator.php">Schedule</a>
+                        <a href="spectator.php" class="navbar">Dashboard</a>
+                        <a href="../../../public/login.php" class="login-btn">LOGIN</a>
+                    </div>
+            </div>
         </nav>
     </header>
     <div class="container-3">
@@ -97,3 +107,20 @@
     <script src="../spectator/js/spectator.js"></script>
 </body>
 </html>
+
+<script>
+        const navLinks = document.querySelector('.nav-links');
+        const hamburger = document.querySelector('.hamburger');
+    
+        function toggleNav() {
+            navLinks.classList.toggle('active');
+        }
+    
+        hamburger.addEventListener('click', toggleNav);
+    
+        document.addEventListener('click', function(event) {
+            if (!navLinks.contains(event.target) && !hamburger.contains(event.target)) {
+                navLinks.classList.remove('active');
+            }
+        });
+    </script>

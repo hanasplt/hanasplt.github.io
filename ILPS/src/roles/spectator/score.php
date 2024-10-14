@@ -18,11 +18,20 @@
         <div class="logo">
             <img src="../../../public/assets/icons/logo.png" alt="Logo">
         </div>
-        <nav>
-            <a href="../../index.html" class="navbar">Home</a>
-            <a href="#" class="navbar">Schedule</a>
-            <a class="navbarbar" href="spectator.php">Dashboard</a>
-            <a href="../../../public/login.php" class="login-btn">LOGIN</a>
+        <nav class="navbar">
+            <div class="navbar-container">
+                <div class="hamburger" id="hamburger">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div> 
+                <div class="nav-links" id="nav-links">
+                    <a href="../../index.html" class="navbar">Home</a>
+                    <a href="spectator-sched.php" class="navbar">Schedule</a>
+                    <a class="navbarbar" href="spectator.php">Dashboard</a>
+                    <a href="../../../public/login.php" class="login-btn">LOGIN</a>
+                </div>
+            </div>
         </nav>
     </header>
     <a href="spectator.php" class="back-link"><img src="../../../public/assets/icons/back.png"> Back</a>
@@ -68,8 +77,8 @@
         </div>
         <div class="footer-right">
             <h6>CONTACT US</h6>
-            <p class="footer-email"><img src="../public/assets/icons/contact-email.png" alt="Email">ilps.usep@gmail.com</p>
-            <p class="footer-contact"><img src="../public/assets/icons/contact-num.png" alt="Phone">+63 994 155 8637</p>
+            <p class="footer-email"><img src="../../../public/assets/icons/contact-email.png" alt="Email">ilps.usep@gmail.com</p>
+            <p class="footer-contact"><img src="../../../public/assets/icons/contact-num.png" alt="Phone">+63 994 155 8637</p>
         </div>
     </footer>
     <div class="footer-footer">
@@ -79,3 +88,20 @@
     <script src="../spectator/js/score.js"></script>
 </body>
 </html>
+
+<script>
+        const navLinks = document.querySelector('.nav-links');
+        const hamburger = document.querySelector('.hamburger');
+    
+        function toggleNav() {
+            navLinks.classList.toggle('active');
+        }
+    
+        hamburger.addEventListener('click', toggleNav);
+    
+        document.addEventListener('click', function(event) {
+            if (!navLinks.contains(event.target) && !hamburger.contains(event.target)) {
+                navLinks.classList.remove('active');
+            }
+        });
+    </script>

@@ -602,6 +602,80 @@ button:hover {
     margin-bottom: 50px;
 }
 
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .container-left {
+        display: flex; /* Use flex to arrange elements */
+        flex-direction: column; /* Stack vertically */
+        align-items: center; /* Center align */
+        padding: 15px; /* Add some padding */
+    }
+
+    .curr-rank {
+        padding: 15px; /* Adjust padding for smaller screens */
+        max-width: 100%; /* Full width on smaller screens */
+    }
+
+    .rank-list {
+        width: 100%; /* Full width for rank list */
+        display: flex;
+        flex-direction: column; /* Stack ranking cards */
+        align-items: center; /* Center align items */
+    }
+
+    .ranking-card {
+        display: flex; /* Flexbox for ranking cards */
+        flex-direction: row; /* Row layout for medal and text */
+        justify-content: space-between; /* Space out items */
+        align-items: center; /* Center items */
+        background-color: #e9f5e9; /* Light green background */
+        border-radius: 10px; /* Rounded corners */
+        padding: 15px;
+        margin-bottom: 10px; /* Space between cards */
+        transition: transform 0.3s; /* Transition for hover effect */
+        width: 90%; /* Limit width of each card */
+    }
+
+    .ranking-card:hover {
+        transform: scale(1.02); /* Slight scale on hover */
+    }
+
+    .rank-info {
+        display: flex; /* Flexbox for inner layout */
+        flex-direction: column; /* Stack items vertically */
+        align-items: flex-start; /* Align items to the start */
+    }
+
+    .medal {
+        width: 30px; /* Smaller medal size for mobile */
+        height: 30px; /* Smaller medal size for mobile */
+    }
+
+    .rank-number, .team-name, .total-points {
+        font-size: 16px; /* Smaller font size for mobile */
+    }
+}
+
+@media (max-width: 480px) {
+    .rank-list p {
+        font-size: 18px; /* Even smaller font size for very small screens */
+    }
+
+    .ranking-card {
+        flex-direction: column; /* Stack medal above text */
+        align-items: center; /* Center items */
+        text-align: center; /* Center text */
+    }
+
+    .medal {
+        margin-bottom: 10px; /* Space between medal and text */
+    }
+
+    .rank-number, .team-name, .total-points {
+        font-size: 14px; /* Adjust font size for very small screens */
+    }
+}
+
 .container-5 {
     display: flex;
     flex-direction: column;

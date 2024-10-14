@@ -45,6 +45,113 @@ nav a {
     font-weight: 600;
 }
 
+.hamburger {
+    display: none; 
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.bar {
+    height: 3px;
+    width: 25px;
+    background-color: #333; 
+    margin: 3px 0; 
+    transition: all 0.3s ease;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none; 
+        flex-direction: column;
+        width: 230px; 
+        height: 100%; 
+        position: fixed; 
+        top: 0; 
+        right: -260; 
+        background-color: #fff; 
+        z-index: 10; 
+        transition: right 0.3s ease; 
+        padding: 20px; 
+    }
+
+    .nav-links.active {
+        display: flex;  
+        right: 0; 
+    }
+
+    .hamburger {
+        display: flex; 
+    }
+
+    .nav-links a {
+        padding: 10px 20px; 
+        text-align: left;
+        position: relative; 
+        width: 100%; 
+        box-sizing: border-box;
+    }
+
+
+    .nav-links a:not(:last-child) {
+        border-bottom: 1px solid #eee; 
+        margin: 10px 0; 
+        padding-bottom: 10px; 
+    }
+
+    .nav-links a:last-child {
+        border-bottom: none; 
+    }
+
+    .login-btn {
+        margin-top: 2rem; 
+        color: white; 
+        border: none; 
+        border-radius: 5px; 
+        padding: 10px; 
+        text-align: center; 
+        cursor: pointer; 
+        display: block; 
+        width: 100%; 
+        max-width: 90px; 
+        margin-right: 2rem;
+    }
+}
+
+
+.nav-links a {
+    padding: 10px 20px; 
+    text-align: left;
+}
+
+
+.nav-links a:last-child {
+    border-bottom: none;
+}
+
+.navbar {
+    font-family: Poppins, sans-serif;
+    font-weight: 600;
+    color: #a3a3a3;
+}
+
+.navbarbie {
+    font-family: Poppins, sans-serif;
+    font-weight: 800;
+    color: #2B2B2B;
+}
+
+nav a {
+    margin-left: 40px;
+    text-decoration: none;
+    color: #333;
+}
+
+.navbar:hover {
+    color: #2B2B2B;
+    font-weight: 600;
+}
+
 .login-btn {
     font-family: Inter, sans-serif;
     font-weight: 900;
@@ -65,6 +172,7 @@ nav a {
     background-color: #cced55;
     transform: translateY(-2px);
 }
+
 
 .container {
     display: flex;
@@ -240,6 +348,41 @@ footer .footer-left {
 
 footer .footer-right {
     text-align: right;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .about-image{
+        display: none;
+    }
+    .about-section {
+        position: relative;
+        text-align:inherit;
+    }
+
+    .about-text{
+        max-width: 90%;
+    }
+
+    h2 {
+        font-size: 20px; 
+    }
+
+    p {
+        font-size: 14px; 
+    }
+
+    footer {
+        padding: 10px; 
+    }
+
+    .footer-left h6 {
+        font-size: 18px; 
+    }
+
+    .footer-left p {
+        font-size: 12px;
+    }
 }
 
 .container-2 {
