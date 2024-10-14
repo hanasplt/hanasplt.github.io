@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 require_once '../config/sessionConfig.php';
 
@@ -7,13 +7,13 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     $role = $_SESSION['role'];
 
     if ($role == "Committee") {
-        header('Location: ../src/roles/committee/committee.php?id='.$_SESSION['userId']); // sent to committee's ui
+        header('Location: ../src/roles/committee/committee.php?id=' . $_SESSION['userId']); // sent to committee's ui
         exit;
     } else if ($role == "Judge") {
-        header('Location: ../src/roles/judge/judge.php?id='.$_SESSION['userId']); // sent to judges' ui
+        header('Location: ../src/roles/judge/judge.php?id=' . $_SESSION['userId']); // sent to judges' ui
         exit;
     } else {
-        header('Location: ../src/roles/admin/admin.php?id='.$_SESSION['userId']); // sent to admin page
+        header('Location: ../src/roles/admin/admin.php?id=' . $_SESSION['userId']); // sent to admin page
         exit;
     }
 }
@@ -21,11 +21,11 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="icon" href="../public/assets/icons/logo-1.png" type="image/png">
     <!-- font -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,7 +34,11 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
 
     <!-- css -->
     <link rel="stylesheet" href="../public/assets/css/style.css">
+
+    <!--Web-logo-->
+    <link rel="icon" href="../../../public/assets/icons/logo-top-final.png">
 </head>
+
 <body>
     <div class="container-2">
         <div class="left-part">
@@ -43,10 +47,10 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
         <div class="right-part">
             <div class="msg" id="msg"></div>
             <?php
-                if (isset($_SESSION['error'])) { // For displaying error
-                    echo '<p style="color: red;">' . $_SESSION['error'] . '</p>';
-                    unset($_SESSION['error']);
-                }
+            if (isset($_SESSION['error'])) { // For displaying error
+                echo '<p style="color: red;">' . $_SESSION['error'] . '</p>';
+                unset($_SESSION['error']);
+            }
             ?>
             <h1>Welcome.</h1>
             <p>Log in your credentials to continue.</p>
@@ -60,7 +64,7 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
                         <input type="checkbox" id="show-password">
                         <label for="show-password">Show Password</label>
                     </span>
-                    
+
                     <a href="../auth/resetpass.php"><u>Forgot Password?</u></a>
                 </div>
                 <button type="submit" name="login">Login</button>
@@ -74,7 +78,7 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     <script>
         var msg = "<?= $_SESSION['status'] ?? ''; ?>";
 
-        if(msg != '') {
+        if (msg != '') {
             Swal.fire({
                 title: "Email Sent!",
                 text: msg,
@@ -85,4 +89,5 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     </script>
 
 </body>
+
 </html>

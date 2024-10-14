@@ -1,33 +1,37 @@
-<?php 
-    require_once '../../config/sessionConfig.php'; // Session Cookie
-    require_once '../mandatory/verifyLogin.php'; // Logged in or not
+<?php
+require_once '../../config/sessionConfig.php'; // Session Cookie
+require_once '../mandatory/verifyLogin.php'; // Logged in or not
 
-    $fid = $_SESSION['userId'];
+$fid = $_SESSION['userId'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ILPS</title>
-    <link rel="icon" href="../../public/assets/icons/logo-1.png">
+
+    <!--Web-logo-->
+    <link rel="icon" href="../../../public/assets/icons/logo-top-final.png">
 
     <!-- icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
-    
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../../public/assets/css/styles.css">
 
     <!-- SweetAlert CSS and JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- font --> 
+    <!-- font -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <div class="container">
         <?php
@@ -69,7 +73,7 @@
                         <input type="password" name="confpass" id="confpass" required>
                         <i class="fa-solid fa-eye-slash" id="toggleConfPass"></i>
                     </div>
-                    <button type="submit"  name="changepassfaci">Change Password</button>
+                    <button type="submit" name="changepassfaci">Change Password</button>
                 </form>
             </div>
         </div>
@@ -77,4 +81,5 @@
 
     <script src="../mandatory/js/change_passComt.js"></script>
 </body>
+
 </html>
