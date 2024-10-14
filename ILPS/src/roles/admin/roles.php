@@ -109,7 +109,7 @@ require_once 'adminPermissions.php'; // Retrieves admin permissions
                             // Display all users except the main admin
                         ?>
                         <div class="row">
-                           <div class="col-8 data-row user-name" onclick="showRoleDetails(<?php echo $userid; ?>)" title="Click to view user's access rights.">
+                           <div class="col-8 data-row user-name" onclick="showRoleDetails(<?php echo $userid; ?>)" title="Click to view user's role.">
                                <p class="rowData"><?php echo $fullname; ?></p>
                            </div>
 
