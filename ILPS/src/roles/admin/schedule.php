@@ -610,7 +610,7 @@ usort($scheduled_days, function ($a, $b) {
                                             text: response.message,
                                             icon: 'success'
                                         }).then(() => {
-                                            window.location.reload(); // Reload the page to reflect changes
+                                            window.location.reload();
                                         });
                                     } else {
                                         Swal.fire({
@@ -757,72 +757,150 @@ usort($scheduled_days, function ($a, $b) {
 
             // Edit event specific to date
             document.querySelectorAll('.edit-btn').forEach(function(button) {
-                button.addEventListener('click', function() {
-                    const row = this.closest('tr');
-                    const eventId = row.getAttribute('data-event-id');
+    button.addEventListener('click', function() {
+        const row = this.closest('tr');
+        const eventId = row.getAttribute('data-event-id');
+        console.log('Editing event with ID:', eventId);
 
-                    const xhr = new XMLHttpRequest();
-                    xhr.open("POST", "get_existing_sched_events.php", true);
-                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                    xhr.onload = function() {
-                        if (xhr.status === 200) {
-                            const response = JSON.parse(xhr.responseText);
-                            if (response.success) {
-                                const event = response.event;
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "get_existing_sched_events.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                const response = JSON.parse(xhr.responseText);
+                console.log('Response from get_existing_sched_events:', response);
+                if (response.success) {
+                    const fetchedEvent = response.event;
+                    console.log('Event type fetched from database:', fetchedEvent.type);
+
+                    let categoryOptions = '';
+                    if (fetchedEvent.type === 'Socio-cultural') {
+                        categoryOptions = `
+                            <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
+                            <option value="sports">Sports</option>
+                            <option value="others">Others</option>
+                        `;
+                    } else if (fetchedEvent.type === 'Sports') {
+                        categoryOptions = `
+                            <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
+                            <option value="socio-cultural">Socio-cultural</option>
+                            <option value="others">Others</option>
+                        `;
+                    } else {
+                        categoryOptions = `
+                            <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
+                            <option value="socio-cultural">Socio-cultural</option>
+                            <option value="sports">Sports</option>
+                        `;
+                    }
+
+                    // Fetch teams and populate dropdowns
+                    const xhrTeams = new XMLHttpRequest();
+                    xhrTeams.open("POST", "get_teamsForSched.php", true);
+                    xhrTeams.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    xhrTeams.onload = function() {
+                        if (xhrTeams.status === 200) {
+                            const teamResponse = JSON.parse(xhrTeams.responseText);
+                            if (teamResponse.success) {
+                                const teams = teamResponse.teams;teams.forEach(team => {
+                                    console.log('Teams fetched from database:', team.teamName);
+                                });
+                                let teamOptionsA = '<option value="" disabled selected>Team A</option>';
+                                let teamOptionsB = '<option value="" disabled selected>Team B</option>';
+
+                                teams.forEach(team => {
+                                    teamOptionsA += `<option value="${team.teamId}" ${team.teamId === fetchedEvent.teamA ? 'selected' : ''}>${team.teamName}</option>`;
+                                    teamOptionsB += `<option value="${team.teamId}" ${team.teamId === fetchedEvent.teamB ? 'selected' : ''}>${team.teamName}</option>`;
+                                });
 
                                 Swal.fire({
                                     title: 'Edit Event',
                                     html: `
-                                    <input id="edit-time" class="swal2-input1" type="time" value="${event.time}">
-                                    <select id="edit-event-category" class="swal2-input3">
-                                        <option value="" disabled ${!event.type ? 'selected' : ''}>Type</option>
-                                        <option value="socio-cultural" ${event.type === 'socio-cultural' ? 'selected' : ''}>Socio-cultural</option>
-                                        <option value="sports" ${event.type === 'sports' ? 'selected' : ''}>Sports</option>
-                                        <option value="others" ${event.type === 'others' ? 'selected' : ''}>Others</option>
-                                    </select>
-                                    <input id="edit-event-activity-others" class="swal2-input2" placeholder="Activity" value="${event.activity}">
-                                    <input id="edit-game-no" class="swal2-input2" placeholder="Game Number" value="${event.gameNo}" style="display: none;">
-                                    <input id="edit-team-a" class="swal2-input2" placeholder="Team A" value="${event.teamA}" style="display: none;">
-                                    <input id="edit-team-b" class="swal2-input2" placeholder="Team B" value="${event.teamB}" style="display: none;">
-                                    <input id="edit-location" class="swal2-input2" placeholder="Location" value="${event.location}">
-                                    <select id="edit-status" class="swal2-input3">
-                                        <option value="Pending" ${event.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                                        <option value="Ongoing" ${event.status === 'Ongoing' ? 'selected' : ''}>On-going</option>
-                                        <option value="Ended" ${event.status === 'Ended' ? 'selected' : ''}>Ended</option>
-                                        <option value="Cancelled" ${event.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
-                                        <option value="Moved" ${event.status === 'Moved' ? 'selected' : ''}>Moved</option>
-                                    </select>
-                                `,
+                                        <input id="edit-time" class="swal2-input1" type="time" value="${fetchedEvent.time}">
+                                        <select id="edit-event-category" class="swal2-input3">
+                                            ${categoryOptions}
+                                        </select>
+                                        <input id="edit-event-activity-others" class="swal2-input2" placeholder="Activity" value="${fetchedEvent.activity}" style="display: none;">
+                                        <input id="edit-game-no" class="swal2-input2" placeholder="Game Number" value="${fetchedEvent.gameNo}" style="display: none;">
+                                        <select id="edit-team-a" class="swal2-input3" required>
+                                            ${teamOptionsA}
+                                        </select>
+                                        <select id="edit-team-b" class="swal2-input3" required>
+                                            ${teamOptionsB}
+                                        </select>
+                                        <input id="edit-location" class="swal2-input2" placeholder="Location" value="${fetchedEvent.location}">
+                                        <select id="edit-status" class="swal2-input3">
+                                            <option value="Pending" ${fetchedEvent.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                            <option value="Ongoing" ${fetchedEvent.status === 'Ongoing' ? 'selected' : ''}>On-going</option>
+                                            <option value="Ended" ${fetchedEvent.status === 'Ended' ? 'selected' : ''}>Ended</option>
+                                            <option value="Cancelled" ${fetchedEvent.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                                            <option value="Moved" ${fetchedEvent.status === 'Moved' ? 'selected' : ''}>Moved</option>
+                                        </select>
+                                    `,
+                                    didOpen: () => {
+                                        const categorySelect = document.getElementById('edit-event-category');
+
+                                        function toggleGameFields(category) {
+                                            const gameNoField = document.getElementById('edit-game-no');
+                                            const teamAField = document.getElementById('edit-team-a');
+                                            const teamBField = document.getElementById('edit-team-b');
+                                            const activityOthersField = document.getElementById('edit-event-activity-others');
+
+                                            gameNoField.style.display = 'none';
+                                            teamAField.style.display = 'none';
+                                            teamBField.style.display = 'none';
+                                            activityOthersField.style.display = 'none';
+
+                                            if (category === 'sports') {
+                                                gameNoField.style.display = 'block';
+                                                teamAField.style.display = 'block';
+                                                teamBField.style.display = 'block';
+
+                                            } else if (category === 'others') {
+                                                activityOthersField.style.display = 'block';
+                                            }
+                                        }
+
+                                        toggleGameFields(fetchedEvent.type.toLowerCase());
+
+                                        categorySelect.addEventListener('change', function() {
+                                            toggleGameFields(this.value.toLowerCase());
+                                        });
+                                    },
                                     confirmButtonText: 'Save',
                                     showCancelButton: true,
                                     preConfirm: () => {
                                         const time24 = document.getElementById('edit-time').value;
+                                        const type = document.getElementById('edit-event-category').value;
                                         const activity = document.getElementById('edit-event-activity-others').value;
                                         const gameNo = document.getElementById('edit-game-no').value;
                                         const teamA = document.getElementById('edit-team-a').value;
                                         const teamB = document.getElementById('edit-team-b').value;
-                                        const location = document.getElementById('edit-location').value;
-                                        const status = document.getElementById('edit-status').value;
+                                        const location = document.getElementById('edit-location').value
+                                            .toLowerCase()
+                                            .replace(/\b\w/g, char => char.toUpperCase());
 
-                                        if (!time24 || !activity || !location) {
-                                            Swal.showValidationMessage('Please fill in all fields');
+                                        if (!time24 || !type || !location || (!gameNo && !teamA && !teamB && !activity)) {
+                                            Swal.showValidationMessage('Please fill in all required fields');
                                             return false;
                                         }
 
                                         return {
-                                            time24,
+                                            time: time24,
+                                            type,
                                             activity,
                                             gameNo,
                                             teamA,
                                             teamB,
                                             location,
-                                            status
+                                            status: document.getElementById('edit-status').value,
                                         };
                                     }
                                 }).then((result) => {
                                     if (result.isConfirmed) {
                                         const {
-                                            time24,
+                                            time,
+                                            type,
                                             activity,
                                             gameNo,
                                             teamA,
@@ -854,68 +932,31 @@ usort($scheduled_days, function ($a, $b) {
                                                 }
                                             }
                                         };
-                                        xhrUpdate.send(`event_id=${eventId}&time=${time24}&activity=${activity}&gameNo=${gameNo}&teamA=${teamA}&teamB=${teamB}&location=${location}&status=${status}`);
+                                        xhrUpdate.send(`event_id=${eventId}&time=${time}&activity=${activity}&gameNo=${gameNo}&teamA=${teamA}&teamB=${teamB}&location=${location}&status=${status}`);
                                     }
                                 });
-
-                                // JavaScript to toggle visibility of Game No, Team A, and Team B based on category
-                                const categorySelect = document.getElementById('edit-event-category');
-                                const gameNoField = document.getElementById('edit-game-no');
-                                const teamAField = document.getElementById('edit-team-a');
-                                const teamBField = document.getElementById('edit-team-b');
-
-                                function toggleGameFields(category) {
-                                    if (this.value === 'sports') {
-                                        activitySports.style.display = 'block';
-                                        gameNo.style.display = 'none';
-                                        teamA.style.display = 'none';
-                                        activityOthers.style.display = 'none';
-                                        activitySocio.style.display = 'none';
-                                    } else if (this.value === 'others') {
-                                        activitySports.style.display = 'none';
-                                        activitySocio.style.display = 'none';
-                                        gameNo.style.display = 'none';
-                                        teamA.style.display = 'none';
-                                        teamB.style.display = 'none';
-                                        activityOthers.style.display = 'block';
-                                    } else if (this.value === 'socio-cultural') {
-                                        teamA.style.display = 'none';
-                                        activitySports.style.display = 'none';
-                                        activitySocio.style.display = 'block';
-                                        teamB.style.display = 'none';
-                                        activityOthers.style.display = 'none';
-                                        gameNo.style.display = 'none';
-                                    } else {
-                                        teamA.style.display = 'none';
-                                        gameNo.style.display = 'none';
-                                        teamB.style.display = 'none';
-                                        activitySocio.style.display = 'none';
-                                        activitySports.style.display = 'none';
-                                        activityOthers.style.display = 'none';
-                                    }
-                                }
-
-                                // Initialize visibility based on existing event type
-                                toggleGameFields(event.type);
-
-                                // Add event listener to handle category change
-                                categorySelect.addEventListener('change', function() {
-                                    toggleGameFields(this.value);
-                                });
-
                             } else {
                                 Swal.fire({
                                     title: 'Error!',
-                                    text: response.message,
+                                    text: teamResponse.message,
                                     icon: 'error'
                                 });
                             }
                         }
                     };
-                    xhr.send(`event_id=${eventId}`);
-                });
-            });
-
+                    xhrTeams.send();
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.message,
+                        icon: 'error'
+                    });
+                }
+            }
+        };
+        xhr.send(`event_id=${eventId}`);
+    });
+});
 
 
             //edit date
