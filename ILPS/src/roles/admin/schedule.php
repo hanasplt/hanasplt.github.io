@@ -855,7 +855,9 @@ usort($scheduled_days, function ($a, $b) {
                                                 gameNoField.style.display = 'block';
                                                 teamAField.style.display = 'block';
                                                 teamBField.style.display = 'block';
-
+                                                activityOthersField.style.display = 'block';
+                                            } else if (category === 'socio-cultural') {
+                                                activityOthersField.style.display = 'block';
                                             } else if (category === 'others') {
                                                 activityOthersField.style.display = 'block';
                                             }
