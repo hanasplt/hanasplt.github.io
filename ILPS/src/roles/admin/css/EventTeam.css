@@ -2,118 +2,205 @@ body {
     font-family: 'Poppins';
     background-color: #EFF0F4;
     margin: 0;
-    height: 100vh;
-}
-
-.nav-bar {
-    height: 5vw;
+  }
+  
+  body {
+    background-color: #EFF0F4;
+    font-family: Inter, sans-serif;
+    margin: 0;
+  }
+  
+  .user-name {
+    font-family: Poppins, sans-serif;
+    font-weight: 700;
+    color: #2B2B2B;
+    margin-bottom: 0;
+    margin-top: 0;
+    text-align: left;
+  }
+  
+  .administrator {
+    font-family: Inter, sans-serif;
+    font-weight: 800;
+    font-size: 11px;
+    color: #2B2B2B;
+    background-color: #D9F17F;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 7px;
+    padding-right: 7px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  
+  .navigation-bar {
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
     align-items: center;
-    background-color: #ffffff;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-}
-
-.logo-img {
+    background-color: #f4f4f4;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .navbar {
+    font-family: Poppins, sans-serif;
+    font-weight: 600;
+    color: #a3a3a3;
+    cursor: pointer;
+  }
+  
+  .navbarbie {
+    font-family: Poppins, sans-serif;
+    font-weight: 800;
+    color: #2B2B2B;
+    cursor: pointer;
+  }
+  
+  .logo-img {
     padding-left: 2vw;
-}
-
-.logo-bar {
-    line-height: 0.1;
-    margin-top: 0.4vw;
-}
-
-.logo-bar p {
-    font-size: 1vw;
-    font-weight: bold;
-}
-
-#administrator {
-    color: #4B8946;
-}
-
-.links {
+    max-width: 40px;
+    vertical-align: middle;
+    margin-right: 15px;
+  }
+  
+  .icon-img {
+    max-width: 43px;
+    vertical-align: middle;
+    margin-right: 15px;
+    box-shadow: 0px 0px 10px 0px rgba(10,0,0,0.3);
+    border-radius: 100%;
+  }
+  
+  .nav-link {
+    flex: 1;
     display: flex;
-    margin-left: auto;
-}
-
-.links p {
-    cursor: pointer;
-    margin-right: 2.5vw;
-    color: #4B8946;
-}
-
-.plus-icon {
-    width: 3vw;
-    height: 3vw;
-    border-radius: 50%;
-    background-color: #B1F0AB;
+    flex-direction: row;
+    margin-left: 40px;
+    text-decoration: none;
+    justify-content: flex-start;
+    gap: 40px; 
+    color: #333;
+  }
+  
+  .nav-link-1 {
     display: flex;
-    justify-content: center;
+    flex-direction: row;
+    margin-left: 40px;
+    text-decoration: none;
+    justify-content: flex-start;
+    gap: 40px; 
+    color: #333;
+    margin-right: 40px;
+  }
+  
+  .navbar:hover {
+    color: #2B2B2B;
+  }
+  
+  /* drop down navbar*/
+  
+  .dropdown .dropbtn {
+    display: flex;
+    flex-direction: row;
+    font-family: Poppins, sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: #a3a3a3;
+    border: none;
+    outline: none;
+    padding: 14px 16px;
+    margin: 0;
+    background-color: #f4f4f4;
     align-items: center;
-    margin-right: 20px;
-}
-
-.plus-icon i {
-    color: #4B8946;
-    font-size: 1.5vw;
-}
-
-.menu-icon {
-    color: #4B8946;
-    font-size: 1.5vw;
-    margin-right: 3vw;
-}
-
-
-/*End of Navbar*/
-.dash {
     cursor: pointer;
-    display: flex;
-    margin: auto;
-    width: 90%;
-    margin-top: 5vw;
-    padding-top: 2%;
-}
+  }
+  
+  .dropdown-content,
+  .account-dropdown {
+    background-color: #f4f4f4;
+    display: none;
+    position: absolute;
+    min-width: 170px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border: none;
+  }
+  
+  .account-dropdown {
+    min-width: 90px;
+  }
+  
+  .dc-text, #logout {
+    font-family: Inter, sans-serif;
+    font-weight: 800;
+    float: none;
+    color: #2B2B2B;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    cursor: pointer;
+    padding-left: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: none;
+    margin-top: none;
+  }
+  
+  .dc-text:hover, #logout:hover {
+    background-color: #ddd;
+  }
+  
+  .dropdown:hover .dropdown-content,
+  .acc-hover:hover .account-dropdown {
+    display: block;
+  }
+  
+  /* end of drop down navbar*/
+
 
 .new-account {
+    font-family: Montserrat, sans-serif;
     margin: auto;
-    margin-top: 0.5vw;
+    margin-top: 4vw;
     background-color: #ffffff;
     border-radius: 1vw;
     display: flex;
     align-items: center;
-    width: 87vw;
+    width: 88%;
     line-height: 0.1vw;
     padding: 1vw;
     margin-bottom: 1.3vw;
-    margin-right: 2vw;
     box-shadow: 0px 0px 10px 0px rgba(48, 48, 48, 0.222);
-}
+    cursor: pointer;
+    margin-bottom: none;
+  }
 
 #create {
+    font-family: Poppins, sans-serif;
     font-size: 1vw;
     font-weight: bold;
 }
 
 #add {
+    font-family: Poppins, sans-serif;
     font-size: 0.9vw;
 }
 
-
-#comp {
-    font-size: 1.5vw;
-    font-family: 'Montserrat';
-    font-weight: 700;
+.plus-icon {
+  width: 3vw;
+  height: 3vw;
+  border-radius: 50%;
+  background-color: #D9F17F;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 20px;
 }
-
-#tagline {
-    font-size: 1.3vw;
-    font-family: 'Montserrat';
-    font-weight: 600;
+  
+.plus-icon i {
+  color: #2B2B2B;
+  font-size: 1.5vw;
 }
 
 .accounts {
@@ -138,9 +225,10 @@ body {
 #event,
 #team,
 #event {
+    font-family: Poppins, sans-serif;
     font-weight: 700;
-    color: #466543;
-    font-size: 1.9vw;
+    color: #2B2B2B;
+    font-size: 1.3vw;
 }
 
 #vwall {
@@ -164,8 +252,10 @@ body {
 }
 
 .account-header {
+    font-family: Poppins, sans-serif;
+    font-weight: 700;
     display: flex;
-    background-color: #c8c8c8;
+    background-color: #d8f17fa2;
     width: 91%;
     align-items: center;
     margin-left: 3%;
@@ -175,8 +265,7 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.3vw;
-    color: #000000;
-    font-weight: 500;
+    color: #2B2B2B;
 }
 
 .account {
@@ -307,28 +396,32 @@ body {
 
 .acc-buttons {
     display: flex;
-}
-
-.trash-icon {
-    margin-left: 61vw;
-    display: flex;
-    width: 2.5vw;
-    height: 2.5vw;
-    border-radius: 50%;
-    background-color: #B1F0AB;
-    align-items: center;
-    justify-content: center;
+    font-size: 1.3vw;
+    color: #b9b9b9;
 }
 
 .edit-icon {
-    margin-left: 1vw;
+    margin-left: 0.5vw;
     display: flex;
     width: 2.5vw;
     height: 2.5vw;
     border-radius: 50%;
-    background-color: #B1F0AB;
     align-items: center;
     justify-content: center;
+    background-color: none;
+    border: none;
+}
+
+.trash-icon {
+    margin-left: 0.5vw;
+    display: flex;
+    width: 2.5vw;
+    height: 2.5vw;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    border: none;
 }
 
 .subtrash-icon {
@@ -336,7 +429,7 @@ body {
     width: 2.5vw;
     height: 2.5vw;
     border-radius: 50%;
-    background-color: #B1F0AB;
+    background-color: #ffffff;
     align-items: center;
     justify-content: center;
 }
@@ -347,7 +440,7 @@ body {
     width: 2.5vw;
     height: 2.5vw;
     border-radius: 50%;
-    background-color: #B1F0AB;
+    background-color: #ffffff;
     align-items: center;
     justify-content: center;
 }
@@ -366,17 +459,20 @@ body {
 }
 
 #saveBtn {
-    background-color: #45a049;
-    color: #fff;
-    padding: 10px 16px;
+    font-family: Inter, sans-serif;
+    background-color: #D9F17F;
+    color: #2B2B2B;
     border: none;
     border-radius: 5px;
+    font-size: 1vw;
+    font-weight: bold;
+    height: 2.3vw;
+    width: 8vw;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 #saveBtn:hover {
-    background-color: #3c8c40;
+    opacity: 0.8;
 }
 
 #cancelBtn {
@@ -391,7 +487,7 @@ body {
 }
 
 #cancelBtn:hover {
-    background-color: #a6a6a6;
+    opacity: 0.8;
 }
 
 .contestant,
@@ -496,8 +592,24 @@ td button {
     background-color: #c1f0c4;
 }
 
+.export-button button{
+    font-weight: 600;
+    font-family: Poppins, sans-serif;
+    font-size: 12px !important;
+    padding: 10px 25px;
+    background-color: #FCCE42;
+    border: none;
+    border-radius: 10px;
+    color: #2B2B2B; 
+    cursor: pointer; 
+    transition: background 0.3s ease; 
+    text-align: center;
+    margin-left: 10px;
+}
 
-
+.export-button button:hover {
+    background-color: #ddba51;
+}
 
 /*Table in tally*/
 #tallyTable table {
@@ -511,8 +623,8 @@ td button {
 }
 
 #tallyTable th {
-    background-color: #3e8e41;
-    color: white;
+    background-color: #d8f17fa2;
+    color: #2B2B2B;
 }
 
 #tallyTable td button {
@@ -544,8 +656,8 @@ td button {
 
 
 thead tr {
-    background-color: #4CAF50;
-    color: white;
+    background-color: #d8f17fa2;
+    color: #2B2B2B;
 }
 
 tbody tr:nth-child(even) {
@@ -561,11 +673,11 @@ tbody tr:hover {
     border: none;
     cursor: pointer;
     font-size: 1.2em;
-    color: #4CAF50;
+    background-color: #D9F17F;
 }
 
 .main-btn {
-    background-color: #4CAF50;
+    background-color: #D9F17F;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -600,6 +712,7 @@ tbody tr:hover {
 /*Modal*/
 /* Modal */
 .modal {
+    font-family: Inter, sans-serif;
     display: none;
     position: fixed;
     z-index: 1000;
@@ -649,7 +762,7 @@ tbody tr:hover {
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 label {
@@ -657,43 +770,64 @@ label {
     margin-bottom: 5px;
 }
 
-input[type="text"],
+
 select {
+    font-family: Inter, sans-serif;
     width: 100%;
     margin: auto;
     padding: 8px;
     border-radius: 5px;
     border: 1px solid #ccc;
     outline: none;
+    height: 6vh;
+}
+
+input[type="text"] {
+    font-family: Inter, sans-serif;
+    width: 96%;
+    margin: auto;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+    height: 3.5vh;
 }
 
 /* Footer Styles */
 .modal-footer {
-    text-align: right;
+    text-align: left;
+    margin-top: 30px;
 }
 
 /* Assuming the parent class is .modal-footer */
-.cancel-btn {
-    background-color: #45a049;
-    color: #fff;
-    padding: 8px 16px;
+.cancel-btn, #cancelBtn {
+    font-family: Inter, sans-serif;
+    background-color: #EBEBEB;
+    color: #2B2B2B;
     border: none;
     border-radius: 5px;
+    font-size: 1vw;
+    height: 2.3vw;
+    width: 8vw;
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+.save-btn, .save-btn-event, .save-btn-editev, .save-btn-contestant, .save-btn-comt, .save-btn-judge{
+    font-family: Inter, sans-serif;
+    background-color: #D9F17F;
+    color: #2B2B2B;
+    border: none;
+    border-radius: 5px;
+    font-size: 1vw;
+    font-weight: bold;
+    height: 2.3vw;
+    width: 8vw;
     cursor: pointer;
 }
 
-.save-btn, .save-btn-event {
-    background-color: #45a049 !important;
-    color: #fff;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.save-btn:hover,
-.save-btn-event:hover,
-.cancel-btn:hover {
+#saveBtn:hover, .save-btn:hover, .save-btn-event:hover, .save-btn-editev:hover, .save-btn-contestant:hover, 
+.save-btn-comt:hover, .save-btn-judge:hover, .cancel-btn:hover, #cancelBtn:hover {
     opacity: 0.8;
 }
 
@@ -776,19 +910,18 @@ select {
 
 
 .fas.fa-plus {
-    color: #45a049; 
-    font-size: 16px; 
+    color: #2B2B2B;
+    font-size: 1.5vw;
     cursor: pointer;
     padding: 10px;
     
 }
 
 .addevent, .editteam{
-    font-size: 20px;
-    color: #45a049;
+    font-weight: 800;
+    font-size: 26px;
+    color: #2B2B2B;
     text-align: center;
-    font-weight: bold;
-
 }
 
 .button-group {
@@ -797,20 +930,21 @@ select {
     width: 93%;
     margin-bottom: 30px;
     display: flex; 
-    background-color: #4fa052; 
+    background-color: #b7bda157;
     border-radius: 8px; 
     overflow: hidden; 
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0px 6px rgba(0, 0, 0, 0.1);
 }
 
 .group-btn {
     font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
     font-size: 12px !important;
     flex: 1;
     padding: 12px 0;
     background: none; 
     border: none; 
-    color: white; 
+    color: #2B2B2B; 
     font-size: 14px; 
     cursor: pointer; 
     transition: background 0.3s ease; 
@@ -825,11 +959,11 @@ select {
 }
 
 .group-btn:hover {
-    background-color: #2e7031; 
+    background-color: #b7bda157;
 }
 
 .group-btn:active {
-    background-color: #265c27; 
+    background-color: #b7bda157;
 }
 
 .group-btn + .group-btn {
@@ -855,18 +989,21 @@ select {
 }
 
 .form-group label {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 650;
+    font-family: Inter, sans-serif;
+    color: #2B2B2B;
+    font-size: 13px;
 }
 
 .details {
+    font-family: Poppins, sans-serif;
+    font-weight: 400;
     display: flex;
     flex-direction: column;
     padding-bottom: 2%;
 }
 
 .modal-content, .modal-body, .form-section, .form-group, .modal-footer, .addevent, label, input, select, button {
-    font-family: 'Montserrat', sans-serif;
+    font-family: Inter, sans-serif;
 }
 
 /* alert */

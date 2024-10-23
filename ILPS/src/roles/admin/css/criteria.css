@@ -1,5 +1,5 @@
 body {
-    font-family: 'Poppins';
+    font-family: Inter, sans-serif;
     background-color: var(--bs-tertiary-color);
 }
 
@@ -13,8 +13,10 @@ body {
 }
 
 h2 {
-    font-weight: bold;
-    margin-bottom: 4%;
+    font-weight: 800;
+    font-size: 26px;
+    color: #2B2B2B;
+    text-align: center;
 }
 
 form {
@@ -22,30 +24,52 @@ form {
     margin: auto;
 }
 
+.criteria-container label {
+    font-family: Inter, sans-serif;
+    color: #2B2B2B;
+    font-size: 13px;
+    font-weight: 400;
+}
+
 .data-row {
     margin-bottom: 10px;
+}
+
+.cancel-btn{
+    background-color: #bebebe;
+    color: #2B2B2B;
+    border: none;
+    border-radius: 5px;
+    font-size: 1vw;
+    height: 2.3vw;
+    width: 8vw;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.submit-btn{
+    font-family: Inter, sans-serif;
+    background-color: #D9F17F;
+    color: #2B2B2B;
+    border: none;
+    border-radius: 5px;
+    font-size: 1vw;
+    font-weight: bold;
+    height: 2.3vw;
+    width: 8vw;
+    cursor: pointer;
+}
+
+.cancel-btn:hover, .submit-btn:hover{
+    opacity: 0.8;
 }
 
 .btn-primary, .btn-secondary {
     margin-top: 15px;
 }
 
-.btn-primary {
-    --bs-btn-bg: #45a049;
-    --bs-btn-border-color: #45a049;
-    --bs-btn-hover-color: #45a049;
-    --bs-btn-hover-border-color: #45a049;
-}
-
 .criteria-form-group {
     margin: 10px 0;
-}
-
-.add-btn button:hover,
-.btn-primary:hover {
-    background-color: #45a049;
-    color: white;
-    opacity: 0.8;
 }
 
 select {
