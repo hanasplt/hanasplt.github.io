@@ -405,10 +405,14 @@ footer .footer-left {
 
     footer {
         padding: 10px; 
+        /*align-items: center;*/
     }
 
     .footer-left h6 {
         font-size: 18px; 
+       /* text-align: center;
+        margin-left: 80%;
+        display: flex;*/
     }
 
     .footer-left p {
@@ -602,57 +606,22 @@ button:hover {
     margin-bottom: 50px;
 }
 
-/* Responsive Styles */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .container-left {
+        max-width: 70%;
         display: flex;
         flex-direction: column; 
         align-items: center; 
-        padding: 15px; /* Add some padding */
+        padding: 15px; 
     }
 
     .curr-rank {
-        padding: 15px; /* Adjust padding for smaller screens */
-        max-width: 100%; /* Full width on smaller screens */
+        padding: 15px; 
+        max-width: 100%; 
     }
 
-    .rank-list {
-        width: 100%; /* Full width for rank list */
-        display: flex;
-        flex-direction: column; /* Stack ranking cards */
-        align-items: center; /* Center align items */
-    }
-
-    .ranking-card {
-        display: flex; /* Flexbox for ranking cards */
-        flex-direction: row; /* Row layout for medal and text */
-        justify-content: space-between; /* Space out items */
-        align-items: center; /* Center items */
-        background-color: #e9f5e9; /* Light green background */
-        border-radius: 10px; /* Rounded corners */
-        padding: 15px;
-        margin-bottom: 10px; /* Space between cards */
-        transition: transform 0.3s; /* Transition for hover effect */
-        width: 90%; /* Limit width of each card */
-    }
-
-    .ranking-card:hover {
-        transform: scale(1.02); /* Slight scale on hover */
-    }
-
-    .rank-info {
-        display: flex; /* Flexbox for inner layout */
-        flex-direction: column; /* Stack items vertically */
-        align-items: flex-start; /* Align items to the start */
-    }
-
-    .medal {
-        width: 30px; /* Smaller medal size for mobile */
-        height: 30px; /* Smaller medal size for mobile */
-    }
-
-    .rank-number, .team-name, .total-points {
-        font-size: 16px; /* Smaller font size for mobile */
+    .view-button{
+        padding-bottom: 10px
     }
 }
 
@@ -662,8 +631,8 @@ button:hover {
     }
 
     .ranking-card {
-        flex-direction: column; /* Stack medal above text */
-        align-items: center; /* Center items */
+        flex-direction: column; 
+        align-items: center; 
         text-align: center; /* Center text */
     }
 
@@ -834,6 +803,29 @@ button:hover {
 
 /* Responsive styling for smaller screens */
 @media (max-width: 768px) {
+    .container-left {
+        max-width: 100%;
+        display: flex;
+        flex-direction: column; 
+        align-items: center; 
+        padding: 15px; 
+    }
+
+    .curr-rank {
+        padding: 15px; 
+        max-width: 100%; 
+    }
+
+
+    .image-section {
+        position: fixed;
+        max-width: 10%;
+        height: 100%; 
+        background-position: center; 
+        z-index: 1; 
+        opacity: 0.1; 
+    }
+
     .rank-list {
         margin: 5px;
     }
@@ -841,35 +833,42 @@ button:hover {
     .rank-list p {
         font-family: 'Poppins', sans-serif;
         font-weight: 700;
+        text-align: center;
     }
 
     .container-4 {
         display: flex;
-        flex-direction: column; /* Stack elements vertically */
+        flex-direction: column; 
     }
 
     .container-right {
-        order: 1; /* Place View Scores and Teams first */
+        order: 1; 
     }
 
     .container-left {
         order: 2; 
         margin-left: -15px;
+        max-width: 100%;
     }
 
     /* Ensure the table takes full width */
     .styled-table-rank {
-        width: 100%; /* Full width for smaller screens */
-        display:flex;
-        overflow-x: auto; /* Enable horizontal scrolling for wide tables */
+        max-width: 100%; 
+        overflow-x: auto; 
+        margin: auto;
     }
 
     /* Table styling remains the same */
     .styled-table-rank th,
     .styled-table-rank td {
-        padding: 0 10px;
+        padding: 0 5px;
         border: 1px solid #ddd;
         text-align: left;
+        font-size: 14px;
+    }
+
+    .styled-table-rank td{
+        font-size: 10px;
     }
 
     .view-button {
@@ -877,7 +876,7 @@ button:hover {
     }
 
     .view-button a.view-btn {
-        padding: 10px; /* Add padding to the bottom */
+        padding: 10px; 
         color: rgb(0, 0, 0);
         text-decoration: none;
         border-radius: 5px;
