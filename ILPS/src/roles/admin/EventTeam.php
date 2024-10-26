@@ -601,17 +601,17 @@
                             <p class="addevent">Add Scoring</p>
 
                             <div class="form-group">
-                                <label for="rankName">Rank No.:</label>
-                                <input type="number" id="rankNo" maxlength="30" name="rankNo" placeholder="e.g., 1">
+                                <label for="rankName">Rank No.</label>
+                                <input type="number" id="rankNo" name="rankNo" placeholder="e.g., 1">
                             </div>
 
                             <div class="form-group">
-                                <label for="rankName">Rank Name:</label>
+                                <label for="rankName">Rank Name</label>
                                 <input type="text" id="rankName" maxlength="30" name="rankName" placeholder="e.g., Champion/Winner">
                             </div>
 
                             <div class="form-group">
-                                <label for="scoringCategory">Category:</label>
+                                <label for="scoringCategory">Category</label>
                                 <select id="scoringCategory" name="scoringCategory">
                                     <option value="Individual/Dual">Individual/Dual</option>
                                     <option value="Team">Team</option>
@@ -619,7 +619,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="scorePts">Points:</label>
+                                <label for="scorePts">Points</label>
                                 <input type="number" maxlength="10" id="scorePts" name="scorePts">
                             </div>
 
