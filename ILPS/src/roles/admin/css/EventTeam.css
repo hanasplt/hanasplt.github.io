@@ -237,7 +237,7 @@ body {
 .tim,
 .ebent {
     display: flex;
-    background-color: #ffffff; /*change the color*/
+    background-color: #f9f9f9;
     width: 91%;
     align-items: center;
     margin: auto;
@@ -418,7 +418,7 @@ body {
     border-radius: 50%;
     align-items: center;
     justify-content: center;
-    background-color: #ffffff;
+    background-color: #ffffff00;
     border: none;
 }
 
@@ -427,7 +427,7 @@ body {
     width: 2.5vw;
     height: 2.5vw;
     border-radius: 50%;
-    background-color: #ffffff;
+    background-color: #ffffff00;
     align-items: center;
     justify-content: center;
 }
@@ -438,9 +438,14 @@ body {
     width: 2.5vw;
     height: 2.5vw;
     border-radius: 50%;
-    background-color: #ffffff;
+    background-color: #ffffff00;
     align-items: center;
     justify-content: center;
+}
+
+.edit-icon:focus, .trash-icon:focus, .subtrash-icon:focus, .subedit-icon:focus{
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(78, 78, 78, 0.5);
 }
 
 /*BUTTONS*/
@@ -516,17 +521,14 @@ body {
 
 .container,
 .container1 {
-    width: 80%;
-    background-color: white;
+    width: 85%;
+    background-color: #f9f9f9;
     padding: 20px;
-    border-radius: 8px;
     margin: auto;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: 1vw;
+    margin-top: 0;
     margin-bottom: 1vw;
+    border-left: 3px solid #D9F17F;
 }
-
-
 
 table {
     width: 100%;
@@ -538,16 +540,17 @@ td {
     text-align: center;
     vertical-align: middle;
     padding: 12px;
-    border: 1px solid #ccc;
 }
 
 th {
-    background-color: #d8f17fa2;
+    background-color: #f2f2f2;
     color: #2B2B2B;
 }
 
 td {
     background-color: #ffffff;
+    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ccc;
 }
 
 td button {

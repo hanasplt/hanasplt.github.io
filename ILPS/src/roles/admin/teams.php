@@ -225,12 +225,12 @@ try {
           <h2 class="addnew">Add New Team</h2>
           <form action="" id="teamForm" method="post" enctype="multipart/form-data">
             <input type="hidden" name="action" value="add">
-            <label for="teamImage">Team Image:</label>
+            <label for="teamImage">Team Image</label>
             <input type="file" id="teamImage" name="teamImage" accept="image/*" required><br><br>
-            <label for="teamName">Team Name:</label>
+            <label for="teamName">Team Name</label>
             <input type="text" id="teamName" name="teamName" maxlength="20" required><br>
 
-            <label for="course1">Courses that comprises the team:</label>
+            <label for="course1">Courses that comprises the team</label>
             <!-- COURSES OPTION HERE -->
             <span>
               <input type="checkbox" name="course[]" id="course1" value="BSIT">
@@ -286,12 +286,12 @@ try {
           <form id="editTeamForm" enctype="multipart/form-data">
             <input type="hidden" name="action" value="edit">
             <input type="hidden" id="editTeamID" name="teamID">
-            <label for="editTeamImage">Team Image:</label>
+            <label for="editTeamImage">Team Image</label>
             <input type="file" id="editTeamImage" name="teamImage" accept="image/*"><br><br>
-            <label for="editTeamName">Team Name:</label>
+            <label for="editTeamName">Team Name</label>
             <input type="text" id="editTeamName" name="teamName" maxlength="20" required><br>
 
-            <label for="course1">Courses that comprises the team:</label>
+            <label for="course1">Courses that comprises the team</label>
             <!-- COURSES OPTION HERE -->
             <span>
               <input type="checkbox" name="course[]" id="course1" value="BSIT">
@@ -331,6 +331,7 @@ try {
             </span>
 
             <button type="submit">Save Changes</button>
+
             <button type="button" onclick="closeModal('editModal')">Cancel</button>
           </form>
         </div>

@@ -232,7 +232,7 @@ body {
 
 .account {
     display: flex;
-    background-color: #ffffff;
+    background-color: #f9f9f9;
     width: 88%;
     align-items: center;
     margin: auto;
@@ -303,6 +303,12 @@ body {
 .acc-buttons i {
     font-size: 1.3vw;
     color: #b9b9b9;
+}
+
+
+.trash-icon:focus, .edit-icon:focus{
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(78, 78, 78, 0.5);
 }
 
 .iframe-overlay {
