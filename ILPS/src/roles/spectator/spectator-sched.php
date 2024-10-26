@@ -1,5 +1,5 @@
 <?php
-$conn = require_once '../../../config/db.php'; // Include Database Connection
+$conn = require_once '../../../config/db.php';
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -61,35 +61,111 @@ if ($conn->connect_error) {
         </div>
     </div>
     <div class="schedule-list">
-        <table>
-            <thead>
-                <tr>
-                    <th colspan="3">Day 1 - January 13, 2018</th>
-                </tr>
-                <tr>
-                    <th class="head">Time</th>
-                    <th class="head">Activity</th>
-                    <th class="head">Location</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>08:00 AM</td>
-                    <td>Opening Ceremony</td>
-                    <td>Open Grounds</td>
-                </tr>
-                <tr>
-                    <td>09:00 AM</td>
-                    <td>Basketball Match</td>
-                    <td>PECC Gymnasium</td>
-                </tr>
-                <tr>
-                    <td>10:30 AM</td>
-                    <td>Volleyball Match</td>
-                    <td>Volleyball Court</td>
-                </tr>
-            </tbody>
-        </table>
+        <?php
+            $query_teams = "CALL sp_getAllTeam()";
+            $result_teams = $conn->query($query_teams);
+            
+            $teams = [];
+            if ($result_teams->num_rows > 0) {
+                while ($row_team = $result_teams->fetch_assoc()) {
+                    $teams[$row_team['teamId']] = $row_team['teamName'];
+                }
+            }
+            
+            $result_teams->free();
+            $conn->next_result();
+
+            $query_days = "SELECT * FROM scheduled_days";
+            $result_days = $conn->query($query_days);
+
+            $scheduled_days = [];
+
+            if ($result_days->num_rows > 0) {
+                while ($row_day = $result_days->fetch_assoc()) {
+                    $day_id = $row_day['id'];
+
+                    $query_events = "SELECT * FROM scheduled_eventstoday WHERE day_id = ? ORDER BY time ASC";
+                    $stmt_events = $conn->prepare($query_events);
+                    $stmt_events->bind_param("i", $day_id);
+                    $stmt_events->execute();
+                    $result_events = $stmt_events->get_result();
+
+                    $events = [];
+                    if ($result_events->num_rows > 0) {
+                        while ($row_event = $result_events->fetch_assoc()) {
+                            $teamA_id = $row_event['teamA'];
+                            $teamB_id = $row_event['teamB'];
+
+                            $teamA_name = isset($teams[$teamA_id]) ? $teams[$teamA_id] : '';
+                            $teamB_name = isset($teams[$teamB_id]) ? $teams[$teamB_id] : '';
+
+                            $row_event['teamA_name'] = $teamA_name;
+                            $row_event['teamB_name'] = $teamB_name;
+
+                            $events[] = $row_event;
+                        }
+                    }
+
+                    $row_day['events'] = $events;
+                    $scheduled_days[] = $row_day;
+                }
+            }
+
+            usort($scheduled_days, function ($a, $b) {
+                return strtotime($a['day_date']) - strtotime($b['day_date']);
+            });
+
+            echo '<div class="schedule-table">';
+            $dayCounter = 1;
+            foreach ($scheduled_days as $day) {
+                echo '<table>';
+                echo '<thead>';
+                echo '<tr><th colspan="8">Day ' . $dayCounter . ' - ' . date("F j, Y", strtotime($day['day_date'])) . '</th></tr>';
+                echo '<tr>
+                        <th class="head">Time</th>
+                        <th class="head">Type</th>
+                        <th class="head">Activity</th>
+                        <th class="head">Game No.</th>
+                        <th class="head">Team A</th>
+                        <th class="head">Team B</th>
+                        <th class="head">Location</th>
+                        <th class="head">Status</th>
+                    </tr>';
+                echo '</thead>';
+                echo '<tbody>';
+
+                if (empty($day['events'])) {
+                    echo '<tr><td colspan="8">No events scheduled for this day.</td></tr>';
+                } else {
+                    foreach ($day['events'] as $event) {
+                        if ($event['status'] === 'Ongoing') {
+                            echo '<tr style="font-weight: bold;">';
+                        } else {
+                            echo '<tr>';
+                        }
+                        
+                        echo '<td>' . date("h:i A", strtotime($event['time'])) . '</td>';
+                        echo '<td>' . htmlspecialchars($event['type']) . '</td>';
+                        echo '<td>' . htmlspecialchars($event['activity']) . '</td>';
+                        echo '<td>' . htmlspecialchars($event['gameNo']) . '</td>';
+                        echo '<td>' . htmlspecialchars($event['teamA_name']) . '</td>';
+                        echo '<td>' . htmlspecialchars($event['teamB_name']) . '</td>';
+                        echo '<td>' . htmlspecialchars($event['location']) . '</td>';
+                        echo '<td>' . htmlspecialchars($event['status']) . '</td>';
+                        
+                        echo '</tr>';
+                    }
+                }
+
+                echo '</tbody>';
+                echo '</table>';
+
+                $dayCounter++; 
+            }
+            echo '</div>';
+
+            $conn->close();
+            ?>
     </div>
     <footer>
         <div class="footer-left">
