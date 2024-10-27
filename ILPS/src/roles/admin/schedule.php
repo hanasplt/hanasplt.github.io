@@ -804,22 +804,22 @@ usort($scheduled_days, function ($a, $b) {
                                 let categoryOptions = '';
                                 if (fetchedEvent.type === 'Socio-cultural') {
                                     categoryOptions = `
-                            <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
-                            <option value="sports">Sports</option>
-                            <option value="others">Others</option>
-                        `;
+                                        <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
+                                        <option value="sports">Sports</option>
+                                        <option value="others">Others</option>
+                                    `;
                                 } else if (fetchedEvent.type === 'Sports') {
                                     categoryOptions = `
-                            <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
-                            <option value="socio-cultural">Socio-cultural</option>
-                            <option value="others">Others</option>
-                        `;
+                                        <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
+                                        <option value="socio-cultural">Socio-cultural</option>
+                                        <option value="others">Others</option>
+                                    `;
                                 } else {
                                     categoryOptions = `
-                            <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
-                            <option value="socio-cultural">Socio-cultural</option>
-                            <option value="sports">Sports</option>
-                        `;
+                                        <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
+                                        <option value="socio-cultural">Socio-cultural</option>
+                                        <option value="sports">Sports</option>
+                                    `;
                                 }
 
                                 // Fetch teams and populate dropdowns
@@ -842,80 +842,82 @@ usort($scheduled_days, function ($a, $b) {
                                             Swal.fire({
                                                 title: 'Edit Event',
                                                 html: `
-                                        <input id="edit-time" class="swal2-input1" type="time" value="${fetchedEvent.time}">
-                                        <select id="edit-event-category" class="swal2-input3">
-                                            ${categoryOptions}
-                                        </select>
-                                        <select id="edit-event-sports" class="swal2-input3" style="display: none;" required>
-                                            <?php
-                                            $sql = "CALL sp_getEventFrom(?);";
-                                            $ev_type = "Sports";
-
-                                            $stmt = $conn->prepare($sql);
-                                            $stmt->bind_param("s", $ev_type);
-                                            $stmt->execute();
-                                            $result = $stmt->get_result();
-
-                                            if ($result->num_rows > 0) {
-                                                while ($row = $result->fetch_assoc()) {
-                                                    $db_eventId = $row['eventID'];
-                                                    $db_evname = $row['eventName'];
-                                            ?>
-                                                    <option value="<?php echo $db_eventId; ?>" data-event-name="<?php echo htmlspecialchars($db_evname); ?>">
-                                                        <?php echo htmlspecialchars($db_evname); ?>
-                                                    </option>
+                                                <input id="edit-time" class="swal2-input1" type="time" value="${fetchedEvent.time}">
+                                                <select id="edit-event-category" class="swal2-input3">
+                                                    ${categoryOptions}
+                                                </select>
+                                                <select id="edit-event-sports" class="swal2-input3" style="display: none;" required>
+                                                    <option value="${fetchedEvent.activity}" selected disabled> ${fetchedEvent.activity}</option>
                                                     <?php
-                                                }
-                                            } else {
-                                                echo '<option selected disabled value=0>No Event/s exist.</option>';
-                                            }
-                                            $result->free();
-                                            $stmt->close();
+                                                        $sql = "CALL sp_getEventFrom(?);";
+                                                        $ev_type = "Sports";
+
+                                                        $stmt = $conn->prepare($sql);
+                                                        $stmt->bind_param("s", $ev_type);
+                                                        $stmt->execute();
+                                                        $result = $stmt->get_result();
+
+                                                        if ($result->num_rows > 0) {
+                                                            while ($row = $result->fetch_assoc()) {
+                                                                $db_eventId = $row['eventID'];
+                                                                $db_evname = $row['eventName'];
+                                                        ?>
+                                                                <option value="<?php echo $db_eventId; ?>" data-event-name="<?php echo htmlspecialchars($db_evname); ?>">
+                                                                    <?php echo htmlspecialchars($db_evname); ?>
+                                                                </option>
+                                                                <?php
+                                                            }
+                                                        } else {
+                                                            echo '<option selected disabled value=0>No Event/s exist.</option>';
+                                                        }
+                                                        $result->free();
+                                                        $stmt->close();
                                                     ?>
-                                        </select>
-                                        <select id="edit-event-socio" class="swal2-input3" style="display: none;" required>
-                                            <?php
-                                            $sql = "CALL sp_getEventFrom(?);";
-                                            $ev_type = "Socio-Cultural";
-
-                                            $stmt = $conn->prepare($sql);
-                                            $stmt->bind_param("s", $ev_type);
-                                            $stmt->execute();
-                                            $result = $stmt->get_result();
-
-                                            if ($result->num_rows > 0) {
-                                                while ($row = $result->fetch_assoc()) {
-                                                    $db_evname = $row['eventName'];
-                                            ?>
-                                                    <option value="<?php echo htmlspecialchars($db_evname); ?>" data-type="<?php echo htmlspecialchars($row['eventType']); ?>">
-                                                        <?php echo htmlspecialchars($db_evname); ?>
-                                                    </option>
+                                                </select>
+                                                <select id="edit-event-socio" class="swal2-input3" style="display: none;" required>
+                                                    <option value="${fetchedEvent.activity}" selected disabled> ${fetchedEvent.activity}</option>
                                                     <?php
-                                                }
-                                            } else {
-                                                echo '<option selected disabled value=0>No Event/s exist.</option>';
-                                            }
-                                            $result->free();
-                                            $stmt->close();
+                                                    $sql = "CALL sp_getEventFrom(?);";
+                                                    $ev_type = "Socio-Cultural";
+
+                                                    $stmt = $conn->prepare($sql);
+                                                    $stmt->bind_param("s", $ev_type);
+                                                    $stmt->execute();
+                                                    $result = $stmt->get_result();
+
+                                                    if ($result->num_rows > 0) {
+                                                        while ($row = $result->fetch_assoc()) {
+                                                            $db_evname = $row['eventName'];
                                                     ?>
-                                        </select>
-                                        <input id="edit-event-activity-others" class="swal2-input2" placeholder="Activity" value="${fetchedEvent.activity}" style="display: none;">
-                                        <input id="edit-game-no" class="swal2-input2" placeholder="Game Number" value="${fetchedEvent.gameNo !== null ? fetchedEvent.gameNo : ''}" style="display: none;">
-                                        <select id="edit-team-a" class="swal2-input3" required>
-                                            ${teamOptionsA}
-                                        </select>
-                                        <select id="edit-team-b" class="swal2-input3" required>
-                                            ${teamOptionsB}
-                                        </select>
-                                        <input id="edit-location" class="swal2-input2" placeholder="Location" value="${fetchedEvent.location}">
-                                        <select id="edit-status" class="swal2-input3">
-                                            <option value="Pending" ${fetchedEvent.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                                            <option value="Ongoing" ${fetchedEvent.status === 'Ongoing' ? 'selected' : ''}>On-going</option>
-                                            <option value="Ended" ${fetchedEvent.status === 'Ended' ? 'selected' : ''}>Ended</option>
-                                            <option value="Cancelled" ${fetchedEvent.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
-                                            <option value="Moved" ${fetchedEvent.status === 'Moved' ? 'selected' : ''}>Moved</option>
-                                        </select>
-                                    `,
+                                                            <option value="<?php echo htmlspecialchars($db_evname); ?>" data-type="<?php echo htmlspecialchars($row['eventType']); ?>">
+                                                                <?php echo htmlspecialchars($db_evname); ?>
+                                                            </option>
+                                                            <?php
+                                                        }
+                                                    } else {
+                                                        echo '<option selected disabled value=0>No Event/s exist.</option>';
+                                                    }
+                                                    $result->free();
+                                                    $stmt->close();
+                                                            ?>
+                                                </select>
+                                                <input id="edit-event-activity-others" class="swal2-input2" placeholder="Activity" value="${fetchedEvent.activity}" style="display: none;">
+                                                <input id="edit-game-no" class="swal2-input2" placeholder="Game Number" value="${fetchedEvent.gameNo !== null ? fetchedEvent.gameNo : ''}" style="display: none;">
+                                                <select id="edit-team-a" class="swal2-input3" required>
+                                                    ${teamOptionsA}
+                                                </select>
+                                                <select id="edit-team-b" class="swal2-input3" required>
+                                                    ${teamOptionsB}
+                                                </select>
+                                                <input id="edit-location" class="swal2-input2" placeholder="Location" value="${fetchedEvent.location}">
+                                                <select id="edit-status" class="swal2-input3">
+                                                    <option value="Pending" ${fetchedEvent.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                                    <option value="Ongoing" ${fetchedEvent.status === 'Ongoing' ? 'selected' : ''}>On-going</option>
+                                                    <option value="Ended" ${fetchedEvent.status === 'Ended' ? 'selected' : ''}>Ended</option>
+                                                    <option value="Cancelled" ${fetchedEvent.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                                                    <option value="Moved" ${fetchedEvent.status === 'Moved' ? 'selected' : ''}>Moved</option>
+                                                </select>
+                                            `,
                                                 didOpen: () => {
                                                     const categorySelect = document.getElementById('edit-event-category');
                                                     const eventSportsSelect = document.getElementById('edit-event-sports');
@@ -927,33 +929,29 @@ usort($scheduled_days, function ($a, $b) {
                                                         const teamAField = document.getElementById('edit-team-a');
                                                         const teamBField = document.getElementById('edit-team-b');
 
-                                                        // Reset visibility of elements
                                                         gameNoInput.style.display = 'none';
                                                         teamAField.style.display = 'none';
                                                         teamBField.style.display = 'none';
-                                                        activityOthersInput.style.display = 'none'; // Hide activity input
-                                                        eventSportsSelect.style.display = 'none'; // Hide sports dropdown
-                                                        eventSocioSelect.style.display = 'none'; // Hide socio-cultural dropdown
+                                                        activityOthersInput.style.display = 'none';
+                                                        eventSportsSelect.style.display = 'none';
+                                                        eventSocioSelect.style.display = 'none';
 
                                                         if (category === 'sports') {
                                                             activityOthersInput.style.display = 'none';
                                                             gameNoInput.style.display = 'block';
                                                             teamAField.style.display = 'block';
                                                             teamBField.style.display = 'block';
-                                                            eventSportsSelect.style.display = 'block'; // Show sports dropdown
+                                                            eventSportsSelect.style.display = 'block';
                                                         } else if (category === 'socio-cultural') {
                                                             activityOthersInput.style.display = 'none';
-                                                            activityOthersInput.style.display = 'block'; // Show activity input
-                                                            eventSocioSelect.style.display = 'block'; // Show socio-cultural dropdown
+                                                            eventSocioSelect.style.display = 'block';
                                                         } else if (category === 'others') {
-                                                            activityOthersInput.style.display = 'block'; // Show activity input
+                                                            activityOthersInput.style.display = 'block';
                                                         }
                                                     }
 
-                                                    // Initialize fields based on the fetched event type
                                                     toggleGameFields(fetchedEvent.type.toLowerCase());
 
-                                                    // Update fields when category changes
                                                     categorySelect.addEventListener('change', function() {
                                                         toggleGameFields(this.value.toLowerCase());
                                                     });
@@ -964,13 +962,10 @@ usort($scheduled_days, function ($a, $b) {
 
                                                         teamB.style.display = 'block';
 
-                                                        // Clear previous options in Team B
                                                         teamB.innerHTML = '<option value="" disabled selected>Team B</option>';
 
-                                                        // Get all options from Team A
                                                         const teamAOptions = document.querySelectorAll('#edit-team-a option');
 
-                                                        // Add options to Team B excluding the selected Team A option
                                                         teamAOptions.forEach(option => {
                                                             if (option.value && option.value !== selectedTeamA) {
                                                                 const newOption = document.createElement('option');
@@ -986,7 +981,22 @@ usort($scheduled_days, function ($a, $b) {
                                                 preConfirm: () => {
                                                     const time24 = document.getElementById('edit-time').value;
                                                     const type = document.getElementById('edit-event-category').value;
-                                                    const activity = document.getElementById('edit-event-activity-others').value;
+                                                    let activity;
+                                                        // Check which dropdown or input is currently displayed
+                                                        const sportsElement = document.getElementById('edit-event-sports');
+                                                        const socioElement = document.getElementById('edit-event-socio');
+                                                        const othersElement = document.getElementById('edit-event-activity-others');
+
+                                                        // Get the value from the displayed element
+                                                        if (sportsElement.style.display !== 'none') {
+                                                            activity = sportsElement.options[sportsElement.selectedIndex].text;
+                                                        } else if (socioElement.style.display !== 'none') {
+                                                            activity = socioElement.options[socioElement.selectedIndex].text;
+                                                        } else if (othersElement.style.display !== 'none') {
+                                                            activity = othersElement.value;  // Text input for "Others" category
+                                                        } else {
+                                                            activity = '';  // Default to an empty string if none are found
+                                                        }
                                                     const gameNo = document.getElementById('edit-game-no').value;
                                                     const teamA = document.getElementById('edit-team-a').value;
                                                     const teamB = document.getElementById('edit-team-b').value;
