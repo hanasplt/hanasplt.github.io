@@ -10,8 +10,6 @@ $id = $_SESSION['userId'];
 
 $evId = isset($_GET['event']) ? $_GET['event'] : '';
 $evname = isset($_GET['name']) ? $_GET['name'] : '';
-$contestantAId = isset($_GET['contestantAId']) ? $_GET['contestantAId'] : '';
-$contestantBId = isset($_GET['contestantBId']) ? $_GET['contestantBId'] : '';
 
 // Fetch team names
 $query_teams = "SELECT teamId, teamName FROM teams";
@@ -24,7 +22,6 @@ if ($result_teams->num_rows > 0) {
     }
 }
 
-
 // fetch scheduled days
 $query_days = "SELECT * FROM scheduled_days";
 $result_days = $conn->query($query_days);
@@ -35,6 +32,7 @@ $schedCount = 0;
 if ($result_days->num_rows > 0) {
     while ($row_day = $result_days->fetch_assoc()) {
         $day_id = $row_day['id'];
+        $day_date = $row_day['day_date']; // Get the date for the day
 
         // fetch events for each day
         $query_events = "SELECT * FROM scheduled_eventstoday WHERE day_id = ? AND activity = ? ORDER BY time ASC";
@@ -56,6 +54,10 @@ if ($result_days->num_rows > 0) {
                 $row_event['teamA_name'] = $teamA_name;
                 $row_event['teamB_name'] = $teamB_name;
 
+                // Format the combined date and time
+                $event_datetime = $day_date . ' ' . $row_event['time'];
+                $row_event['formatted_datetime'] = date('m/d/Y h:i A', strtotime($event_datetime));
+
                 $events[] = $row_event;
                 $schedCount++;
             }
@@ -74,102 +76,100 @@ usort($scheduled_days, function ($a, $b) {
     return strtotime($a['day_date']) - strtotime($b['day_date']);
 });
 
-// UPDATE RESULT
+// Update Results
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $eventId = $_POST['eventId'];
     $teamA = $_POST['teamA'];
     $teamB = $_POST['teamB'];
-    $teamAScore = $_POST['teamAScore'];
-    $teamBScore = $_POST['teamBScore'];
-    $contestantAId = $_POST['contestantAId']; 
-    $contestantBId = $_POST['contestantBId'];
     $Status = 'Ended';
 
-    // Update the scheduled_eventstoday table
+    // Update the scheduled_eventstoday table for results
     $query = "UPDATE scheduled_eventstoday SET status = ?, ResultA = ?, ResultB = ? WHERE id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('sssi', $Status, $teamA, $teamB, $eventId);
 
-    
-          
-// Check if contestant IDs exist
-$contestantCheckQuery = "SELECT teamId FROM contestant WHERE teamId IN (?, ?)";
-$contestantCheckStmt = $conn->prepare($contestantCheckQuery);
-$contestantCheckStmt->bind_param("ii", $contestantAId, $contestantBId);
-$contestantCheckStmt->execute();
-$contestantCheckResult = $contestantCheckStmt->get_result();
-
-$existingContestants = [];
-while ($row = $contestantCheckResult->fetch_assoc()) {
-    $existingContestants[] = $row['teamId'];
-}
-
-// Verify contestant IDs
-if (!in_array($contestantAId, $existingContestants) || !in_array($contestantBId, $existingContestants)) {
-    echo json_encode(['success' => false, 'message' => 'One or more contestant IDs do not exist.']);
-    exit;
-}
+    // Execute the query
     if ($stmt->execute()) {
-
-        // Function to handle sub_results insert or update
-        function insertOrUpdateSubResult($conn, $eventId, $contestantId, $id, $totalScore)
-        {
-  
-            // Check if a record exists in sub_results
-            $checkQuery = "SELECT * FROM sub_results WHERE eventId = ? AND contestantId = ?";
-            $checkStmt = $conn->prepare($checkQuery);
-            $checkStmt->bind_param("ii", $eventId, $contestantId);
-            $checkStmt->execute();
-            $result = $checkStmt->get_result();
-
-            
-    
-            if ($result->num_rows < 1) {
-               
-
-                // Record doesn't exist, insert a new one
-                $insertQuery = "INSERT INTO sub_results (eventId, contestantId, personnelId, total_score)
-            VALUES (?, ?, ?, ?)";
-                $insertStmt = $conn->prepare($insertQuery);
-                $insertStmt->bind_param("iiid", $eventId, $contestantId, $id, $totalScore);
-                if ($insertStmt->execute()) {
-                    echo "Insert Successfully";
-                }
-            } else {
-                 // Record exists, update the score
-                 $updateQuery = "UPDATE sub_results SET total_score = ? WHERE eventId = ? AND contestantId = ?";
-                 $updateStmt = $conn->prepare($updateQuery);
-                 $updateStmt->bind_param("dii", $totalScore, $eventId, $contestantId);
-                 if ($updateStmt->execute()) {
-                    echo "Update Successfully";
-                }
-            }
-    
-            // Close the statements
-            if (isset($checkStmt)) $checkStmt->close();
-            if (isset($updateStmt)) $updateStmt->close();
-            if (isset($insertStmt)) $insertStmt->close();
-        }
-    
-        // Insert or update scores for team A and team B
-        insertOrUpdateSubResult($conn, $eventId, $contestantAId, $id, $teamAScore);
-        insertOrUpdateSubResult($conn, $eventId, $contestantBId, $id, $teamBScore);
-    
-        // Return success response
-        header('Content-Type: application/json');
-        echo json_encode(['success' => true, 'message' => 'The result has been successfully saved.']);
+        echo json_encode(['success' => true, 'message' => "Results updated successfully."]);
     } else {
-        header('Content-Type: application/json');
-        echo json_encode(['success' => false, 'message' => 'Failed to update data.']);
+        echo json_encode(['success' => false, 'message' => "Error: " . $stmt->error]);
     }
-    
+
     $stmt->close();
-    
 }
 
+// Retrieve personnel ID from session
+$personnelId = $_SESSION['userId']; 
+$responses = []; // Array to hold responses for each score
+
+// Function to insert or update sub_results
+function insertOrUpdateSubResult($conn, $eventId, $contestantId, $personnelId, $totalScore)
+{
+    // Check if a record already exists
+    $checkQuery = "SELECT * FROM sub_results WHERE eventId = ? AND contestantId = ?";
+    $checkStmt = $conn->prepare($checkQuery);
+    $checkStmt->bind_param("ii", $eventId, $contestantId);
+    $checkStmt->execute();
+    $result = $checkStmt->get_result();
+
+    if ($result->num_rows < 1) {
+        // Record doesn't exist, insert a new one
+        $insertQuery = "INSERT INTO sub_results (eventId, contestantId, personnelId, total_score) VALUES (?, ?, ?, ?)";
+        $insertStmt = $conn->prepare($insertQuery);
+        $insertStmt->bind_param("iiid", $eventId, $contestantId, $personnelId, $totalScore);
+        $success = $insertStmt->execute();
+        $insertStmt->close();
+        
+        return $success ?
+            "Score for contestant ID $contestantId has been inserted successfully." :
+            "Error inserting score for contestant ID $contestantId.";
+    } else {
+        // Record exists, update the score
+        $updateQuery = "UPDATE sub_results SET total_score = ? WHERE eventId = ? AND contestantId = ?";
+        $updateStmt = $conn->prepare($updateQuery);
+        $updateStmt->bind_param("dii", $totalScore, $eventId, $contestantId);
+        $success = $updateStmt->execute();
+        $updateStmt->close();
+
+        return $success ?
+            "Score for contestant ID $contestantId has been updated successfully." :
+            "Error updating score for contestant ID $contestantId.";
+    }
+    // Close the check statement
+    $checkStmt->close();
+}
+
+// Check if scores data exists
+if (isset($_POST['scores']) && is_array($_POST['scores'])) {
+    foreach ($_POST['scores'] as $scoreData) {
+        $contestantId = $scoreData['teamId'];
+        $score = $scoreData['score'];
+
+        // Check if contestant ID exists in the database
+        $contestantCheckQuery = "SELECT teamId FROM contestant WHERE teamId = ?";
+        $contestantCheckStmt = $conn->prepare($contestantCheckQuery);
+        $contestantCheckStmt->bind_param("i", $contestantId);
+        $contestantCheckStmt->execute();
+        $contestantCheckResult = $contestantCheckStmt->get_result();
+
+        if ($contestantCheckResult->num_rows < 1) {
+            $responses[] = ['success' => false, 'message' => "Contestant ID $contestantId does not exist."];
+            continue;
+        }
+
+        // Call the function and store the response message
+        $responses[] = insertOrUpdateSubResult($conn, $eventId, $contestantId, $personnelId, $score);
+    }
+} else {
+    $responses[] = ['success' => false, 'message' => "No scores data provided."];
+}
+
+// Output all responses
+echo json_encode($responses);
 
 
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -228,195 +228,251 @@ if (!in_array($contestantAId, $existingContestants) || !in_array($contestantBId,
         ?>
     </div>
 
-    <?php // Display table - permitted to view
-    if (in_array('committee_scoring_read', $comt_rights)) { ?>
-        <!-- NEW INTERFACE -->
-        <div class="recordTable">
-            <table style="margin: auto">
-                <tr>
-                    <td>TIME</td>
-                    <td>EVENT</td>
-                    <td>GAME NO.</td>
-                    <td>TEAM A</td>
-                    <td>POINTS</td>
-                    <td>TEAM B</td>
-                    <td>POINTS</td>
-                    <td>ACTION</td>
-                    <td hidden>
-                        <input type="text" class="event-status" value="<?php echo htmlspecialchars($event['status']); ?>" />
-                    </td>
-                </tr>
-                <?php
-                if ($schedCount == 0) { // Display message - no scheduled event(s)
-                    echo '
-                <tr>
-                    <td colspan="9" style="text-align: center; color: red;">No Schedule.</td>
-                </tr>
-                ';
-                }
-                ?>
-                <?php foreach ($scheduled_days as $day): ?>
-                    <?php foreach ($day['events'] as $event): ?>
+    <?php
+// Assuming $evId is set to the current event ID
+$stmt_event = $conn->prepare("SELECT gameNo FROM scheduled_eventstoday WHERE activity = ?");
+$stmt_event->bind_param("s", $evname);
+$stmt_event->execute();
+$result_event = $stmt_event->get_result();
+
+if ($result_event->num_rows > 0) {
+    $event_row = $result_event->fetch_assoc();
+    if ($event_row['gameNo'] != 0 || $event_row['gameNo'] != null ) {
+        // Display table - permitted to view
+        if (in_array('committee_scoring_read', $comt_rights)) { ?>
+            <!-- NEW INTERFACE -->
+            <div class="recordTable">
+                <table style="margin: auto">
+                    <tr>
+                        <td>TIME</td>
+                        <td>EVENT</td>
+                        <td>GAME NO.</td>
+                        <td>TEAM A</td>
+                        <td>TEAM B</td>
+                        <td>ACTION</td>
+                        <td hidden>
+                            <input type="text" class="event-status" value="<?php echo htmlspecialchars($event['status']); ?>" />
+                        </td>
+                    </tr>
+                    <?php
+                    if ($schedCount == 0) { // Display message - no scheduled event(s)
+                        echo '
                         <tr>
-                            <td><?php echo date('m/d/Y h:i A', strtotime($event['time'])); ?></td>
-                            <td><?php echo htmlspecialchars($event['activity']); ?></td>
-                            <td><?php echo htmlspecialchars($event['gameNo']); ?></td>
-                            <td>
-                                <select name="teamA" class="teamA non-editable" id="teamA-<?php echo htmlspecialchars($event['gameNo']); ?>" onchange="syncTeams(this, '<?php echo htmlspecialchars($event['gameNo']); ?>'); changeColor(this)" disabled>
-                                    <option value="">(<?php echo $event['teamA_name']; ?>) No Result</option>
-                                    <option value="Winner" <?php echo $event['ResultA'] == 'Winner' ? 'selected' : ''; ?>>(<?php echo $event['teamA_name']; ?>) Winner</option>
-                                    <option value="Loser" <?php echo $event['ResultA'] == 'Loser' ? 'selected' : ''; ?>>(<?php echo $event['teamA_name']; ?>) Loser</option>
-                                </select>
-                            </td>
-                            <td>
-    <?php
-    // Prepare and bind for sub_results
-    $contestantAId = $event['teamA']; // Assuming this is the contestant ID
-    echo "<input type='hidden' class='contestantAId' name='contestantAId' value='" . $contestantAId . "'>";
-    $stmt = $conn->prepare("SELECT * FROM sub_results WHERE eventId = ? AND contestantId = ?");
-    if (!$stmt) {
-        die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
-    }
-
-    $stmt->bind_param("ii", $evId, $contestantAId); // Assuming both are integers
-
-    // Execute the statement
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    // Generate the select options
-    echo "<select class='teamAScore non-editable' name='teamAScore' disabled>";
-    $selectedPoints = 0; // Default to 0 in case no result is found
-
-    // Fetch the points from sub_results
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $selectedPoints = $row['total_score'];
-            // Include contestant ID in the option value (optional)
-            echo "<option value='" . $row['total_score'] . "' " . ($selectedPoints == $row['total_score'] ? 'selected' : '') . ">" . $row['total_score'] . "</option>";
-        }
-    }
-
-    // Always include the default 0 option if no result is found
-    echo "<option value='0' " . ($selectedPoints == 0 ? 'selected' : '') . ">0</option>";
-
-    // Close the statement for sub_results
-    $stmt->close();
-
-    // Fetch all data from vw_eventscore (no WHERE condition)
-    $query_vw = "SELECT * FROM vw_eventscore"; // No condition here
-    $stmt_vw = $conn->prepare($query_vw);
-    if (!$stmt_vw) {
-        die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
-    }
-
-    // Execute the statement for vw_eventscore
-    $stmt_vw->execute();
-    $result_vw = $stmt_vw->get_result();
-
-    // Fetch the points from vw_eventscore and add them to the select dropdown
-    if ($result_vw->num_rows > 0) {
-        while ($row_vw = $result_vw->fetch_assoc()) {
-            $score = $row_vw['points'];
-            echo "<option value='" . $score . "' " . ($selectedPoints == $score ? 'selected' : '') . ">" . $score . "</option>";
-        }
-    }
-
-    // Close the statement for vw_eventscore
-    $stmt_vw->close();
-
-    echo "</select>";
-    ?>
-</td>
-
-                            <td>
-                                <select name="teamB" class="teamB non-editable" id="teamB-<?php echo htmlspecialchars($event['gameNo']); ?>" onchange="syncTeams(this, '<?php echo htmlspecialchars($event['gameNo']); ?>'); changeColor(this)" disabled>
-                                    <option value="">(<?php echo $event['teamB_name']; ?>) No Result</option>
-                                    <option value="Winner" <?php echo $event['ResultB'] == 'Winner' ? 'selected' : ''; ?>>(<?php echo $event['teamB_name']; ?>) Winner</option>
-                                    <option value="Loser" <?php echo $event['ResultB'] == 'Loser' ? 'selected' : ''; ?>>(<?php echo $event['teamB_name']; ?>) Loser</option>
-                                </select>
-                            </td>
-                            <td>
-    <?php
-    // Prepare and bind for sub_results
-    $contestantBId = $event['teamB']; // Assuming this is the contestant ID
-    echo "<input type='hidden' class='contestantBId' name='contestantBId' value='" . $contestantBId . "'>";
-    $stmt = $conn->prepare("SELECT * FROM sub_results WHERE eventId = ? AND contestantId = ?");
-    if (!$stmt) {
-        die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
-    }
-
-    $stmt->bind_param("ii", $evId, $contestantBId); // Assuming both are integers
-
-    // Execute the statement
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    // Generate the select options
-    echo "<select class='teamBScore non-editable' name='teamBScore' disabled>";
-    $selectedPoints = 0; // Default to 0 in case no result is found
-
-    // Fetch the points from sub_results
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $selectedPoints = $row['total_score'];
-            // Include contestant ID in the option value (optional)
-            echo "<option value='" . $row['total_score'] . "' " . ($selectedPoints == $row['total_score'] ? 'selected' : '') . ">" . $row['total_score'] . "</option>";
-        }
-    }
-
-    // Always include the default 0 option if no result is found
-    echo "<option value='0' " . ($selectedPoints == 0 ? 'selected' : '') . ">0</option>";
-
-    // Close the statement for sub_results
-    $stmt->close();
-
-    // Fetch all data from vw_eventscore (no WHERE condition)
-    $query_vw = "SELECT * FROM vw_eventscore"; // No condition here
-    $stmt_vw = $conn->prepare($query_vw);
-    if (!$stmt_vw) {
-        die("Prepare failed: (" . $conn->errno . ") " . $conn->error);
-    }
-
-    // Execute the statement for vw_eventscore
-    $stmt_vw->execute();
-    $result_vw = $stmt_vw->get_result();
-
-    // Fetch the points from vw_eventscore and add them to the select dropdown
-    if ($result_vw->num_rows > 0) {
-        while ($row_vw = $result_vw->fetch_assoc()) {
-            $score = $row_vw['points'];
-            echo "<option value='" . $score . "' " . ($selectedPoints == $score ? 'selected' : '') . ">" . $score . "</option>";
-        }
-    }
-
-    // Close the statement for vw_eventscore
-    $stmt_vw->close();
-
-    echo "</select>";
-    ?>
-</td>
-
-                            <td>
-                                <?php // Display Edit button - permitted to update
-                                if (in_array('committee_scoring_update', $comt_rights)) { ?>
-                                    <button class="edit-btn" data-event-id="<?php echo $event['id']; ?>">Edit</button>
-                                <?php } else {
-                                    echo '
-                                    <p style="color: darkgrey;">Feature denied.</p>
-                                ';
-                                }
-                                // Display Save button - permitted to add
-                                if (in_array('committee_scoring_add', $comt_rights)) { ?>
-                                    <button id="save-btn" class="save-btn" style="display: none;" data-event-id="<?php echo $event['id']; ?>">Save</button>
-                                <?php } ?>
-                                <button class="cancel-btn" style="display: none;" data-event-id="<?php echo $event['id']; ?>">Cancel</button>
-                            </td>
+                            <td colspan="9" style="text-align: center; color: red;">No Schedule.</td>
                         </tr>
+                        ';
+                    }
+                    ?>
+                    <?php foreach ($scheduled_days as $day): ?>
+                        <?php foreach ($day['events'] as $event): ?>
+                            <tr>
+                                <td><?php echo $event['formatted_datetime']; ?></td>
+                                <td><?php echo htmlspecialchars($event['activity']); ?></td>
+                                <td><?php echo htmlspecialchars($event['gameNo']); ?></td>
+                                <td>
+                                    <select name="teamA" class="teamA non-editable" id="teamA-<?php echo htmlspecialchars($event['gameNo']); ?>" onchange="syncTeams(this, '<?php echo htmlspecialchars($event['gameNo']); ?>'); changeColor(this)" disabled>
+                                        <option value="">(<?php echo $event['teamA_name']; ?>) No Result</option>
+                                        <option value="Winner" <?php echo $event['ResultA'] == 'Winner' ? 'selected' : ''; ?>>(<?php echo $event['teamA_name']; ?>) Winner</option>
+                                        <option value="Loser" <?php echo $event['ResultA'] == 'Loser' ? 'selected' : ''; ?>>(<?php echo $event['teamA_name']; ?>) Loser</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select name="teamB" class="teamB non-editable" id="teamB-<?php echo htmlspecialchars($event['gameNo']); ?>" onchange="syncTeams(this, '<?php echo htmlspecialchars($event['gameNo']); ?>'); changeColor(this)" disabled>
+                                        <option value="">(<?php echo $event['teamB_name']; ?>) No Result</option>
+                                        <option value="Winner" <?php echo $event['ResultB'] == 'Winner' ? 'selected' : ''; ?>>(<?php echo $event['teamB_name']; ?>) Winner</option>
+                                        <option value="Loser" <?php echo $event['ResultB'] == 'Loser' ? 'selected' : ''; ?>>(<?php echo $event['teamB_name']; ?>) Loser</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <?php // Display Edit button - permitted to update
+                                    if (in_array('committee_scoring_update', $comt_rights)) { ?>
+                                        <button class="edit-btn" data-event-id="<?php echo $event['id']; ?>">Edit</button>
+                                    <?php } else {
+                                        echo '
+                                        <p style="color: darkgrey;">Feature denied.</p>
+                                        ';
+                                    }
+                                    // Display Save button - permitted to add
+                                    if (in_array('committee_scoring_add', $comt_rights)) { ?>
+                                        <button id="save-btn" class="save-btn" style="display: none;" data-event-id="<?php echo $event['id']; ?>">Save</button>
+                                    <?php } ?>
+                                    <button class="cancel-btn" style="display: none;" data-event-id="<?php echo $event['id']; ?>">Cancel</button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
                     <?php endforeach; ?>
-                <?php endforeach; ?>
-            </table>
+                </table>
+            </div>
+        <?php 
+        } else {
+            // Optionally handle the case where read permission is denied
+            echo '
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Oops!</strong> You lack the permission to view the Scoring Table.
+            </div>
+        ';
+        }
+    } else {
+        // Optionally handle the case where the event type is not "Others"
+    }
+} else {
+    echo '<p style="text-align: center;">Event Schedule Not Found.</p>';
+}
+
+$stmt_event->close();
+
+?>
+
+        <!-- ADD or EDIT SCORES -->
+
+        <div class="scoringContainer">
+            <h1 style="text-align: center;">RANKING AND SCORING</h1>
+            <div class="scoreTable">
+                <table style="margin: auto;">
+                    <tr>
+                        <td>TEAM</td>
+                        <td>SCORE</td>
+                    </tr>
+
+                    <?php
+                    $sql = "SELECT * FROM teams";
+                    $result = $conn->query($sql);
+                    
+                    if (!$result) {
+                        echo "<tr><td colspan='2'>Error fetching teams: " . htmlspecialchars($conn->error) . "</td></tr>";
+                    } elseif ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<input type='hidden' name='Teams[]' class='Teams' value='" . $row['teamId'] . "'>";
+                    
+                            echo "<tr class='teamRow'>";
+                            // Team name
+                            echo "<td class='teamNames'>" . htmlspecialchars($row['teamName']) . "</td>";
+
+                            // Score selection cell
+                            echo "<td class='teamScores'>";
+                            $contestantsId = $row['teamId'];
+                            echo "<input type='hidden' class='contestantId' name='contestantId[]' value='" . $contestantsId . "'>";
+
+                            // Fetch score for this team
+                            $stmt = $conn->prepare("SELECT * FROM sub_results WHERE eventId = ? AND contestantId = ?");
+                            $stmt->bind_param("ii", $evId, $contestantsId);
+                            $stmt->execute();
+                            $result_sub = $stmt->get_result();
+
+                            echo "<select class='teamsScore non-editable' name='teamsScore[]' disabled>";
+                            $selectedPoints = 0; // Default to 0 if no result is found
+
+                            // Populate current score
+                            if ($result_sub->num_rows > 0) {
+                                while ($row_sub = $result_sub->fetch_assoc()) {
+                                    $selectedPoints = $row_sub['total_score'];
+                                    echo "<option value='" . $row_sub['total_score'] . "' selected>" . $row_sub['total_score'] . "</option>";
+                                }
+                            }
+                            echo "<option value='0' " . ($selectedPoints == 0 ? 'selected' : '') . ">0</option>";
+
+                            // Add additional points options
+                            $query_vw = "SELECT * FROM vw_eventscore";
+                            $stmt_vw = $conn->prepare($query_vw);
+                            $stmt_vw->execute();
+                            $result_vw = $stmt_vw->get_result();
+
+                            if ($result_vw->num_rows > 0) {
+                                while ($row_vw = $result_vw->fetch_assoc()) {
+                                    $score = $row_vw['points'];
+                                    $rank = $row_vw['rank'];
+                                    echo "<option value='" . $score . "' " . ($selectedPoints == $score ? 'selected' : '') . ">" . $rank . " - " . $score . " pts.</option>";
+                                }
+                            }
+                            $stmt_vw->close();
+
+                            echo "</select>";
+                            echo "</td>";
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='2'>No teams found.</td></tr>";
+                    }
+
+                    $conn->close();
+                    ?>
+                    <tr>
+                        <td></td>
+                        <td style="text-align: right; padding-right: 5vw;">
+                            <button type="button" class="addEdit-btn" onclick="addEdit()">Add/Edit</button>
+                            <button type="button" class="saveScore-btn" onclick="saveScores()" style="display:none;">Save Scores</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
+
+
+        <script>
+            function addEdit() {
+                // Enable all dropdowns and show the Save button
+                document.querySelectorAll('.teamsScore').forEach(function(select) {
+                    select.disabled = false;
+                });
+                document.querySelector('.addEdit-btn').style.display = 'none';
+                document.querySelector('.saveScore-btn').style.display = 'inline-block';
+            }
+
+            function saveScores() {
+                const scores = [];
+                const eventId = <?= json_encode($evId) ?>; // PHP to JavaScript for eventId
+
+                document.querySelectorAll('.teamRow').forEach(row => {
+                    const teamId = row.querySelector('.contestantId').value;
+                    const score = row.querySelector('.teamsScore').value;
+                    scores.push({
+                        teamId,
+                        score
+                    });
+                });
+
+                // Console log the gathered data
+                console.log('Data to be sent:', {
+                    eventId,
+                    scores
+                });
+
+                // AJAX to send data
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'Sevents.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Scores have been saved successfully.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+
+                        // Disable the dropdowns and hide Save button
+                        document.querySelectorAll('.teamsScore').forEach(select => select.disabled = true);
+                        document.querySelector('.saveScore-btn').style.display = 'none';
+                        document.querySelector('.addEdit-btn').style.display = 'inline-block';
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Failed to save scores.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                };
+
+                // Prepare and send request parameters
+                let params = `eventId=${eventId}`;
+                scores.forEach((scoreData, index) => {
+                    params += `&scores[${index}][teamId]=${scoreData.teamId}&scores[${index}][score]=${scoreData.score}`;
+                });
+                xhr.send(params);
+            }
+        </script>
+
         <!-- SYNC TEAM RESULT -->
         <script>
             function syncTeams(changedSelect, gameNo) {
@@ -520,88 +576,62 @@ if (!in_array($contestantAId, $existingContestants) || !in_array($contestantBId,
             });
 
 
-           // Function to save the changes when Save button is clicked
-           document.querySelectorAll('.save-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        const row = this.closest('tr');
-        row.querySelector('.cancel-btn').style.display = 'none';
+            // Function to save the changes when Save button is clicked
+            document.querySelectorAll('.save-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    row.querySelector('.cancel-btn').style.display = 'none';
 
-        // Get data from the row
-        const eventId = this.getAttribute('data-event-id');
-        const teamA = row.querySelector('.teamA').value;
-        const teamB = row.querySelector('.teamB').value;
+                    // Get data from the row
+                    const eventId = this.getAttribute('data-event-id');
+                    const teamA = row.querySelector('.teamA').value;
+                    const teamB = row.querySelector('.teamB').value;
 
-        // Updated to correctly fetch the selected score for teamA and teamB
-        const teamAScore = row.querySelector('.teamAScore').value; // Fetch the score for teamA
-        const teamBScore = row.querySelector('.teamBScore').value; // Fetch the score for teamB
+                    // Log the data being sent
+                    console.log('Sending data:');
+                    console.log('eventId:', eventId);
+                    console.log('teamA:', teamA);
+                    console.log('teamB:', teamB);
 
-        // Fetch the contestant IDs directly from the row
-        const contestantAIdInput = row.querySelector('.contestantAId');
-        const contestantBIdInput = row.querySelector('.contestantBId');
+                    // AJAX to update data
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', 'Sevents.php', true);
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            // Success response
+                            console.log('Response received:', xhr.responseText); // Log the server response
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Data has been updated successfully.',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            });
 
-        // Safely access their values
-        const contestantAId = contestantAIdInput ? contestantAIdInput.value : null; // Safe access
-        const contestantBId = contestantBIdInput ? contestantBIdInput.value : null; // Safe access
+                            // Disable dropdowns after saving
+                            row.querySelectorAll('select').forEach(select => {
+                                select.disabled = true;
+                            });
 
-        // Log the data being sent
-        console.log('Sending data:');
-        console.log('eventId:', eventId);
-        console.log('teamA:', teamA);
-        console.log('teamB:', teamB);
-        console.log('teamAScore:', teamAScore);
-        console.log('teamBScore:', teamBScore);
-        console.log("Contestant A ID:", contestantAId);
-        console.log("Contestant B ID:", contestantBId);
+                            // Show the Edit button and hide the Save button
+                            row.querySelector('.edit-btn').style.display = 'inline-block';
+                            row.querySelector('.save-btn').style.display = 'none';
+                        } else {
+                            console.error('Error response:', xhr.status, xhr.statusText); // Log the error response
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Failed to update data.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    };
 
-        // AJAX to update data
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'Sevents.php', true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                // Success response
-                console.log('Response received:', xhr.responseText); // Log the server response
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Data has been updated successfully.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
+                    // Send the AJAX request with the data
+                    xhr.send(`eventId=${eventId}&teamA=${teamA}&teamB=${teamB}`);
                 });
-
-                // Disable dropdowns after saving
-                row.querySelectorAll('select').forEach(select => {
-                    select.disabled = true;
-                });
-
-                // Show the Edit button and hide the Save button
-                row.querySelector('.edit-btn').style.display = 'inline-block';
-                row.querySelector('.save-btn').style.display = 'none';
-            } else {
-                console.error('Error response:', xhr.status, xhr.statusText); // Log the error response
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Failed to update data.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            }
-        };
-
-        // Send the AJAX request with the data
-        xhr.send(`eventId=${eventId}&teamA=${teamA}&teamB=${teamB}&teamAScore=${teamAScore}&teamBScore=${teamBScore}&contestantAId=${contestantAId}&contestantBId=${contestantBId}`);
-    });
-});
-
-
+            });
         </script>
-
-    <?php } else { // Display message - not permitted to view
-        echo '
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Oops!</strong> You lack the permission to view the Scoring Table.
-            </div>
-        ';
-    } ?>
 
 </body>
 
