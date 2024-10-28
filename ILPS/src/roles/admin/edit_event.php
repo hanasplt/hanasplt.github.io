@@ -15,13 +15,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $location = $_POST['location'];
     $status = $_POST['status'];
 
-    // Set gameNo, teamA, and teamB based on the type
-    if ($type === 'Sports') {
+
+    if ($type === 'Sports'){
         $gameNo = !empty($_POST['gameNo']) ? (int)$_POST['gameNo'] : null;
         $teamA = isset($_POST['teamA']) ? (int)$_POST['teamA'] : null;
         $teamB = isset($_POST['teamB']) ? (int)$_POST['teamB'] : null;
-    } else {
-        // If the type is Socio-Cultural or Others, set to null
+    }
+
+    if ($type === 'Socio-Cultural'){
+        $gameNo = null;
+        $teamA = null;
+        $teamB = null;
+    }
+
+    if ($type === 'Others'){
         $gameNo = null;
         $teamA = null;
         $teamB = null;
@@ -41,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit;
     }
 
+
     if (empty($event_id) || empty($day_id) || empty($time) || empty($type) || empty($activity) || empty($location) || empty($status)) {
         echo json_encode(['success' => false, 'message' => 'Required fields are missing.']);
         exit;
@@ -49,13 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $conn->begin_transaction();
 
     try {
-        // Prepare update query
         $updateQuery = "UPDATE scheduled_eventstoday SET time = ?, type = ?, activity = ?, location = ?, gameNo = ?, teamA = ?, teamB = ?, status = ? WHERE id = ?";
         $stmt = $conn->prepare($updateQuery);
-
-        // Use appropriate types for bind_param
-        // Since gameNo, teamA, and teamB can be NULL, bind them as nullable types
-        $stmt->bind_param('ssssssss', $time, $type, $activity, $location, $gameNo, $teamA, $teamB, $status, $event_id);
+        
+        $stmt->bind_param('ssssssssi', $time, $type, $activity, $location, $gameNo, $teamA, $teamB, $status, $event_id);
 
         if ($stmt->execute()) {
             echo json_encode(['success' => true, 'message' => 'Event updated successfully.']);
