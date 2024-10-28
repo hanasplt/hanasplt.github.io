@@ -125,7 +125,7 @@ function submitForm(actionUrl) {
 
 
 // LOGOUT CONFIRMATION
-document.getElementById('logoutIcon').addEventListener('click', function() {
+document.getElementById('logout').addEventListener('click', function() {
     Swal.fire({
         title: 'Are you sure?',
         text: "You will be logged out!",
