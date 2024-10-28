@@ -296,7 +296,7 @@ body {
     border-radius: 50%;
     align-items: center;
     justify-content: center;
-    background-color: #ffffff;
+    background-color: #ffffff00;
     border: none;
 }
 
@@ -442,20 +442,21 @@ body {
 
 .export-button button {
     font-weight: 600;
-    font-family: Poppins, sans-serif;
+    font-family: Inter, sans-serif;
     font-size: 12px !important;
     padding: 10px;
     background-color: #FCCE42;
     border: none;
-    border-radius: 8px;
+    border-radius: 5px;
     color: #2B2B2B; 
     cursor: pointer; 
-    transition: background 0.3s ease; 
+    transition: background-color 0.3s ease;
     text-align: center;
 }
 
 .export-button button:hover {
-    background-color: #ddba51;
+    background-color: #d3a51b;
+    transform: translateY(-2px);
 }
 
 .export-button button:active {
