@@ -1,58 +1,75 @@
 <?php
-
 include '../../../config/db.php';
 
-if (isset($_POST['event_id'], $_POST['time'], $_POST['activity'], $_POST['location'], $_POST['status'])) {
-    $event_id = $_POST['event_id'];
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_log', '/path/to/your/error.log');
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Required fields
+    $event_id = $_POST['eventId'];
+    $day_id = $_POST['dayId'];
     $time = $_POST['time'];
-    $activity = ucwords(trim($_POST['activity']));
-    $location = ucwords(trim($_POST['location']));
+    $type = $_POST['type'];
+    $activity = $_POST['activity'];
+    $location = $_POST['location'];
     $status = $_POST['status'];
+
+    // Set gameNo, teamA, and teamB based on the type
+    if ($type === 'Sports') {
+        $gameNo = !empty($_POST['gameNo']) ? (int)$_POST['gameNo'] : null;
+        $teamA = isset($_POST['teamA']) ? (int)$_POST['teamA'] : null;
+        $teamB = isset($_POST['teamB']) ? (int)$_POST['teamB'] : null;
+    } else {
+        // If the type is Socio-Cultural or Others, set to null
+        $gameNo = null;
+        $teamA = null;
+        $teamB = null;
+    }
+
+    $missingFields = [];
+    if (empty($event_id)) $missingFields[] = 'event_id';
+    if (empty($day_id)) $missingFields[] = 'day_id';
+    if (empty($time)) $missingFields[] = 'time';
+    if (empty($type)) $missingFields[] = 'type';
+    if (empty($activity)) $missingFields[] = 'activity';
+    if (empty($location)) $missingFields[] = 'location';
+    if (empty($status)) $missingFields[] = 'status';
+
+    if (!empty($missingFields)) {
+        echo json_encode(['success' => false, 'message' => 'Required fields are missing: ' . implode(', ', $missingFields)]);
+        exit;
+    }
+
+    if (empty($event_id) || empty($day_id) || empty($time) || empty($type) || empty($activity) || empty($location) || empty($status)) {
+        echo json_encode(['success' => false, 'message' => 'Required fields are missing.']);
+        exit;
+    }
 
     $conn->begin_transaction();
 
     try {
-        $updateQuery = "UPDATE scheduled_eventstoday SET time = ?, activity = ?, location = ?, status = ? WHERE id = ?";
+        // Prepare update query
+        $updateQuery = "UPDATE scheduled_eventstoday SET time = ?, type = ?, activity = ?, location = ?, gameNo = ?, teamA = ?, teamB = ?, status = ? WHERE id = ?";
         $stmt = $conn->prepare($updateQuery);
-        $stmt->bind_param('ssssi', $time, $activity, $location, $status, $event_id);
+
+        // Use appropriate types for bind_param
+        // Since gameNo, teamA, and teamB can be NULL, bind them as nullable types
+        $stmt->bind_param('ssssssss', $time, $type, $activity, $location, $gameNo, $teamA, $teamB, $status, $event_id);
 
         if ($stmt->execute()) {
-            $selectQuery = "SELECT time, type, activity, gameNo, teamA, teamB, location, status FROM scheduled_eventstoday WHERE id = ?";
-            $selectStmt = $conn->prepare($selectQuery);
-            $selectStmt->bind_param('i', $event_id);
-            $selectStmt->execute();
-            $result = $selectStmt->get_result();
-
-            if ($result->num_rows > 0) {
-                $eventData = $result->fetch_assoc();
-                $conn->commit();
-
-                echo json_encode([
-                    'success' => true,
-                    'time' => $eventData['time'],
-                    'type' => $eventData['type'],
-                    'activity' => $eventData['activity'],
-                    'gameNo' => $eventData['gameNo'],
-                    'teamA' => $eventData['teamA'],
-                    'teamB' => $eventData['teamB'],
-                    'location' => $eventData['location'],
-                    'status' => $eventData['status']
-                ]);
-            } else {
-                throw new Exception('Failed to retrieve updated event');
-            }
-
-            $selectStmt->close();
+            echo json_encode(['success' => true, 'message' => 'Event updated successfully.']);
         } else {
-            throw new Exception('Failed to update event');
+            throw new Exception('Failed to update event.');
         }
 
-        $stmt->close();
+        $conn->commit();
     } catch (Exception $e) {
         $conn->rollback();
         echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
-} else {
-    echo json_encode(['success' => false, 'message' => 'Invalid input']);
+
+    $stmt->close();
+    $conn->close();
 }
 ?>

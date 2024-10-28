@@ -802,7 +802,7 @@ usort($scheduled_days, function ($a, $b) {
 
                                 // Category options based on fetched event type
                                 let categoryOptions = '';
-                                if (fetchedEvent.type === 'Socio-cultural') {
+                                if (fetchedEvent.type === 'Socio-Cultural') {
                                     categoryOptions = `
                                         <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
                                         <option value="sports">Sports</option>
@@ -811,13 +811,13 @@ usort($scheduled_days, function ($a, $b) {
                                 } else if (fetchedEvent.type === 'Sports') {
                                     categoryOptions = `
                                         <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
-                                        <option value="socio-cultural">Socio-cultural</option>
+                                        <option value="Socio-Cultural">Socio-Cultural</option>
                                         <option value="others">Others</option>
                                     `;
                                 } else {
                                     categoryOptions = `
                                         <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
-                                        <option value="socio-cultural">Socio-cultural</option>
+                                        <option value="Socio-Cultural">Socio-Cultural</option>
                                         <option value="sports">Sports</option>
                                     `;
                                 }
@@ -842,6 +842,9 @@ usort($scheduled_days, function ($a, $b) {
                                             Swal.fire({
                                                 title: 'Edit Event',
                                                 html: `
+                                                <input type="hidden" id="event-id" value="${fetchedEvent.id}">
+                                                <input type="hidden" id="day-id" value="${fetchedEvent.day_id}">
+
                                                 <input id="edit-time" class="swal2-input1" type="time" value="${fetchedEvent.time}">
                                                 <select id="edit-event-category" class="swal2-input3">
                                                     ${categoryOptions}
@@ -929,6 +932,7 @@ usort($scheduled_days, function ($a, $b) {
                                                         const teamAField = document.getElementById('edit-team-a');
                                                         const teamBField = document.getElementById('edit-team-b');
 
+
                                                         gameNoInput.style.display = 'none';
                                                         teamAField.style.display = 'none';
                                                         teamBField.style.display = 'none';
@@ -942,11 +946,27 @@ usort($scheduled_days, function ($a, $b) {
                                                             teamAField.style.display = 'block';
                                                             teamBField.style.display = 'block';
                                                             eventSportsSelect.style.display = 'block';
+
+                                                            //if changed type
+                                                            activityOthersInput.value = '';
+                                                            const socioDropdown = document.getElementById('edit-event-socio');
+                                                            socioDropdown.selectedIndex = -1;
                                                         } else if (category === 'socio-cultural') {
                                                             activityOthersInput.style.display = 'none';
                                                             eventSocioSelect.style.display = 'block';
+
+                                                            //if changed type
+                                                            activityOthersInput.value = '';
+                                                            const sportsDropdown = document.getElementById('edit-event-sports');
+                                                            sportsDropdown.selectedIndex = -1;
                                                         } else if (category === 'others') {
                                                             activityOthersInput.style.display = 'block';
+
+                                                            //if changed type
+                                                            const socioDropdown = document.getElementById('edit-event-socio');
+                                                            socioDropdown.selectedIndex = -1;
+                                                            const sportsDropdown = document.getElementById('edit-event-sports');
+                                                            sportsDropdown.selectedIndex = -1;
                                                         }
                                                     }
 
@@ -979,6 +999,8 @@ usort($scheduled_days, function ($a, $b) {
                                                 confirmButtonText: 'Save',
                                                 showCancelButton: true,
                                                 preConfirm: () => {
+                                                    const eventId = document.getElementById('event-id').value;
+                                                    const dayId = document.getElementById('day-id').value;
                                                     const time24 = document.getElementById('edit-time').value;
                                                     const type = document.getElementById('edit-event-category').value;
                                                     let activity;
@@ -997,22 +1019,28 @@ usort($scheduled_days, function ($a, $b) {
                                                         } else {
                                                             activity = '';  // Default to an empty string if none are found
                                                         }
-                                                    const gameNo = document.getElementById('edit-game-no').value;
-                                                    const teamA = document.getElementById('edit-team-a').value;
-                                                    const teamB = document.getElementById('edit-team-b').value;
+                                                    const gameNo = document.getElementById('edit-game-no').value || null;
+                                                    const teamA = document.getElementById('edit-team-a').value || null;
+                                                    const teamB = document.getElementById('edit-team-b').value || null;
                                                     const location = document.getElementById('edit-location').value
                                                         .toLowerCase()
                                                         .replace(/\b\w/g, char => char.toUpperCase());
+                                                    const status = document.getElementById('edit-status').value;
 
-                                                    console.log('Team A selected:', teamA);
-                                                    console.log('Team B selected:', teamB);
-
-                                                    if (!time24 || !type || !location || (!gameNo && !teamA && !teamB && !activity)) {
-                                                        Swal.showValidationMessage('Please fill in all required fields');
-                                                        return false;
-                                                    }
+                                                    console.log('Event:', eventId);
+                                                    console.log('Day:', dayId);
+                                                    console.log('Time:', time24);
+                                                    console.log('Type:', type);
+                                                    console.log('Activity:', activity);
+                                                    console.log('Game Number:', gameNo);
+                                                    console.log('Team A:', teamA);
+                                                    console.log('Team B:', teamB);
+                                                    console.log('Location:', location);
+                                                    console.log('Status:', status);
 
                                                     return {
+                                                        eventId,
+                                                        dayId,
                                                         time: time24,
                                                         type,
                                                         activity,
@@ -1020,12 +1048,14 @@ usort($scheduled_days, function ($a, $b) {
                                                         teamA,
                                                         teamB,
                                                         location,
-                                                        status: document.getElementById('edit-status').value,
+                                                        status
                                                     };
                                                 }
                                             }).then((result) => {
                                                 if (result.isConfirmed) {
                                                     const {
+                                                        eventId,
+                                                        dayId,
                                                         time,
                                                         type,
                                                         activity,
@@ -1036,12 +1066,16 @@ usort($scheduled_days, function ($a, $b) {
                                                         status
                                                     } = result.value;
 
+                                                    console.log(result.value);
+
                                                     const xhrUpdate = new XMLHttpRequest();
                                                     xhrUpdate.open("POST", "edit_event.php", true);
                                                     xhrUpdate.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                                                     xhrUpdate.onload = function() {
+                                                        console.log('Response:', xhrUpdate.responseText);
                                                         if (xhrUpdate.status === 200) {
                                                             const updateResponse = JSON.parse(xhrUpdate.responseText);
+                                                            console.log('Update Response:', updateResponse);
                                                             if (updateResponse.success) {
                                                                 Swal.fire({
                                                                     title: 'Success!',
@@ -1051,6 +1085,7 @@ usort($scheduled_days, function ($a, $b) {
                                                                     window.location.reload();
                                                                 });
                                                             } else {
+                                                                console.error('Error:', updateResponse.message);
                                                                 Swal.fire({
                                                                     title: 'Error!',
                                                                     text: updateResponse.message,
@@ -1059,8 +1094,9 @@ usort($scheduled_days, function ($a, $b) {
                                                             }
                                                         }
                                                     };
-                                                    xhrUpdate.send(`event_id=${eventId}&time=${time}&activity=${activity}&gameNo=${gameNo}&teamA=${teamA}&teamB=${teamB}&location=${location}&status=${status}`);
-                                                }
+                                                    const params = `eventId=${encodeURIComponent(result.value.eventId)}&dayId=${encodeURIComponent(result.value.dayId)}&time=${encodeURIComponent(result.value.time)}&type=${encodeURIComponent(result.value.type)}&activity=${encodeURIComponent(result.value.activity)}&gameNo=${encodeURIComponent(result.value.gameNo || '')}&teamA=${encodeURIComponent(result.value.teamA || '')}&teamB=${encodeURIComponent(result.value.teamB || '')}&location=${encodeURIComponent(result.value.location)}&status=${encodeURIComponent(result.value.status)}`;
+                                                    console.log(params);
+                                                    xhrUpdate.send(params);                                                }
                                             });
                                         } else {
                                             Swal.fire({
