@@ -50,7 +50,9 @@ document.getElementById('searchBox').addEventListener('input', debounce(function
 
 // Display edit account form
 document.querySelectorAll('.edit-icon').forEach(function(editIcon) {
-    editIcon.addEventListener('click', function() {
+    editIcon.addEventListener('click', function(event) { 
+        event.stopPropagation();
+        
         var userId = this.getAttribute('data-user-id');
         var iframe = document.getElementById('editIframe');
         iframe.src = '../admin/html/edit-account.html?userId=' + userId;
@@ -68,6 +70,7 @@ window.addEventListener("message", function(event) {
 
 // delete confirmation
 function confirmDelete(userId, name) {
+    event.stopPropagation(); 
     Swal.fire({
         title: 'Confirm',
         text: "Do you want to delete this account?",
@@ -168,4 +171,39 @@ function submitForm(actionUrl) {
 
     // Submit the form
     document.getElementById('exportForm').submit();
+}
+
+// Show account details
+function showRoleDetails(firstName, middleName, lastName, suffix, email, type) {
+    Swal.fire({
+        title: 'Account Details',
+        html: `
+            <div class="swal-content-acc">
+                <div class="column-1">
+                    <label>First Name</label>
+                    <p>${firstName}</p>
+
+                    <label>Last Name</label>
+                    <p>${lastName}</p>
+
+                    <label>Email</label>
+                    <p>${email}</p>
+                </div>
+                <div class="column-2">
+                    <label>Middle Name</label>
+                    <p>${middleName || 'N/A'}</p>
+
+                    <label>Suffix</label>
+                    <p>${suffix || 'N/A'}</p>
+
+                    <label>Type</label>
+                    <p>${type}</p>
+                </div>
+            </div>
+        `,
+        confirmButtonText: 'Close',
+        customClass: {
+            popup: 'custom-swal-popup'
+        }
+    });
 }

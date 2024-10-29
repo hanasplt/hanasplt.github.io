@@ -126,7 +126,7 @@ usort($scheduled_days, function ($a, $b) {
                     </div>
                 </button>
                 <div class="dropdown-content">
-                    <p onclick="window.location.href = '';" class="dc-text" title="Profile">View Profile</p>
+                    <p onclick="window.location.href = 'view-profile.php';" class="dc-text" title="Profile">View Profile</p>
                     <p onclick="window.location.href = 'reports.php';" class="dc-text" title="Reports">Reports</p>
                     <p onclick="window.location.href = 'accesslog.php';" class="dc-text" title="Logs">Logs</p>
                     <div class="menu-icon">
@@ -852,19 +852,19 @@ usort($scheduled_days, function ($a, $b) {
                                                 <select id="edit-event-sports" class="swal2-input3" style="display: none;" required>
                                                     <option value="${fetchedEvent.activity}" selected disabled> ${fetchedEvent.activity}</option>
                                                     <?php
-                                                        $sql = "CALL sp_getEventFrom(?);";
-                                                        $ev_type = "Sports";
+                                                    $sql = "CALL sp_getEventFrom(?);";
+                                                    $ev_type = "Sports";
 
-                                                        $stmt = $conn->prepare($sql);
-                                                        $stmt->bind_param("s", $ev_type);
-                                                        $stmt->execute();
-                                                        $result = $stmt->get_result();
+                                                    $stmt = $conn->prepare($sql);
+                                                    $stmt->bind_param("s", $ev_type);
+                                                    $stmt->execute();
+                                                    $result = $stmt->get_result();
 
-                                                        if ($result->num_rows > 0) {
-                                                            while ($row = $result->fetch_assoc()) {
-                                                                $db_eventId = $row['eventID'];
-                                                                $db_evname = $row['eventName'];
-                                                        ?>
+                                                    if ($result->num_rows > 0) {
+                                                        while ($row = $result->fetch_assoc()) {
+                                                            $db_eventId = $row['eventID'];
+                                                            $db_evname = $row['eventName'];
+                                                    ?>
                                                                 <option value="<?php echo $db_eventId; ?>" data-event-name="<?php echo htmlspecialchars($db_evname); ?>">
                                                                     <?php echo htmlspecialchars($db_evname); ?>
                                                                 </option>
@@ -875,7 +875,7 @@ usort($scheduled_days, function ($a, $b) {
                                                         }
                                                         $result->free();
                                                         $stmt->close();
-                                                    ?>
+                                                                ?>
                                                 </select>
                                                 <select id="edit-event-socio" class="swal2-input3" style="display: none;" required>
                                                     <option value="${fetchedEvent.activity}" selected disabled> ${fetchedEvent.activity}</option>
@@ -1004,21 +1004,21 @@ usort($scheduled_days, function ($a, $b) {
                                                     const time24 = document.getElementById('edit-time').value;
                                                     const type = document.getElementById('edit-event-category').value;
                                                     let activity;
-                                                        // Check which dropdown or input is currently displayed
-                                                        const sportsElement = document.getElementById('edit-event-sports');
-                                                        const socioElement = document.getElementById('edit-event-socio');
-                                                        const othersElement = document.getElementById('edit-event-activity-others');
+                                                    // Check which dropdown or input is currently displayed
+                                                    const sportsElement = document.getElementById('edit-event-sports');
+                                                    const socioElement = document.getElementById('edit-event-socio');
+                                                    const othersElement = document.getElementById('edit-event-activity-others');
 
-                                                        // Get the value from the displayed element
-                                                        if (sportsElement.style.display !== 'none') {
-                                                            activity = sportsElement.options[sportsElement.selectedIndex].text;
-                                                        } else if (socioElement.style.display !== 'none') {
-                                                            activity = socioElement.options[socioElement.selectedIndex].text;
-                                                        } else if (othersElement.style.display !== 'none') {
-                                                            activity = othersElement.value;  // Text input for "Others" category
-                                                        } else {
-                                                            activity = '';  // Default to an empty string if none are found
-                                                        }
+                                                    // Get the value from the displayed element
+                                                    if (sportsElement.style.display !== 'none') {
+                                                        activity = sportsElement.options[sportsElement.selectedIndex].text;
+                                                    } else if (socioElement.style.display !== 'none') {
+                                                        activity = socioElement.options[socioElement.selectedIndex].text;
+                                                    } else if (othersElement.style.display !== 'none') {
+                                                        activity = othersElement.value; // Text input for "Others" category
+                                                    } else {
+                                                        activity = ''; // Default to an empty string if none are found
+                                                    }
                                                     const gameNo = document.getElementById('edit-game-no').value || null;
                                                     const teamA = document.getElementById('edit-team-a').value || null;
                                                     const teamB = document.getElementById('edit-team-b').value || null;
@@ -1096,7 +1096,8 @@ usort($scheduled_days, function ($a, $b) {
                                                     };
                                                     const params = `eventId=${encodeURIComponent(result.value.eventId)}&dayId=${encodeURIComponent(result.value.dayId)}&time=${encodeURIComponent(result.value.time)}&type=${encodeURIComponent(result.value.type)}&activity=${encodeURIComponent(result.value.activity)}&gameNo=${encodeURIComponent(result.value.gameNo || '')}&teamA=${encodeURIComponent(result.value.teamA || '')}&teamB=${encodeURIComponent(result.value.teamB || '')}&location=${encodeURIComponent(result.value.location)}&status=${encodeURIComponent(result.value.status)}`;
                                                     console.log(params);
-                                                    xhrUpdate.send(params);                                                }
+                                                    xhrUpdate.send(params);
+                                                }
                                             });
                                         } else {
                                             Swal.fire({

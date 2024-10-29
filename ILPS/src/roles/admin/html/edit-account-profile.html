@@ -32,8 +32,8 @@
             </div>
             <div class="add-form">
                 <div class="add-left">
-                    <label for="userId">User ID</label>
-                    <input type="text" id="userId" name="userId" readonly>
+                    <label for="userId" style="display: none;">User ID</label>
+                    <input type="text" id="userId" name="userId" style="display: none;" readonly>
 
                     <label for="firstName">First Name</label>
                     <input type="text" id="firstName" name="firstName" required oninput="validateInput(event)">
@@ -54,8 +54,8 @@
                     <label for="password" id="passlabel">Password</label>
                     <input type="text" id="password" name="password" required>
 
-                    <label for="sort">Type</label>    
-                    <select id="sort" name="sort">
+                    <label for="sort" style="display: none;">Type</label>    
+                    <select id="sort" name="sort" style="display: none;">
                         <option value="Committee">Committee</option>
                         <option value="Judge">Judge</option>
                         <option value="Admin">Admin</option>
@@ -68,7 +68,6 @@
             </div>
         </form>
     </div>
-    <script src="../js/edit-acc.js"></script>
-    
+    <script src="../js/edit-account-profile.js"></script>
 </body>
 </html>

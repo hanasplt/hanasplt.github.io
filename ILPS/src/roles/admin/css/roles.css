@@ -215,6 +215,11 @@ body {
             color: #2b2b2b;
             font-weight: 400;
         }
+
+        .data-row:hover {
+            box-shadow: 0px 0px 10px 0px rgba(88, 88, 88, 0.222);
+        }
+        
         .action {
             text-align: center;
         }

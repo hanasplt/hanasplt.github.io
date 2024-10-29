@@ -117,7 +117,7 @@ $conn->close();
                     </div>
                 </button>
                 <div class="dropdown-content">
-                    <p onclick="window.location.href = '';" class="dc-text" title="Profile">View Profile</p>
+                    <p onclick="window.location.href = 'view-profile.php';" class="dc-text" title="Profile">View Profile</p>
                     <p onclick="window.location.href = 'reports.php';" class="dc-text" title="Reports">Reports</p>
                     <p onclick="window.location.href = 'accesslog.php';" class="dc-text" title="Logs">Logs</p>
                     <div class="menu-icon">
@@ -199,7 +199,7 @@ $conn->close();
                     }
 
             ?>
-                    <div class="account" data-name="<?php echo strtolower($fullName); ?>">
+                    <div class="account" data-name="<?php echo strtolower($fullName); ?>" onclick="showRoleDetails('<?php echo $row['firstName']; ?>', '<?php echo $row['middleName']; ?>', '<?php echo $row['lastName']; ?>', '<?php echo $row['suffix']; ?>', '<?php echo $row['email']; ?>', '<?php echo $row['type']; ?>')">
                         <div class="left-deets">
                             <div class="acc-img">
                                 <i class="fas fa-user"></i>
@@ -224,7 +224,7 @@ $conn->close();
                             <?php if (in_array('user_delete', $admin_rights)) { ?>
                                 <form action="delete-account.php" method="POST" id="deleteForm_<?php echo $row['userId']; ?>">
                                     <input type="hidden" name="userId" value="<?php echo $row['userId']; ?>">
-                                    <button type="button" class="trash-icon" style="cursor: pointer;" onclick="confirmDelete('<?php echo $row['userId']; ?>', '<?php echo $fullName; ?>')">
+                                    <button type="button" class="trash-icon" style="cursor: pointer;" onclick="confirmDelete('<?php echo $row['userId']; ?>', '<?php echo $fullName; ?>', event)">
                                         <i class="fa-solid fa-trash-can"></i>
                                     </button>
                                 </form>

@@ -66,7 +66,7 @@ require_once 'adminPermissions.php'; // Retrieves admin permissions
                     </div>
                 </button>
                 <div class="dropdown-content">
-                    <p onclick="window.location.href = '';" class="dc-text" title="Profile">View Profile</p>
+                    <p onclick="window.location.href = 'view-profile.php';" class="dc-text" title="Profile">View Profile</p>
                     <p onclick="window.location.href = 'reports.php';" class="dc-text" title="Reports">Reports</p>
                     <p onclick="window.location.href = 'accesslog.php';" class="dc-text" title="Logs">Logs</p>
                     <div class="menu-icon">
