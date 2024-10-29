@@ -187,7 +187,7 @@ usort($scheduled_days, function ($a, $b) {
                                 <?php }
                                 // Display delete button - permitted to delete
                                 if (in_array('schedule_delete', $admin_rights)) { ?>
-                                    <button id="trash-icon" class="header-btn deleteHeaderBtn" data-day-id="<?php echo $day['id']; ?>"><i class="fa-solid fa-trash-can"></i></button>
+                                    <button id="trash-icon" class="header-btn deleteHeaderBtn" data-day-id="<?php echo $day['id']; ?>" data-day-date="<?php echo $day['day_date']; ?>"><i class="fa-solid fa-trash-can"></i></button>
                                 <?php } ?>
                             </div>
                         </div>
@@ -406,6 +406,7 @@ usort($scheduled_days, function ($a, $b) {
             document.querySelectorAll('.deleteHeaderBtn').forEach(button => {
                 button.addEventListener('click', function() {
                     const dayId = this.getAttribute('data-day-id');
+                    const dayDate = this.getAttribute('data-day-date');
 
                     Swal.fire({
                         title: 'Are you sure?',
@@ -454,7 +455,7 @@ usort($scheduled_days, function ($a, $b) {
                                 }
                             };
 
-                            xhr.send(`day_id=${dayId}`);
+                            xhr.send(`day_id=${dayId}&day_date=${dayDate}`);
                         }
                     });
                 });

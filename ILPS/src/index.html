@@ -89,6 +89,22 @@
         <hr style="height:1px; border-width:0; color: #a7be54; background-color:#a7be54">
         <p>© 2024 Intramural Leaderboard and Points System. All Rights Reserved.</p>
     </div>
+
+    <script>
+        function loadConfigFile() {
+            // Retrieve config file to load database, tables, views, stored procedures/functions...
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log(this.responseText);
+                }
+            };
+            xhttp.open("POST", "../config/config.php", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send();
+        }
+        loadConfigFile();
+    </script>
 </body>
 </html>
 

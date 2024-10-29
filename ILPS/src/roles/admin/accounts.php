@@ -14,13 +14,13 @@ $searchQuery = isset($_GET['search']) ? "%" . $_GET['search'] . "%" : "%%";  // 
 
 try {
     // count accounts
-    $countSql = "CALL sp_getAccountCount(?)";
+    $countSql = "CALL sp_getAccountCount(?,?)";
     $countStmt = $conn->prepare($countSql);
     if (!$countStmt) {
         throw new Exception("Prepare failed: " . $conn->error);
     }
 
-    $countStmt->bind_param("s", $searchQuery);
+    $countStmt->bind_param("si", $searchQuery, $iddd);
     $countStmt->execute();
     $countResult = $countStmt->get_result();
     if (!$countResult) {
@@ -37,13 +37,13 @@ try {
 }
 
 try {
-    $sql = "CALL sp_getAccount(?, ?, ?)";
+    $sql = "CALL sp_getAccount(?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         throw new Exception("Prepare failed: " . $conn->error);
     }
 
-    $stmt->bind_param("ssi", $searchQuery, $recordsPerPage, $offset);
+    $stmt->bind_param("ssii", $searchQuery, $recordsPerPage, $offset, $iddd);
     $stmt->execute();
     $result = $stmt->get_result();
 

@@ -27,9 +27,9 @@ $stmt->close();
 
 // get the total accounts
 $search_query = "%";
-$sql_count = "CALL sp_getAccountCount(?)";
+$sql_count = "CALL sp_getAccountCount(?,?)";
 $stmt = $conn->prepare($sql_count);
-$stmt->bind_param("s", $search_query);
+$stmt->bind_param("si", $search_query, $iddd);
 $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_assoc();
@@ -63,10 +63,10 @@ $result_events->free();
 $stmt->close();
 
 // display 3 accounts
-$sql = "CALL sp_getAcc(?);"; // display only 3 accounts for display
+$sql = "CALL sp_getAcc(?,?);"; // display only 3 accounts for display
 $limit = 3;
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $limit);
+$stmt->bind_param("ii", $iddd, $limit);
 $stmt->execute();
 $result = $stmt->get_result();
 ?>

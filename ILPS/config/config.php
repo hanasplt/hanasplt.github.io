@@ -353,7 +353,7 @@ if ($conn->query($sqlF) === TRUE) {
 
 
 #STORED PROCEDURES (ALL) --------------------------------------------------------------------------------------------------------
-
+/* RESET & FORGOT PASSWORD */
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_UpdateToken(IN token VARCHAR(255), IN eml VARCHAR(255))
         BEGIN
             UPDATE accounts
@@ -376,7 +376,9 @@ if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
+/* END RESET & FORGOT PASSWORD */
 
+// PENDING
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_delLead()
         BEGIN
             DROP TABLE IF EXISTS leaderboard;
@@ -386,6 +388,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+// PENDING
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getTeamData(IN evid INT)
         BEGIN
             select eventId, contestantId, (select vw_teams.teamName from vw_eventParti 
@@ -400,6 +403,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+// PENDING
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getLead()
         BEGIN
             SELECT RANK() OVER (ORDER BY SUM(points) DESC) AS rank, t.teamName as team, SUM(l.points) 
@@ -441,15 +445,19 @@ if ($conn->query($sqlT) === TRUE) {
 }
 
 
+/* ACCOUNTS */
 //NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAccount(
         IN search_query VARCHAR(255), 
         IN limit_num INT, 
-        IN offset_num INT)
+        IN offset_num INT,
+        IN id INT)
     BEGIN
         SELECT * FROM vw_accounts
-        WHERE userId != 1 AND status IS NULL AND (CONCAT(firstName, ' ', lastName) LIKE search_query
-        OR CONCAT(firstName, ' ', middleName, ' ', lastName) LIKE search_query)
+        WHERE 
+            userId != 1 AND userId != id AND status IS NULL AND 
+            (CONCAT(firstName, ' ', lastName) LIKE search_query
+            OR CONCAT(firstName, ' ', middleName, ' ', lastName) LIKE search_query)
         LIMIT limit_num OFFSET offset_num;
     END ;";
 
@@ -460,11 +468,13 @@ if ($conn->query($sqlT) === TRUE) {
 
 //NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAccountCount(
-        IN search_query VARCHAR(255))
+        IN search_query VARCHAR(255), IN id INT)
     BEGIN
         SELECT COUNT(*) AS total FROM vw_accounts
-        WHERE userId != 1 AND status IS NULL AND (CONCAT(firstName, ' ', lastName) LIKE search_query
-        OR CONCAT(firstName, ' ', middleName, ' ', lastName) LIKE search_query);
+        WHERE 
+            userId != 1 AND userId != id AND status IS NULL AND 
+            (CONCAT(firstName, ' ', lastName) LIKE search_query OR 
+            CONCAT(firstName, ' ', middleName, ' ', lastName) LIKE search_query);
     END ;";
 
 if ($conn->query($sqlT) === TRUE) {
@@ -496,9 +506,12 @@ if ($conn->query($sqlT) === TRUE) {
 
 
 // NAGAMIT
-$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAcc(IN limit_num INT)
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAcc(IN id INT, IN limit_num INT)
         BEGIN
-            SELECT * FROM vw_accounts WHERE status IS NULL LIMIT limit_num;
+            SELECT * FROM vw_accounts 
+            WHERE 
+                status IS NULL AND userId != 1 AND userId != id 
+            LIMIT limit_num;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
@@ -545,6 +558,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+// IDK
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_resetAccPass(IN id INT, IN pass VARCHAR(255),
         IN token VARCHAR(64))
         BEGIN
@@ -577,6 +591,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+// IDK
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAdmin()
         BEGIN
             SELECT * FROM vw_admin;
@@ -587,7 +602,22 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+// NAGAMIT
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_delPrevRole(IN thisTable VARCHAR(50), IN id INT)
+        BEGIN
+            IF thisTable = 'vw_eventJudge' THEN
+                DELETE FROM vw_eventJudge WHERE judgeId = id;
+            ELSEIF thisTable = 'vw_eventComt' THEN
+                DELETE FROM vw_eventComt WHERE comId = id;
+            END IF;
+        END;";
+if ($conn->query($sqlT) === TRUE) {
+} else {
+    echo "Error creating table: " . $conn->error;
+}
+/* END ACCOUNTS */
 
+/* TEAMS */
 // NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getTeam(IN limit_num INT, IN offset INT)
         BEGIN
@@ -611,6 +641,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+// IDK
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getATeam(IN id VARCHAR(255))
         BEGIN
             SELECT * FROM vw_teams WHERE teamId = id;
@@ -674,8 +705,9 @@ if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
+/* END TEAMS */
 
-
+/* EVENTS */
 // NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEvents()
         BEGIN
@@ -697,6 +729,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+// IDK
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEvent(IN id INT)
         BEGIN
             SELECT * FROM vw_events WHERE eventID = id;
@@ -779,6 +812,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+// IDK
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getEventContestantJ(IN id VARCHAR(255))
         BEGIN
             SELECT contId, vw_eventParti.teamId, vw_teams.teamName as team FROM vw_eventParti 
@@ -801,7 +835,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
-
+// IDK
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_delEventContestant(IN id INT)
         BEGIN
             UPDATE vw_eventParti SET status = 0 WHERE contId = id;
@@ -921,8 +955,14 @@ if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
+/* END EVENTS */
 
 
+
+
+
+
+/* SCORING */
 // NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getScoring()
         BEGIN
@@ -970,8 +1010,12 @@ if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
+/* END SCORING */
 
 
+
+
+/* CRITERIA */
 // NAGAMIT
 $sqlP = "CREATE PROCEDURE IF NOT EXISTS sp_getCriteria(IN evid INT)
         BEGIN
@@ -1016,11 +1060,95 @@ if ($conn->query($sqlP) === TRUE) {
 } else {
     echo "Error: " . $conn->error;
 }
+/* END CRITERIA */
 
+
+
+/* SCHEDULE */
+try {
+    // Inserting day on schedule
+    $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertDay(IN daydate DATE)
+            BEGIN
+                INSERT INTO scheduled_days (day_date) VALUES (daydate);
+            END ;";
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
+try {
+    // Updating day on schedule
+    $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_updateDay(IN daydate DATE, IN dayId INT)
+            BEGIN
+                UPDATE scheduled_days SET day_date = daydate WHERE id = dayId;
+            END ;";
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
+try {
+    // Removing day on schedule
+    $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_delDay(IN dayId INT)
+            BEGIN
+                DELETE FROM scheduled_days WHERE id = dayId;
+            END ;";
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
+/* END SCHEDULE */
+
+
+
+
+/* LOGS */
+try {
+    // Stored Procedure for displaying logs
+    $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_displayLog(IN inpYear INT)
+            BEGIN
+                SELECT vl.*, CONCAT(va.firstName, ' ', va.lastName) AS fullname
+                FROM vw_logs vl
+                INNER JOIN vw_accounts va ON vl.userId = va.userId
+                WHERE YEAR(date_on) = inpYear;
+            END ;";
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
+
+try {
+    // inserting log NAGAMIT
+    $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertLog(IN id INT, IN act VARCHAR(255))
+            BEGIN
+                INSERT INTO vw_logs VALUES (NULL, NOW(), id, act);
+            END ;";
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+/* END LOGS */
 
 
 #PROCEDURES (COMMITTEE & JUDGE) ---------------------------------------------------------------------
-
+/* COMMITTEE */
 // NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAComt(IN id INT)
         BEGIN
@@ -1033,6 +1161,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+// IDK
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getPartiFrom(IN evid INT)
         BEGIN
             SELECT * FROM vw_eventParti WHERE eventId = evid;
@@ -1042,6 +1171,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+// IDK
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getTeams(IN id INT)
         BEGIN
             SELECT p.*, t.teamName FROM vw_eventParti p 
@@ -1053,6 +1183,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+// IDK
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertResult(IN evid INT, IN team INT, IN perId VARCHAR(255),
         IN total DECIMAL(10,2), IN cri1 DECIMAL(10,2), IN cri2 DECIMAL(10,2), IN cri3 DECIMAL(10,2),
         IN cri4 DECIMAL(10,2), IN cri5 DECIMAL(10,2), IN cri6 DECIMAL(10,2), IN cri7 DECIMAL(10,2),
@@ -1072,6 +1203,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+// IDK
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_updateContStat(IN parti INT)
         BEGIN
             UPDATE vw_eventParti SET status = 'finish' WHERE contId = parti;
@@ -1081,6 +1213,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+// IDK
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertResultComt(IN evid INT, IN team INT, IN perId INT,
         IN total DECIMAL(10,2))
         BEGIN
@@ -1092,6 +1225,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+// IDK
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_updateScore(IN total DECIMAL(10,2), IN perId VARCHAR(299),
         IN evid INT, IN conid INT)
         BEGIN
@@ -1103,6 +1237,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+// IDK
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getScore(IN conid INT, IN evid INT)
         BEGIN
             SELECT * FROM vw_subresult WHERE contestantId = conid AND eventId = evid;
@@ -1112,6 +1247,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+// IDK
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getScorePts(IN evid INT)
         BEGIN
             SELECT * FROM vw_eventScore WHERE eventCategory = 
@@ -1121,9 +1257,13 @@ if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
+/* END COMMITTEE */
 
 
-// ewan
+
+
+/* JUDGE */
+// IDK
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getScoreJudge(IN evid INT, IN evid1 INT, IN perid INT)
         BEGIN
             select *, (select DISTINCT t.teamName from vw_eventParti p 
@@ -1149,6 +1289,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
+// IDK
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getScoreSport(IN evid INT)
         BEGIN
             SELECT 
@@ -1172,37 +1313,12 @@ if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
+/* END JUDGE */
 
 
-
-
-// Stored Procedure for displaying logs
-$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_displayLog(IN inpYear INT)
-        BEGIN
-            SELECT vl.*, CONCAT(va.firstName, ' ', va.lastName) AS fullname
-            FROM vw_logs vl
-            INNER JOIN vw_accounts va ON vl.userId = va.userId
-            WHERE YEAR(date_on) = inpYear;
-        END ;";
-if ($conn->query($sqlT) === TRUE) {
-} else {
-    echo "Error creating table: " . $conn->error;
-}
-
-// inserting log NAGAMIT
-$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertLog(IN id INT, IN act VARCHAR(255))
-        BEGIN
-            INSERT INTO vw_logs VALUES (NULL, NOW(), id, act);
-        END ;";
-if ($conn->query($sqlT) === TRUE) {
-} else {
-    echo "Error creating table: " . $conn->error;
-}
-
-
-// STORED FUNCTION
+#STORED FUNCTIONS ------------------------------------------------------------------------------------------
 try {
-    // Stored Function for count logs
+    // Stored Function for count logs NAGAMIT
     $sqlT = "CREATE FUNCTION IF NOT EXISTS fn_getLogCount(yearFilter INT) 
             RETURNS INT 
             DETERMINISTIC
@@ -1227,6 +1343,5 @@ try {
 } catch (Exception $e) {
     echo $e->getMessage();
 }
-
 
 $conn->close();

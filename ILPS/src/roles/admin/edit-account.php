@@ -12,12 +12,11 @@ $conn = require_once '../../../config/db.php';
 if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
-session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $accId = $_SESSION['userId'];
 
-    $userId = $_SESSION['ID'];
+    $userId = $_POST['userId'];
     $firstName = ucwords($_POST['firstName']);
     $middleName = ucfirst($_POST['middleName']);
     $lastName = ucfirst($_POST['lastName']);
@@ -32,12 +31,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->execute();
     $retval = $stmt->get_result();
 
+    $prevRole = ""; // Initialize to check role
     $accounts = array(); // Initialize array for storing email accounts
     if ($retval->num_rows > 0) {
         while ($row = $retval->fetch_assoc()) {
             $dbemail = $row['email'];
             $id = $row['userId'];
             $emails[] = array("email" => $dbemail, "userid" => $id);
+
+            if ($userId == $id) {
+                $prevRole = $row['type'];
+            }
         }
     }
     $stmt->free_result();
@@ -54,6 +58,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Not a duplicate, updates the account
     if (!$found) {
+        $inThisTable = ""; // Initialize what table to remove from
+        // Previous Role checking - remove redundancy for precaution
+        if ($prevRole == 'Judge') {
+            // If added or not as a judge - remove it's data in the Judge table
+            $inThisTable = "vw_eventJudge";
+        } else if ($prevRole == 'Committee') {
+            // If added or not as a committee - remove it's data in the Committe table
+            $inThisTable = "vw_eventComt";
+        }
+        
+        $removeRole = "CALL sp_delPrevRole(?,?)";
+        $stmt = $conn->prepare($removeRole);
+        $stmt->bind_param("si", $inThisTable, $userId);
+        $stmt->execute();
+        $stmt->close();
+
         $user_permissions = ""; // Initialize to store access rights of user
         // Check user role
         if ($type == 'Admin') {
@@ -90,7 +110,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->bind_param("is", $accId, $action);
             $stmt->execute();
 
-            echo json_encode(array("status" => "success", "message" => "Record updated successfully"));
+            echo json_encode(array("status" => "success", "message" => "Record updated successfully". $userId));
         } else {
             echo json_encode(array("status" => "error", "message" => "Error: " . $stmt->error));
         }
