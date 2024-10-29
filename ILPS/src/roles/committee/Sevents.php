@@ -158,7 +158,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
         ?>
     </div>
-
     <?php
 // Assuming $evId is set to the current event ID
 $stmt_event = $conn->prepare("SELECT gameNo FROM scheduled_eventstoday WHERE activity = ?");
@@ -168,75 +167,118 @@ $result_event = $stmt_event->get_result();
 
 if ($result_event->num_rows > 0) {
     $event_row = $result_event->fetch_assoc();
-    if ($event_row['gameNo'] != 0 || $event_row['gameNo'] != null ) {
+    if ($event_row['gameNo'] != 0 || $event_row['gameNo'] != null) {
         // Display table - permitted to view
         if (in_array('committee_scoring_read', $comt_rights)) { ?>
             <!-- NEW INTERFACE -->
             <div class="recordTable">
-                <table style="margin: auto">
-                    <tr>
-                        <td>TIME</td>
-                        <td>EVENT</td>
-                        <td>GAME NO.</td>
-                        <td>TEAM A</td>
-                        <td>TEAM B</td>
-                        <td>ACTION</td>
-                        <td hidden>
-                            <input type="text" class="event-status" value="<?php echo htmlspecialchars($event['status']); ?>" />
-                        </td>
-                    </tr>
+                <table style="margin: auto" id="eventTable">
+                    <thead>
+                        <tr>
+                            <td>TIME</td>
+                            <td>EVENT</td>
+                            <td>GAME NO.</td>
+                            <td>TEAM A</td>
+                            <td>TEAM B</td>
+                            <td>ACTION</td>
+                        </tr>
+                    </thead>
+                    <tbody>
                     <?php
                     if ($schedCount == 0) { // Display message - no scheduled event(s)
                         echo '
                         <tr>
-                            <td colspan="9" style="text-align: center; color: red;">No Schedule.</td>
+                            <td colspan="6" style="text-align: center; color: red;">No Schedule.</td>
                         </tr>
                         ';
-                    }
-                    ?>
-                    <?php foreach ($scheduled_days as $day): ?>
-                        <?php foreach ($day['events'] as $event): ?>
-                            <tr>
-                                <td><?php echo $event['formatted_datetime']; ?></td>
-                                <td><?php echo htmlspecialchars($event['activity']); ?></td>
-                                <td><?php echo htmlspecialchars($event['gameNo']); ?></td>
-                                <td>
-                                    <select name="teamA" class="teamA non-editable" id="teamA-<?php echo htmlspecialchars($event['gameNo']); ?>" onchange="syncTeams(this, '<?php echo htmlspecialchars($event['gameNo']); ?>'); changeColor(this)" disabled>
-                                        <option value="">(<?php echo $event['teamA_name']; ?>) No Result</option>
-                                        <option value="Winner" <?php echo $event['ResultA'] == 'Winner' ? 'selected' : ''; ?>>(<?php echo $event['teamA_name']; ?>) Winner</option>
-                                        <option value="Loser" <?php echo $event['ResultA'] == 'Loser' ? 'selected' : ''; ?>>(<?php echo $event['teamA_name']; ?>) Loser</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select name="teamB" class="teamB non-editable" id="teamB-<?php echo htmlspecialchars($event['gameNo']); ?>" onchange="syncTeams(this, '<?php echo htmlspecialchars($event['gameNo']); ?>'); changeColor(this)" disabled>
-                                        <option value="">(<?php echo $event['teamB_name']; ?>) No Result</option>
-                                        <option value="Winner" <?php echo $event['ResultB'] == 'Winner' ? 'selected' : ''; ?>>(<?php echo $event['teamB_name']; ?>) Winner</option>
-                                        <option value="Loser" <?php echo $event['ResultB'] == 'Loser' ? 'selected' : ''; ?>>(<?php echo $event['teamB_name']; ?>) Loser</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <?php // Display Edit button - permitted to update
-                                    if (in_array('committee_scoring_update', $comt_rights)) { ?>
-                                        <button class="edit-btn" data-event-id="<?php echo $event['id']; ?>">Edit</button>
-                                    <?php } else {
-                                        echo '
-                                        <p style="color: darkgrey;">Feature denied.</p>
-                                        ';
-                                    }
-                                    // Display Save button - permitted to add
-                                    if (in_array('committee_scoring_add', $comt_rights)) { ?>
-                                        <button id="save-btn" class="save-btn" style="display: none;" data-event-id="<?php echo $event['id']; ?>">Save</button>
-                                    <?php } ?>
-                                    <button class="cancel-btn" style="display: none;" data-event-id="<?php echo $event['id']; ?>">Cancel</button>
-                                </td>
-                            </tr>
+                    } else {
+                        foreach ($scheduled_days as $day): ?>
+                            <?php foreach ($day['events'] as $event): ?>
+                                <tr class="event-row">
+                                    <td><?php echo $event['formatted_datetime']; ?></td>
+                                    <td><?php echo htmlspecialchars($event['activity']); ?></td>
+                                    <td><?php echo htmlspecialchars($event['gameNo']); ?></td>
+                                    <td>
+                                        <select name="teamA" class="teamA non-editable" id="teamA-<?php echo htmlspecialchars($event['gameNo']); ?>" onchange="syncTeams(this, '<?php echo htmlspecialchars($event['gameNo']); ?>'); changeColor(this)" disabled>
+                                            <option value="">(<?php echo $event['teamA_name']; ?>) No Result</option>
+                                            <option value="Winner" <?php echo $event['ResultA'] == 'Winner' ? 'selected' : ''; ?>>(<?php echo $event['teamA_name']; ?>) Winner</option>
+                                            <option value="Loser" <?php echo $event['ResultA'] == 'Loser' ? 'selected' : ''; ?>>(<?php echo $event['teamA_name']; ?>) Loser</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select name="teamB" class="teamB non-editable" id="teamB-<?php echo htmlspecialchars($event['gameNo']); ?>" onchange="syncTeams(this, '<?php echo htmlspecialchars($event['gameNo']); ?>'); changeColor(this)" disabled>
+                                            <option value="">(<?php echo $event['teamB_name']; ?>) No Result</option>
+                                            <option value="Winner" <?php echo $event['ResultB'] == 'Winner' ? 'selected' : ''; ?>>(<?php echo $event['teamB_name']; ?>) Winner</option>
+                                            <option value="Loser" <?php echo $event['ResultB'] == 'Loser' ? 'selected' : ''; ?>>(<?php echo $event['teamB_name']; ?>) Loser</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <?php // Display Edit button - permitted to update
+                                        if (in_array('committee_scoring_update', $comt_rights)) { ?>
+                                            <button class="edit-btn" data-event-id="<?php echo $event['id']; ?>">Edit</button>
+                                        <?php } else {
+                                            echo '<p style="color: darkgrey;">Feature denied.</p>';
+                                        }
+                                        // Display Save button - permitted to add
+                                        if (in_array('committee_scoring_add', $comt_rights)) { ?>
+                                            <button id="save-btn" class="save-btn" style="display: none;" data-event-id="<?php echo $event['id']; ?>">Save</button>
+                                        <?php } ?>
+                                        <button class="cancel-btn" style="display: none;" data-event-id="<?php echo $event['id']; ?>">Cancel</button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
                         <?php endforeach; ?>
-                    <?php endforeach; ?>
+                    <?php } ?>
+                    </tbody>
                 </table>
             </div>
+            <!-- Pagination Controls -->
+            <div id="paginationControls" style="text-align: center; margin-top: 10px;">
+                <div id="pageNumbers"></div>
+            </div>
+            <script>
+                let currentPage = 1;
+                const rowsPerPage = 5;
+                const rows = document.querySelectorAll('.event-row');
+                const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+                function displayRows() {
+                    const start = (currentPage - 1) * rowsPerPage;
+                    const end = start + rowsPerPage;
+
+                    rows.forEach((row, index) => {
+                        row.style.display = (index >= start && index < end) ? '' : 'none';
+                    });
+                }
+
+                function updatePageNumbers() {
+                    const pageNumbersContainer = document.getElementById('pageNumbers');
+                    pageNumbersContainer.innerHTML = '';
+
+                    for (let i = 1; i <= totalPages; i++) {
+                        const pageButton = document.createElement('button');
+                        pageButton.innerText = i;
+                        pageButton.className = 'page-button';
+                        pageButton.onclick = function () {
+                            currentPage = i;
+                            displayRows();
+                            updatePageNumbers(); // Update the page numbers after changing the page
+                        };
+
+                        if (i === currentPage) {
+                            pageButton.style.fontWeight = 'bold'; // Highlight current page
+                        }
+
+                        pageNumbersContainer.appendChild(pageButton);
+                    }
+                }
+
+                // Initial display of rows and page numbers
+                displayRows();
+                updatePageNumbers();
+            </script>
         <?php 
         } else {
-            // Optionally handle the case where read permission is denied
             echo '
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 <strong>Oops!</strong> You lack the permission to view the Scoring Table.
@@ -251,8 +293,8 @@ if ($result_event->num_rows > 0) {
 }
 
 $stmt_event->close();
-
 ?>
+
 
         <!-- ADD or EDIT SCORES -->
 

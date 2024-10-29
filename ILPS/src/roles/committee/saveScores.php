@@ -5,8 +5,10 @@ require_once '../../../config/db.php';
 require_once '../admin/verifyLoginSession.php';
 require_once 'committeePermissions.php';
 
+
 // Function to insert or update sub_results
 function insertOrUpdateSubResult($conn, $evId, $contestantId, $personnelId, $totalScore) {
+    // Check if the sub_result already exists
     $checkQuery = "SELECT * FROM sub_results WHERE eventId = ? AND contestantId = ?";
     $checkStmt = $conn->prepare($checkQuery);
     $checkStmt->bind_param("ii", $evId, $contestantId);
@@ -14,25 +16,43 @@ function insertOrUpdateSubResult($conn, $evId, $contestantId, $personnelId, $tot
     $result = $checkStmt->get_result();
 
     if ($result->num_rows < 1) {
+        // Insert new sub_result
         $insertQuery = "INSERT INTO sub_results (eventId, contestantId, personnelId, total_score) VALUES (?, ?, ?, ?)";
         $insertStmt = $conn->prepare($insertQuery);
         $insertStmt->bind_param("iiid", $evId, $contestantId, $personnelId, $totalScore);
         $success = $insertStmt->execute();
         $insertStmt->close();
-        
-        return $success ?
-            "Score for contestant ID $contestantId has been inserted successfully." :
-            "Error inserting score for contestant ID $contestantId.";
+
+        if ($success) {
+            $evname = isset($_GET['name']) ? $_GET['name'] : '';
+            // Update the status of the scheduled event to 'Ended'
+            $status = 'Ended';
+            $updateStatusQuery = "UPDATE scheduled_eventstoday SET status = ? WHERE activity = ?";
+            $updateStatusStmt = $conn->prepare($updateStatusQuery);
+            $updateStatusStmt->bind_param('si', $status, $evname); // Assuming eventId is the same as id in scheduled_eventstoday
+            $updateSuccess = $updateStatusStmt->execute();
+            $updateStatusStmt->close();
+
+            return [
+                'success' => true,
+                'message' => "Score for contestant ID $contestantId has been inserted successfully.",
+                'eventStatusUpdated' => $updateSuccess
+            ];
+        } else {
+            return ['success' => false, 'message' => "Error inserting score for contestant ID $contestantId."];
+        }
     } else {
+        // Update existing sub_result
         $updateQuery = "UPDATE sub_results SET total_score = ? WHERE eventId = ? AND contestantId = ?";
         $updateStmt = $conn->prepare($updateQuery);
         $updateStmt->bind_param("dii", $totalScore, $evId, $contestantId);
         $success = $updateStmt->execute();
         $updateStmt->close();
 
-        return $success ?
-            "Score for contestant ID $contestantId has been updated successfully." :
-            "Error updating score for contestant ID $contestantId.";
+        return [
+            'success' => $success,
+            'message' => $success ? "Score for contestant ID $contestantId has been updated successfully." : "Error updating score for contestant ID $contestantId."
+        ];
     }
 
     $checkStmt->close();
