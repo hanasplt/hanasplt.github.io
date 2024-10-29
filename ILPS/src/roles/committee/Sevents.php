@@ -339,7 +339,7 @@ $stmt_event->close();
                             if ($result_sub->num_rows > 0) {
                                 while ($row_sub = $result_sub->fetch_assoc()) {
                                     $selectedPoints = $row_sub['total_score'];
-                                    echo "<option value='" . $row_sub['total_score'] . "' selected>" . $row_sub['total_score'] . "</option>";
+                                    echo "<option hidden value='" . $row_sub['total_score'] . "' selected>" . $row_sub['total_score'] . "</option>";
                                 }
                             }
                             echo "<option value='0' " . ($selectedPoints == 0 ? 'selected' : '') . ">0</option>";
