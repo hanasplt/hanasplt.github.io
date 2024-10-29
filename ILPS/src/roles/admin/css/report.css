@@ -158,14 +158,45 @@ body {
   width: 90%;
   margin-left: 5%;
   margin-right: 5%;
-  margin-top: 3%;
 }
 
 .table-container {
+  background: #ffffff;
   padding: 10px;
   border-radius: 10px;
-  width: 100%;
+  width: 90%;
 }
+  .overall-score-btn-container {
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 3%;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+    .overall-score-btn-container button {
+      font-weight: 600;
+      font-family: Poppins, sans-serif;
+      font-size: 12px !important;
+      padding: 10px;
+      background-color: #FCCE42;
+      border: none;
+      border-radius: 8px;
+      color: #2B2B2B;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      text-align: center;
+    }
+    .overall-score-btn-container button:hover {
+      background-color: #ddba51;
+    }
+  .events-scoresheet-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
 a {
   text-decoration: none;

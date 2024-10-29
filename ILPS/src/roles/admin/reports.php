@@ -66,114 +66,183 @@ require_once 'adminPermissions.php'; // Retrieves admin permissions
     </nav>
   </div>
   <?php // Display reports - permitted to view 
-  if (in_array('reports_read', $admin_rights)) { ?>
+  if (in_array('reports_read', $admin_rights)) {?>
+  <div class="reports-container">
+    <div class="overall-score-btn-container">
+      <div class="overall-btn-container">
+        <button>View Overall Score Sheets per Event</button>
+      </div>
+      <div class="radiobtn-container">
+        <input type="radio" name="scoreFilter" id="dailyScores">
+        <label for="dailyScores">Daily</label>
+        <input type="radio" name="scoreFilter" id="yearlyScore">
+        <label for="yearlyScore">Yearly</label>
+      </div>
+    </div>
     <div class="events-scoresheet-container">
       <div class="table-container">
         <table>
           <tr>
             <th>Event Name</th>
-            <th>View Score Sheet</th>
+            <th>Team Name</th>
+            <th>Points</th>
+            <th>Scored At</th>
+            <th>Updated At</th>
           </tr>
-          <?php
-          $events = array(); // Array to store all events
+            <?php 
+              // Retrieve and display data from database
+              $getScoreRecord = "
+              SELECT 
+                ve.eventName, vt.teamName, vs.total_score, tt.scored_at, tt.updatedscore_at
+              FROM vw_trialtr tt
+              INNER JOIN vw_subresult vs ON vs.subId = tt.result_id
+              INNER JOIN vw_events ve ON ve.eventID = vs.eventId
+              INNER JOIN vw_eventparti vp ON vp.contId = vs.contestantId
+              INNER JOIN vw_teams vt ON vt.teamId = vp.teamId;
+              ";
 
-          // Retrieve events information
-          $sql = "CALL sp_getEvents";
-          $stmt = $conn->prepare($sql);
-          $stmt->execute();
-          $retval = $stmt->get_result();
+              $stmt = $conn->prepare($getScoreRecord);
+              $stmt->execute();
+              $result = $stmt->get_result();
 
-          if ($retval->num_rows > 0) {
-            while ($row = $retval->fetch_assoc()) {
-              $evid = $row['eventID']; // Event ID from the database
-              $evname = $row['eventName']; // Event Name from the database
-              $catg = $row['eventType']; // Event Type from the database
-
-              // Populate $events array
-              $events[] = array('evid' => $evid, 'evname' => $evname, 'type' => $catg);
-            }
-          } else { // Display message - no events
-            echo '
-              <tr>
-                <td colspan=2>No event/s exists.</td>
-              </tr>
-              ';
-          }
-
-          $retval->free();
-          $stmt->close();
-
-          // Display events and links
-          foreach ($events as $ev) {
-            $eventId = $ev['evid'];
-            $evName = $ev['evname'];
-            $evType = $ev['type'];
-
-          ?>
-            <tr>
-              <td><?php echo $evName ?></td>
-              <?php
-
-              if ($evType == "Socio-Cultural") {
-                // Checks if the Socio-Cultural Event is scored
-                $sql = "CALL sp_getJudges(?);";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("i", $eventId);
-                $stmt->execute();
-                $retval = $stmt->get_result();
-
-                // Display clickable links to show scoresheet
-                if ($retval->num_rows > 0) {
-                  echo "<td>";
-                  echo "<a href='viewScoresheet.php?event=$eventId
-                          &&evname=$evName' target='_blank'>View Summary
-                        </a>";
-                  echo "</td>";
-                } else { // Display message - not scored
-                  echo '<td style="color: gray;">No score yet.</td>';
+              if ($result->num_rows > 0) {
+                // Display rows - scores
+                while ($row = $result->fetch_assoc()) {
+                  echo "
+                  <tr>
+                    <td>$row[eventName]</td>
+                    <td>$row[teamName]</td>
+                    <td>$row[total_score]</td>
+                    <td>$row[scored_at]</td>
+                    <td>$row[updatedscore_at]</td>
+                  </tr>
+                  ";
                 }
-                $retval->free();
-                $stmt->close();
+              } else {
+                // Display message - No Scores added/updated
+                echo '
+                <tr>
+                  <td colspan=5>No Scores were added.</td>
+                </tr>
+                ';
               }
 
-              if ($evType == "Sports") {
-                // Checks if the Sports Event is scored
-                $sql = "CALL sp_getScoreSport(?)";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("i", $eventId);
-                $stmt->execute();
-                $retval = $stmt->get_result();
-
-                // Display clickable links to show overall tally
-                if ($retval->num_rows > 0) {
-              ?>
-                  <td>
-                    <a href="viewtally.php?event=<?php echo $eventId ?>
-                      &evname=<?php echo $evName ?>" target="_blank">View Tally
-                    </a>
-                  </td>
-
-            <?php
-                } else { // Display message - not scored
-                  echo '<td style="color: gray;">No score yet.</td>';
-                }
-                $retval->free();
-                $stmt->close();
-              }
-              echo "</tr>";
-            }
+              $result->free();
+              $stmt->close();
             ?>
         </table>
       </div>
+    </div>
+    <!-- DISPLAY THIS IN OVERALL SCORE SHEET PAGE
+    <div class="events-scoresheet-container">
+      <div class="table-container">
+      <table>
+          <tr>
+              <th>Event Name</th>
+              <th>View Score Sheet</th>
+          </tr>
+          <?php
+              $events = array(); // Array to store all events
+
+              // Retrieve events information
+              $sql = "CALL sp_getEvents";
+              $stmt = $conn->prepare($sql);
+              $stmt->execute();
+              $retval = $stmt->get_result();
+
+              if ($retval->num_rows > 0) {
+                while($row = $retval->fetch_assoc()) {
+                  $evid = $row['eventID']; // Event ID from the database
+                  $evname = $row['eventName']; // Event Name from the database
+                  $catg = $row['eventType']; // Event Type from the database
+
+                  // Populate $events array
+                  $events[] = array('evid' => $evid, 'evname' => $evname, 'type' => $catg);
+                }
+              } else { // Display message - no events
+                echo '
+                <tr>
+                  <td colspan=2>No event/s exists.</td>
+                </tr>
+                ';
+              }
+
+              $retval->free();
+              $stmt->close();
+
+              // Display events and links
+              foreach($events as $ev) {
+                $eventId = $ev['evid'];
+                $evName = $ev['evname'];
+                $evType = $ev['type'];
+
+                ?>
+                  <tr>
+                    <td><?php echo $evName ?></td>
+                <?php
+
+                if($evType == "Socio-Cultural") {
+                  // Checks if the Socio-Cultural Event is scored
+                  $sql = "CALL sp_getJudges(?);";
+                  $stmt = $conn->prepare($sql);
+                  $stmt->bind_param("i", $eventId);
+                  $stmt->execute();
+                  $retval = $stmt->get_result();
+                  
+                  // Display clickable links to show scoresheet
+                  if ($retval->num_rows > 0) {
+                    echo "<td>";
+                    echo "<a href='viewScoresheet.php?event=$eventId
+                            &&evname=$evName' target='_blank'>View Summary
+                          </a>";
+                    echo "</td>";
+                  } else { // Display message - not scored
+                    echo '<td style="color: gray;">No score yet.</td>';
+                  }
+                  $retval->free();
+                  $stmt->close();
+                }
+
+                if($evType == "Sports") {
+                  // Checks if the Sports Event is scored
+                  $sql = "CALL sp_getScoreSport(?)";
+                  $stmt = $conn->prepare($sql);
+                  $stmt->bind_param("i", $eventId);
+                  $stmt->execute();
+                  $retval = $stmt->get_result();
+                  
+                  // Display clickable links to show overall tally
+                  if ($retval->num_rows > 0) {
+                    ?>
+                    <td>
+                      <a href="viewtally.php?event=<?php echo $eventId ?>
+                        &evname=<?php echo $evName ?>" target="_blank">View Tally
+                      </a>
+                    </td>
+                    
+                    <?php
+                  } else { // Display message - not scored
+                    echo '<td style="color: gray;">No score yet.</td>';
+                  }
+                  $retval->free();
+                  $stmt->close();
+                }
+                echo "</tr>";
+              }
+          ?>
+      </table>
+      </div>
 
     </div>
-  <?php } else { // Display message - not permitted to view
+     -->
+    <?php } else { // Display message - not permitted to view
     echo '
-    <div class="alert alert-info alert-dismissible fade show" role="alert">
-      <strong>FYI: </strong> You lack the permission to view Reports.
-    </div>
-  ';
-  } ?>
+      <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>FYI: </strong> You lack the permission to view Reports.
+      </div>
+    ';
+    }?>
+  </div>
 
   <!-- logout confirmation -->
   <script>
