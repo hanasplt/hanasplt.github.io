@@ -192,6 +192,16 @@ body {
     .overall-score-btn-container button:hover {
       background-color: #ddba51;
     }
+    .dropdown-container select {
+      font-family: Inter, sans-serif;
+      padding: 8px 15px;
+      font-size: 0.95rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background-color: #f7f7f7;
+      transition: border-color 0.3s ease;
+      margin-left: 10px;
+    }
   .events-scoresheet-container {
     display: flex;
     align-items: center;

@@ -72,64 +72,91 @@ require_once 'adminPermissions.php'; // Retrieves admin permissions
         <div class="overall-btn-container">
           <button>View Overall Score Sheets per Event</button>
         </div>
-        <div class="radiobtn-container">
-          <input type="radio" name="scoreFilter" id="dailyScores">
-          <label for="dailyScores">Daily</label>
-          <input type="radio" name="scoreFilter" id="yearlyScore">
-          <label for="yearlyScore">Yearly</label>
+        <div class="dropdown-container">
+          <label for="filterOpt">Filter:</label>
+          <select name="filterOpt" id="filterOpt" onchange="filterTable()">
+            <option value="today">Today</option>
+            <option value="all">All (Current Year)</option>
+            <?php
+              // Populate year
+              $currentYear = date('Y');
+
+              for ($i = $currentYear - 1; $i >= 2022; $i--) {
+                echo "<option value='$i'>$i</option>";
+              }
+            ?>
+          </select>
         </div>
       </div>
       <div class="events-scoresheet-container">
         <div class="table-container">
           <table>
-            <tr>
-              <th>Event Name</th>
-              <th>Team Name</th>
-              <th>Points</th>
-              <th>Scored At</th>
-              <th>Updated At</th>
-            </tr>
-            <?php
-            // Retrieve and display data from database
-            $getScoreRecord = "
-              SELECT 
-                ve.eventName, vt.teamName, vs.total_score, tt.scored_at, tt.updatedscore_at
-              FROM vw_trialtr tt
-              INNER JOIN vw_subresult vs ON vs.subId = tt.result_id
-              INNER JOIN vw_events ve ON ve.eventID = vs.eventId
-              INNER JOIN vw_eventparti vp ON vp.contId = vs.contestantId
-              INNER JOIN vw_teams vt ON vt.teamId = vp.teamId;
-              ";
+            <thead>
+              <tr>
+                <th>Event Name</th>
+                <th>Team Name</th>
+                <th>Points</th>
+                <th>Scored At</th>
+                <th>Updated At</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <?php
+              // Retrieve and display data from database
+              $getScoreRecord = "
+                SELECT 
+                  ve.eventName, vt.teamName, vs.total_score, tt.scored_at, tt.updatedscore_at
+                FROM vw_trialtr tt
+                INNER JOIN vw_subresult vs ON vs.subId = tt.result_id
+                INNER JOIN vw_events ve ON ve.eventID = vs.eventId
+                INNER JOIN vw_eventparti vp ON vp.contId = vs.contestantId
+                INNER JOIN vw_teams vt ON vt.teamId = vp.teamId;
+                ";
 
-            $stmt = $conn->prepare($getScoreRecord);
-            $stmt->execute();
-            $result = $stmt->get_result();
+              $stmt = $conn->prepare($getScoreRecord);
+              $stmt->execute();
+              $result = $stmt->get_result();
 
-            if ($result->num_rows > 0) {
-              // Display rows - scores
-              while ($row = $result->fetch_assoc()) {
-                echo "
+              $dataArray = []; // Initialize array
+
+              if ($result->num_rows > 0) {
+                // Display rows - scores
+                while ($row = $result->fetch_assoc()) {
+                  echo "
+                    <tr>
+                      <td>$row[eventName]</td>
+                      <td>$row[teamName]</td>
+                      <td>$row[total_score]</td>
+                      <td>$row[scored_at]</td>
+                      <td>$row[updatedscore_at]</td>
+                    </tr>
+                    ";
+                  
+                  // Store these datas in the array
+                  $dataArray[] = [
+                    'eventName' => $row['eventName'],
+                    'teamName' => $row['teamName'],
+                    'total_score' => $row['total_score'],
+                    'scored_at' => $row['scored_at'],
+                    'updatedscore_at' => $row['updatedscore_at']
+                  ];
+                }
+
+                // Output the data array as JSON
+                echo "<script>const data = " . json_encode($dataArray) . ";</script>";
+              } else {
+                // Display message - No Scores added/updated
+                echo '
                   <tr>
-                    <td>$row[eventName]</td>
-                    <td>$row[teamName]</td>
-                    <td>$row[total_score]</td>
-                    <td>$row[scored_at]</td>
-                    <td>$row[updatedscore_at]</td>
+                    <td colspan=5>No Scores were added.</td>
                   </tr>
-                  ";
+                  ';
               }
-            } else {
-              // Display message - No Scores added/updated
-              echo '
-                <tr>
-                  <td colspan=5>No Scores were added.</td>
-                </tr>
-                ';
-            }
 
-            $result->free();
-            $stmt->close();
-            ?>
+              $result->free();
+              $stmt->close();
+              ?>
+            </tbody>
           </table>
         </div>
       </div>
@@ -245,25 +272,7 @@ require_once 'adminPermissions.php'; // Retrieves admin permissions
     </div>
 
     <!-- logout confirmation -->
-    <script>
-      document.getElementById('logout').addEventListener('click', function() {
-        Swal.fire({
-          title: 'Are you sure?',
-          text: "You will be logged out!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#7FD278',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, log me out',
-          cancelButtonText: 'Cancel'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // mag redirect siya to the login page
-            window.location.href = 'reports.php?logout';
-          }
-        });
-      });
-    </script>
+    <script src="js/reports.js"></script>
 
 </body>
 

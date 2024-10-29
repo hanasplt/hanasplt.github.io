@@ -509,7 +509,7 @@ if ($conn->query($sqlT) === TRUE) {
 // NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertAcc(IN fn VARCHAR(255),
         IN mn VARCHAR(255), IN ln VARCHAR(255), IN sfx VARCHAR(50), IN em VARCHAR(255), IN pass VARCHAR(255),
-        IN typ VARCHAR(50), IN rights VARCHAR(500))
+        IN typ VARCHAR(50), IN rights VARCHAR(599))
         BEGIN
             INSERT INTO vw_accounts (firstName, middleName, lastName, suffix, email, password, type, permissions) 
             VALUES (fn, mn, ln, sfx, em, pass, typ, rights);
@@ -523,7 +523,7 @@ if ($conn->query($sqlT) === TRUE) {
 // NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_editAcc(IN id INT, IN fn VARCHAR(255),
         IN mn VARCHAR(255), IN ln VARCHAR(255), IN sfx VARCHAR(50), IN em VARCHAR(255), IN pass VARCHAR(255),
-        IN acctype VARCHAR(50), IN rights VARCHAR(500))
+        IN acctype VARCHAR(50), IN rights VARCHAR(599))
         BEGIN
             UPDATE vw_accounts SET firstName = fn, middleName = mn, lastName = ln, suffix = sfx, 
             email = em, password = pass, type = acctype, permissions = rights WHERE userId = id;
