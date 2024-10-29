@@ -98,75 +98,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->close();
 }
 
-// Retrieve personnel ID from session
-$personnelId = $_SESSION['userId']; 
-$responses = []; // Array to hold responses for each score
-
-// Function to insert or update sub_results
-function insertOrUpdateSubResult($conn, $eventId, $contestantId, $personnelId, $totalScore)
-{
-    // Check if a record already exists
-    $checkQuery = "SELECT * FROM sub_results WHERE eventId = ? AND contestantId = ?";
-    $checkStmt = $conn->prepare($checkQuery);
-    $checkStmt->bind_param("ii", $eventId, $contestantId);
-    $checkStmt->execute();
-    $result = $checkStmt->get_result();
-
-    if ($result->num_rows < 1) {
-        // Record doesn't exist, insert a new one
-        $insertQuery = "INSERT INTO sub_results (eventId, contestantId, personnelId, total_score) VALUES (?, ?, ?, ?)";
-        $insertStmt = $conn->prepare($insertQuery);
-        $insertStmt->bind_param("iiid", $eventId, $contestantId, $personnelId, $totalScore);
-        $success = $insertStmt->execute();
-        $insertStmt->close();
-        
-        return $success ?
-            "Score for contestant ID $contestantId has been inserted successfully." :
-            "Error inserting score for contestant ID $contestantId.";
-    } else {
-        // Record exists, update the score
-        $updateQuery = "UPDATE sub_results SET total_score = ? WHERE eventId = ? AND contestantId = ?";
-        $updateStmt = $conn->prepare($updateQuery);
-        $updateStmt->bind_param("dii", $totalScore, $eventId, $contestantId);
-        $success = $updateStmt->execute();
-        $updateStmt->close();
-
-        return $success ?
-            "Score for contestant ID $contestantId has been updated successfully." :
-            "Error updating score for contestant ID $contestantId.";
-    }
-    // Close the check statement
-    $checkStmt->close();
-}
-
-// Check if scores data exists
-if (isset($_POST['scores']) && is_array($_POST['scores'])) {
-    foreach ($_POST['scores'] as $scoreData) {
-        $contestantId = $scoreData['teamId'];
-        $score = $scoreData['score'];
-
-        // Check if contestant ID exists in the database
-        $contestantCheckQuery = "SELECT teamId FROM contestant WHERE teamId = ?";
-        $contestantCheckStmt = $conn->prepare($contestantCheckQuery);
-        $contestantCheckStmt->bind_param("i", $contestantId);
-        $contestantCheckStmt->execute();
-        $contestantCheckResult = $contestantCheckStmt->get_result();
-
-        if ($contestantCheckResult->num_rows < 1) {
-            $responses[] = ['success' => false, 'message' => "Contestant ID $contestantId does not exist."];
-            continue;
-        }
-
-        // Call the function and store the response message
-        $responses[] = insertOrUpdateSubResult($conn, $eventId, $contestantId, $personnelId, $score);
-    }
-} else {
-    $responses[] = ['success' => false, 'message' => "No scores data provided."];
-}
-
-// Output all responses
-echo json_encode($responses);
-
 
 ?>
 
@@ -407,72 +338,62 @@ $stmt_event->close();
             </div>
         </div>
 
-
         <script>
-            function addEdit() {
-                // Enable all dropdowns and show the Save button
-                document.querySelectorAll('.teamsScore').forEach(function(select) {
-                    select.disabled = false;
-                });
-                document.querySelector('.addEdit-btn').style.display = 'none';
-                document.querySelector('.saveScore-btn').style.display = 'inline-block';
-            }
+    function addEdit() {
+        document.querySelectorAll('.teamsScore').forEach(function(select) {
+            select.disabled = false;
+        });
+        document.querySelector('.addEdit-btn').style.display = 'none';
+        document.querySelector('.saveScore-btn').style.display = 'inline-block';
+    }
 
-            function saveScores() {
-                const scores = [];
-                const eventId = <?= json_encode($evId) ?>; // PHP to JavaScript for eventId
+    function saveScores() {
+    const scores = [];
+    const eventId = <?= json_encode($evId) ?>; // Gets event ID from PHP variable
 
-                document.querySelectorAll('.teamRow').forEach(row => {
-                    const teamId = row.querySelector('.contestantId').value;
-                    const score = row.querySelector('.teamsScore').value;
-                    scores.push({
-                        teamId,
-                        score
-                    });
-                });
+    document.querySelectorAll('.teamRow').forEach(row => {
+        const teamId = row.querySelector('.contestantId').value;
+        const score = row.querySelector('.teamsScore').value;
+        scores.push({ teamId, score });
+    });
 
-                // Console log the gathered data
-                console.log('Data to be sent:', {
-                    eventId,
-                    scores
-                });
+    console.log('Data to be sent:', { eventId, scores }); // Debugging info
 
-                // AJAX to send data
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', 'Sevents.php', true);
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        Swal.fire({
-                            title: 'Success!',
-                            text: 'Scores have been saved successfully.',
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        });
+    // Send the data as JSON
+    fetch('saveScores.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ eventId, scores })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data) {
+            Swal.fire({
+                title: 'Success!',
+                text: 'Scores have been saved successfully.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+            
+            document.querySelectorAll('.teamsScore').forEach(select => select.disabled = true);
+            document.querySelector('.saveScore-btn').style.display = 'none';
+            document.querySelector('.addEdit-btn').style.display = 'inline-block';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            title: 'Error!',
+            text: 'Failed to save scores.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    });
+}
 
-                        // Disable the dropdowns and hide Save button
-                        document.querySelectorAll('.teamsScore').forEach(select => select.disabled = true);
-                        document.querySelector('.saveScore-btn').style.display = 'none';
-                        document.querySelector('.addEdit-btn').style.display = 'inline-block';
-                    } else {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Failed to save scores.',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                };
-
-                // Prepare and send request parameters
-                let params = `eventId=${eventId}`;
-                scores.forEach((scoreData, index) => {
-                    params += `&scores[${index}][teamId]=${scoreData.teamId}&scores[${index}][score]=${scoreData.score}`;
-                });
-                xhr.send(params);
-            }
-        </script>
-
+</script>
         <!-- SYNC TEAM RESULT -->
         <script>
             function syncTeams(changedSelect, gameNo) {
