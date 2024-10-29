@@ -492,51 +492,51 @@ $stmt_event->close();
 
         <!-- UPDATE RESULT -->
         <script>
-            // Function to enable editing and show the Save button
-            document.querySelectorAll('.edit-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const row = this.closest('tr');
+           // Function to enable editing and show the Save button
+           document.querySelectorAll('.edit-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const row = this.closest('tr');
 
-                    // Enable the dropdowns in the current row
-                    row.querySelectorAll('select').forEach(select => {
-                        select.disabled = false;
-                    });
+        // Store the original values of dropdowns in the row
+        row.querySelectorAll('select').forEach(select => {
+            select.dataset.originalValue = select.value;
+            select.disabled = false; // Enable dropdowns for editing
+        });
 
-                    var savebtn = document.getElementById('save-btn');
+        // Hide the Edit button and show the Save and Cancel buttons
+        row.querySelector('.edit-btn').style.display = 'none';
+        row.querySelector('.save-btn').style.display = 'inline-block';
+        row.querySelector('.cancel-btn').style.display = 'inline-block';
 
-                    // Hide the Edit button and show the Save button again
-                    row.querySelector('.edit-btn').style.display = 'none';
-                    if (savebtn) { // Ensures save button exists
-                        row.querySelector('.save-btn').style.display = 'inline-block';
-                    }
-                    row.querySelector('.cancel-btn').style.display = 'inline-block';
+        // Disable all other Edit buttons to allow only one row edit at a time
+        document.querySelectorAll('.edit-btn').forEach(btn => btn.disabled = true);
+    });
+});
 
-                    this.disabled = false; // Disable the Edit button
-                });
-            });
+// Cancel button functionality
+document.querySelectorAll('.cancel-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const row = this.closest('tr');
 
-            // Function to enable editing and show the cancel button
-            document.querySelectorAll('.cancel-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const row = this.closest('tr');
+        // Restore the original values of dropdowns in the row
+        row.querySelectorAll('select').forEach(select => {
+            select.value = select.dataset.originalValue; // Revert to the original value
+            select.disabled = true; // Disable dropdowns again
+        });
 
-                    // Enable the dropdowns in the current row
-                    row.querySelectorAll('select').forEach(select => {
-                        select.disabled = true; // Disable dropdowns again
-                    });
+        // Show the Edit button and hide the Save and Cancel buttons
+        row.querySelector('.edit-btn').style.display = 'inline-block';
+        row.querySelector('.save-btn').style.display = 'none';
+        row.querySelector('.cancel-btn').style.display = 'none';
 
-                    var savebtn = document.getElementById('save-btn');
+        // Re-enable all Edit buttons
+        document.querySelectorAll('.edit-btn').forEach(btn => btn.disabled = false);
+        // Reload the page
+        location.reload(); // This will refresh the page
+    });
+});
 
-                    // Show the Edit button and hide the Save and Cancel buttons
-                    row.querySelector('.edit-btn').style.display = 'inline-block';
-                    if (savebtn) { // Ensures save button exists
-                        row.querySelector('.save-btn').style.display = 'none';
-                    }
-                    row.querySelector('.cancel-btn').style.display = 'none';
 
-                    this.disabled = false; // Keep the cancel button enabled
-                });
-            });
 
 
             // Function to save the changes when Save button is clicked
