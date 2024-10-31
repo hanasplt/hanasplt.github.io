@@ -311,35 +311,49 @@
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] == 'addScoring') {
     $ranknum = $_POST['rankNo'];
     $name = $_POST['rankName'];
-    $category = $_POST['scoringCategory'];
-    $pts = $_POST['scorePts'];
+    $category = ["Individual/Dual", "Team"];
+    $points = [$_POST['indi_pts'], $_POST['team_pts']];
 
     try {
-        $sql = "CALL sp_getScoringChk(?, ?)";
+        $sql = "CALL sp_getScoringChk(?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("is", $ranknum, $category);
+        $stmt->bind_param("i", $ranknum);
         $stmt->execute();
         $retval = $stmt->get_result();
 
         if ($retval->num_rows > 0) {
-            echo json_encode(['status' => 'error', 'message' => 'Scoring already exists!']);
+            echo json_encode(['status' => 'error', 'message' => 'Scoring Rank already exists!']);
         } else {
             $retval->free();
             $stmt->close();
 
-            $sql = "CALL sp_insertScoring(?, ?, ?, ?)";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("issi", $ranknum, $name, $category, $pts);
-        
-            if ($stmt->execute()) {
-                // Insert in the logs
-                $action = "Added event scoring rank $ranknum-$name($pts pts.) in the category $category";
-                $insertLogAct = "CALL sp_insertLog(?, ?)";
+            $success = true; // Check successful insertion
+            $errors = ''; // Store error messages
 
+            for ($i = 0; $i < 2; $i++) {
+                $catgPts = $points[$i]; // Insert category points one by one
+                $catgName = $category[$i]; // Insert category one by one
+
+                $sql = "CALL sp_insertScoring(?, ?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("issi", $ranknum, $name, $catgName, $catgPts);
+                
+                if (!$stmt->execute()) {
+                    $success = false;
+                    $errors = "Error: ". $stmt->error;
+                    break;                    
+                }
+                
+                // Insert in the logs
+                $action = "Added event scoring rank $ranknum-$name($catgPts pts.) in the category $catgName";
+                $insertLogAct = "CALL sp_insertLog(?, ?)";
+                
                 $stmt = $conn->prepare($insertLogAct);
                 $stmt->bind_param("is", $accId, $action);
                 $stmt->execute();
-
+            }
+            
+            if ($success) {
                 echo json_encode(['status' => 'success', 'message' => 'Scoring added successfully!']);
             } else {
                 echo json_encode(['status' => 'error', 'message' => "Error: " . $sql . "<br>" . $conn->error]);

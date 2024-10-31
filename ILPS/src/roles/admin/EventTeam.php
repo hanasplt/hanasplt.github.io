@@ -611,16 +611,13 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="scoringCategory">Category</label>
-                                <select id="scoringCategory" name="scoringCategory">
-                                    <option value="Individual/Dual">Individual/Dual</option>
-                                    <option value="Team">Team</option>
-                                </select>
+                                <label for="indi_pts">Individual/Dual Points</label>
+                                <input type="number" name="indi_pts" id="indi_pts" maxlength="10">
                             </div>
 
                             <div class="form-group">
-                                <label for="scorePts">Points</label>
-                                <input type="number" maxlength="10" id="scorePts" name="scorePts">
+                                <label for="team_pts">Team Points</label>
+                                <input type="number" name="team_pts" id="team_pts" maxlength="10">
                             </div>
 
                             <div class="modal-footer">

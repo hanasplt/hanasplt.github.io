@@ -974,15 +974,16 @@ if ($conn->query($sqlT) === TRUE) {
 }
 
 // NAGAMIT
-$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getScoringChk(IN num INT, IN catg VARCHAR(255))
+$sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getScoringChk(IN num INT)
         BEGIN
-            SELECT * FROM vw_eventScore WHERE rankNo = num AND eventCategory = catg;
+            SELECT * FROM vw_eventScore WHERE rankNo = num;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
 
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertScoring(IN num INT, IN rank VARCHAR(255), 
         IN category VARCHAR(255), IN pts INT)
         BEGIN

@@ -579,10 +579,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const ranknum = document.getElementById('rankNo').value;
             const rankname = document.getElementById('rankName').value;
-            const catg = document.getElementById('scoringCategory').value;
-            const pts = document.getElementById('scorePts').value;
+            const pts1 = document.getElementById('indi_pts').value;
+            const pts2 = document.getElementById('team_pts').value;
 
-            if (ranknum == '' || rankname == '' || catg == '' || pts == '') {
+            if (ranknum == '' || rankname == '' || pts1 == '' || pts2 == '') {
                 Swal.fire({
                     title: 'Oops!',
                     text: 'All fields are required to be filled in.',
@@ -617,7 +617,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 })
                 .catch(error => {
-                    alert('An error occurred: ' + error.message);
+                    console.log('An error occurred: ' + error.message);
                 });
             }
         });
