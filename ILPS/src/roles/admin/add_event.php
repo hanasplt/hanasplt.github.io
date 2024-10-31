@@ -3,16 +3,19 @@ include '../../../config/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $day_id = $_POST['day_id'];
-    $time = $_POST['time'];
+    $time12 = $_POST['time']; // received in 12-hour format
     $type = $_POST['type'];
     $activity = $_POST['activity'];
     $location = $_POST['location'];
-    $gameNo = ($type === 'sports' && !empty($_POST['game_number'])) ? $_POST['game_number'] : null; // set to null if not sports or blank
-    $teamA = ($type === 'sports') ? $_POST['teamA'] : null; // set to null if not sports
-    $teamB = ($type === 'sports') ? $_POST['teamB'] : null; // set to null if not sports
+    $gameNo = ($type === 'sports' && !empty($_POST['game_number'])) ? $_POST['game_number'] : null;
+    $teamA = ($type === 'sports') ? $_POST['teamA'] : null;
+    $teamB = ($type === 'sports') ? $_POST['teamB'] : null;
     $status = $_POST['status'];
 
-    if (empty($day_id) || empty($time) || empty($activity) || empty($location) || empty($status)) {
+    // iconvert ang time to 24-hour format
+    $time24 = date("H:i", strtotime($time12));
+
+    if (empty($day_id) || empty($time24) || empty($activity) || empty($location) || empty($status)) {
         echo json_encode(['success' => false, 'message' => 'All fields are required.']);
         exit;
     }
@@ -32,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $query = "INSERT INTO scheduled_eventstoday (day_id, time, type, activity, location, gameNo, teamA, teamB, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
 
-    $stmt->bind_param("issssssss", $day_id, $time, $type, $activity, $location, $gameNo, $teamA, $teamB, $status);
+    $stmt->bind_param("issssssss", $day_id, $time24, $type, $activity, $location, $gameNo, $teamA, $teamB, $status);
 
     if ($stmt->execute()) {
         // Fetch team A name
