@@ -1156,7 +1156,7 @@ $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAComt(IN id INT)
         BEGIN
             SELECT ef.eventId, ev.eventName FROM vw_eventComt ef 
             INNER JOIN vw_events ev ON ef.eventId = ev.eventID 
-            WHERE comId = id AND ef.status IS NULL;
+            WHERE comId = id AND ef.status IS NULL AND ev.status IS NULL;
         END ;";
 if ($conn->query($sqlT) === TRUE) {
 } else {
