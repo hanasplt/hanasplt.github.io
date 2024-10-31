@@ -4,7 +4,7 @@ include '../../../config/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $query = "SELECT teamId, teamName FROM teams";
+        $query = "SELECT teamId, teamName FROM teams WHERE status IS NULL OR status != '0'";
         $stmt = $conn->prepare($query);
         $stmt->execute();
         $result = $stmt->get_result();

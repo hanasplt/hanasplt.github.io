@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $status = $_POST['status'];
 
 
-    if ($type === 'sports'){
+    if ($type === 'sports' || $type === 'Sports'){
         $gameNo = !empty($_POST['gameNo']) ? (int)$_POST['gameNo'] : null;
         $teamA = isset($_POST['teamA']) ? (int)$_POST['teamA'] : null;
         $teamB = isset($_POST['teamB']) ? (int)$_POST['teamB'] : null;
