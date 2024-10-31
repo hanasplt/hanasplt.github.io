@@ -26,6 +26,7 @@ require_once 'adminPermissions.php'; // Retrieves admin permissions
   <!--Web-logo-->
   <link rel="icon" href="../../../public/assets/icons/logo-top-final.png">
 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -70,10 +71,47 @@ require_once 'adminPermissions.php'; // Retrieves admin permissions
     <div class="reports-container">
       <div class="overall-score-btn-container">
         <div class="overall-btn-container">
-          <button>View Overall Score Sheets per Event</button>
+          <button id="score_sheets">View Overall Score Sheets per Event</button>
+        </div>
+        <div class="export-btn-container">
+          <form method="post" id="exportForm">
+            <button type="button" onclick="submitForm('export/exportReportXlxs.php')" name="exportreport_xsls" id="exportlog_xsls">
+              Export to Excel
+            </button>
+            <button type="button" onclick="submitForm('export/exportReportpdf.php')" name="exportreport_pdf" id="exportlog_pdf">
+              Export to PDF
+            </button>
+          </form>
+
         </div>
         <div class="dropdown-container">
-          <label for="filterOpt">Filter:</label>
+          <select name="eventFilter" id="eventFilter" onchange="filterTable()">
+            <option value="all">All</option>
+            <?php
+              // Retrieve events - has score record
+              $getEvents = "
+                SELECT ev.eventName FROM vw_subresult sb 
+                INNER JOIN vw_events ev ON ev.eventID = sb.eventId 
+                GROUP BY sb.eventId;
+              ";
+
+              $stmt = $conn->prepare($getEvents);
+              $stmt->execute();
+              $ret_events = $stmt->get_result();
+              
+              if ($ret_events->num_rows > 0) {
+                // Populate options with events
+                while ($row = $ret_events->fetch_assoc()) {
+                  echo "
+                    <option value='$row[eventName]'>$row[eventName]</option>
+                  ";
+                }
+              }
+
+              $ret_events->free();
+              $stmt->close();
+            ?>
+          </select>
           <select name="filterOpt" id="filterOpt" onchange="filterTable()">
             <option value="today">Today</option>
             <option value="all">All (Current Year)</option>
@@ -96,22 +134,14 @@ require_once 'adminPermissions.php'; // Retrieves admin permissions
                 <th>Event Name</th>
                 <th>Team Name</th>
                 <th>Points</th>
-                <th>Scored At</th>
-                <th>Updated At</th>
+                <th>Action</th>
+                <th>Action At</th>
               </tr>
             </thead>
             <tbody id="tableBody">
               <?php
               // Retrieve and display data from database
-              $getScoreRecord = "
-                SELECT 
-                  ve.eventName, vt.teamName, vs.total_score, tt.scored_at, tt.updatedscore_at
-                FROM vw_trialtr tt
-                INNER JOIN vw_subresult vs ON vs.subId = tt.result_id
-                INNER JOIN vw_events ve ON ve.eventID = vs.eventId
-                INNER JOIN vw_eventparti vp ON vp.contId = vs.contestantId
-                INNER JOIN vw_teams vt ON vt.teamId = vp.teamId;
-                ";
+              $getScoreRecord = "CALL sp_scoreReport()";
 
               $stmt = $conn->prepare($getScoreRecord);
               $stmt->execute();
@@ -122,23 +152,23 @@ require_once 'adminPermissions.php'; // Retrieves admin permissions
               if ($result->num_rows > 0) {
                 // Display rows - scores
                 while ($row = $result->fetch_assoc()) {
-                  echo "
-                    <tr>
-                      <td>$row[eventName]</td>
-                      <td>$row[teamName]</td>
-                      <td>$row[total_score]</td>
-                      <td>$row[scored_at]</td>
-                      <td>$row[updatedscore_at]</td>
+                  echo '
+                    <tr class="event-row">
+                      <td>'.$row['eventName'].'</td>
+                      <td>'.$row['teamName'].'</td>
+                      <td>'.$row['total_score'].'</td>
+                      <td>'.$row['action_made'].'</td>
+                      <td>'.$row['action_at'].'</td>
                     </tr>
-                    ";
+                  ';
                   
                   // Store these datas in the array
                   $dataArray[] = [
                     'eventName' => $row['eventName'],
                     'teamName' => $row['teamName'],
                     'total_score' => $row['total_score'],
-                    'scored_at' => $row['scored_at'],
-                    'updatedscore_at' => $row['updatedscore_at']
+                    'action_made' => $row['action_made'],
+                    'action_at' => $row['action_at']
                   ];
                 }
 
@@ -160,108 +190,8 @@ require_once 'adminPermissions.php'; // Retrieves admin permissions
           </table>
         </div>
       </div>
-      <!-- DISPLAY THIS IN OVERALL SCORE SHEET PAGE
-    <div class="events-scoresheet-container">
-      <div class="table-container">
-      <table>
-          <tr>
-              <th>Event Name</th>
-              <th>View Score Sheet</th>
-          </tr>
-          <?php
-          $events = array(); // Array to store all events
-
-          // Retrieve events information
-          $sql = "CALL sp_getEvents";
-          $stmt = $conn->prepare($sql);
-          $stmt->execute();
-          $retval = $stmt->get_result();
-
-          if ($retval->num_rows > 0) {
-            while ($row = $retval->fetch_assoc()) {
-              $evid = $row['eventID']; // Event ID from the database
-              $evname = $row['eventName']; // Event Name from the database
-              $catg = $row['eventType']; // Event Type from the database
-
-              // Populate $events array
-              $events[] = array('evid' => $evid, 'evname' => $evname, 'type' => $catg);
-            }
-          } else { // Display message - no events
-            echo '
-                <tr>
-                  <td colspan=2>No event/s exists.</td>
-                </tr>
-                ';
-          }
-
-          $retval->free();
-          $stmt->close();
-
-          // Display events and links
-          foreach ($events as $ev) {
-            $eventId = $ev['evid'];
-            $evName = $ev['evname'];
-            $evType = $ev['type'];
-
-          ?>
-                  <tr>
-                    <td><?php echo $evName ?></td>
-                <?php
-
-                if ($evType == "Socio-Cultural") {
-                  // Checks if the Socio-Cultural Event is scored
-                  $sql = "CALL sp_getJudges(?);";
-                  $stmt = $conn->prepare($sql);
-                  $stmt->bind_param("i", $eventId);
-                  $stmt->execute();
-                  $retval = $stmt->get_result();
-
-                  // Display clickable links to show scoresheet
-                  if ($retval->num_rows > 0) {
-                    echo "<td>";
-                    echo "<a href='viewScoresheet.php?event=$eventId
-                            &&evname=$evName' target='_blank'>View Summary
-                          </a>";
-                    echo "</td>";
-                  } else { // Display message - not scored
-                    echo '<td style="color: gray;">No score yet.</td>';
-                  }
-                  $retval->free();
-                  $stmt->close();
-                }
-
-                if ($evType == "Sports") {
-                  // Checks if the Sports Event is scored
-                  $sql = "CALL sp_getScoreSport(?)";
-                  $stmt = $conn->prepare($sql);
-                  $stmt->bind_param("i", $eventId);
-                  $stmt->execute();
-                  $retval = $stmt->get_result();
-
-                  // Display clickable links to show overall tally
-                  if ($retval->num_rows > 0) {
-                ?>
-                    <td>
-                      <a href="viewtally.php?event=<?php echo $eventId ?>
-                        &evname=<?php echo $evName ?>" target="_blank">View Tally
-                      </a>
-                    </td>
-                    
-                    <?php
-                  } else { // Display message - not scored
-                    echo '<td style="color: gray;">No score yet.</td>';
-                  }
-                  $retval->free();
-                  $stmt->close();
-                }
-                echo "</tr>";
-              }
-                    ?>
-      </table>
-      </div>
-
-    </div>
-     -->
+      <!-- Pagination Controls -->
+      <div id="pagination" class="pagination"></div>
     <?php } else { // Display message - not permitted to view
     echo '
       <div class="alert alert-info alert-dismissible fade show" role="alert">
@@ -271,7 +201,6 @@ require_once 'adminPermissions.php'; // Retrieves admin permissions
   } ?>
     </div>
 
-    <!-- logout confirmation -->
     <script src="js/reports.js"></script>
 
 </body>

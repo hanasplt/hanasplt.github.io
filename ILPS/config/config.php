@@ -378,7 +378,7 @@ if ($conn->query($sqlT) === TRUE) {
 }
 /* END RESET & FORGOT PASSWORD */
 
-// PENDING
+// PENDING (@NINO)
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_delLead()
         BEGIN
             DROP TABLE IF EXISTS leaderboard;
@@ -388,7 +388,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
-// PENDING
+// PENDING (@NINO)
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getTeamData(IN evid INT)
         BEGIN
             select eventId, contestantId, (select vw_teams.teamName from vw_eventParti 
@@ -403,7 +403,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
-// PENDING
+// PENDING (@NINO)
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getLead()
         BEGIN
             SELECT RANK() OVER (ORDER BY SUM(points) DESC) AS rank, t.teamName as team, SUM(l.points) 
@@ -1147,6 +1147,7 @@ try {
 /* END LOGS */
 
 
+
 #PROCEDURES (COMMITTEE & JUDGE) ---------------------------------------------------------------------
 /* COMMITTEE */
 // NAGAMIT
@@ -1183,7 +1184,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
-// IDK
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertResult(IN evid INT, IN team INT, IN perId VARCHAR(255),
         IN total DECIMAL(10,2), IN cri1 DECIMAL(10,2), IN cri2 DECIMAL(10,2), IN cri3 DECIMAL(10,2),
         IN cri4 DECIMAL(10,2), IN cri5 DECIMAL(10,2), IN cri6 DECIMAL(10,2), IN cri7 DECIMAL(10,2),
@@ -1213,7 +1214,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
-// IDK
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertResultComt(IN evid INT, IN team INT, IN perId INT,
         IN total DECIMAL(10,2))
         BEGIN
@@ -1225,7 +1226,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
-// IDK
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_updateScore(IN total DECIMAL(10,2), IN perId VARCHAR(299),
         IN evid INT, IN conid INT)
         BEGIN
@@ -1258,7 +1259,26 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
-//TRIGGER
+
+/* REPORTS (admin) */
+try {
+    $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_scoreReport()
+            BEGIN
+                SELECT 
+                  ve.eventName, vt.teamName, vs.total_score, sr.action_made, sr.action_at
+                FROM vw_scoreReport sr
+                INNER JOIN vw_subresult vs ON vs.subId = sr.result_id
+                INNER JOIN vw_events ve ON ve.eventID = vs.eventId
+                INNER JOIN vw_eventparti vp ON vp.contId = vs.contestantId
+                INNER JOIN vw_teams vt ON vt.teamId = vp.teamId;
+            END ;";
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
 
 try {
     $createTableSQL = "
@@ -1286,19 +1306,9 @@ try {
         throw new Exception("Error creating view: " . $conn->error);
     }
 
-    // Step 3: Drop existing triggers if they exist
-    $dropInsertTriggerSQL = "DROP TRIGGER IF EXISTS tr_insertScore;";
-    $dropUpdateTriggerSQL = "DROP TRIGGER IF EXISTS tr_updateScore;";
-    
-    if ($conn->query($dropInsertTriggerSQL) === TRUE && $conn->query($dropUpdateTriggerSQL) === TRUE) {
-
-    } else {
-        throw new Exception("Error dropping triggers: " . $conn->error);
-    }
-
-    // Step 4: Create the insert trigger
+    // Step 3: Create the insert trigger
     $createInsertTriggerSQL = "
-        CREATE TRIGGER tr_insertScore
+        CREATE TRIGGER IF NOT EXISTS tr_insertScore
         AFTER INSERT ON sub_results
         FOR EACH ROW
         BEGIN
@@ -1313,9 +1323,9 @@ try {
         throw new Exception("Error creating insert trigger: " . $conn->error);
     }
 
-    // Step 5: Create the update trigger
+    // Step 4: Create the update trigger
     $createUpdateTriggerSQL = "
-        CREATE TRIGGER tr_updateScore
+        CREATE TRIGGER IF NOT EXISTS tr_updateScore
         AFTER UPDATE ON sub_results
         FOR EACH ROW
         BEGIN
@@ -1333,7 +1343,7 @@ try {
 } catch (Exception $e) {
     echo $e->getMessage();
 }
-
+/* REPORTS */
 
 /* END COMMITTEE */
 
@@ -1367,7 +1377,7 @@ if ($conn->query($sqlT) === TRUE) {
     echo "Error creating table: " . $conn->error;
 }
 
-// IDK
+// NAGAMIT
 $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getScoreSport(IN evid INT)
         BEGIN
             SELECT 

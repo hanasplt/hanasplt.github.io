@@ -208,6 +208,34 @@ body {
     justify-content: center;
   }
 
+  .pagination {
+    text-align: center;
+    padding-top: 10px;
+  }
+    .prevbtn, .nextbtn {
+      cursor: pointer;
+      font-weight: 300;
+      border: 1px solid #d9d9d9;
+      margin: 0 0.5vw;
+      padding: 0.5vw 1vw;
+      color: #2B2B2B;
+      border: 1px solid #c2c2c2;
+      border-radius: 0.5vw;
+      text-decoration: none;
+      text-align: center;
+    }
+    .disabled {
+      font-weight: 300;
+      border: 1px solid #d9d9d9;
+      color: #d2d2d2;
+      margin: 0 0.5vw;
+      padding: 0.5vw 1vw;
+      border: 1px solid #c2c2c2;
+      border-radius: 0.5vw;
+      text-decoration: none;
+      text-align: center;
+    }
+
 a {
   text-decoration: none;
   color: #2B2B2B;
@@ -234,11 +262,35 @@ td {
 }
 
 th {
-  text-align: center;
+  text-align: left;
   background-color: #d8f17fa2;
   color: #2B2B2B;
   padding: 10px;
 }
+
+/* reportScoreSheet.php css */
+.btn-container button {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: #AEAEAE;
+  text-decoration: none;
+  display: inline-block;
+  margin-left: 5%;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  border: none;
+  cursor: pointer;
+  transition: 0.5s ease;
+}
+.btn-container button:hover {
+  text-decoration: underline;
+  color: #a0a0a0;
+}
+  .btn-container button img {
+    vertical-align: middle;
+    max-width: 20px;
+  }
+/* end reportScoreSheet.php css */
 
 /* alert */
 .alert {
