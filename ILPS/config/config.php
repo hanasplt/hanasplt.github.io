@@ -1257,6 +1257,84 @@ if ($conn->query($sqlT) === TRUE) {
 } else {
     echo "Error creating table: " . $conn->error;
 }
+
+//TRIGGER
+
+try {
+    $createTableSQL = "
+        CREATE TABLE IF NOT EXISTS scoreReport (
+            score_id INT AUTO_INCREMENT PRIMARY KEY,
+            result_id INT NOT NULL,
+            action_made VARCHAR(299) NOT NULL,
+            action_at DATETIME NOT NULL,
+            FOREIGN KEY (result_id) REFERENCES sub_results(subId)
+        );
+    ";
+    if ($conn->query($createTableSQL) === TRUE) {
+
+    } else {
+        throw new Exception("Error creating table: " . $conn->error);
+    }
+
+    $createViewSQL = "
+        CREATE OR REPLACE VIEW vw_scoreReport AS 
+        SELECT * FROM scoreReport;
+    ";
+    if ($conn->query($createViewSQL) === TRUE) {
+
+    } else {
+        throw new Exception("Error creating view: " . $conn->error);
+    }
+
+    // Step 3: Drop existing triggers if they exist
+    $dropInsertTriggerSQL = "DROP TRIGGER IF EXISTS tr_insertScore;";
+    $dropUpdateTriggerSQL = "DROP TRIGGER IF EXISTS tr_updateScore;";
+    
+    if ($conn->query($dropInsertTriggerSQL) === TRUE && $conn->query($dropUpdateTriggerSQL) === TRUE) {
+
+    } else {
+        throw new Exception("Error dropping triggers: " . $conn->error);
+    }
+
+    // Step 4: Create the insert trigger
+    $createInsertTriggerSQL = "
+        CREATE TRIGGER tr_insertScore
+        AFTER INSERT ON sub_results
+        FOR EACH ROW
+        BEGIN
+            INSERT INTO scoreReport (result_id, action_made, action_at) 
+            VALUES (NEW.subId, 'Score Inserted', NOW());
+        END;
+    ";
+    
+    if ($conn->query($createInsertTriggerSQL) === TRUE) {
+
+    } else {
+        throw new Exception("Error creating insert trigger: " . $conn->error);
+    }
+
+    // Step 5: Create the update trigger
+    $createUpdateTriggerSQL = "
+        CREATE TRIGGER tr_updateScore
+        AFTER UPDATE ON sub_results
+        FOR EACH ROW
+        BEGIN
+            INSERT INTO scoreReport (result_id, action_made, action_at) 
+            VALUES (NEW.subId, 'Score Updated', NOW());
+        END;
+    ";
+    
+    if ($conn->query($createUpdateTriggerSQL) === TRUE) {
+
+    } else {
+        throw new Exception("Error creating update trigger: " . $conn->error);
+    }
+
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
+
 /* END COMMITTEE */
 
 
