@@ -1,12 +1,21 @@
-html {
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    overflow-x: hidden;
     scroll-behavior: smooth;
 }
 
-body {
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
+.container, .about-section, footer {
+    max-width: 100vw;
+    overflow: hidden;
 }
+
 
 header {
     display: flex;
@@ -844,6 +853,7 @@ button:hover {
 
     .image-section {
         position: fixed;
+        margin-top: 20%;
         max-width: 100%;
         height: 100%;
         background-size: contain; /* Keeps the image contained within the width */
