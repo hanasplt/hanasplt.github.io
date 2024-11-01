@@ -312,7 +312,7 @@ usort($scheduled_days, function ($a, $b) {
                     cancelButtonText: 'Cancel'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = 'index.html';
+                        window.location.href = '../admin/admin.php?logout';
                     }
                 });
             });
