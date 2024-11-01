@@ -24,7 +24,7 @@ $result_teams->free();
 $conn->next_result(); // Make sure to prepare for the next query
 
 // fetch scheduled days
-$query_days = "SELECT * FROM scheduled_days";
+$query_days = "CALL sp_getDay()";
 $result_days = $conn->query($query_days);
 
 $scheduled_days = [];
@@ -32,9 +32,12 @@ $scheduled_days = [];
 if ($result_days->num_rows > 0) {
     while ($row_day = $result_days->fetch_assoc()) {
         $day_id = $row_day['id'];
+        
+        // Free the result of the first stored procedure call
+        $conn->next_result();
 
-        // fetch events for each day
-        $query_events = "SELECT * FROM scheduled_eventstoday WHERE day_id = ? ORDER BY time ASC";
+        // Fetch events for each day
+        $query_events = "CALL sp_getScheduledEvent(?)";
         $stmt_events = $conn->prepare($query_events);
         $stmt_events->bind_param("i", $day_id);
         $stmt_events->execute();
@@ -43,7 +46,7 @@ if ($result_days->num_rows > 0) {
         $events = [];
         if ($result_events->num_rows > 0) {
             while ($row_event = $result_events->fetch_assoc()) {
-                // fetch team names using the team IDs from the stored procedure result
+                // Fetch team names using the team IDs from the stored procedure result
                 $teamA_id = $row_event['teamA'];
                 $teamB_id = $row_event['teamB'];
 
@@ -61,10 +64,19 @@ if ($result_days->num_rows > 0) {
             });
         }
 
+        // Free the result of the second stored procedure call
+        $stmt_events->free_result();
+        $conn->next_result();  // Ensure there's no remaining result
+
         $row_day['events'] = $events;
         $scheduled_days[] = $row_day;
     }
 }
+
+// Free the result of the outermost call
+$result_days->free();
+$conn->next_result();
+
 
 usort($scheduled_days, function ($a, $b) {
     return strtotime($a['day_date']) - strtotime($b['day_date']);
@@ -312,7 +324,7 @@ usort($scheduled_days, function ($a, $b) {
                     cancelButtonText: 'Cancel'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = '../admin/admin.php?logout';
+                        window.location.href = 'schedule.php?logout';
                     }
                 });
             });

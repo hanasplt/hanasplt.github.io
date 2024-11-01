@@ -1,3 +1,14 @@
+if (typeof data !== 'undefined' && data.length > 0) {
+    // Initial load with 'Today' and 'All' filter selected
+    if (document.getElementById('filterOpt') && document.getElementById('eventFilter')) {
+        if (data && data.length > 0) {
+            document.getElementById('filterOpt').value = 'today';
+            document.getElementById('eventFilter').value = 'all';
+            filterTable(); 
+        }
+    }
+}
+
 // Pagination variables
 let currentPage = 1;
 const rowsPerPage = 6;
@@ -63,69 +74,66 @@ function filterTable() {
     const ev_filter = document.getElementById('eventFilter').value;
     let filteredData;
 
-    // Display all today
-    if (ev_filter === 'all' && filter === 'today') {
-        const today = new Date().toISOString().split("T")[0];
-        // Filter data to include only items where the action_at date is today
-        filteredData = data.filter(item => {
-            const dbDateToday = new Date(item.action_at).toISOString().split("T")[0];
-            return dbDateToday === today;
-        });
-    }
-    // Display all this year
-    else if (ev_filter === 'all' && filter === 'all') {
-        const currYear = new Date().getFullYear();
-        filteredData = data.filter(item => new Date(item.action_at).getFullYear() === currYear);
-    } 
-    // Display all in selected year
-    else if (ev_filter === 'all') {
-        const selectedYear = parseInt(filter);
-        filteredData = data.filter(item => new Date(item.action_at).getFullYear() === selectedYear);
-    }
-    
-    // Display specific event today
-    if (ev_filter !== 'all' && filter === 'today') {
-        const today = new Date().toISOString().split("T")[0];
-        filteredData = data.filter(item => {
-            const dbDateToday = new Date(item.action_at).toISOString().split("T")[0];
-            return dbDateToday === today && item.eventName === ev_filter;
-        });
-    }
-    // Display specific this year
-    else if (ev_filter !== 'all' && filter === 'all') {
-        const currYear = new Date().getFullYear();
-        filteredData = data.filter(item => 
-            new Date(item.action_at).getFullYear() === currYear &&
-            item.eventName === ev_filter
-        );
-    } 
-    // Display specific in selected year
-    else if (ev_filter !== 'all') {
-        const selectedYear = parseInt(filter);
-        filteredData = data.filter(item => 
-            new Date(item.action_at).getFullYear() === selectedYear &&
-            item.eventName === ev_filter
-        );
-    }
-
-    const tableBody = document.getElementById('tableBody');
-    if (filteredData.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="5">No data available for the selected year.</td></tr>';
-        if (document.getElementById('pagination')) {
-            document.getElementById('pagination').innerHTML = '';
+    if (typeof data !== 'undefined' && data.length > 0) {
+        // Display all today
+        if (ev_filter === 'all' && filter === 'today') {
+            const today = new Date().toISOString().split("T")[0];
+            // Filter data to include only items where the action_at date is today
+            filteredData = data.filter(item => {
+                const dbDateToday = new Date(item.action_at).toISOString().split("T")[0];
+                return dbDateToday === today;
+            });
         }
-        return;
+        // Display all this year
+        else if (ev_filter === 'all' && filter === 'all') {
+            const currYear = new Date().getFullYear();
+            filteredData = data.filter(item => new Date(item.action_at).getFullYear() === currYear);
+        } 
+        // Display all in selected year
+        else if (ev_filter === 'all') {
+            const selectedYear = parseInt(filter);
+            filteredData = data.filter(item => new Date(item.action_at).getFullYear() === selectedYear);
+        }
+        
+        // Display specific event today
+        if (ev_filter !== 'all' && filter === 'today') {
+            const today = new Date().toISOString().split("T")[0];
+            filteredData = data.filter(item => {
+                const dbDateToday = new Date(item.action_at).toISOString().split("T")[0];
+                return dbDateToday === today && item.eventName === ev_filter;
+            });
+        }
+        // Display specific this year
+        else if (ev_filter !== 'all' && filter === 'all') {
+            const currYear = new Date().getFullYear();
+            filteredData = data.filter(item => 
+                new Date(item.action_at).getFullYear() === currYear &&
+                item.eventName === ev_filter
+            );
+        } 
+        // Display specific in selected year
+        else if (ev_filter !== 'all') {
+            const selectedYear = parseInt(filter);
+            filteredData = data.filter(item => 
+                new Date(item.action_at).getFullYear() === selectedYear &&
+                item.eventName === ev_filter
+            );
+        }
+
+
+        const tableBody = document.getElementById('tableBody');
+        if (filteredData.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="5">No data available for the selected year.</td></tr>';
+            if (document.getElementById('pagination')) {
+                document.getElementById('pagination').innerHTML = '';
+            }
+            return;
+        }
+    
+        populateTable(filteredData);
     }
-
-    populateTable(filteredData);
 }
 
-// Initial load with 'Today' and 'All' filter selected
-if (document.getElementById('filterOpt') && document.getElementById('eventFilter')) {
-    document.getElementById('filterOpt').value = 'today';
-    document.getElementById('eventFilter').value = 'all';
-    filterTable(); 
-}
 
 
 // Redirect to overall scoresheets per event

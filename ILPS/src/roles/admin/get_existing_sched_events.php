@@ -5,7 +5,7 @@ include '../../../config/db.php';
 if (isset($_POST['event_id'])) {
     $event_id = $_POST['event_id'];
 
-    $query = "SELECT * FROM scheduled_eventstoday WHERE id = ?";
+    $query = "CALL sp_checkScheduledEvent(?)";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('i', $event_id);
     $stmt->execute();

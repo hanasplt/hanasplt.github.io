@@ -4,7 +4,7 @@ include '../../../config/db.php';
     if (isset($_POST['day_date'])) {
         $dayDate = $_POST['day_date'];
 
-        $query = "SELECT COUNT(*) AS dateCount FROM scheduled_days WHERE day_date = ?";
+        $query = "CALL sp_getDate(?)";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("s", $dayDate);
         $stmt->execute();

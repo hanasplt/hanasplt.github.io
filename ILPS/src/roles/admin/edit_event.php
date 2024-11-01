@@ -5,6 +5,10 @@ ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
 error_reporting(E_ALL);
 
+session_start();
+
+$accId = $_SESSION['userId'];
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Required fields
     $event_id = $_POST['eventId'];
@@ -42,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $conn->begin_transaction();
 
     try {
-        $updateQuery = "UPDATE scheduled_eventstoday SET time = ?, type = ?, activity = ?, location = ?, gameNo = ?, teamA = ?, teamB = ?, status = ? WHERE id = ?";
+        $updateQuery = "CALL sp_updateEventSched(?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($updateQuery);
         
         $stmt->bind_param('ssssssssi', $time, $type, $activity, $location, $gameNo, $teamA, $teamB, $status, $event_id);
@@ -60,7 +64,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 'teamB' => $teamB,
                 'status' => $status
             ];
-            echo json_encode(['success' => true, 'message' => 'Event updated successfully.', 'updated_data' => $updatedData]);
+
+            // Insert action in the logs
+            $action = "
+                Updated scheduled event(id: $event_id) in day-id: $day_id. 
+                Starts on $time at $location, event type: $type--$activity,
+                status $status.
+            ";
+            $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+            $stmt = $conn->prepare($insertLogAct);
+            $stmt->bind_param("is", $accId, $action);
+            $stmt->execute();
+
+            echo json_encode([
+                'success' => true, 
+                'message' => 'Event updated successfully.', 
+                'updated_data' => $updatedData
+            ]);
         } else {
             throw new Exception('Failed to update event.');
         }

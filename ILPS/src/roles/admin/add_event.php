@@ -1,5 +1,12 @@
 <?php
 include '../../../config/db.php';
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+error_reporting(E_ALL);
+
+session_start();
+
+$accId = $_SESSION['userId'];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $day_id = $_POST['day_id'];
@@ -32,15 +39,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $teamB = null;
     }
 
-    $query = "INSERT INTO scheduled_eventstoday (day_id, time, type, activity, location, gameNo, teamA, teamB, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $query = "CALL sp_insertEventSched(?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
 
     $stmt->bind_param("issssssss", $day_id, $time24, $type, $activity, $location, $gameNo, $teamA, $teamB, $status);
 
     if ($stmt->execute()) {
+        $stmt->close(); // To enable another command
+
         // Fetch team A name
         if ($teamA !== null) {
-            $query_teamA = "SELECT teamName FROM vw_teams WHERE teamId = ?";
+            $query_teamA = "CALL sp_getATeam(?)";
             $stmt_teamA = $conn->prepare($query_teamA);
             $stmt_teamA->bind_param("i", $teamA);
             $stmt_teamA->execute();
@@ -53,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Fetch team B name
         if ($teamB !== null) {
-            $query_teamB = "SELECT teamName FROM vw_teams WHERE teamId = ?";
+            $query_teamB = "CALL sp_getATeam(?)";
             $stmt_teamB = $conn->prepare($query_teamB);
             $stmt_teamB->bind_param("i", $teamB);
             $stmt_teamB->execute();
@@ -63,6 +72,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             $stmt_teamB->close();
         }
+
+        // Insert action in the logs
+        $action = "
+            Added scheduled event in day-id: $day_id. 
+            Starts on $time12 at $location, event type: $type--$activity,
+            status $status.
+        ";
+        $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+        $stmt = $conn->prepare($insertLogAct);
+        $stmt->bind_param("is", $accId, $action);
+        $stmt->execute();
 
         echo json_encode([
             'success' => true,
@@ -74,6 +95,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo json_encode(['success' => false, 'message' => 'Failed to add event.']);
     }
 
-    $stmt->close();
     $conn->close();
 }
