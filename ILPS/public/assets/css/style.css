@@ -193,15 +193,6 @@ nav a {
         padding: 20px; 
     }
 
-    .image-section {
-        position: fixed;
-        max-width: 20%;
-        height: 100%; 
-        background-position: center; 
-        z-index: 1; 
-        opacity: 0.1; 
-    }
-
     .text-section {
         min-width: 80%;
         position: relative; 
@@ -307,7 +298,7 @@ nav a {
 }
 
 .image-section img {
-    max-width: 550px;
+    max-width: 110%;
     vertical-align: middle;
 }
 
@@ -403,21 +394,55 @@ footer .footer-left {
         font-size: 14px; 
     }
 
+    .banner-left{
+        display: block;
+    }
+
+    .banner-right{
+        display: block;
+    }
+
     footer {
-        padding: 10px; 
-        /*align-items: center;*/
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center; 
+        flex-direction: column; 
+        width: 100%; 
     }
-
+    
+    .footer-left, .footer-right, .footer-footer p {
+        display: flex;
+        flex-direction: column; /* Stack content vertically inside each section */
+        align-items: center; /* Centers content horizontally inside each section */
+        text-align: center; /* Ensures text is centered */
+        width: 100%; /* Takes full width to center everything properly */
+    }
+    
     .footer-left h6 {
-        font-size: 18px; 
-       /* text-align: center;
-        margin-left: 80%;
-        display: flex;*/
+        font-size: 18px;
+        margin: 0;
+        padding-top: 15px;
+        padding-bottom: 15px; /* Spacing between h6 and the following paragraph */
+        width: 125%; /* Removes fixed width so content is fluid and centered */
     }
 
-    .footer-left p {
-        font-size: 12px;
+    .footer-right h6 {
+        font-size: 18px;
+        margin: 0;
+        padding-top: 15px;
+        padding-bottom: 15px; /* Spacing between h6 and the following paragraph */
     }
+    
+    .footer-left p, .footer-right p {
+        font-size: 18px;
+        margin: 0;
+        padding: 0;
+        text-align: center; /* Centers text */
+        width: 130%; /* Removes fixed width to allow proper centering */
+        display: block; /* Ensures content is treated as block elements */
+    }
+    
 }
 
 .footer-right h6 {
@@ -819,12 +844,16 @@ button:hover {
 
     .image-section {
         position: fixed;
-        max-width: 10%;
-        height: 100%; 
-        background-position: center; 
-        z-index: 1; 
-        opacity: 0.1; 
+        max-width: 100%;
+        height: 100%;
+        background-size: contain; /* Keeps the image contained within the width */
+        background-position: center;
+        z-index: 4;
+        opacity: 0.1;
     }
+    
+    
+    
 
     .rank-list {
         margin: 5px;
