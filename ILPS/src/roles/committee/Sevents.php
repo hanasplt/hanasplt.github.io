@@ -345,8 +345,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         echo "<option value='0' " . ($selectedPoints == 0 ? 'selected' : '') . ">0</option>";
 
                         // Add additional points options
-                        $query_vw = "SELECT * FROM vw_eventscore";
+                        $query_vw = "SELECT * FROM vw_eventscore WHERE eventCategory = 
+(SELECT eventCategory FROM vw_events WHERE eventID = ?)";
                         $stmt_vw = $conn->prepare($query_vw);
+
+                        // Bind the parameter (assuming $eventID is defined)
+                        $stmt_vw->bind_param("i", $evId);
+
                         $stmt_vw->execute();
                         $result_vw = $stmt_vw->get_result();
 
@@ -354,10 +359,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             while ($row_vw = $result_vw->fetch_assoc()) {
                                 $score = $row_vw['points'];
                                 $rank = $row_vw['rank'];
-                                echo "<option value='" . $score . "' " . ($selectedPoints == $score ? 'selected' : '') . ">" . $rank . " - " . $score . " pts.</option>";
+                                echo "<option value='" . htmlspecialchars($score) . "' " .
+                                    ($selectedPoints == $score ? 'selected' : '') . ">" .
+                                    htmlspecialchars($rank) . " - " . htmlspecialchars($score) . " pts.</option>";
                             }
                         }
                         $stmt_vw->close();
+
 
                         echo "</select>";
                         echo "</td>";
@@ -589,7 +597,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         // Show the Edit button and hide the Save button
                         row.querySelector('.edit-btn').style.display = 'inline-block';
                         row.querySelector('.save-btn').style.display = 'none';
-                        
+
                     } else {
                         console.error('Error response:', xhr.status, xhr.statusText); // Log the error response
                         Swal.fire({
