@@ -1,3 +1,7 @@
+// Pagination variables
+let currentPage = 1;
+const rowsPerPage = 6;
+
 if (typeof data !== 'undefined' && data.length > 0) {
     // Initial load with 'Today' and 'All' filter selected
     if (document.getElementById('filterOpt') && document.getElementById('eventFilter')) {
@@ -8,10 +12,6 @@ if (typeof data !== 'undefined' && data.length > 0) {
         }
     }
 }
-
-// Pagination variables
-let currentPage = 1;
-const rowsPerPage = 6;
 
 // Function to populate the table with data
 function populateTable(filteredData) {
