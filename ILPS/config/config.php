@@ -95,8 +95,14 @@ try {
                             (NULL, ?, ?, ?, NULL, ?, ?, ?, ?, NULL, NULL, NULL)";
         $stmt = $conn->prepare($sqlInsertAdminAcc);
         $stmt->bind_param(
-            "sssssss", 
-            $adminW, $adminW, $adminW, $adminPass, $adminEmail, $adminW, $user_permissions
+            "sssssss",
+            $adminW,
+            $adminW,
+            $adminW,
+            $adminPass,
+            $adminEmail,
+            $adminW,
+            $user_permissions
         );
 
         if ($stmt->execute()) {
@@ -446,7 +452,7 @@ try {
 }
 
 /* RANK */
-    try {
+try {
     // NAGAMIT
     $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getData(IN evid INT)
             BEGIN
@@ -812,7 +818,7 @@ try {
     $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertEvent(IN id INT, IN name VARCHAR(255), 
             IN evtype VARCHAR(255), IN category VARCHAR(255))
             BEGIN
-                INSERT INTO vw_events VALUES (id, name, evtype, category, NULL);
+                INSERT INTO vw_events VALUES (id, name, evtype, category);
             END ;";
     if ($conn->query($sqlT) === TRUE) {
     } else {
@@ -998,7 +1004,7 @@ try {
     // NAGAMIT
     $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertEventJudge(IN id INT, IN evid INT)
             BEGIN
-                INSERT INTO vw_eventJudge VALUES (NULL, id, evid, NULL);
+                INSERT INTO vw_eventJudge VALUES (NULL, id, evid);
             END ;";
     if ($conn->query($sqlT) === TRUE) {
     } else {
@@ -1078,7 +1084,7 @@ try {
 /* END SCORING */
 
 /* CRITERIA */
-try { 
+try {
     // NAGAMIT
     $sqlP = "CREATE PROCEDURE IF NOT EXISTS sp_getCriteria(IN evid INT)
             BEGIN
@@ -1372,7 +1378,7 @@ try {
 #PROCEDURES (COMMITTEE & JUDGE) ---------------------------------------------------------------------
 /* COMMITTEE */
 try {
-// NAGAMIT
+    // NAGAMIT
     $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAComt(IN id INT)
             BEGIN
                 SELECT ef.eventId, ev.eventName FROM vw_eventComt ef 
@@ -1534,7 +1540,6 @@ try {
         );
     ";
     if ($conn->query($createTableSQL) === TRUE) {
-
     } else {
         throw new Exception("Error creating table: " . $conn->error);
     }
@@ -1544,7 +1549,6 @@ try {
         SELECT * FROM scoreReport;
     ";
     if ($conn->query($createViewSQL) === TRUE) {
-
     } else {
         throw new Exception("Error creating view: " . $conn->error);
     }
@@ -1559,9 +1563,8 @@ try {
             VALUES (NEW.subId, 'Score Inserted', NOW());
         END;
     ";
-    
-    if ($conn->query($createInsertTriggerSQL) === TRUE) {
 
+    if ($conn->query($createInsertTriggerSQL) === TRUE) {
     } else {
         throw new Exception("Error creating insert trigger: " . $conn->error);
     }
@@ -1576,13 +1579,11 @@ try {
             VALUES (NEW.subId, 'Score Updated', NOW());
         END;
     ";
-    
-    if ($conn->query($createUpdateTriggerSQL) === TRUE) {
 
+    if ($conn->query($createUpdateTriggerSQL) === TRUE) {
     } else {
         throw new Exception("Error creating update trigger: " . $conn->error);
     }
-
 } catch (Exception $e) {
     echo $e->getMessage();
 }
