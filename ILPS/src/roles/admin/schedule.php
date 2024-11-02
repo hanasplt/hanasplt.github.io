@@ -844,6 +844,7 @@ usort($scheduled_days, function ($a, $b) {
                                         const teamResponse = JSON.parse(xhrTeams.responseText);
                                         if (teamResponse.success) {
                                             const teams = teamResponse.teams;
+                                            console.log('Teams found:', teams);
                                             let teamOptionsA = '<option value="" disabled selected>Team A</option>';
                                             let teamOptionsB = '<option value="" disabled selected>Team B</option>';
 
@@ -1121,7 +1122,7 @@ usort($scheduled_days, function ($a, $b) {
                                         }
                                     }
                                 };
-                                xhrTeams.send();
+                                xhrTeams.send(`event_id=${eventId}`);
                             } else {
                                 Swal.fire({
                                     title: 'Error!',

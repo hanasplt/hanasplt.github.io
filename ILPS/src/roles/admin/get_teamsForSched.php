@@ -1,11 +1,32 @@
 <?php
 
-include '../../../config/db.php';
+    include '../../../config/db.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+        exit;
+    }
+
+    $eventID = isset($_POST['event_id']) ? intval($_POST['event_id']) : null;
+
+    if (!$eventID) {
+        echo json_encode(['success' => false, 'message' => 'Event ID is required.']);
+        exit;
+    }
+
     try {
-        $query = "CALL sp_getAllTeam()";
+        error_log("Fetching teams for event ID: " . $eventID);
+
+        $query = "
+            SELECT t.teamId, t.teamName
+            FROM teams t
+            INNER JOIN contestant c ON t.teamId = c.teamId
+            INNER JOIN events e ON c.eventId = e.eventId
+            INNER JOIN scheduled_eventstoday s ON e.eventName = s.activity
+            WHERE s.id = ?
+        ";
         $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $eventID);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -17,15 +38,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             echo json_encode(['success' => true, 'teams' => $teams]);
         } else {
-            echo json_encode(['success' => false, 'message' => 'No teams found']);
+            echo json_encode(['success' => false, 'message' => 'No teams found for the specified event ID.']);
         }
 
         $stmt->close();
     } catch (Exception $e) {
+        error_log("Error fetching teams: " . $e->getMessage());
         echo json_encode(['success' => false, 'message' => 'Error fetching teams: ' . $e->getMessage()]);
+    } finally {
+        $conn->close();
     }
-} else {
-    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
-}
 
 ?>
