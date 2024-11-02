@@ -1,97 +1,196 @@
 body {
-    font-family: 'Poppins';
+    font-family: 'Poppins', sans-serif;
     background-color: #EFF0F4;
     margin: 0;
     height: 100vh;
 }
 
-.nav-bar {
-    height: 5vw;
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Poppins,sans-serif;
+  }
+  
+  body {
+    background-color: #EFF0F4;
+    font-family: Inter, sans-serif;
+    margin: 0;
+  }
+  
+  .user-name {
+    font-family: Poppins, sans-serif;
+    font-weight: 700;
+    color: #2B2B2B;
+    margin-bottom: 0;
+    margin-top: 0;
+    text-align: left;
+  }
+  
+  .comm-name {
+    font-family: Inter, sans-serif;
+    font-weight: 800;
+    font-size: 11px;
+    color: #2B2B2B;
+    background-color: #D9F17F;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 7px;
+    padding-right: 7px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  
+  .navigation-bar {
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
     align-items: center;
-    background-color: #ffffff;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-}
-
-.logo-img {
+    background-color: #f4f4f4;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .navbar {
+    font-family: Poppins, sans-serif;
+    font-weight: 600;
+    color: #a3a3a3;
+    cursor: pointer;
+  }
+  
+  .navbarbie {
+    font-family: Poppins, sans-serif;
+    font-weight: 800;
+    color: #2B2B2B;
+    cursor: pointer;
+  }
+  
+  .logo-img-img {
     padding-left: 2vw;
-}
+    max-width: 70px;
+    vertical-align: middle;
+    margin-right: 15px;
+  }
+  
+  .icon-img {
+    max-width: 43px;
+    vertical-align: middle;
+    margin-right: 15px;
+    box-shadow: 0px 0px 10px 0px rgba(10,0,0,0.3);
+    border-radius: 100%;
+  }
+  
+  .nav-link {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    margin-left: 40px;
+    text-decoration: none;
+    justify-content: flex-start;
+    gap: 40px; 
+    color: #333;
+  }
+  
+  .nav-link-1 {
+    display: flex;
+    flex-direction: row;
+    margin-left: 40px;
+    text-decoration: none;
+    justify-content: flex-start;
+    gap: 40px; 
+    color: #333;
+    margin-right: 40px;
+  }
+  
+  .navbar:hover {
+    color: #2B2B2B;
+  }
+  
+  /* drop down navbar*/
+  
+  .dropdown .dropbtn {
+    display: flex;
+    flex-direction: row;
+    font-family: Poppins, sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: #a3a3a3;
+    border: none;
+    outline: none;
+    padding: 14px 16px;
+    margin: 0;
+    background-color: #f4f4f4;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .dropdown-content,
+  .account-dropdown {
+    background-color: #f4f4f4;
+    display: none;
+    position: absolute;
+    min-width: 170px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border: none;
+  }
+  
+  .account-dropdown {
+    min-width: 90px;
+  }
+  
+  .dc-text, #logout {
+    font-family: Inter, sans-serif;
+    font-weight: 800;
+    float: none;
+    color: #2B2B2B;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    cursor: pointer;
+    padding-left: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: none;
+    margin-top: none;
+  }
+  
+  .dc-text:hover, #logout:hover {
+    background-color: #ddd;
+  }
+  
+  .dropdown:hover .dropdown-content,
+  .acc-hover:hover .account-dropdown {
+    display: block;
+  }
 
-    .logo-bar {
-        line-height: 0.1;
-        margin-top: 0.4vw;
-    }
+  
+  /* end of drop down navbar*/
 
-        .logo-bar p {
-            font-size: 1vw;
-            font-weight: bold;
-        }
+  .container {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    transition: all 0.3s ease-in-out;
+    margin-left: 5%;
+    margin-right: 5%;
+  }
 
-        #administrator {
-            color: #4B8946;
-        }
-
-    .links {
-        display: flex;  
-        margin-left: auto; 
-    }
-
-        .links p {
-            margin-right: 2.5vw;
-            color: #4B8946;
-        }
-
-        .plus-icon {
-            width: 3vw;
-            height: 3vw;
-            border-radius: 50%;
-            background-color: #B1F0AB;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 20px;
-        }
-        
-        .plus-icon i {
-            color: #4B8946;
-            font-size: 1.5vw;
-        }
-        
-    .menu-icon {
-        color: #4B8946;
-        font-size: 1.5vw;
-        margin-right: 3vw;
-    }
-
-
-/*End of Navbar*/
-
-.eventsDropdown{
+.sub-head{
     display: flex;
     margin-top: 50px;
-    padding: 50px;
     height: auto;
-    color: black;
+    color: #2B2B2B;
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: center;
+    width: 100%;
 }
+
 .eventsDropdown h4{
     font-size: 20px;
 }
-.dropdownEvents{
-    height: 45px;
-    width: 250px;
-    margin-left: 20px;
-    border-radius: 7px;
-    text-align: center;
-    font-size: 15px;
-    color: #4B8946;
-}
+
 .TeamsVersus{
     display: flex;
     text-align: center;
@@ -204,11 +303,13 @@ body {
     margin: 30px;
     font-size: 25px;
 }
+
 .quarter{
     display: flex;
     align-items: center;
     justify-content: center;
 }
+
 .GameQuarter h4{
     height: 40px;
     padding-top: 10px;
@@ -240,6 +341,7 @@ body {
     color: white;
     margin: 10px;
 }
+
 .GoButton:hover{
     color: #4B8946;
     background-color: white;
@@ -323,8 +425,7 @@ body {
 }
 
 #backbtn-faci {
-    text-align: left; 
-    margin-left: 10%;
+    text-align: left;
     border: none;
     background: transparent;
     color: #AEAEAE;
@@ -339,7 +440,6 @@ body {
 #backbtn-faci:hover {
     text-decoration: underline;
 }
-
 
 .scoring-container {
     margin-bottom: 3%;
@@ -419,7 +519,7 @@ div .msg {
     margin-right: 70px;
     background-color: #f9f9f9;
     padding: 10px;
-    border-left: 3px solid #7FD278;
+    border-left: 3px solid #D9F17F;;
 }
 
 .scoreTable table {
@@ -433,12 +533,13 @@ div .msg {
     padding: 15px;
     text-align: left;
     border-bottom: 1px solid #ddd;
+    color: #2B2B2B;
 }
 
 .scoreTable table th {
     background-color: #f2f2f2;
     font-weight: bold;
-    color: #333;
+    color: #2B2B2B;
     font-size: 14px;
     text-transform: uppercase;
 }
@@ -453,9 +554,11 @@ div .msg {
 }
 
 .scoreTable table td button {
+    font-family: Inter, sans-serif;
+    font-weight: 600;
     padding: 8px 12px;
     font-size: 12px;
-    color: white;
+    color: #2B2B2B;
     border: none;
     cursor: pointer;
     border-radius: 5px;
@@ -464,19 +567,19 @@ div .msg {
 }
 
 .addEdit-btn {
-    background-color: #4CAF50;
+    background-color: #D9F17F;
 }
 
 .saveScore-btn {
-    background-color: #006eff;
+    background-color: #D9F17F;
 }
 
 .addEdit-btn:hover {
-    background-color: #45a049;
+    background-color: #9aac5b;
 }
 
 .saveScore-btn:hover {
-    background-color: #0264e6;
+    background-color: #9aac5b;
 }
 
 .edit-btn {

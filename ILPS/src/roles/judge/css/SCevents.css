@@ -279,6 +279,7 @@ input[type="number"] {
     color: #2B2B2B;
     font-family: Inter, sans-serif;
     font-weight: 600;
+    cursor: pointer;
 }
 
 .GoButton:hover{

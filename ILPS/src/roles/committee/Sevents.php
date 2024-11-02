@@ -6,7 +6,7 @@ require_once '../admin/verifyLoginSession.php'; // Logged in or not
 require_once 'committeePermissions.php'; // Retrieves committee permissions
 
 $id = $_SESSION['userId'];
-
+$comm_name = $row['firstName'];
 
 $evId = isset($_GET['event']) ? $_GET['event'] : '';
 $evname = isset($_GET['name']) ? $_GET['name'] : '';
@@ -98,9 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->close();
 }
 
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -108,43 +106,56 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ILPS</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>ILPS | Committee</title>
     <link rel="stylesheet" href="../committee/css/Sevents.css">
-    <link rel="icon" href="../../../public/assets/icons/logo-1.png">
+    <!-- font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+    <!--Web-logo-->
+    <link rel="icon" href="../../../public/assets/icons/logo-top-final.png">
+
+    <!-- icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
-
-    <div class="nav-bar">
-        <img class="logo-img" src="../../../public/assets/icons/logoo.png">
-        <div class="logo-bar">
-            <p>Intramural Leaderboard</p>
-            <p>and Points System</p>
-            <p id="administrator"><i>COMMMITTEE</i></p>
-        </div>
-        <div class="links">
-            <p onclick="window.location.href = 'admin.html';" hidden>Home</p>
-            <p onclick="window.location.href = 'accounts.html';" hidden>Accounts</p>
-            <p onclick="window.location.href = 'create-team.html';" hidden>Teams</p>
-            <p onclick="window.location.href = 'EventTeam.html';" hidden>Events</p>
-        </div>
-        <div class="menu-icon">
-            <i class="fas fa-sign-out-alt" id="logoutIcon"></i>
-        </div>
+    <div class="navigation-bar">
+        <img class="logo-img-img" src="../../../public/assets/icons/ilps-logo.png">
+        <nav class="nav-link">
+        </nav>
+        <nav class="nav-link-1">
+            <div class="dropdown">
+                <button class="dropbtn">
+                    <img class="icon-img" src="../../../public/assets/icons/icon-user.jpg">
+                    <div>
+                        <p class="user-name"><?php echo $comm_name; ?></p>
+                        <p class="comm-name">COMMITTEE</p>
+                    </div>
+                </button>
+                <div class="dropdown-content">
+                    <div class="menu-icon">
+                        <p id="logout" title="Logout">Logout</p>
+                    </div>
+                </div>
+            </div>
+        </nav>
     </div>
-
-    <div class="sub-head" style="margin-top: 8%;">
-        <button id="backbtn-faci" onclick="window.location.href='committee.php?id=<?php echo $id; ?>'">
-            <img src="../../../public/assets/icons/back.png" alt="back arrow button" width="20" style="margin-right: 5px;">
-            Back
-        </button>
-        <h1 style="text-align: center;"><?php echo $evname; ?></h1>
-        <?php
-        if (isset($_SESSION['error'])) { // For displaying error
-            echo '
+    <div class="container">
+        <div class="sub-head">
+            <button id="backbtn-faci" onclick="window.location.href='committee.php?id=<?php echo $id; ?>'">
+                <img src="../../../public/assets/icons/back.png" alt="back arrow button" width="20">
+                Back
+            </button>
+            <h1 style="text-align: center;"><?php echo $evname; ?></h1>
+            <?php
+            if (isset($_SESSION['error'])) { // For displaying error
+                echo '
                 <div class="msg" id="msg-container">
                     <div class="msg-content">
                         <span style="display: flex; align-items: center; justify-content: space-around;">
@@ -154,9 +165,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
                 </div>
                 ';
-            unset($_SESSION['error']);
-        }
-        ?>
+                unset($_SESSION['error']);
+            }
+            ?>
+        </div>
     </div>
     <?php
     // Assuming $evId is set to the current event ID

@@ -36,7 +36,7 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     <link rel="stylesheet" href="../public/assets/css/style.css">
 
     <!--Web-logo-->
-    <link rel="icon" href="../../../public/assets/icons/logo-top-final.png">
+    <link rel="icon" href="../public/assets/icons/logo-top-final.png">
 </head>
 
 <body>
