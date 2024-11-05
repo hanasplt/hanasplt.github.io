@@ -105,7 +105,7 @@ if ($status != 'finish') {
                 if ($retval->num_rows > 0) {
                     while ($row = $retval->fetch_assoc()) {
                 ?>
-                        <a href="Sevents.php?event=<?php echo $row['eventId']; ?>">
+                        <a href="Sevents.php?event=<?php echo $row['eventId']; ?>&name=<?php echo urlencode($row['eventName']); ?>">
                             <span class="hidden"><?php echo $row['eventName']; ?></span>
                             <div class="event-item">
                                 <div class="left-deets">

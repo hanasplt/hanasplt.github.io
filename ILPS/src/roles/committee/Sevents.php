@@ -152,7 +152,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <img src="../../../public/assets/icons/back.png" alt="back arrow button" width="20">
                 Back
             </button>
-            <h1 style="text-align: center;"><?php echo $evname; ?></h1>
             <?php
             if (isset($_SESSION['error'])) { // For displaying error
                 echo '
@@ -169,6 +168,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             ?>
         </div>
+        <div style="margin: auto;">
+                <h1><?php echo $evname; ?></h1>
+            </div>
     </div>
     <?php
     // Assuming $evId is set to the current event ID
