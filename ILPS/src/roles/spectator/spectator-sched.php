@@ -148,8 +148,44 @@ if ($conn->connect_error) {
                         echo '<td>' . htmlspecialchars($event['type']) . '</td>';
                         echo '<td>' . htmlspecialchars($event['activity']) . '</td>';
                         echo '<td>' . htmlspecialchars($event['gameNo']) . '</td>';
-                        echo '<td>' . htmlspecialchars($event['teamA_name']) . '</td>';
-                        echo '<td>' . htmlspecialchars($event['teamB_name']) . '</td>';
+
+                        if (strtolower($event['type']) === 'sports') {
+                            if (is_null($event['ResultA']) && is_null($event['ResultB'])) {
+                                echo '<td>' . htmlspecialchars($event['teamA_name']) . '</td>';
+                                echo '<td>' . htmlspecialchars($event['teamB_name']) . '</td>';
+                            } else {
+                                $teamA_status = '';
+                                $teamB_status = '';
+                                $teamA_color = 'black';
+                                $teamB_color = 'black';
+                            
+                                if ($event['ResultA'] === 'Winner') {
+                                    $teamA_status = ' (Winner)';
+                                    $teamA_color = 'green';
+                                } elseif ($event['ResultA'] === 'Loser') {
+                                    $teamA_status = ' (Loser)';
+                                    $teamA_color = 'red';
+                                }
+                            
+                                if ($event['ResultB'] === 'Winner') {
+                                    $teamB_status = ' (Winner)';
+                                    $teamB_color = 'green';
+                                } elseif ($event['ResultB'] === 'Loser') {
+                                    $teamB_status = ' (Loser)';
+                                    $teamB_color = 'red';
+                                }
+                                
+                                echo '<td>' . htmlspecialchars($event['teamA_name']) . '<span style="color: ' . $teamA_color . ';">' . $teamA_status . '</span></td>';
+                                echo '<td>' . htmlspecialchars($event['teamB_name']) . '<span style="color: ' . $teamB_color . ';">'. $teamB_status . '</span></td>';                            
+                            }
+                                                     
+                        } elseif (strtolower($event['type']) === 'socio-cultural') {
+                            echo '<td colspan="2" style="text-align: center;">Check results at the <a href="spectator.php" style="color: blue; text-decoration: underline;">Dashboard</a> tab</td>';
+                        } else {
+                            echo '<td>' . htmlspecialchars($event['teamA_name']) . '</td>';
+                            echo '<td>' . htmlspecialchars($event['teamB_name']) . '</td>';
+                        }
+                
                         echo '<td>' . htmlspecialchars($event['location']) . '</td>';
                         echo '<td>' . htmlspecialchars($event['status']) . '</td>';
                         
@@ -165,7 +201,7 @@ if ($conn->connect_error) {
             echo '</div>';
 
             $conn->close();
-            ?>
+        ?>
     </div>
     <footer>
         <div class="footer-left">
