@@ -17,14 +17,7 @@
     try {
         error_log("Fetching teams for event ID: " . $eventID);
 
-        $query = "
-            SELECT t.teamId, t.teamName
-            FROM teams t
-            INNER JOIN contestant c ON t.teamId = c.teamId
-            INNER JOIN events e ON c.eventId = e.eventId
-            INNER JOIN scheduled_eventstoday s ON e.eventName = s.activity
-            WHERE s.id = ?
-        ";
+        $query = "CALL sp_getTeamInEvent(?)";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("i", $eventID);
         $stmt->execute();

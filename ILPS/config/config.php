@@ -764,6 +764,22 @@ try {
     } else {
         echo "Error creating table: " . $conn->error;
     }
+    
+    
+    // NAGAMIT
+    $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getTeamInEvent(IN event_id INT)
+            BEGIN
+                SELECT t.teamId, t.teamName
+                FROM vw_teams t
+                INNER JOIN vw_eventparti c ON t.teamId = c.teamId
+                INNER JOIN vw_events e ON c.eventId = e.eventId
+                INNER JOIN vw_eventsched s ON e.eventName = s.activity
+                WHERE s.id = event_id;
+            END ;";
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
 } catch (Exception $e) {
     echo $e->getMessage();
 }
