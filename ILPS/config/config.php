@@ -208,17 +208,17 @@ try {
         eventId INT NOT NULL,
         contestantId INT NOT NULL,
         personnelId INT NOT NULL,
-        total_score DECIMAL(10, 2) NOT NULL,
-        criteria1 DECIMAL(10, 2) NOT NULL,
-        criteria2 DECIMAL(10, 2) NOT NULL,
-        criteria3 DECIMAL(10, 2) NOT NULL,
-        criteria4 DECIMAL(10, 2) NOT NULL,
-        criteria5 DECIMAL(10, 2) NOT NULL,
-        criteria6 DECIMAL(10, 2) NOT NULL,
-        criteria7 DECIMAL(10, 2) NOT NULL,
-        criteria8 DECIMAL(10, 2) NOT NULL,
-        criteria9 DECIMAL(10, 2) NOT NULL,
-        criteria10 DECIMAL(10, 2) NOT NULL,
+        total_score INT NOT NULL,
+        criteria1 INT NOT NULL,
+        criteria2 INT NOT NULL,
+        criteria3 INT NOT NULL,
+        criteria4 INT NOT NULL,
+        criteria5 INT NOT NULL,
+        criteria6 INT NOT NULL,
+        criteria7 INT NOT NULL,
+        criteria8 INT NOT NULL,
+        criteria9 INT NOT NULL,
+        criteria10 INT NOT NULL,
         FOREIGN KEY (eventId) REFERENCES events(eventID) ON DELETE CASCADE, 
         FOREIGN KEY (contestantId) REFERENCES contestant(contId) ON DELETE CASCADE, 
         FOREIGN KEY (personnelId) REFERENCES accounts(userId) ON DELETE CASCADE 
@@ -457,17 +457,14 @@ try {
     $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getData(IN evid INT)
             BEGIN
                 SELECT 
-                    eventId, 
-                    (SELECT vw_teams.teamName 
-                    FROM vw_eventParti 
-                    INNER JOIN vw_teams ON vw_eventParti.teamId = vw_teams.teamId 
-                    WHERE 
-                        vw_eventParti.contId = vw_subresult.contestantId AND 
-                        eventId = vw_subresult.eventId) AS team, 
-                        sum(total_score) AS score, 
-                        RANK() OVER (ORDER BY SUM(total_score) DESC) AS rank 
-                FROM vw_subresult 
-                WHERE eventId = evid GROUP BY contestantId ORDER BY rank ASC;
+                    vs.eventId, 
+                    vt.teamName as team,
+                    sum(vs.total_score) AS score, 
+                    RANK() OVER (ORDER BY SUM(vs.total_score) DESC) AS rank 
+                FROM vw_subresult vs
+                INNER JOIN vw_eventparti vp ON vs.contestantId = vp.contId
+                INNER JOIN vw_teams vt ON vp.teamId = vt.teamId
+                WHERE vs.eventId = 4 GROUP BY vs.contestantId ORDER BY rank ASC;
             END ;";
     if ($conn->query($sqlT) === TRUE) {
     } else {
