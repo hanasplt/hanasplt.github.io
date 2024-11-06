@@ -26,10 +26,9 @@ function insertOrUpdateSubResult($conn, $evId, $contestantId, $personnelId, $tot
         if ($success) {
             $evname = isset($_GET['name']) ? $_GET['name'] : '';
             // Update the status of the scheduled event to 'Ended'
-            $status = 'Ended';
-            $updateStatusQuery = "UPDATE scheduled_eventstoday SET status = ? WHERE activity = ?";
+            $updateStatusQuery = "UPDATE scheduled_eventstoday SET status = 'Ended' WHERE activity = ?";
             $updateStatusStmt = $conn->prepare($updateStatusQuery);
-            $updateStatusStmt->bind_param('si', $status, $evname); // Assuming eventId is the same as id in scheduled_eventstoday
+            $updateStatusStmt->bind_param('s', $evname);
             $updateSuccess = $updateStatusStmt->execute();
             $updateStatusStmt->close();
 

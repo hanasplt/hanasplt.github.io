@@ -429,61 +429,63 @@ $conn->close();
             document.querySelector('.addEdit-btn').style.display = 'none';
             document.querySelector('.saveScore-btn').style.display = 'inline-block';
         }
-
         function saveScores() {
-            const scores = [];
-            const eventId = <?= json_encode($evId) ?>; // Gets event ID from PHP variable
+    const scores = [];
+    const eventId = <?= json_encode($evId) ?>; // Gets event ID from PHP variable
+    const eventName = <?= json_encode($evname) ?>; // Gets event name from PHP variable
 
-            document.querySelectorAll('.teamRow').forEach(row => {
-                const contestantId = row.querySelector('.contestantId').value;
-                const score = row.querySelector('.teamsScore').value;
-                scores.push({
-                    contestantId,
-                    score
-                });
-            });
+    document.querySelectorAll('.teamRow').forEach(row => {
+        const contestantId = row.querySelector('.contestantId').value;
+        const score = row.querySelector('.teamsScore').value;
+        scores.push({
+            contestantId,
+            score
+        });
+    });
 
-            console.log('Data to be sent:', {
+    console.log('Data to be sent:', {
+        eventId,
+        eventName,
+        scores
+    }); // Debugging info
+
+    // Send the data as JSON
+    fetch(`saveScores.php?name=${eventName}`, {  // Corrected here
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
                 eventId,
+                eventName,
                 scores
-            }); // Debugging info
-
-            // Send the data as JSON
-            fetch('saveScores.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        eventId,
-                        scores
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data) {
-                        Swal.fire({
-                            title: 'Success!',
-                            text: 'Scores have been saved successfully.',
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        });
-
-                        document.querySelectorAll('.teamsScore').forEach(select => select.disabled = true);
-                        document.querySelector('.saveScore-btn').style.display = 'none';
-                        document.querySelector('.addEdit-btn').style.display = 'inline-block';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Failed to save scores.',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Scores have been saved successfully.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
                 });
-        }
+
+                document.querySelectorAll('.teamsScore').forEach(select => select.disabled = true);
+                document.querySelector('.saveScore-btn').style.display = 'none';
+                document.querySelector('.addEdit-btn').style.display = 'inline-block';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'Failed to save scores.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
+}
     </script>
     <!-- SYNC TEAM RESULT -->
     <script>
