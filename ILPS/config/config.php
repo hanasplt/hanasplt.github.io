@@ -456,7 +456,7 @@ try {
     // NAGAMIT
     $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getData(IN evid INT)
             BEGIN
-                SELECT 
+            SELECT 
                     vs.eventId, 
                     vt.teamName as team,
                     sum(vs.total_score) AS score, 
@@ -464,7 +464,7 @@ try {
                 FROM vw_subresult vs
                 INNER JOIN vw_eventparti vp ON vs.contestantId = vp.contId
                 INNER JOIN vw_teams vt ON vp.teamId = vt.teamId
-                WHERE vs.eventId = 4 GROUP BY vs.contestantId ORDER BY rank ASC;
+                WHERE vs.eventId = evid GROUP BY vs.contestantId ORDER BY rank ASC;
             END ;";
     if ($conn->query($sqlT) === TRUE) {
     } else {

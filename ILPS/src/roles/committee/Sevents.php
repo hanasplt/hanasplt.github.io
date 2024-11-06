@@ -309,98 +309,117 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt_event->close();
     ?>
 
+<!-- ADD or EDIT SCORES -->
+<div class="scoringContainer">
+    <h1 style="text-align: center;">RANKING AND SCORING</h1>
+    <div class="scoreTable">
+        <table style="margin: auto;">
+            <tr>
+                <td>TEAM</td>
+                <td>SCORE</td>
+            </tr>
 
-    <!-- ADD or EDIT SCORES -->
+            <?php
+foreach ($teams as $teamId => $teamName) {
+    // Query to get contestants for each team for the selected event ID
+    $sql = "SELECT contId, teamId FROM contestant WHERE eventId = ? AND teamId = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii", $evId, $teamId);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    <div class="scoringContainer">
-        <h1 style="text-align: center;">RANKING AND SCORING</h1>
-        <div class="scoreTable">
-            <table style="margin: auto;">
-                <tr>
-                    <td>TEAM</td>
-                    <td>SCORE</td>
-                </tr>
+    if ($result === false) {
+        echo "<tr><td colspan='2'>Error fetching teams: " . htmlspecialchars($conn->error) . "</td></tr>";
+        continue;
+    }
 
-                <?php
-                $sql = "SELECT * FROM teams";
-                $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            echo "<input type='hidden' name='Teams[]' class='Teams' value='" . $teamId . "'>";
+            echo "<tr class='teamRow'>";
+            echo "<td class='teamNames'>" . htmlspecialchars($teamName) . "</td>";
 
-                if (!$result) {
-                    echo "<tr><td colspan='2'>Error fetching teams: " . htmlspecialchars($conn->error) . "</td></tr>";
-                } elseif ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<input type='hidden' name='Teams[]' class='Teams' value='" . $row['teamId'] . "'>";
+            echo "<td class='teamScores'>";
+            $contestantsId = $row['contId'];
+            echo "<input type='hidden' class='contestantId' name='contestantId[]' value='" . $contestantsId . "'>";
 
-                        echo "<tr class='teamRow'>";
-                        // Team name
-                        echo "<td class='teamNames'>" . htmlspecialchars($row['teamName']) . "</td>";
+            // Fetch total score for the current contestant
+            $stmt_sub = $conn->prepare("SELECT total_score FROM sub_results WHERE eventId = ? AND contestantId = ?");
+            $stmt_sub->bind_param("ii", $evId, $contestantsId);
+            $stmt_sub->execute();
+            $result_sub = $stmt_sub->get_result();
 
-                        // Score selection cell
-                        echo "<td class='teamScores'>";
-                        $contestantsId = $row['teamId'];
-                        echo "<input type='hidden' class='contestantId' name='contestantId[]' value='" . $contestantsId . "'>";
+            echo "<select class='teamsScore non-editable' name='teamsScore[]' onchange='updateScores(this)' disabled>";
+            $selectedPoints = 0;
 
-                        // Fetch score for this team
-                        $stmt = $conn->prepare("SELECT * FROM sub_results WHERE eventId = ? AND contestantId = ?");
-                        $stmt->bind_param("ii", $evId, $contestantsId);
-                        $stmt->execute();
-                        $result_sub = $stmt->get_result();
-
-                        echo "<select class='teamsScore non-editable' name='teamsScore[]' disabled>";
-                        $selectedPoints = 0; // Default to 0 if no result is found
-
-                        // Populate current score
-                        if ($result_sub->num_rows > 0) {
-                            while ($row_sub = $result_sub->fetch_assoc()) {
-                                $selectedPoints = $row_sub['total_score'];
-                                echo "<option hidden value='" . $row_sub['total_score'] . "' selected>" . $row_sub['total_score'] . "</option>";
-                            }
-                        }
-                        echo "<option value='0' " . ($selectedPoints == 0 ? 'selected' : '') . ">0</option>";
-
-                        // Add additional points options
-                        $query_vw = "SELECT * FROM vw_eventscore WHERE eventCategory = 
-(SELECT eventCategory FROM vw_events WHERE eventID = ?)";
-                        $stmt_vw = $conn->prepare($query_vw);
-
-                        // Bind the parameter (assuming $eventID is defined)
-                        $stmt_vw->bind_param("i", $evId);
-
-                        $stmt_vw->execute();
-                        $result_vw = $stmt_vw->get_result();
-
-                        if ($result_vw->num_rows > 0) {
-                            while ($row_vw = $result_vw->fetch_assoc()) {
-                                $score = $row_vw['points'];
-                                $rank = $row_vw['rank'];
-                                echo "<option value='" . htmlspecialchars($score) . "' " .
-                                    ($selectedPoints == $score ? 'selected' : '') . ">" .
-                                    htmlspecialchars($rank) . " - " . htmlspecialchars($score) . " pts.</option>";
-                            }
-                        }
-                        $stmt_vw->close();
-
-
-                        echo "</select>";
-                        echo "</td>";
-                        echo "</tr>";
-                    }
-                } else {
-                    echo "<tr><td colspan='2'>No teams found.</td></tr>";
+            if ($result_sub->num_rows > 0) {
+                while ($row_sub = $result_sub->fetch_assoc()) {
+                    $selectedPoints = $row_sub['total_score'];
+                    echo "<option hidden value='" . $row_sub['total_score'] . "' selected>" . $row_sub['total_score'] . "</option>";
                 }
+            }
+            echo "<option value='0' " . ($selectedPoints == 0 ? 'selected' : '') . ">0</option>";
 
-                $conn->close();
-                ?>
-                <tr>
-                    <td></td>
-                    <td style="text-align: right; padding-right: 5vw;">
-                        <button type="button" class="addEdit-btn" onclick="addEdit()">Add/Edit</button>
-                        <button type="button" class="saveScore-btn" onclick="saveScores()" style="display:none;">Save Scores</button>
-                    </td>
-                </tr>
-            </table>
-        </div>
+            // Fetch event scores and rankings for the specified event ID category
+            $query_vw = "SELECT points, rank FROM vw_eventscore WHERE eventCategory = 
+                         (SELECT eventCategory FROM vw_events WHERE eventID = ?)";
+            $stmt_vw = $conn->prepare($query_vw);
+            $stmt_vw->bind_param("i", $evId);
+            $stmt_vw->execute();
+            $result_vw = $stmt_vw->get_result();
+
+            if ($result_vw->num_rows > 0) {
+                while ($row_vw = $result_vw->fetch_assoc()) {
+                    $score = $row_vw['points'];
+                    $rank = $row_vw['rank'];
+                    echo "<option value='" . htmlspecialchars($score) . "' " .
+                        ($selectedPoints == $score ? 'selected' : '') . ">" .
+                        htmlspecialchars($rank) . " - " . htmlspecialchars($score) . " pts.</option>";
+                }
+            }
+            $stmt_vw->close();
+
+            echo "</select>";
+            echo "</td>";
+            echo "</tr>";
+        }
+    } else {
+        echo "<tr><td colspan='2'>No contestants found for team " . htmlspecialchars($teamName) . ".</td></tr>";
+    }
+    $stmt->close(); // Close the contestant query statement
+}
+$conn->close();
+?>
+
+            <tr>
+                <td></td>
+                <td style="text-align: right; padding-right: 5vw;">
+                    <button type="button" class="addEdit-btn" onclick="addEdit()">Add/Edit</button>
+                    <button type="button" class="saveScore-btn" onclick="saveScores()" style="display:none;">Save Scores</button>
+                </td>
+            </tr>
+        </table>
     </div>
+</div>
+
+<script>
+    // Track selected scores and hide them from other select options
+    function updateScores(selectElement) {
+        const selectedScores = Array.from(document.querySelectorAll(".teamsScore"))
+            .map(select => select.value)
+            .filter(value => value !== "0");
+
+        document.querySelectorAll(".teamsScore").forEach(select => {
+            Array.from(select.options).forEach(option => {
+                if (selectedScores.includes(option.value) && option.value !== select.value) {
+                    option.hidden = true;
+                } else {
+                    option.hidden = false;
+                }
+            });
+        });
+    }
+</script>
 
     <script>
         function addEdit() {
@@ -416,10 +435,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             const eventId = <?= json_encode($evId) ?>; // Gets event ID from PHP variable
 
             document.querySelectorAll('.teamRow').forEach(row => {
-                const teamId = row.querySelector('.contestantId').value;
+                const contestantId = row.querySelector('.contestantId').value;
                 const score = row.querySelector('.teamsScore').value;
                 scores.push({
-                    teamId,
+                    contestantId,
                     score
                 });
             });

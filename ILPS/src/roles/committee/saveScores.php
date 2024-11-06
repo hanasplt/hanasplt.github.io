@@ -71,11 +71,11 @@ if ($data) {
 
     // Process each score
     foreach ($scores as $scoreData) {
-        $contestantId = $scoreData['teamId'];
+        $contestantId = $scoreData['contestantId'];
         $score = $scoreData['score'];
 
         // Check if contestant ID exists
-        $contestantCheckQuery = "SELECT teamId FROM contestant WHERE teamId = ?";
+        $contestantCheckQuery = "SELECT contId FROM contestant WHERE contId = ?";
         $contestantCheckStmt = $conn->prepare($contestantCheckQuery);
         $contestantCheckStmt->bind_param("i", $contestantId);
         $contestantCheckStmt->execute();
