@@ -795,20 +795,18 @@ usort($scheduled_days, function ($a, $b) {
                 });
             });
 
-            // Edit event specific to date
             document.querySelectorAll('.edit-btn').forEach(function(button) {
                 button.addEventListener('click', function() {
                     const row = this.closest('tr');
                     const eventId = row.getAttribute('data-event-id');
-                    console.log('Editing event with ID:', eventId);
 
+                    // Fetch event details first
                     const xhr = new XMLHttpRequest();
                     xhr.open("POST", "get_existing_sched_events.php", true);
                     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                     xhr.onload = function() {
                         if (xhr.status === 200) {
                             const response = JSON.parse(xhr.responseText);
-                            console.log('Response from get_existing_sched_events:', response);
                             if (response.success) {
                                 const fetchedEvent = response.event;
                                 console.log('Event type fetched from database:', fetchedEvent.type);
@@ -835,17 +833,37 @@ usort($scheduled_days, function ($a, $b) {
                                     `;
                                 }
 
-                                // Fetch teams and populate dropdowns
+
+
+                                // Skip team fetch if type is "Others"
+                                if (fetchedEvent.type === 'Others') {
+                                    showEditEventModal(fetchedEvent, categoryOptions, []); // No teams needed
+                                    return;
+                                }
+
+                                // Fetch teams for other types
                                 const xhrTeams = new XMLHttpRequest();
                                 xhrTeams.open("POST", "get_teamsForSched.php", true);
                                 xhrTeams.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                                 xhrTeams.onload = function() {
                                     if (xhrTeams.status === 200) {
                                         const teamResponse = JSON.parse(xhrTeams.responseText);
-                                        if (teamResponse.success) {
-                                            const teams = teamResponse.teams;
-                                            console.log('Teams found:', teams);
-                                            let teamOptionsA = '<option value="" disabled selected>Team A</option>';
+                                        const teams = teamResponse.success ? teamResponse.teams : [];
+                                        showEditEventModal(fetchedEvent, categoryOptions, teams);
+                                    }
+                                };
+                                xhrTeams.send("event_id=" + encodeURIComponent(eventId));
+                            }
+                        }
+                    };
+                    xhr.send("event_id=" + encodeURIComponent(eventId));
+                });
+            });
+
+            // Function to show the modal with event data and team options
+            function showEditEventModal(fetchedEvent, categoryOptions, teams, ) {
+                // Generate team options or disable the dropdowns if no teams are needed
+                let teamOptionsA = '<option value="" disabled selected>Team A</option>';
                                             let teamOptionsB = '<option value="" disabled selected>Team B</option>';
 
                                             teams.forEach(team => {
@@ -1113,28 +1131,8 @@ usort($scheduled_days, function ($a, $b) {
                                                     xhrUpdate.send(params);
                                                 }
                                             });
-                                        } else {
-                                            Swal.fire({
-                                                title: 'Error!',
-                                                text: teamResponse.message,
-                                                icon: 'error'
-                                            });
                                         }
-                                    }
-                                };
-                                xhrTeams.send(`event_id=${eventId}`);
-                            } else {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: response.message,
-                                    icon: 'error'
-                                });
-                            }
-                        }
-                    };
-                    xhr.send(`event_id=${eventId}`);
-                });
-            });
+
 
 
 

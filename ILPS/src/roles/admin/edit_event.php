@@ -20,11 +20,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $status = $_POST['status'];
 
 
-    if ($type === 'sports' || $type === 'Sports'){
+    if ($type === 'sports' || $type === 'Sports' ){
         $gameNo = !empty($_POST['gameNo']) ? (int)$_POST['gameNo'] : null;
-        $teamA = isset($_POST['teamA']) ? (int)$_POST['teamA'] : null;
-        $teamB = isset($_POST['teamB']) ? (int)$_POST['teamB'] : null;
+        if(!is_null($gameNo)){
+            $teamA = isset($_POST['teamA']) ? (int)$_POST['teamA'] : null;
+            $teamB = isset($_POST['teamB']) ? (int)$_POST['teamB'] : null;
+        } else {
+            $teamA = null;
+            $teamB = null;
+        }
     }
+    
 
     if ($type === 'Socio-Cultural'){
         $gameNo = null;
