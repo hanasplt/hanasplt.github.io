@@ -17,8 +17,8 @@ if (isset($_POST['eventID'])) {
 
     // Initialize an array to store teams info.
     $teams = array();
-    if($result->num_rows > 0) {
-        while($row = $result->fetch_assoc()) {
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
             // Store team info.
             $teams[] = array('event' => $row['eventId'], 'team' => $row['team'], 'rank' => $row['rank']);
         }
@@ -34,8 +34,13 @@ if (isset($_POST['eventID'])) {
                 </tr>';
 
 
+    if (count($teams) === 0) {
+        // Inform user of no ranking yet (tbc)
+        $output .= '<tr><td colspan=3>No Ranking Available.</td></tr>';
+    }
+
     // Loop to get ranking, esp on Socio-Cultural score
-    foreach($teams as $team) {
+    foreach ($teams as $team) {
         $teamname = $team['team'];
         $num = $team['rank'];
         $evid = $team['event'];
@@ -47,8 +52,8 @@ if (isset($_POST['eventID'])) {
         $stmt->execute();
         $result = $stmt->get_result();
 
-        if($result->num_rows > 0) {
-            while($row = $result->fetch_assoc()) {
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
                 $pts = $row['points'];
                 $output .= '<tr>
                             <td>' . $num . '</td>
@@ -56,14 +61,11 @@ if (isset($_POST['eventID'])) {
                             <td>' . $pts . '</td>
                         </tr>';
             }
-        } else {
-            // Inform user of no ranking yet (tbc)
-            $output .= '<tr><td colspan=3>No Ranking Available.</td></tr>';
         }
+
         $result->free();
         $stmt->close();
     }
 
     echo $output;
 }
-?>
