@@ -191,7 +191,7 @@ $output = '<tr>
 foreach ($team_performance as $team_name => $performance) {
     $output .= '<tr>
                     <td>' . htmlspecialchars($rank) . '</td>
-                    <td><img src="../../../public/assets/icons/sample.png"> ' . htmlspecialchars($team_name) . '</td>
+                    <td>' . htmlspecialchars($team_name) . '</td>
                     <td>' . htmlspecialchars($performance['gold']) . '</td>
                     <td>' . htmlspecialchars($performance['silver']) . '</td>
                     <td>' . htmlspecialchars($performance['bronze']) . '</td>

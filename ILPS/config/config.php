@@ -681,18 +681,6 @@ try {
         echo "Error creating table: " . $conn->error;
     }
 
-
-    // NAGAMIT
-    $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getTeamCount()
-            BEGIN
-                SELECT COUNT(*) AS total FROM vw_teams;
-            END ;";
-
-    if ($conn->query($sqlT) === TRUE) {
-    } else {
-        echo "Error creating table: " . $conn->error;
-    }
-
     // NAGAMIT
     $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getATeam(IN id INT)
             BEGIN
@@ -1699,5 +1687,66 @@ try {
 } catch (Exception $e) {
     echo $e->getMessage();
 }
+
+
+try {
+    // NAGAMIT
+    $sqlT = "CREATE FUNCTION IF NOT EXISTS fn_getTeamCount()
+            RETURNS INT
+            DETERMINISTIC
+            BEGIN
+                DECLARE total INT;
+                SELECT COUNT(*) INTO total FROM vw_teams;
+                RETURN total;
+            END;
+            ";
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
+
+
+/* INDEX */
+try {
+    // Index for email NAGAMIT
+    $createIdx = "CREATE INDEX idx_acc_email
+            ON accounts (email)";
+    if ($conn->query($createIdx) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
+try {
+    // Index for fullname NAGAMIT
+    $createIdx = "CREATE INDEX idx_fullname
+                ON accounts (firstName, middleName, lastName)";
+    if ($conn->query($createIdx) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
+try {
+    // Index for role NAGAMIT
+    $createIdx = "CREATE INDEX idx_role
+                ON accounts (type)";
+    if ($conn->query($createIdx) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
+
 
 $conn->close();

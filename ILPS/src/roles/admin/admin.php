@@ -39,7 +39,7 @@ $result->free();
 $stmt->close();
 
 // get the total number of teams
-$sql_count_teams = "CALL sp_getTeamCount();";
+$sql_count_teams = "SELECT fn_getTeamCount() as total;";
 $stmt = $conn->prepare($sql_count_teams);
 $stmt->execute();
 $result_teams = $stmt->get_result();
@@ -129,6 +129,7 @@ $result = $stmt->get_result();
                     <p onclick="window.location.href = 'view-profile.php';" class="dc-text" title="Profile">View Profile</p>
                     <p onclick="window.location.href = 'reports.php';" class="dc-text" title="Reports">Reports</p>
                     <p onclick="window.location.href = 'accesslog.php';" class="dc-text" title="Logs">Logs</p>
+                    <p onclick="window.location.href = '../backup.php';" class="dc-text" title="Backup">Backup and Drop</p>
                     <div class="menu-icon">
                         <p id="logout" title="Logout">Logout</p>
                     </div>
