@@ -799,8 +799,10 @@ usort($scheduled_days, function ($a, $b) {
                 button.addEventListener('click', function() {
                     const row = this.closest('tr');
                     const eventId = row.getAttribute('data-event-id');
+                    
+                    console.log("Event ID:", eventId);
 
-                    // Fetch event details first
+                    // fetch existing scheduled event details
                     const xhr = new XMLHttpRequest();
                     xhr.open("POST", "get_existing_sched_events.php", true);
                     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -809,50 +811,78 @@ usort($scheduled_days, function ($a, $b) {
                             const response = JSON.parse(xhr.responseText);
                             if (response.success) {
                                 const fetchedEvent = response.event;
-                                console.log('Event type fetched from database:', fetchedEvent.type);
+                                const dayId = fetchedEvent.day_id;
 
-                                // Category options based on fetched event type
-                                let categoryOptions = '';
-                                if (fetchedEvent.type === 'Socio-Cultural') {
-                                    categoryOptions = `
-                                        <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
-                                        <option value="sports">Sports</option>
-                                        <option value="others">Others</option>
-                                    `;
-                                } else if (fetchedEvent.type === 'Sports') {
-                                    categoryOptions = `
-                                        <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
-                                        <option value="Socio-Cultural">Socio-Cultural</option>
-                                        <option value="others">Others</option>
-                                    `;
-                                } else {
-                                    categoryOptions = `
-                                        <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
-                                        <option value="Socio-Cultural">Socio-Cultural</option>
-                                        <option value="sports">Sports</option>
-                                    `;
-                                }
+                                console.log("Fetched Day ID:", dayId);
 
+                                //check if the event date is in the past
+                                const xhrDateCheck = new XMLHttpRequest();
+                                xhrDateCheck.open("POST", "check_event_date.php", true);
+                                xhrDateCheck.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                                xhrDateCheck.onload = function() {
+                                    if (xhrDateCheck.status === 200) {
+                                        const dateResponse = JSON.parse(xhrDateCheck.responseText);
 
+                                        console.log("Event Date:", dateResponse.debug?.eventDate);
+                                        console.log("Current Date:", dateResponse.debug?.currentDate); 
 
-                                // Skip team fetch if type is "Others"
-                                if (fetchedEvent.type === 'Others') {
-                                    showEditEventModal(fetchedEvent, categoryOptions, []); // No teams needed
-                                    return;
-                                }
+                                        if (!dateResponse.success || !dateResponse.editable) {
+                                            console.log("Debug info:", dateResponse.debug);
 
-                                // Fetch teams for other types
-                                const xhrTeams = new XMLHttpRequest();
-                                xhrTeams.open("POST", "get_teamsForSched.php", true);
-                                xhrTeams.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                                xhrTeams.onload = function() {
-                                    if (xhrTeams.status === 200) {
-                                        const teamResponse = JSON.parse(xhrTeams.responseText);
-                                        const teams = teamResponse.success ? teamResponse.teams : [];
-                                        showEditEventModal(fetchedEvent, categoryOptions, teams);
+                                            Swal.fire({
+                                                icon: 'info',
+                                                title: 'Event Not Editable',
+                                                text: 'This event is no longer editable as the event date has passed.',
+                                            });
+                                            return;
+                                        }
+
+                                        //fetch teams if date is editable
+                                        console.log('Event type fetched from database:', fetchedEvent.type);
+
+                                        // Category options based on fetched event type
+                                        let categoryOptions = '';
+                                        if (fetchedEvent.type === 'Socio-Cultural') {
+                                            categoryOptions = `
+                                                <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
+                                                <option value="sports">Sports</option>
+                                                <option value="others">Others</option>
+                                            `;
+                                        } else if (fetchedEvent.type === 'Sports') {
+                                            categoryOptions = `
+                                                <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
+                                                <option value="Socio-Cultural">Socio-Cultural</option>
+                                                <option value="others">Others</option>
+                                            `;
+                                        } else {
+                                            categoryOptions = `
+                                                <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
+                                                <option value="Socio-Cultural">Socio-Cultural</option>
+                                                <option value="sports">Sports</option>
+                                            `;
+                                        }
+
+                                        // skip team fetch if type is "Others"
+                                        if (fetchedEvent.type === 'Others') {
+                                            showEditEventModal(fetchedEvent, categoryOptions, []); // No teams needed
+                                            return;
+                                        }
+
+                                        // fetch teams for other types
+                                        const xhrTeams = new XMLHttpRequest();
+                                        xhrTeams.open("POST", "get_teamsForSched.php", true);
+                                        xhrTeams.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                                        xhrTeams.onload = function() {
+                                            if (xhrTeams.status === 200) {
+                                                const teamResponse = JSON.parse(xhrTeams.responseText);
+                                                const teams = teamResponse.success ? teamResponse.teams : [];
+                                                showEditEventModal(fetchedEvent, categoryOptions, teams);
+                                            }
+                                        };
+                                        xhrTeams.send("event_id=" + encodeURIComponent(eventId));
                                     }
                                 };
-                                xhrTeams.send("event_id=" + encodeURIComponent(eventId));
+                                xhrDateCheck.send("day_id=" + encodeURIComponent(dayId));
                             }
                         }
                     };
@@ -860,9 +890,9 @@ usort($scheduled_days, function ($a, $b) {
                 });
             });
 
-            // Function to show the modal with event data and team options
+
+            // modal connected to edit
             function showEditEventModal(fetchedEvent, categoryOptions, teams, ) {
-                // Generate team options or disable the dropdowns if no teams are needed
                 let teamOptionsA = '<option value="" disabled selected>Team A</option>';
                                             let teamOptionsB = '<option value="" disabled selected>Team B</option>';
 
@@ -1036,20 +1066,19 @@ usort($scheduled_days, function ($a, $b) {
                                                     const time24 = document.getElementById('edit-time').value;
                                                     const type = document.getElementById('edit-event-category').value;
                                                     let activity;
-                                                    // Check which dropdown or input is currently displayed
+                                                    
                                                     const sportsElement = document.getElementById('edit-event-sports');
                                                     const socioElement = document.getElementById('edit-event-socio');
                                                     const othersElement = document.getElementById('edit-event-activity-others');
 
-                                                    // Get the value from the displayed element
                                                     if (sportsElement.style.display !== 'none') {
                                                         activity = sportsElement.options[sportsElement.selectedIndex].text;
                                                     } else if (socioElement.style.display !== 'none') {
                                                         activity = socioElement.options[socioElement.selectedIndex].text;
                                                     } else if (othersElement.style.display !== 'none') {
-                                                        activity = othersElement.value; // Text input for "Others" category
+                                                        activity = othersElement.value;
                                                     } else {
-                                                        activity = ''; // Default to an empty string if none are found
+                                                        activity = '';
                                                     }
                                                     const gameNo = document.getElementById('edit-game-no').value || null;
                                                     const teamA = document.getElementById('edit-team-a').value || null;
@@ -1139,8 +1168,8 @@ usort($scheduled_days, function ($a, $b) {
             //edit date
             document.querySelectorAll('.editHeaderBtn').forEach(button => {
                 button.addEventListener('click', function() {
-                    const dayId = this.getAttribute('data-day-id'); // ID of the day
-                    const dateDay = this.getAttribute('data-day-date'); // Date of the day
+                    const dayId = this.getAttribute('data-day-id'); 
+                    const dateDay = this.getAttribute('data-day-date');
 
                     Swal.fire({
                         title: 'Edit Date',
