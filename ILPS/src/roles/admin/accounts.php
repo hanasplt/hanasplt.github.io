@@ -14,7 +14,7 @@ $searchQuery = isset($_GET['search']) ? "%" . $_GET['search'] . "%" : "%%";  // 
 
 try {
     // count accounts
-    $countSql = "CALL sp_getAccountCount(?,?)";
+    $countSql = "SELECT fn_getAccountCount(?,?) AS total";
     $countStmt = $conn->prepare($countSql);
     if (!$countStmt) {
         throw new Exception("Prepare failed: " . $conn->error);
