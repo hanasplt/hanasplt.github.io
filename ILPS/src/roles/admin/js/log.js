@@ -5,11 +5,10 @@ let totalPages = 1;
 window.onload = function() {
     // Initial load
     loadAccessLog(currentPage);
-    populateYearFilter();
 };
 
 // Loads the log based on the year selected
-function loadAccessLog(page = 1, year = "") {
+function loadAccessLog(page = 1) {
     var table = document.getElementById("tableLog"); // Get the table id
 
     var xhttp = new XMLHttpRequest();
@@ -54,7 +53,7 @@ function loadAccessLog(page = 1, year = "") {
 
     xhttp.open("POST", "get_logs.php", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("page=" + page + "&year=" + year); // Send the year filter as well
+    xhttp.send("page=" + page); // Send the year filter as well
 }
 
 
@@ -83,44 +82,13 @@ function changePage(newPage) {
 }
 
 
-// Function to populate the year filter dropdown
-function populateYearFilter() {
-    const yearFilter = document.getElementById('yearFilter');
-    const currentYear = new Date().getFullYear(); // Get the current year
-    
-    // Loop from 2000 to current year and create option elements
-    for (let i = 2022; i <= currentYear; i++) {
-        yearFilter.innerHTML += `<option value="${i}">${i}</option>`;
-    }
-}
-
-// Function to filter table rows based on selected year
-document.getElementById('yearFilter').addEventListener('change', function() {
-    let selectedYear = this.value;
-    currentPage = 1; // Reset to page 1 when filtering by year
-    loadAccessLog(currentPage, selectedYear); // Load logs based on selected year
-});
-
-
 // Validate form submission
 function submitForm(actionUrl) {
-    const yearFilter = document.getElementById('yearFilter').value;
+    // Set the form action to the specified file
+    document.getElementById('exportForm').action = actionUrl;
 
-    if (!yearFilter) { // If no year is selected
-        // Prevent form submission and show warning
-        Swal.fire({
-            title: 'Oops!',
-            text: 'Please select a year before exporting.',
-            icon: 'warning',
-            confirmButtonText: 'OK'
-        });
-    } else {
-        // Set the form action to the specified file
-        document.getElementById('exportForm').action = actionUrl;
-
-        // Submit the form
-        document.getElementById('exportForm').submit();
-    }
+    // Submit the form
+    document.getElementById('exportForm').submit();
 }
 
 

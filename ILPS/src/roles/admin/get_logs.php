@@ -10,48 +10,26 @@ require_once '../admin/verifyLoginSession.php'; // Logged in or not
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     // Get the requested page and year filter
     $page = isset($_POST['page']) ? (int)$_POST['page'] : 1;
-    $year = isset($_POST['year']) ? $_POST['year'] : "";
+    $year = date('Y');
 
     $limit = 10; 
     $offset = ($page - 1) * $limit; 
 
-    $yearCondition = "";
-    if (!empty($year)) {
-        $yearCondition = "WHERE YEAR(al.date_on) = ?";
-    }
-
     // Retrieve total log count based sa year nga gi filter
     $countQuery = "SELECT fn_getLogCount(?) AS totalLogs";
     $stmtCount = $conn->prepare($countQuery);
-    
-    $blnk = NULL;
-    if (!empty($year)) {
-        $stmtCount->bind_param("i", $year);
-    } else {
-        $stmtCount->bind_param("i", $blnk);
-    }
-    
+    $stmtCount->bind_param("i", $year);
     $stmtCount->execute();
     $countResult = $stmtCount->get_result();
     $totalLogs = $countResult->fetch_assoc()['totalLogs'];
     $totalPages = ceil($totalLogs / $limit); 
 
-    $getLogs = "SELECT al.logId, al.date_on, 
-                    CONCAT(a.firstName, ' ', 
-                           a.lastName) AS fullname, 
-                    al.actions 
-             FROM vw_logs al 
-             JOIN vw_accounts a ON al.userId = a.userId
-             $yearCondition
-             ORDER BY al.logId
-             LIMIT ? OFFSET ?";
+    $getLogs = "CALL sp_getLogs(?,?,?)";
 
     $stmtLogs = $conn->prepare($getLogs);
     
     if (!empty($year)) {
         $stmtLogs->bind_param("iii", $year, $limit, $offset);
-    } else {
-        $stmtLogs->bind_param("ii", $limit, $offset);
     }
 
     $stmtLogs->execute();

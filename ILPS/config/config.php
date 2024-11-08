@@ -1344,12 +1344,12 @@ try {
 /* LOGS */
 // Stored Procedure for displaying logs
 try {
-    $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_displayLog(IN inpYear INT)
+    $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_displayLog()
             BEGIN
                 SELECT vl.*, CONCAT(va.firstName, ' ', va.lastName) AS fullname
                 FROM vw_logs vl
                 INNER JOIN vw_accounts va ON vl.userId = va.userId
-                WHERE YEAR(date_on) = inpYear;
+                ORDER BY vl.logId;
             END ;";
     if ($conn->query($sqlT) === TRUE) {
     } else {
@@ -1364,6 +1364,29 @@ try {
     $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_insertLog(IN id INT, IN act VARCHAR(255))
             BEGIN
                 INSERT INTO vw_logs VALUES (NULL, NOW(), id, act);
+            END ;";
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
+
+// getting logs NAGAMIT
+try {
+    $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getLogs(IN inpYear INT, IN inpLimit INT, IN offset INT)
+            BEGIN
+                SELECT al.logId, al.date_on, 
+                    CONCAT(a.firstName, ' ', 
+                           a.lastName) AS fullname, 
+                    al.actions 
+                FROM vw_logs al 
+                JOIN vw_accounts a ON al.userId = a.userId
+                WHERE YEAR(al.date_on) = inpYear
+                ORDER BY al.logId
+                LIMIT inpLimit OFFSET offset;
             END ;";
     if ($conn->query($sqlT) === TRUE) {
     } else {

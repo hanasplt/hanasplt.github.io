@@ -10,20 +10,24 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 
 require_once 'adminPermissions.php'; // Retrieves admin permissions
 
-$getAdmin = "CALL sp_getAnAcc(?)";
+try {
+    $getAdmin = "CALL sp_getAnAcc(?)";
 
-$iddd = $_SESSION['userId'];
-$stmt = $conn->prepare($getAdmin);
-$stmt->bind_param("i", $iddd);
-$stmt->execute();
-$retname = $stmt->get_result();
+    $iddd = $_SESSION['userId'];
+    $stmt = $conn->prepare($getAdmin);
+    $stmt->bind_param("i", $iddd);
+    $stmt->execute();
+    $retname = $stmt->get_result();
 
-// Retrieve Admin Name
-$row = $retname->fetch_assoc();
-$admin_name = $row['firstName'];
+    // Retrieve Admin Name
+    $row = $retname->fetch_assoc();
+    $admin_name = $row['firstName'];
 
-$retname->free();
-$stmt->close();
+    $retname->free();
+    $stmt->close();
+} catch (Exception $e) {
+    throw new Exception("Exception Error: " . $e->getMessage());
+}
 
 // get the total accounts
 $search_query = "%";
@@ -129,7 +133,7 @@ $result = $stmt->get_result();
                     <p onclick="window.location.href = 'view-profile.php';" class="dc-text" title="Profile">View Profile</p>
                     <p onclick="window.location.href = 'reports.php';" class="dc-text" title="Reports">Reports</p>
                     <p onclick="window.location.href = 'accesslog.php';" class="dc-text" title="Logs">Logs</p>
-                    <p onclick="window.location.href = '../backup.php';" class="dc-text" title="Backup">Backup and Drop</p>
+                    <p onclick="showConfirmationMsg()" class="dc-text" title="Backup">Backup and Reset</p>
                     <div class="menu-icon">
                         <p id="logout" title="Logout">Logout</p>
                     </div>

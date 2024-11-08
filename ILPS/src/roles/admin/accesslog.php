@@ -76,11 +76,6 @@ require_once 'adminPermissions.php'; // Retrieves admin permissions
                         <button type="button" onclick="submitForm('export/exportLogXlxs.php')" name="exportlog_xsls" id="exportlog_xsls">Export as Excel</button>
                         <button type="button" onclick="submitForm('export/exportLogpdf.php')" name="exportlog_pdf" id="exportlog_pdf">Export as PDF</button>
                     </div>
-                    <!-- Filter Dropdown -->
-                    <label for="yearFilter">Filter by Year:</label>
-                    <select id="yearFilter" name="yearFilter">
-                        <option value="" selected disabled>Year</option>
-                    </select>
                 </form>
             </div>
             <table id="tableLog">
