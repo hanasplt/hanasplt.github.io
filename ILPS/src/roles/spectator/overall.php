@@ -89,7 +89,7 @@ foreach ($teams as $team) {
 }
 
 
-// Get all event IDs (assuming they’re in `vw_events`)
+// Get all event IDs
 $sql_all_event_ids = "SELECT eventID FROM vw_events";
 $result_all_events = $conn->query($sql_all_event_ids);
 
@@ -198,6 +198,11 @@ foreach ($team_performance as $team_name => $performance) {
                     <td>' . htmlspecialchars($performance['total_score']) . '</td>
                 </tr>';
     $rank++; // Increment rank for next team
+}
+
+if (count($team_performance) === 0) {
+    // Inform user of no ranking yet
+    $output .= '<tr><td colspan=6>No Ranking Available.</td></tr>';
 }
 
 echo $output;

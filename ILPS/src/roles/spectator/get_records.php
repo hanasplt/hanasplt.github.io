@@ -35,7 +35,7 @@ if (isset($_POST['eventID'])) {
 
 
     if (count($teams) === 0) {
-        // Inform user of no ranking yet (tbc)
+        // Inform user of no ranking yet
         $output .= '<tr><td colspan=3>No Ranking Available.</td></tr>';
     }
 

@@ -1713,7 +1713,7 @@ try {
 /* INDEX */
 try {
     // Index for email NAGAMIT
-    $createIdx = "CREATE INDEX idx_acc_email
+    $createIdx = "CREATE INDEX IF NOT EXISTS idx_acc_email
             ON accounts (email)";
     if ($conn->query($createIdx) === TRUE) {
     } else {
@@ -1725,7 +1725,7 @@ try {
 
 try {
     // Index for fullname NAGAMIT
-    $createIdx = "CREATE INDEX idx_fullname
+    $createIdx = "CREATE INDEX IF NOT EXISTS idx_fullname
                 ON accounts (firstName, middleName, lastName)";
     if ($conn->query($createIdx) === TRUE) {
     } else {
@@ -1737,7 +1737,7 @@ try {
 
 try {
     // Index for role NAGAMIT
-    $createIdx = "CREATE INDEX idx_role
+    $createIdx = "CREATE INDEX IF NOT EXISTS idx_role
                 ON accounts (type)";
     if ($conn->query($createIdx) === TRUE) {
     } else {
