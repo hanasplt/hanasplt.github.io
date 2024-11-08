@@ -1520,7 +1520,23 @@ try {
                 INNER JOIN vw_subresult vs ON vs.subId = sr.result_id
                 INNER JOIN vw_events ve ON ve.eventID = vs.eventId
                 INNER JOIN vw_eventparti vp ON vp.contId = vs.contestantId
-                INNER JOIN vw_teams vt ON vt.teamId = vp.teamId;
+                INNER JOIN vw_teams vt ON vt.teamId = vp.teamId
+                ORDER BY sr.action_at ASC;
+            END ;";
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
+try {
+    $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getScoredEvent()
+            BEGIN
+                SELECT ev.eventName FROM vw_subresult sb 
+                INNER JOIN vw_events ev ON ev.eventID = sb.eventId 
+                GROUP BY sb.eventId;
             END ;";
     if ($conn->query($sqlT) === TRUE) {
     } else {

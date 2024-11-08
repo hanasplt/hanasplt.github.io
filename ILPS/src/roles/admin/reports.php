@@ -89,11 +89,7 @@ require_once 'adminPermissions.php'; // Retrieves admin permissions
             <option value="all">All</option>
             <?php
               // Retrieve events - has score record
-              $getEvents = "
-                SELECT ev.eventName FROM vw_subresult sb 
-                INNER JOIN vw_events ev ON ev.eventID = sb.eventId 
-                GROUP BY sb.eventId;
-              ";
+              $getEvents = "CALL sp_getScoredEvent";
 
               $stmt = $conn->prepare($getEvents);
               $stmt->execute();
@@ -115,14 +111,6 @@ require_once 'adminPermissions.php'; // Retrieves admin permissions
           <select name="filterOpt" id="filterOpt" onchange="filterTable()">
             <option value="today">Today</option>
             <option value="all">All (Current Year)</option>
-            <?php
-              // Populate year
-              $currentYear = date('Y');
-
-              for ($i = $currentYear - 1; $i >= 2022; $i--) {
-                echo "<option value='$i'>$i</option>";
-              }
-            ?>
           </select>
         </div>
       </div>
