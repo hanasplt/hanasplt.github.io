@@ -187,7 +187,7 @@ try {
         <div class="pagination">
           <?php
           try {
-            $stmt = $conn->prepare("CALL sp_getTeamCount()");
+            $stmt = $conn->prepare("SELECT fn_getTeamCount() AS total");
             $stmt->execute();
             $resultCount = $stmt->get_result();
             $rowCount = $resultCount->fetch_assoc()['total'];
