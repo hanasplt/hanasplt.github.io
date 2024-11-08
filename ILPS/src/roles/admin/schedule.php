@@ -796,99 +796,117 @@ usort($scheduled_days, function ($a, $b) {
             });
 
             document.querySelectorAll('.edit-btn').forEach(function(button) {
-                button.addEventListener('click', function() {
-                    const row = this.closest('tr');
-                    const eventId = row.getAttribute('data-event-id');
-                    
-                    console.log("Event ID:", eventId);
+    button.addEventListener('click', function() {
+        const row = this.closest('tr');
+        const eventId = row.getAttribute('data-event-id');
+        
+        console.log("Event ID:", eventId);
 
-                    // fetch existing scheduled event details
-                    const xhr = new XMLHttpRequest();
-                    xhr.open("POST", "get_existing_sched_events.php", true);
-                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                    xhr.onload = function() {
-                        if (xhr.status === 200) {
-                            const response = JSON.parse(xhr.responseText);
-                            if (response.success) {
-                                const fetchedEvent = response.event;
-                                const dayId = fetchedEvent.day_id;
+        // Fetch existing scheduled event details
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "get_existing_sched_events.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                const response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    const fetchedEvent = response.event;
+                    const dayId = fetchedEvent.day_id;
 
-                                console.log("Fetched Day ID:", dayId);
+                    console.log("Fetched Day ID:", dayId);
 
-                                //check if the event date is in the past
-                                const xhrDateCheck = new XMLHttpRequest();
-                                xhrDateCheck.open("POST", "check_event_date.php", true);
-                                xhrDateCheck.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                                xhrDateCheck.onload = function() {
-                                    if (xhrDateCheck.status === 200) {
-                                        const dateResponse = JSON.parse(xhrDateCheck.responseText);
+                    // Check if the event date is in the past
+                    const xhrDateCheck = new XMLHttpRequest();
+                    xhrDateCheck.open("POST", "check_event_date.php", true);
+                    xhrDateCheck.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    xhrDateCheck.onload = function() {
+                        if (xhrDateCheck.status === 200) {
+                            const dateResponse = JSON.parse(xhrDateCheck.responseText);
 
-                                        console.log("Event Date:", dateResponse.debug?.eventDate);
-                                        console.log("Current Date:", dateResponse.debug?.currentDate); 
+                            console.log("Event Date:", dateResponse.debug?.eventDate);
+                            console.log("Current Date:", dateResponse.debug?.currentDate);
 
-                                        if (!dateResponse.success || !dateResponse.editable) {
-                                            console.log("Debug info:", dateResponse.debug);
+                            // If the event is not editable (past date), update status to "Ended"
+                            if (!dateResponse.success || !dateResponse.editable) {
+                                console.log("The event date is past; updating status to 'Ended'.");
 
-                                            Swal.fire({
-                                                icon: 'info',
-                                                title: 'Event Not Editable',
-                                                text: 'This event is no longer editable as the event date has passed.',
+                                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Event Not Editable',
+                                    text: 'This event is no longer editable as it has already passed.',
+                                    confirmButtonText: 'Okay'
+                                }).then(() => {
+                                                window.location.reload();
                                             });
-                                            return;
-                                        }
 
-                                        //fetch teams if date is editable
-                                        console.log('Event type fetched from database:', fetchedEvent.type);
-
-                                        // Category options based on fetched event type
-                                        let categoryOptions = '';
-                                        if (fetchedEvent.type === 'Socio-Cultural') {
-                                            categoryOptions = `
-                                                <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
-                                                <option value="sports">Sports</option>
-                                                <option value="others">Others</option>
-                                            `;
-                                        } else if (fetchedEvent.type === 'Sports') {
-                                            categoryOptions = `
-                                                <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
-                                                <option value="Socio-Cultural">Socio-Cultural</option>
-                                                <option value="others">Others</option>
-                                            `;
-                                        } else {
-                                            categoryOptions = `
-                                                <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
-                                                <option value="Socio-Cultural">Socio-Cultural</option>
-                                                <option value="sports">Sports</option>
-                                            `;
-                                        }
-
-                                        // skip team fetch if type is "Others"
-                                        if (fetchedEvent.type === 'Others') {
-                                            showEditEventModal(fetchedEvent, categoryOptions, []); // No teams needed
-                                            return;
-                                        }
-
-                                        // fetch teams for other types
-                                        const xhrTeams = new XMLHttpRequest();
-                                        xhrTeams.open("POST", "get_teamsForSched.php", true);
-                                        xhrTeams.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                                        xhrTeams.onload = function() {
-                                            if (xhrTeams.status === 200) {
-                                                const teamResponse = JSON.parse(xhrTeams.responseText);
-                                                const teams = teamResponse.success ? teamResponse.teams : [];
-                                                showEditEventModal(fetchedEvent, categoryOptions, teams);
-                                            }
-                                        };
-                                        xhrTeams.send("event_id=" + encodeURIComponent(eventId));
+                                const xhrUpdateStatus = new XMLHttpRequest();
+                                xhrUpdateStatus.open("POST", "update_event_status.php", true);
+                                xhrUpdateStatus.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                                xhrUpdateStatus.onload = function() {
+                                    if (xhrUpdateStatus.status === 200) {
+                                        const updateResponse = JSON.parse(xhrUpdateStatus.responseText);
+                                        console.log(updateResponse.message);
                                     }
                                 };
-                                xhrDateCheck.send("day_id=" + encodeURIComponent(dayId));
+                                xhrUpdateStatus.send("day_id=" + encodeURIComponent(dayId));
+                                return;
+                            } else {
+                                console.log("The event date has not yet passed; proceeding to edit.");
                             }
+
+                            // Proceed to fetch category options and teams if date is editable
+                            console.log('Event type fetched from database:', fetchedEvent.type);
+
+                            // Set category options based on fetched event type
+                            let categoryOptions = '';
+                            if (fetchedEvent.type === 'Socio-Cultural') {
+                                categoryOptions = `
+                                    <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
+                                    <option value="sports">Sports</option>
+                                    <option value="others">Others</option>
+                                `;
+                            } else if (fetchedEvent.type === 'Sports') {
+                                categoryOptions = `
+                                    <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
+                                    <option value="Socio-Cultural">Socio-Cultural</option>
+                                    <option value="others">Others</option>
+                                `;
+                            } else {
+                                categoryOptions = `
+                                    <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
+                                    <option value="Socio-Cultural">Socio-Cultural</option>
+                                    <option value="sports">Sports</option>
+                                `;
+                            }
+
+                            // If event type is "Others," no need to fetch teams
+                            if (fetchedEvent.type === 'Others') {
+                                showEditEventModal(fetchedEvent, categoryOptions, []); // No teams needed
+                                return;
+                            }
+
+                            // Fetch teams for event types other than "Others"
+                            const xhrTeams = new XMLHttpRequest();
+                            xhrTeams.open("POST", "get_teamsForSched.php", true);
+                            xhrTeams.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                            xhrTeams.onload = function() {
+                                if (xhrTeams.status === 200) {
+                                    const teamResponse = JSON.parse(xhrTeams.responseText);
+                                    const teams = teamResponse.success ? teamResponse.teams : [];
+                                    showEditEventModal(fetchedEvent, categoryOptions, teams);
+                                }
+                            };
+                            xhrTeams.send("event_id=" + encodeURIComponent(eventId));
                         }
                     };
-                    xhr.send("event_id=" + encodeURIComponent(eventId));
-                });
-            });
+                    xhrDateCheck.send("day_id=" + encodeURIComponent(dayId));
+                }
+            }
+        };
+        xhr.send("event_id=" + encodeURIComponent(eventId));
+    });
+});
+
 
 
             // modal connected to edit

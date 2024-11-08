@@ -32,22 +32,29 @@
             error_log("Current Date: " . $currentDate->format('Y-m-d'));
 
             if ($eventDate < $currentDate) {
-                echo json_encode([
-                    'success' => true,
-                    'editable' => false,
-                    'debug' => [
-                        'eventDate' => $eventDate->format('Y-m-d'),
-                        'currentDate' => $currentDate->format('Y-m-d')
-                    ]
-                ]);
+                // If the date has passed, mark all events on that day as "Ended"
+                $updateQuery = "UPDATE scheduled_eventstoday SET status = 'Ended' WHERE day_id = ?";
+                $updateStmt = $conn->prepare($updateQuery);
+                $updateStmt->bind_param("i", $dayID);
+                $updateStmt->execute();
+
+                error_log("Update affected rows: " . $updateStmt->affected_rows);
+
+                if ($updateStmt->affected_rows > 0) {
+                    echo json_encode([
+                        'success' => true,
+                        'message' => 'All events on this day have been marked as "Ended".',
+                    ]);
+                } else {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'No events were updated. Please check the day ID.',
+                    ]);
+                }
             } else {
                 echo json_encode([
                     'success' => true,
-                    'editable' => true,
-                    'debug' => [
-                        'eventDate' => $eventDate->format('Y-m-d'),
-                        'currentDate' => $currentDate->format('Y-m-d')
-                    ]
+                    'message' => 'The event date has not yet passed, no update was made.'
                 ]);
             }
         } else {
@@ -56,8 +63,8 @@
 
         $stmt->close();
     } catch (Exception $e) {
-        error_log("Error checking event date: " . $e->getMessage());
-        echo json_encode(['success' => false, 'message' => 'Error checking event date: ' . $e->getMessage()]);
+        error_log("Error updating event status: " . $e->getMessage());
+        echo json_encode(['success' => false, 'message' => 'Error updating event status: ' . $e->getMessage()]);
     } finally {
         $conn->close();
     }
