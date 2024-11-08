@@ -178,13 +178,14 @@ body {
 
 .sub-head{
     display: flex;
-    margin-top: 50px;
+    margin-top: 30px;
     height: auto;
     color: #2B2B2B;
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: center;
     width: 100%;
+    margin-bottom: 20px;
 }
 
 .eventsDropdown h4{
@@ -448,6 +449,7 @@ body {
     justify-content: center;
 }
 
+
 div .msg {
     text-align: center;
     margin: 0 35%;
@@ -461,6 +463,13 @@ div .msg {
     font-weight: 200;
 }
 
+.eventNameTitle {
+    font-family: Inter, sans-serif;
+    color: #2B2B2B;
+    font-weight: 800;
+    margin-top: 10px;
+}
+
 /* recordingTable */
 .recordTable {
     margin-bottom: 40px;
@@ -468,7 +477,8 @@ div .msg {
     margin-right: 70px;
     background-color: #f9f9f9;
     padding: 10px;
-    border-left: 3px solid #7FD278;
+    border-left: 3px solid #D9F17F;
+    margin-top: 20px;
 }
 
 .recordTable table {
@@ -493,12 +503,18 @@ div .msg {
 }
 
 .recordTable table td {
+    font-family: Poppins, sans-serif;
     color: #555;
     font-size: 13px;
+    font-weight: 500;
 }
 
-.recordTable table tr:hover {
-    background-color: #f1f1f1;
+.recordTable table thead td{
+    font-family: Poppins, sans-serif;
+    color: #2B2B2B;
+    font-size: 15px;
+    font-weight: 700;
+    background-color: #d8f17fa2;
 }
 
 .recordTable table td button {
@@ -512,14 +528,41 @@ div .msg {
     transition: background-color 0.3s;
 }
 
+.teamA option, .teamB option {
+    font-family: Poppins, sans-serif;
+    color: #444;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.teamA, .teamB {
+    font-family: Poppins, sans-serif;
+    color: #555;
+    font-size: 13px;
+    font-weight: 600;
+}
+
 /* ScoringTable */
+.scoringContainer h1 {
+    font-family: Inter, sans-serif;
+    color: #2B2B2B;
+    font-weight: 800;
+    margin-top: 10px;
+    margin-left: 5%;
+    margin-bottom: 30px;
+}
+
+.scoringContainer{
+    padding-bottom: 30px;
+}
+
 .scoreTable {
     margin-bottom: 40px;
     margin-left: 70px;
     margin-right: 70px;
     background-color: #f9f9f9;
     padding: 10px;
-    border-left: 3px solid #D9F17F;;
+    border-left: 3px solid #D9F17F;
 }
 
 .scoreTable table {
@@ -545,12 +588,18 @@ div .msg {
 }
 
 .scoreTable table td {
+    font-family: Poppins, sans-serif;
     color: #555;
     font-size: 13px;
+    font-weight: 500;
 }
 
-.scoreTable table tr:hover {
-    background-color: #f1f1f1;
+.scoreTable table thead td{
+    font-family: Poppins, sans-serif;
+    color: #2B2B2B;
+    font-size: 15px;
+    font-weight: 700;
+    background-color: #d8f17fa2;
 }
 
 .scoreTable table td button {
@@ -564,6 +613,26 @@ div .msg {
     border-radius: 5px;
     margin-right: 5px;
     transition: background-color 0.3s;
+}
+
+.recordTable table td button {
+    font-family: Inter, sans-serif;
+    font-weight: 600;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: #2B2B2B;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 5px;
+    transition: background-color 0.3s;
+}
+
+.scoreTable option {
+    font-family: Poppins, sans-serif;
+    color: #444;
+    font-size: 13px;
+    font-weight: 600;
 }
 
 .addEdit-btn {
@@ -583,15 +652,15 @@ div .msg {
 }
 
 .edit-btn {
-    background-color: #4CAF50;
+    background-color: #D9F17F;
 }
 
 .save-btn {
-    background-color: #006eff;
+    background-color: #D9F17F;
 }
 
 .cancel-btn {
-    background-color: #ed3b3b;
+    background-color: #d0d0d0;
 }
 
 .delete-btn {
@@ -599,15 +668,15 @@ div .msg {
 }
 
 .edit-btn:hover {
-    background-color: #45a049;
+    background-color: #9aac5b;
 }
 
 .save-btn:hover {
-    background-color: #0264e6;
+    background-color: #9aac5b;
 }
 
 .cancel-btn:hover {
-    background-color: #a62b2b;
+    background-color: #848484;
 }
 
 .delete-btn:hover {
@@ -630,6 +699,37 @@ div .msg {
 .non-editable:disabled {
     pointer-events: none;
     appearance: none;
+}
+
+/* pagination*/
+#paginationControls {
+    text-align: center;
+    margin-top: 20px;
+    font-family: Inter, sans-serif;
+}
+
+#pageNumbers .page-button {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: #2B2B2B;
+    padding: 6px 10px;
+    margin: 0 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: 14px;
+}
+
+#pageNumbers .page-button:hover {
+    background-color: #FCCE42;
+    color: #2B2B2B;
+}
+
+#pageNumbers .page-button[style*="font-weight: bold"] {
+    font-weight: bold;
+    background-color: #FCCE42;
+    color: #2B2B2B;
+    border-color: #FCCE42;
 }
 
 /* alert */

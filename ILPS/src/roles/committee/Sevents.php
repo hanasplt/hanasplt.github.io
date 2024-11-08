@@ -168,9 +168,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
             ?>
         </div>
-        <div style="margin: auto;">
-                <h1><?php echo $evname; ?></h1>
-            </div>
+        <div class="eventNameTitle">
+            <h1><?php echo $evname; ?></h1>
+        </div>
     </div>
     <?php
     // Assuming $evId is set to the current event ID
@@ -186,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (in_array('committee_scoring_read', $comt_rights)) { ?>
                 <!-- NEW INTERFACE -->
                 <div class="recordTable">
-                    <table style="margin: auto" id="eventTable">
+                    <table id="eventTable">
                         <thead>
                             <tr>
                                 <td>TIME</td>
@@ -214,16 +214,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                             <td><?php echo htmlspecialchars($event['gameNo']); ?></td>
                                             <td>
                                                 <select name="teamA" class="teamA non-editable" id="teamA-<?php echo htmlspecialchars($event['gameNo']); ?>" onchange="syncTeams(this, '<?php echo htmlspecialchars($event['gameNo']); ?>'); changeColor(this)" disabled>
-                                                    <option value="">(<?php echo $event['teamA_name']; ?>) No Result</option>
-                                                    <option value="Winner" <?php echo $event['ResultA'] == 'Winner' ? 'selected' : ''; ?>>(<?php echo $event['teamA_name']; ?>) Winner</option>
-                                                    <option value="Loser" <?php echo $event['ResultA'] == 'Loser' ? 'selected' : ''; ?>>(<?php echo $event['teamA_name']; ?>) Loser</option>
+                                                    <option value=""><?php echo $event['teamA_name']; ?> - No Result</option>
+                                                    <option value="Winner" <?php echo $event['ResultA'] == 'Winner' ? 'selected' : ''; ?>><?php echo $event['teamA_name']; ?> - Winner</option>
+                                                    <option value="Loser" <?php echo $event['ResultA'] == 'Loser' ? 'selected' : ''; ?>><?php echo $event['teamA_name']; ?> - Loser</option>
                                                 </select>
                                             </td>
                                             <td>
                                                 <select name="teamB" class="teamB non-editable" id="teamB-<?php echo htmlspecialchars($event['gameNo']); ?>" onchange="syncTeams(this, '<?php echo htmlspecialchars($event['gameNo']); ?>'); changeColor(this)" disabled>
-                                                    <option value="">(<?php echo $event['teamB_name']; ?>) No Result</option>
-                                                    <option value="Winner" <?php echo $event['ResultB'] == 'Winner' ? 'selected' : ''; ?>>(<?php echo $event['teamB_name']; ?>) Winner</option>
-                                                    <option value="Loser" <?php echo $event['ResultB'] == 'Loser' ? 'selected' : ''; ?>>(<?php echo $event['teamB_name']; ?>) Loser</option>
+                                                    <option value=""><?php echo $event['teamB_name']; ?> - No Result</option>
+                                                    <option value="Winner" <?php echo $event['ResultB'] == 'Winner' ? 'selected' : ''; ?>><?php echo $event['teamB_name']; ?> - Winner</option>
+                                                    <option value="Loser" <?php echo $event['ResultB'] == 'Loser' ? 'selected' : ''; ?>><?php echo $event['teamB_name']; ?> - Loser</option>
                                                 </select>
                                             </td>
                                             <td>
@@ -309,117 +309,117 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt_event->close();
     ?>
 
-<!-- ADD or EDIT SCORES -->
-<div class="scoringContainer">
-    <h1 style="text-align: center;">RANKING AND SCORING</h1>
-    <div class="scoreTable">
-        <table style="margin: auto;">
-            <tr>
-                <td>TEAM</td>
-                <td>SCORE</td>
-            </tr>
+    <!-- ADD or EDIT SCORES -->
+    <div class="scoringContainer">
+        <h1>Ranking and Scoring</h1>
+        <div class="scoreTable">
+            <table style="margin: auto;">
+                <thead>
+                    <td>TEAM</td>
+                    <td>SCORE</td>
+                </thead>
 
-            <?php
-foreach ($teams as $teamId => $teamName) {
-    // Query to get contestants for each team for the selected event ID
-    $sql = "SELECT contId, teamId FROM contestant WHERE eventId = ? AND teamId = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $evId, $teamId);
-    $stmt->execute();
-    $result = $stmt->get_result();
+                <?php
+                foreach ($teams as $teamId => $teamName) {
+                    // Query to get contestants for each team for the selected event ID
+                    $sql = "SELECT contId, teamId FROM contestant WHERE eventId = ? AND teamId = ?";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("ii", $evId, $teamId);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
 
-    if ($result === false) {
-        echo "<tr><td colspan='2'>Error fetching teams: " . htmlspecialchars($conn->error) . "</td></tr>";
-        continue;
-    }
+                    if ($result === false) {
+                        echo "<tr><td colspan='2'>Error fetching teams: " . htmlspecialchars($conn->error) . "</td></tr>";
+                        continue;
+                    }
 
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            echo "<input type='hidden' name='Teams[]' class='Teams' value='" . $teamId . "'>";
-            echo "<tr class='teamRow'>";
-            echo "<td class='teamNames'>" . htmlspecialchars($teamName) . "</td>";
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<input type='hidden' name='Teams[]' class='Teams' value='" . $teamId . "'>";
+                            echo "<tr class='teamRow'>";
+                            echo "<td class='teamNames'>" . htmlspecialchars($teamName) . "</td>";
 
-            echo "<td class='teamScores'>";
-            $contestantsId = $row['contId'];
-            echo "<input type='hidden' class='contestantId' name='contestantId[]' value='" . $contestantsId . "'>";
+                            echo "<td class='teamScores'>";
+                            $contestantsId = $row['contId'];
+                            echo "<input type='hidden' class='contestantId' name='contestantId[]' value='" . $contestantsId . "'>";
 
-            // Fetch total score for the current contestant
-            $stmt_sub = $conn->prepare("SELECT total_score FROM sub_results WHERE eventId = ? AND contestantId = ?");
-            $stmt_sub->bind_param("ii", $evId, $contestantsId);
-            $stmt_sub->execute();
-            $result_sub = $stmt_sub->get_result();
+                            // Fetch total score for the current contestant
+                            $stmt_sub = $conn->prepare("SELECT total_score FROM sub_results WHERE eventId = ? AND contestantId = ?");
+                            $stmt_sub->bind_param("ii", $evId, $contestantsId);
+                            $stmt_sub->execute();
+                            $result_sub = $stmt_sub->get_result();
 
-            echo "<select class='teamsScore non-editable' name='teamsScore[]' onchange='updateScores(this)' disabled>";
-            $selectedPoints = 0;
+                            echo "<select class='teamsScore non-editable' name='teamsScore[]' onchange='updateScores(this)' disabled>";
+                            $selectedPoints = 0;
 
-            if ($result_sub->num_rows > 0) {
-                while ($row_sub = $result_sub->fetch_assoc()) {
-                    $selectedPoints = $row_sub['total_score'];
-                    echo "<option hidden value='" . $row_sub['total_score'] . "' selected>" . $row_sub['total_score'] . "</option>";
-                }
-            }
-            echo "<option value='0' " . ($selectedPoints == 0 ? 'selected' : '') . ">0</option>";
+                            if ($result_sub->num_rows > 0) {
+                                while ($row_sub = $result_sub->fetch_assoc()) {
+                                    $selectedPoints = $row_sub['total_score'];
+                                    echo "<option hidden value='" . $row_sub['total_score'] . "' selected>" . $row_sub['total_score'] . "</option>";
+                                }
+                            }
+                            echo "<option value='0' " . ($selectedPoints == 0 ? 'selected' : '') . ">0</option>";
 
-            // Fetch event scores and rankings for the specified event ID category
-            $query_vw = "SELECT points, rank FROM vw_eventscore WHERE eventCategory = 
+                            // Fetch event scores and rankings for the specified event ID category
+                            $query_vw = "SELECT points, rank FROM vw_eventscore WHERE eventCategory = 
                          (SELECT eventCategory FROM vw_events WHERE eventID = ?)";
-            $stmt_vw = $conn->prepare($query_vw);
-            $stmt_vw->bind_param("i", $evId);
-            $stmt_vw->execute();
-            $result_vw = $stmt_vw->get_result();
+                            $stmt_vw = $conn->prepare($query_vw);
+                            $stmt_vw->bind_param("i", $evId);
+                            $stmt_vw->execute();
+                            $result_vw = $stmt_vw->get_result();
 
-            if ($result_vw->num_rows > 0) {
-                while ($row_vw = $result_vw->fetch_assoc()) {
-                    $score = $row_vw['points'];
-                    $rank = $row_vw['rank'];
-                    echo "<option value='" . htmlspecialchars($score) . "' " .
-                        ($selectedPoints == $score ? 'selected' : '') . ">" .
-                        htmlspecialchars($rank) . " - " . htmlspecialchars($score) . " pts.</option>";
+                            if ($result_vw->num_rows > 0) {
+                                while ($row_vw = $result_vw->fetch_assoc()) {
+                                    $score = $row_vw['points'];
+                                    $rank = $row_vw['rank'];
+                                    echo "<option value='" . htmlspecialchars($score) . "' " .
+                                        ($selectedPoints == $score ? 'selected' : '') . ">" .
+                                        htmlspecialchars($rank) . " - " . htmlspecialchars($score) . " pts.</option>";
+                                }
+                            }
+                            $stmt_vw->close();
+
+                            echo "</select>";
+                            echo "</td>";
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='2'>No contestants found for team " . htmlspecialchars($teamName) . ".</td></tr>";
+                    }
+                    $stmt->close(); // Close the contestant query statement
                 }
-            }
-            $stmt_vw->close();
+                $conn->close();
+                ?>
 
-            echo "</select>";
-            echo "</td>";
-            echo "</tr>";
-        }
-    } else {
-        echo "<tr><td colspan='2'>No contestants found for team " . htmlspecialchars($teamName) . ".</td></tr>";
-    }
-    $stmt->close(); // Close the contestant query statement
-}
-$conn->close();
-?>
-
-            <tr>
-                <td></td>
-                <td style="text-align: right; padding-right: 5vw;">
-                    <button type="button" class="addEdit-btn" onclick="addEdit()">Add/Edit</button>
-                    <button type="button" class="saveScore-btn" onclick="saveScores()" style="display:none;">Save Scores</button>
-                </td>
-            </tr>
-        </table>
+                <tr>
+                    <td></td>
+                    <td style="text-align: right; padding-right: 5vw;">
+                        <button type="button" class="addEdit-btn" onclick="addEdit()">Add/Edit</button>
+                        <button type="button" class="saveScore-btn" onclick="saveScores()" style="display:none;">Save Scores</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
-</div>
 
-<script>
-    // Track selected scores and hide them from other select options
-    function updateScores(selectElement) {
-        const selectedScores = Array.from(document.querySelectorAll(".teamsScore"))
-            .map(select => select.value)
-            .filter(value => value !== "0");
+    <script>
+        // Track selected scores and hide them from other select options
+        function updateScores(selectElement) {
+            const selectedScores = Array.from(document.querySelectorAll(".teamsScore"))
+                .map(select => select.value)
+                .filter(value => value !== "0");
 
-        document.querySelectorAll(".teamsScore").forEach(select => {
-            Array.from(select.options).forEach(option => {
-                if (selectedScores.includes(option.value) && option.value !== select.value) {
-                    option.hidden = true;
-                } else {
-                    option.hidden = false;
-                }
+            document.querySelectorAll(".teamsScore").forEach(select => {
+                Array.from(select.options).forEach(option => {
+                    if (selectedScores.includes(option.value) && option.value !== select.value) {
+                        option.hidden = true;
+                    } else {
+                        option.hidden = false;
+                    }
+                });
             });
-        });
-    }
-</script>
+        }
+    </script>
 
     <script>
         function addEdit() {
@@ -429,63 +429,64 @@ $conn->close();
             document.querySelector('.addEdit-btn').style.display = 'none';
             document.querySelector('.saveScore-btn').style.display = 'inline-block';
         }
+
         function saveScores() {
-    const scores = [];
-    const eventId = <?= json_encode($evId) ?>; // Gets event ID from PHP variable
-    const eventName = <?= json_encode($evname) ?>; // Gets event name from PHP variable
+            const scores = [];
+            const eventId = <?= json_encode($evId) ?>; // Gets event ID from PHP variable
+            const eventName = <?= json_encode($evname) ?>; // Gets event name from PHP variable
 
-    document.querySelectorAll('.teamRow').forEach(row => {
-        const contestantId = row.querySelector('.contestantId').value;
-        const score = row.querySelector('.teamsScore').value;
-        scores.push({
-            contestantId,
-            score
-        });
-    });
+            document.querySelectorAll('.teamRow').forEach(row => {
+                const contestantId = row.querySelector('.contestantId').value;
+                const score = row.querySelector('.teamsScore').value;
+                scores.push({
+                    contestantId,
+                    score
+                });
+            });
 
-    console.log('Data to be sent:', {
-        eventId,
-        eventName,
-        scores
-    }); // Debugging info
-
-    // Send the data as JSON
-    fetch(`saveScores.php?name=${eventName}`, {  // Corrected here
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+            console.log('Data to be sent:', {
                 eventId,
                 eventName,
                 scores
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data) {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Scores have been saved successfully.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
+            }); // Debugging info
 
-                document.querySelectorAll('.teamsScore').forEach(select => select.disabled = true);
-                document.querySelector('.saveScore-btn').style.display = 'none';
-                document.querySelector('.addEdit-btn').style.display = 'inline-block';
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            Swal.fire({
-                title: 'Error!',
-                text: 'Failed to save scores.',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-        });
-}
+            // Send the data as JSON
+            fetch(`saveScores.php?name=${eventName}`, { // Corrected here
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        eventId,
+                        eventName,
+                        scores
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Scores have been saved successfully.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+
+                        document.querySelectorAll('.teamsScore').forEach(select => select.disabled = true);
+                        document.querySelector('.saveScore-btn').style.display = 'none';
+                        document.querySelector('.addEdit-btn').style.display = 'inline-block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to save scores.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                });
+        }
     </script>
     <!-- SYNC TEAM RESULT -->
     <script>
