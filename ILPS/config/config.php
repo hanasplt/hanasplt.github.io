@@ -508,22 +508,6 @@ try {
         echo "Error creating procedure: " . $conn->error;
     }
 
-    //NAGAMIT
-    $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAccountCount(
-            IN search_query VARCHAR(255), IN id INT)
-        BEGIN
-            SELECT COUNT(*) AS total FROM vw_accounts
-            WHERE 
-                userId != 1 AND userId != id AND 
-                (CONCAT(firstName, ' ', lastName) LIKE search_query OR 
-                CONCAT(firstName, ' ', middleName, ' ', lastName) LIKE search_query);
-        END ;";
-
-    if ($conn->query($sqlT) === TRUE) {
-    } else {
-        echo "Error creating procedure: " . $conn->error;
-    }
-
 
     // NAGAMIT
     $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAllAcc()
@@ -1748,6 +1732,30 @@ try {
 }
 
 
+try {
+    // NAGAMIT
+    $sqlT = "CREATE FUNCTION IF NOT EXISTS fn_getAccountCount(search_query VARCHAR(255), id INT)
+        RETURNS INT
+        DETERMINISTIC
+        BEGIN
+            DECLARE total INT;
+            SELECT COUNT(*) INTO total FROM vw_accounts
+            WHERE 
+                userId != 1 AND userId != id AND 
+                (CONCAT(firstName, ' ', lastName) LIKE search_query OR 
+                CONCAT(firstName, ' ', middleName, ' ', lastName) LIKE search_query);
+            RETURN total;
+        END ;";
+
+    if ($conn->query($sqlT) === TRUE) {
+    } else {
+        echo "Error creating procedure: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
+
 
 /* INDEX */
 try {
@@ -1786,6 +1794,33 @@ try {
     echo $e->getMessage();
 }
 
+
+/* TRIGGER */
+try {
+    // Trigger for evaluating duplication in scheduled event NAGAMIT
+    $createIdx = "CREATE TRIGGER tr_check_match_schedule
+                BEFORE INSERT ON scheduled_eventstoday
+                FOR EACH ROW
+                BEGIN
+                    -- Check for venue conflicts
+                    IF EXISTS (
+                        SELECT 1 FROM scheduled_eventstoday 
+                        WHERE location = NEW.location
+                        AND time = NEW.time
+                        AND activity = NEW.activity
+                        AND time = NEW.time
+                    ) THEN
+                        SIGNAL SQLSTATE '45000'
+                        SET MESSAGE_TEXT = 'Venue already booked for this event in this time slot';
+                    END IF;
+                END;";
+    if ($conn->query($createIdx) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error;
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
 
 
 $conn->close();

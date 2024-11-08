@@ -19,7 +19,6 @@
             $output .= '
                 <table>
                     <tr>
-                        <th>ID</th>
                         <th>First Name</th>
                         <th>Middle Name</th>
                         <th>Last Name</th>
@@ -31,17 +30,18 @@
             
             // Proceed populating data
             while ($row = $retval->fetch_assoc()) {
-                $output .= '
-                    <tr>
-                        <td>'.$row['userId'].'</td>
-                        <td>'.$row['firstName'].'</td>
-                        <td>'.$row['middleName'].'</td>
-                        <td>'.$row['lastName'].'</td>
-                        <td>'.$row['suffix'].'</td>
-                        <td>'.$row['email'].'</td>
-                        <td>'.$row['type'].'</td>
-                    </tr>
-                ';
+                if ($row['userId'] != 1) {
+                    $output .= '
+                        <tr>
+                            <td>'.$row['firstName'].'</td>
+                            <td>'.$row['middleName'].'</td>
+                            <td>'.$row['lastName'].'</td>
+                            <td>'.$row['suffix'].'</td>
+                            <td>'.$row['email'].'</td>
+                            <td>'.$row['type'].'</td>
+                        </tr>
+                    ';
+                }
             }
             // end of while loop (done populating)
 

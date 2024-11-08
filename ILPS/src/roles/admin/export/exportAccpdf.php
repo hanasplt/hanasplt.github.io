@@ -27,7 +27,6 @@
 				<h2 align="center">ILPS Accounts Information</h2></br>
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
-                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">ID</th>
                         <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">First Name</th>
                         <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Middle Name</th>
                         <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Last Name</th>
@@ -39,17 +38,18 @@
 
 			// Populate table
 			while ($row = $retval->fetch_assoc()) {
-				$output .= '
-                    <tr>
-                        <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">'.$row['userId'].'</td>
-                        <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">'.$row['firstName'].'</td>
-                        <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">'.$row['middleName'].'</td>
-                        <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">'.$row['lastName'].'</td>
-                        <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">'.$row['suffix'].'</td>
-                        <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">'.$row['email'].'</td>
-                        <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">'.$row['type'].'</td>
-                    </tr>
-                ';
+                if ($row['userId'] != 1) {
+                    $output .= '
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">'.$row['firstName'].'</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">'.$row['middleName'].'</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">'.$row['lastName'].'</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">'.$row['suffix'].'</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">'.$row['email'].'</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">'.$row['type'].'</td>
+                        </tr>
+                    ';
+                }
 			}
 		} else {
 			$output .= '

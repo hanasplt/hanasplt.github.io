@@ -30,20 +30,24 @@ try {
 }
 
 // get the total accounts
-$search_query = "%";
-$sql_count = "CALL sp_getAccountCount(?,?)";
-$stmt = $conn->prepare($sql_count);
-$stmt->bind_param("si", $search_query, $iddd);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
-$total_accounts = $row['total'];
+try {
+    $search_query = "%";
+    $sql_count = "SELECT fn_getAccountCount(?,?) AS total";
+    $stmt = $conn->prepare($sql_count);
+    $stmt->bind_param("si", $search_query, $iddd);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $total_accounts = $row['total'];
 
-$result->free();
-$stmt->close();
+    $result->free();
+    $stmt->close();
+} catch (Exception $e) {
+    throw new Exception("Exception Error: " . $e->getMessage());
+}
 
 // get the total number of teams
-$sql_count_teams = "SELECT fn_getTeamCount() as total;";
+$sql_count_teams = "SELECT fn_getTeamCount() AS total;";
 $stmt = $conn->prepare($sql_count_teams);
 $stmt->execute();
 $result_teams = $stmt->get_result();

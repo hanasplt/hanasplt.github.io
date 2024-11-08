@@ -59,6 +59,7 @@ require_once 'adminPermissions.php'; // Retrieves admin permissions
           <p onclick="window.location.href = 'view-profile.php';" class="dc-text" title="Profile">View Profile</p>
           <p onclick="window.location.href = 'reports.php';" class="dc-text" title="Reports">Reports</p>
           <p onclick="window.location.href = 'accesslog.php';" class="dc-text" title="Logs">Logs</p>
+          <p onclick="showConfirmationMsg()" class="dc-text" title="Backup">Backup and Reset</p>
           <div class="menu-icon">
             <p id="logout" title="Logout">Logout</p>
           </div>
@@ -137,6 +138,9 @@ require_once 'adminPermissions.php'; // Retrieves admin permissions
                     echo "<a href='viewScoresheet.php?event=$eventId
                             &&evname=$evName' target='_blank'>View Summary
                           </a>";
+                    echo "<a href='viewScoresheet.php?event=$eventId
+                            &&evname=$evName&&purpose=print' target='_blank'>Print
+                          </a>";
                     echo "</td>";
                   } else { // Display message - not scored
                     echo '<td style="color: gray;">No score yet.</td>';
@@ -159,6 +163,9 @@ require_once 'adminPermissions.php'; // Retrieves admin permissions
                     <td>
                       <a href="viewtally.php?event=<?php echo $eventId ?>
                         &evname=<?php echo $evName ?>" target="_blank">View Tally
+                      </a>
+                      <a href="viewtally.php?event=<?php echo $eventId ?>
+                        &evname=<?php echo $evName ?>&&purpose=print" target="_blank">Print
                       </a>
                     </td>
                     

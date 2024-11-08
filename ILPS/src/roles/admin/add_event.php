@@ -39,60 +39,65 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $teamB = null;
     }
 
-    $query = "CALL sp_insertEventSched(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($query);
+    try {
+        $query = "CALL sp_insertEventSched(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($query);
 
-    $stmt->bind_param("issssssss", $day_id, $time24, $type, $activity, $location, $gameNo, $teamA, $teamB, $status);
+        $stmt->bind_param("issssssss", $day_id, $time24, $type, $activity, $location, $gameNo, $teamA, $teamB, $status);
 
-    if ($stmt->execute()) {
-        $stmt->close(); // To enable another command
+        if ($stmt->execute()) {
+            $stmt->close(); // To enable another command
 
-        // Fetch team A name
-        if ($teamA !== null) {
-            $query_teamA = "CALL sp_getATeam(?)";
-            $stmt_teamA = $conn->prepare($query_teamA);
-            $stmt_teamA->bind_param("i", $teamA);
-            $stmt_teamA->execute();
-            $result_teamA = $stmt_teamA->get_result();
-            if ($row = $result_teamA->fetch_assoc()) {
-                $team_names['teamA_name'] = $row['teamName'];
+            // Fetch team A name
+            if ($teamA !== null) {
+                $query_teamA = "CALL sp_getATeam(?)";
+                $stmt_teamA = $conn->prepare($query_teamA);
+                $stmt_teamA->bind_param("i", $teamA);
+                $stmt_teamA->execute();
+                $result_teamA = $stmt_teamA->get_result();
+                if ($row = $result_teamA->fetch_assoc()) {
+                    $team_names['teamA_name'] = $row['teamName'];
+                }
+                $stmt_teamA->close();
             }
-            $stmt_teamA->close();
+
+            // Fetch team B name
+            if ($teamB !== null) {
+                $query_teamB = "CALL sp_getATeam(?)";
+                $stmt_teamB = $conn->prepare($query_teamB);
+                $stmt_teamB->bind_param("i", $teamB);
+                $stmt_teamB->execute();
+                $result_teamB = $stmt_teamB->get_result();
+                if ($row = $result_teamB->fetch_assoc()) {
+                    $team_names['teamB_name'] = $row['teamName'];
+                }
+                $stmt_teamB->close();
+            }
+
+            // Insert action in the logs
+            $action = "
+                Added scheduled event in day-id: $day_id. 
+                Starts on $time12 at $location, event type: $type--$activity,
+                status $status.
+            ";
+            $insertLogAct = "CALL sp_insertLog(?, ?)";
+
+            $stmt = $conn->prepare($insertLogAct);
+            $stmt->bind_param("is", $accId, $action);
+            $stmt->execute();
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Event added successfully.',
+                'teamA_name' => $team_names['teamA_name'],
+                'teamB_name' => $team_names['teamB_name']
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to add event.']);
         }
 
-        // Fetch team B name
-        if ($teamB !== null) {
-            $query_teamB = "CALL sp_getATeam(?)";
-            $stmt_teamB = $conn->prepare($query_teamB);
-            $stmt_teamB->bind_param("i", $teamB);
-            $stmt_teamB->execute();
-            $result_teamB = $stmt_teamB->get_result();
-            if ($row = $result_teamB->fetch_assoc()) {
-                $team_names['teamB_name'] = $row['teamName'];
-            }
-            $stmt_teamB->close();
-        }
-
-        // Insert action in the logs
-        $action = "
-            Added scheduled event in day-id: $day_id. 
-            Starts on $time12 at $location, event type: $type--$activity,
-            status $status.
-        ";
-        $insertLogAct = "CALL sp_insertLog(?, ?)";
-
-        $stmt = $conn->prepare($insertLogAct);
-        $stmt->bind_param("is", $accId, $action);
-        $stmt->execute();
-
-        echo json_encode([
-            'success' => true,
-            'message' => 'Event added successfully.',
-            'teamA_name' => $team_names['teamA_name'],
-            'teamB_name' => $team_names['teamB_name']
-        ]);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to add event.']);
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
 
     $conn->close();

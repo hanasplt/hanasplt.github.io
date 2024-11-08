@@ -96,6 +96,7 @@ $stmt->close();
                     <p onclick="window.location.href = 'view-profile.php';" class="dc-text" title="Profile">View Profile</p>
                     <p onclick="window.location.href = 'reports.php';" class="dc-text" title="Reports">Reports</p>
                     <p onclick="window.location.href = 'accesslog.php';" class="dc-text" title="Logs">Logs</p>
+                    <p onclick="showConfirmationMsg()" class="dc-text" title="Backup">Backup and Reset</p>
                     <div class="menu-icon">
                         <p id="logout" title="Logout">Logout</p>
                     </div>

@@ -8,6 +8,11 @@
 
     $evId = $_GET['event'];
     $evname = $_GET['evname'];
+    $purpose = isset($_GET['purpose']) ? $_GET['purpose'] : '';
+
+    if ($purpose !== '') {
+        echo "<script>window.print();</script>";
+    }
 ?>
 
 <!DOCTYPE html>

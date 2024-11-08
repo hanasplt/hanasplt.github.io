@@ -1,13 +1,14 @@
 <?php
 
     $conn = require_once '../../../config/db.php'; // Database connection
-  
-    if ($conn->connect_error) {
-      die("Connection failed: " . $conn->connect_error);
-    }
 
     $evId = $_GET['event'];
     $evname = $_GET['evname'];
+    $purpose = isset($_GET['purpose']) ? $_GET['purpose'] : '';
+
+    if ($purpose !== '') {
+        echo "<script>window.print();</script>";
+    }
 ?>
 
 <!DOCTYPE html>
