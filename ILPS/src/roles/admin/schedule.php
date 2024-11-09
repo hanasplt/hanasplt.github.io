@@ -32,7 +32,7 @@ $scheduled_days = [];
 if ($result_days->num_rows > 0) {
     while ($row_day = $result_days->fetch_assoc()) {
         $day_id = $row_day['id'];
-        
+
         // Free the result of the first stored procedure call
         $conn->next_result();
 
@@ -421,6 +421,20 @@ usort($scheduled_days, function ($a, $b) {
                     const dayId = this.getAttribute('data-day-id');
                     const dayDate = this.getAttribute('data-day-date');
 
+                    // Get the current date and compare it with the dayId
+                    const today = new Date();
+                    const selectedDate = new Date(dayId);
+
+                    // Check if the selected date is in the past
+                    if (selectedDate < today.setHours(0, 0, 0, 0)) {
+                        Swal.fire({
+                            title: 'Action Not Allowed',
+                            text: 'This date cannot be deleted as it has already passed.',
+                            icon: 'error'
+                        });
+                        return;
+                    }
+
                     Swal.fire({
                         title: 'Are you sure?',
                         text: "You won't be able to revert this!",
@@ -480,6 +494,20 @@ usort($scheduled_days, function ($a, $b) {
                 button.addEventListener('click', function() {
                     const dayId = button.getAttribute('data-day-id');
 
+                    // Get the current date and compare it with the dayId
+                    const today = new Date();
+                    const selectedDate = new Date(dayId); // Assumes dayId is in a format that can be parsed by Date (e.g., 'YYYY-MM-DD')
+
+                    // Check if the selected date is in the past
+                    if (selectedDate < today.setHours(0, 0, 0, 0)) { // Sets today's time to midnight for an accurate comparison
+                        Swal.fire({
+                            title: 'Action Not Allowed',
+                            text: 'You cannot add an event to a past date.',
+                            icon: 'error'
+                        });
+                        return;
+                    }
+
                     Swal.fire({
                         title: 'Add New Event',
                         html: `
@@ -490,7 +518,7 @@ usort($scheduled_days, function ($a, $b) {
                             <option value="sports">Sports</option>
                             <option value="others">Others</option>
                         </select>
-                        <select id="event-sports" class="swal2-input3" style="display: none;" required>
+                        <select id="event-sports" class="swal2-input3" style="display: none;" required style="display: none;">
                             <option value="" disabled selected>Event</option>
                             <?php
                             $sql = "CALL sp_getEventFrom(?);";
@@ -518,7 +546,7 @@ usort($scheduled_days, function ($a, $b) {
                             $stmt->close();
                                     ?>
                         </select>
-                        <select id="event-socio" class="swal2-input3" required>
+                        <select id="event-socio" class="swal2-input3" required style="display: none;">
                             <option value="" disabled selected>Event</option>
                                 <?php
                                 $sql = "CALL sp_getEventFrom(?);";
@@ -800,7 +828,7 @@ usort($scheduled_days, function ($a, $b) {
                 button.addEventListener('click', function() {
                     const row = this.closest('tr');
                     const eventId = row.getAttribute('data-event-id');
-                    
+
                     console.log("Event ID:", eventId);
 
                     // fetch existing event
@@ -832,13 +860,13 @@ usort($scheduled_days, function ($a, $b) {
                                             console.log("The event date is past; updating status to 'Ended'.");
 
                                             Swal.fire({
-                                                icon: 'info',
-                                                title: 'Event Not Editable',
+                                                icon: 'error',
+                                                title: 'Action Not Allowed',
                                                 text: 'This event is no longer editable as it has already passed.',
                                                 confirmButtonText: 'Okay'
                                             }).then(() => {
-                                                            window.location.reload();
-                                                        });
+                                                window.location.reload();
+                                            });
 
                                             const xhrUpdateStatus = new XMLHttpRequest();
                                             xhrUpdateStatus.open("POST", "update_event_status.php", true);
@@ -913,20 +941,20 @@ usort($scheduled_days, function ($a, $b) {
                 let teamOptionsA = '<option value="" disabled selected>Team A</option>';
                 let teamOptionsB = '<option value="" disabled selected>Team B</option>';
 
-                    teams.forEach(team => {
-                        teamOptionsA += `<option value="${team.teamId}" ${team.teamId === fetchedEvent.teamA ? 'selected' : ''}>${team.teamName}</option>`;
-                    });
+                teams.forEach(team => {
+                    teamOptionsA += `<option value="${team.teamId}" ${team.teamId === fetchedEvent.teamA ? 'selected' : ''}>${team.teamName}</option>`;
+                });
 
-                    // Filter Team B options based on Team A
-                    teams.forEach(team => {
-                        if (team.teamId !== fetchedEvent.teamA) {
-                            teamOptionsB += `<option value="${team.teamId}" ${team.teamId === fetchedEvent.teamB ? 'selected' : ''}>${team.teamName}</option>`;
-                        }
-                    });
+                // Filter Team B options based on Team A
+                teams.forEach(team => {
+                    if (team.teamId !== fetchedEvent.teamA) {
+                        teamOptionsB += `<option value="${team.teamId}" ${team.teamId === fetchedEvent.teamB ? 'selected' : ''}>${team.teamName}</option>`;
+                    }
+                });
 
-                        Swal.fire({
-                            title: 'Edit Event',
-                            html: `
+                Swal.fire({
+                    title: 'Edit Event',
+                    html: `
                                 <input type="hidden" id="event-id" value="${fetchedEvent.id}">
                                 <input type="hidden" id="day-id" value="${fetchedEvent.day_id}">
 
@@ -937,30 +965,30 @@ usort($scheduled_days, function ($a, $b) {
                                 <select id="edit-event-sports" class="swal2-input3" style="display: none;" required>
                                     <option value="${fetchedEvent.activity}" selected disabled> ${fetchedEvent.activity}</option>
                                         <?php
-                                            $sql = "CALL sp_getEventFrom(?);";
-                                            $ev_type = "Sports";
+                                        $sql = "CALL sp_getEventFrom(?);";
+                                        $ev_type = "Sports";
 
-                                            $stmt = $conn->prepare($sql);
-                                            $stmt->bind_param("s", $ev_type);
-                                            $stmt->execute();
-                                            $result = $stmt->get_result();
+                                        $stmt = $conn->prepare($sql);
+                                        $stmt->bind_param("s", $ev_type);
+                                        $stmt->execute();
+                                        $result = $stmt->get_result();
 
-                                            if ($result->num_rows > 0) {
-                                                while ($row = $result->fetch_assoc()) {
-                                                    $db_eventId = $row['eventID'];
-                                                    $db_evname = $row['eventName'];
-                                                    ?>
+                                        if ($result->num_rows > 0) {
+                                            while ($row = $result->fetch_assoc()) {
+                                                $db_eventId = $row['eventID'];
+                                                $db_evname = $row['eventName'];
+                                        ?>
                                                         <option value="<?php echo $db_eventId; ?>" data-event-name="<?php echo htmlspecialchars($db_evname); ?>">
                                                             <?php echo htmlspecialchars($db_evname); ?>
                                                         </option>
                                                             <?php
-                                                            }
-                                                        } else {
-                                                            echo '<option selected disabled value=0>No Event/s exist.</option>';
                                                         }
-                                                        $result->free();
-                                                        $stmt->close();
-                                                                ?>
+                                                    } else {
+                                                        echo '<option selected disabled value=0>No Event/s exist.</option>';
+                                                    }
+                                                    $result->free();
+                                                    $stmt->close();
+                                                            ?>
                                                 </select>
                                                 <select id="edit-event-socio" class="swal2-input3" style="display: none;" required>
                                                     <option value="${fetchedEvent.activity}" selected disabled> ${fetchedEvent.activity}</option>
@@ -1006,207 +1034,207 @@ usort($scheduled_days, function ($a, $b) {
                                                     <option value="Moved" ${fetchedEvent.status === 'Moved' ? 'selected' : ''}>Moved</option>
                                                 </select>
                                             `,
-                                                didOpen: () => {
-                                                    const categorySelect = document.getElementById('edit-event-category');
-                                                    const eventSportsSelect = document.getElementById('edit-event-sports');
-                                                    const eventSocioSelect = document.getElementById('edit-event-socio');
-                                                    const activityOthersInput = document.getElementById('edit-event-activity-others');
-                                                    const gameNoInput = document.getElementById('edit-game-no');
+                    didOpen: () => {
+                        const categorySelect = document.getElementById('edit-event-category');
+                        const eventSportsSelect = document.getElementById('edit-event-sports');
+                        const eventSocioSelect = document.getElementById('edit-event-socio');
+                        const activityOthersInput = document.getElementById('edit-event-activity-others');
+                        const gameNoInput = document.getElementById('edit-game-no');
 
-                                                    function toggleGameFields(category) {
-                                                        const teamAField = document.getElementById('edit-team-a');
-                                                        const teamBField = document.getElementById('edit-team-b');
+                        function toggleGameFields(category) {
+                            const teamAField = document.getElementById('edit-team-a');
+                            const teamBField = document.getElementById('edit-team-b');
 
-                                                        // filter team B based on the selected team A
-                                                        function filterTeamBOptions(selectedTeamA) {
-                                                            // re-populate team B options based on team A
-                                                            teamBField.innerHTML = '<option value="" disabled>Team B</option>';
-                                                            teams.forEach(team => {
-                                                                if (team.teamId !== selectedTeamA) {
-                                                                    const newOption = document.createElement('option');
-                                                                    newOption.value = team.teamId;
-                                                                    newOption.textContent = team.teamName;
-                                                                    teamBField.appendChild(newOption);
-                                                                }
-                                                            });
+                            // filter team B based on the selected team A
+                            function filterTeamBOptions(selectedTeamA) {
+                                // re-populate team B options based on team A
+                                teamBField.innerHTML = '<option value="" disabled>Team B</option>';
+                                teams.forEach(team => {
+                                    if (team.teamId !== selectedTeamA) {
+                                        const newOption = document.createElement('option');
+                                        newOption.value = team.teamId;
+                                        newOption.textContent = team.teamName;
+                                        teamBField.appendChild(newOption);
+                                    }
+                                });
 
-                                                            if (fetchedEvent.teamB) {
-                                                                teamBField.value = fetchedEvent.teamB;
-                                                            }
-                                                        }
+                                if (fetchedEvent.teamB) {
+                                    teamBField.value = fetchedEvent.teamB;
+                                }
+                            }
 
-                                                        filterTeamBOptions(fetchedEvent.teamA);
+                            filterTeamBOptions(fetchedEvent.teamA);
 
-                                                        teamAField.addEventListener('change', () => {
-                                                            filterTeamBOptions(teamAField.value);
-                                                        });
+                            teamAField.addEventListener('change', () => {
+                                filterTeamBOptions(teamAField.value);
+                            });
 
-                                                        gameNoInput.style.display = 'none';
-                                                        teamAField.style.display = 'none';
-                                                        teamBField.style.display = 'none';
-                                                        activityOthersInput.style.display = 'none';
-                                                        eventSportsSelect.style.display = 'none';
-                                                        eventSocioSelect.style.display = 'none';
+                            gameNoInput.style.display = 'none';
+                            teamAField.style.display = 'none';
+                            teamBField.style.display = 'none';
+                            activityOthersInput.style.display = 'none';
+                            eventSportsSelect.style.display = 'none';
+                            eventSocioSelect.style.display = 'none';
 
-                                                        if (category === 'sports') {
-                                                            activityOthersInput.style.display = 'none';
-                                                            gameNoInput.style.display = 'block';
-                                                            teamAField.style.display = 'block';
-                                                            teamBField.style.display = 'block';
-                                                            eventSportsSelect.style.display = 'block';
+                            if (category === 'sports') {
+                                activityOthersInput.style.display = 'none';
+                                gameNoInput.style.display = 'block';
+                                teamAField.style.display = 'block';
+                                teamBField.style.display = 'block';
+                                eventSportsSelect.style.display = 'block';
 
-                                                            //if changed type
-                                                            activityOthersInput.value = '';
-                                                            const socioDropdown = document.getElementById('edit-event-socio');
-                                                            socioDropdown.selectedIndex = -1;
-                                                        } else if (category === 'socio-cultural') {
-                                                            activityOthersInput.style.display = 'none';
-                                                            eventSocioSelect.style.display = 'block';
+                                //if changed type
+                                activityOthersInput.value = '';
+                                const socioDropdown = document.getElementById('edit-event-socio');
+                                socioDropdown.selectedIndex = -1;
+                            } else if (category === 'socio-cultural') {
+                                activityOthersInput.style.display = 'none';
+                                eventSocioSelect.style.display = 'block';
 
-                                                            //if changed type
-                                                            activityOthersInput.value = '';
-                                                            const sportsDropdown = document.getElementById('edit-event-sports');
-                                                            sportsDropdown.selectedIndex = -1;
-                                                        } else if (category === 'others') {
-                                                            activityOthersInput.style.display = 'block';
+                                //if changed type
+                                activityOthersInput.value = '';
+                                const sportsDropdown = document.getElementById('edit-event-sports');
+                                sportsDropdown.selectedIndex = -1;
+                            } else if (category === 'others') {
+                                activityOthersInput.style.display = 'block';
 
-                                                            //if changed type
-                                                            const socioDropdown = document.getElementById('edit-event-socio');
-                                                            socioDropdown.selectedIndex = -1;
-                                                            const sportsDropdown = document.getElementById('edit-event-sports');
-                                                            sportsDropdown.selectedIndex = -1;
-                                                        }
-                                                    }
+                                //if changed type
+                                const socioDropdown = document.getElementById('edit-event-socio');
+                                socioDropdown.selectedIndex = -1;
+                                const sportsDropdown = document.getElementById('edit-event-sports');
+                                sportsDropdown.selectedIndex = -1;
+                            }
+                        }
 
-                                                    toggleGameFields(fetchedEvent.type.toLowerCase());
+                        toggleGameFields(fetchedEvent.type.toLowerCase());
 
-                                                    categorySelect.addEventListener('change', function() {
-                                                        toggleGameFields(this.value.toLowerCase());
-                                                    });
+                        categorySelect.addEventListener('change', function() {
+                            toggleGameFields(this.value.toLowerCase());
+                        });
 
-                                                    document.getElementById('edit-team-a').addEventListener('change', function() {
-                                                        const selectedTeamA = this.value;
-                                                        const teamB = document.getElementById('edit-team-b');
+                        document.getElementById('edit-team-a').addEventListener('change', function() {
+                            const selectedTeamA = this.value;
+                            const teamB = document.getElementById('edit-team-b');
 
-                                                        teamB.style.display = 'block';
+                            teamB.style.display = 'block';
 
-                                                        teamB.innerHTML = '<option value="" disabled selected>Team B</option>';
+                            teamB.innerHTML = '<option value="" disabled selected>Team B</option>';
 
-                                                        const teamAOptions = document.querySelectorAll('#edit-team-a option');
+                            const teamAOptions = document.querySelectorAll('#edit-team-a option');
 
-                                                        teamAOptions.forEach(option => {
-                                                            if (option.value && option.value !== selectedTeamA) {
-                                                                const newOption = document.createElement('option');
-                                                                newOption.value = option.value;
-                                                                newOption.textContent = option.textContent;
-                                                                teamB.appendChild(newOption);
-                                                            }
-                                                        });
-                                                    });
-                                                },
-                                                confirmButtonText: 'Save',
-                                                showCancelButton: true,
-                                                preConfirm: () => {
-                                                    const eventId = document.getElementById('event-id').value;
-                                                    const dayId = document.getElementById('day-id').value;
-                                                    const time24 = document.getElementById('edit-time').value;
-                                                    const type = document.getElementById('edit-event-category').value;
-                                                    let activity;
-                                                    
-                                                    const sportsElement = document.getElementById('edit-event-sports');
-                                                    const socioElement = document.getElementById('edit-event-socio');
-                                                    const othersElement = document.getElementById('edit-event-activity-others');
+                            teamAOptions.forEach(option => {
+                                if (option.value && option.value !== selectedTeamA) {
+                                    const newOption = document.createElement('option');
+                                    newOption.value = option.value;
+                                    newOption.textContent = option.textContent;
+                                    teamB.appendChild(newOption);
+                                }
+                            });
+                        });
+                    },
+                    confirmButtonText: 'Save',
+                    showCancelButton: true,
+                    preConfirm: () => {
+                        const eventId = document.getElementById('event-id').value;
+                        const dayId = document.getElementById('day-id').value;
+                        const time24 = document.getElementById('edit-time').value;
+                        const type = document.getElementById('edit-event-category').value;
+                        let activity;
 
-                                                    if (sportsElement.style.display !== 'none') {
-                                                        activity = sportsElement.options[sportsElement.selectedIndex].text;
-                                                    } else if (socioElement.style.display !== 'none') {
-                                                        activity = socioElement.options[socioElement.selectedIndex].text;
-                                                    } else if (othersElement.style.display !== 'none') {
-                                                        activity = othersElement.value;
-                                                    } else {
-                                                        activity = '';
-                                                    }
-                                                    const gameNo = document.getElementById('edit-game-no').value || null;
-                                                    const teamA = document.getElementById('edit-team-a').value || null;
-                                                    const teamB = document.getElementById('edit-team-b').value || null;
-                                                    const location = document.getElementById('edit-location').value
-                                                        .toLowerCase()
-                                                        .replace(/\b\w/g, char => char.toUpperCase());
-                                                    const status = document.getElementById('edit-status').value;
+                        const sportsElement = document.getElementById('edit-event-sports');
+                        const socioElement = document.getElementById('edit-event-socio');
+                        const othersElement = document.getElementById('edit-event-activity-others');
 
-                                                    console.log('Event:', eventId);
-                                                    console.log('Day:', dayId);
-                                                    console.log('Time:', time24);
-                                                    console.log('Type:', type);
-                                                    console.log('Activity:', activity);
-                                                    console.log('Game Number:', gameNo);
-                                                    console.log('Team A:', teamA);
-                                                    console.log('Team B:', teamB);
-                                                    console.log('Location:', location);
-                                                    console.log('Status:', status);
+                        if (sportsElement.style.display !== 'none') {
+                            activity = sportsElement.options[sportsElement.selectedIndex].text;
+                        } else if (socioElement.style.display !== 'none') {
+                            activity = socioElement.options[socioElement.selectedIndex].text;
+                        } else if (othersElement.style.display !== 'none') {
+                            activity = othersElement.value;
+                        } else {
+                            activity = '';
+                        }
+                        const gameNo = document.getElementById('edit-game-no').value || null;
+                        const teamA = document.getElementById('edit-team-a').value || null;
+                        const teamB = document.getElementById('edit-team-b').value || null;
+                        const location = document.getElementById('edit-location').value
+                            .toLowerCase()
+                            .replace(/\b\w/g, char => char.toUpperCase());
+                        const status = document.getElementById('edit-status').value;
 
-                                                    return {
-                                                        eventId,
-                                                        dayId,
-                                                        time: time24,
-                                                        type,
-                                                        activity,
-                                                        gameNo,
-                                                        teamA,
-                                                        teamB,
-                                                        location,
-                                                        status
-                                                    };
-                                                }
-                                            }).then((result) => {
-                                                if (result.isConfirmed) {
-                                                    const {
-                                                        eventId,
-                                                        dayId,
-                                                        time,
-                                                        type,
-                                                        activity,
-                                                        gameNo,
-                                                        teamA,
-                                                        teamB,
-                                                        location,
-                                                        status
-                                                    } = result.value;
+                        console.log('Event:', eventId);
+                        console.log('Day:', dayId);
+                        console.log('Time:', time24);
+                        console.log('Type:', type);
+                        console.log('Activity:', activity);
+                        console.log('Game Number:', gameNo);
+                        console.log('Team A:', teamA);
+                        console.log('Team B:', teamB);
+                        console.log('Location:', location);
+                        console.log('Status:', status);
 
-                                                    console.log(result.value);
+                        return {
+                            eventId,
+                            dayId,
+                            time: time24,
+                            type,
+                            activity,
+                            gameNo,
+                            teamA,
+                            teamB,
+                            location,
+                            status
+                        };
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const {
+                            eventId,
+                            dayId,
+                            time,
+                            type,
+                            activity,
+                            gameNo,
+                            teamA,
+                            teamB,
+                            location,
+                            status
+                        } = result.value;
 
-                                                    const xhrUpdate = new XMLHttpRequest();
-                                                    xhrUpdate.open("POST", "edit_event.php", true);
-                                                    xhrUpdate.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                                                    xhrUpdate.onload = function() {
-                                                        console.log('Response:', xhrUpdate.responseText);
-                                                        if (xhrUpdate.status === 200) {
-                                                            const updateResponse = JSON.parse(xhrUpdate.responseText);
-                                                            console.log('Update Response:', updateResponse);
-                                                            if (updateResponse.success) {
-                                                                Swal.fire({
-                                                                    title: 'Success!',
-                                                                    text: 'Event updated successfully.',
-                                                                    icon: 'success'
-                                                                }).then(() => {
-                                                                    window.location.reload();
-                                                                });
-                                                            } else {
-                                                                console.error('Error:', updateResponse.message);
-                                                                Swal.fire({
-                                                                    title: 'Error!',
-                                                                    text: updateResponse.message,
-                                                                    icon: 'error'
-                                                                });
-                                                            }
-                                                        }
-                                                    };
-                                                    const params = `eventId=${encodeURIComponent(result.value.eventId)}&dayId=${encodeURIComponent(result.value.dayId)}&time=${encodeURIComponent(result.value.time)}&type=${encodeURIComponent(result.value.type)}&activity=${encodeURIComponent(result.value.activity)}&gameNo=${encodeURIComponent(result.value.gameNo || '')}&teamA=${encodeURIComponent(result.value.teamA || '')}&teamB=${encodeURIComponent(result.value.teamB || '')}&location=${encodeURIComponent(result.value.location)}&status=${encodeURIComponent(result.value.status)}`;
-                                                    console.log(params);
-                                                    xhrUpdate.send(params);
-                                                }
-                                            });
-                                        }
+                        console.log(result.value);
+
+                        const xhrUpdate = new XMLHttpRequest();
+                        xhrUpdate.open("POST", "edit_event.php", true);
+                        xhrUpdate.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                        xhrUpdate.onload = function() {
+                            console.log('Response:', xhrUpdate.responseText);
+                            if (xhrUpdate.status === 200) {
+                                const updateResponse = JSON.parse(xhrUpdate.responseText);
+                                console.log('Update Response:', updateResponse);
+                                if (updateResponse.success) {
+                                    Swal.fire({
+                                        title: 'Success!',
+                                        text: 'Event updated successfully.',
+                                        icon: 'success'
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    console.error('Error:', updateResponse.message);
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: updateResponse.message,
+                                        icon: 'error'
+                                    });
+                                }
+                            }
+                        };
+                        const params = `eventId=${encodeURIComponent(result.value.eventId)}&dayId=${encodeURIComponent(result.value.dayId)}&time=${encodeURIComponent(result.value.time)}&type=${encodeURIComponent(result.value.type)}&activity=${encodeURIComponent(result.value.activity)}&gameNo=${encodeURIComponent(result.value.gameNo || '')}&teamA=${encodeURIComponent(result.value.teamA || '')}&teamB=${encodeURIComponent(result.value.teamB || '')}&location=${encodeURIComponent(result.value.location)}&status=${encodeURIComponent(result.value.status)}`;
+                        console.log(params);
+                        xhrUpdate.send(params);
+                    }
+                });
+            }
 
 
 
@@ -1214,7 +1242,7 @@ usort($scheduled_days, function ($a, $b) {
             //edit date
             document.querySelectorAll('.editHeaderBtn').forEach(button => {
                 button.addEventListener('click', function() {
-                    const dayId = this.getAttribute('data-day-id'); 
+                    const dayId = this.getAttribute('data-day-id');
                     const dateDay = this.getAttribute('data-day-date');
 
                     Swal.fire({
@@ -1311,6 +1339,20 @@ usort($scheduled_days, function ($a, $b) {
                         const row = this.closest('tr');
                         const eventId = row.getAttribute('data-event-id');
 
+                        // Get the current date and compare it with the dayId
+                        const today = new Date();
+                        const selectedDate = new Date(eventId); // Assumes dayId is in a format that can be parsed by Date (e.g., 'YYYY-MM-DD')
+
+                        // Check if the selected date is in the past
+                        if (selectedDate < today.setHours(0, 0, 0, 0)) { // Sets today's time to midnight for an accurate comparison
+                            Swal.fire({
+                                title: 'Action Not Allowed',
+                                text: 'This event cannot be deleted as it has already passed',
+                                icon: 'error'
+                            });
+                            return;
+                        }
+
                         Swal.fire({
                             title: 'Are you sure?',
                             text: "You won't be able to revert this!",
@@ -1375,30 +1417,30 @@ usort($scheduled_days, function ($a, $b) {
                 }).then((result) => {
                     if (result.isConfirmed) {
                         fetch('../../backup.php', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded',
-                            },
-                            body: 'action=backup'
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // Download the data
-                                downloadBackup(data.file);
-                            } else {
-                                Swal.fire({
-                                    title: 'Error',
-                                    text: data.message,
-                                    icon: 'error',
-                                    confirmButtonColor: '#7FD278',
-                                    confirmButtonText: 'OK'
-                                })
-                            }
-                        })
-                        .catch(error => {
-                            console.log('Exception Error: '+error.message);
-                        })
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                },
+                                body: 'action=backup'
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // Download the data
+                                    downloadBackup(data.file);
+                                } else {
+                                    Swal.fire({
+                                        title: 'Error',
+                                        text: data.message,
+                                        icon: 'error',
+                                        confirmButtonColor: '#7FD278',
+                                        confirmButtonText: 'OK'
+                                    })
+                                }
+                            })
+                            .catch(error => {
+                                console.log('Exception Error: ' + error.message);
+                            })
                     }
                 });
             }
@@ -1435,7 +1477,7 @@ usort($scheduled_days, function ($a, $b) {
                         window.location.href = '../../index.html';
                     });
                 }, 1000);
-                
+
                 document.body.removeChild(form);
             }
             /* END BACKUP AND DROP - STARTING A NEW FOR THIS YEARS INTRAMURALS */

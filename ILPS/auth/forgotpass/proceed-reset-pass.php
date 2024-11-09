@@ -75,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
     <title>ILPS</title>
 
     <!--Web-logo-->
-    <link rel="icon" href="../../../public/assets/icons/logo-top-final.png">
+    <link rel="icon" href="../../public/assets/icons/logo-top-final.png">
 
     <!-- icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
