@@ -797,159 +797,163 @@ usort($scheduled_days, function ($a, $b) {
             });
 
             document.querySelectorAll('.edit-btn').forEach(function(button) {
-    button.addEventListener('click', function() {
-        const row = this.closest('tr');
-        const eventId = row.getAttribute('data-event-id');
-        
-        console.log("Event ID:", eventId);
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const eventId = row.getAttribute('data-event-id');
+                    
+                    console.log("Event ID:", eventId);
 
-        // Fetch existing scheduled event details
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", "get_existing_sched_events.php", true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                const response = JSON.parse(xhr.responseText);
-                if (response.success) {
-                    const fetchedEvent = response.event;
-                    const dayId = fetchedEvent.day_id;
+                    // fetch existing event
+                    const xhr = new XMLHttpRequest();
+                    xhr.open("POST", "get_existing_sched_events.php", true);
+                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            const response = JSON.parse(xhr.responseText);
+                            if (response.success) {
+                                const fetchedEvent = response.event;
+                                const dayId = fetchedEvent.day_id;
 
-                    console.log("Fetched Day ID:", dayId);
+                                console.log("Fetched Day ID:", dayId);
 
-                    // Check if the event date is in the past
-                    const xhrDateCheck = new XMLHttpRequest();
-                    xhrDateCheck.open("POST", "check_event_date.php", true);
-                    xhrDateCheck.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                    xhrDateCheck.onload = function() {
-                        if (xhrDateCheck.status === 200) {
-                            const dateResponse = JSON.parse(xhrDateCheck.responseText);
+                                // check if  event date is past
+                                const xhrDateCheck = new XMLHttpRequest();
+                                xhrDateCheck.open("POST", "check_event_date.php", true);
+                                xhrDateCheck.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                                xhrDateCheck.onload = function() {
+                                    if (xhrDateCheck.status === 200) {
+                                        const dateResponse = JSON.parse(xhrDateCheck.responseText);
 
-                            console.log("Event Date:", dateResponse.debug?.eventDate);
-                            console.log("Current Date:", dateResponse.debug?.currentDate);
+                                        console.log("Event Date:", dateResponse.debug?.eventDate);
+                                        console.log("Current Date:", dateResponse.debug?.currentDate);
 
-                            // If the event is not editable (past date), update status to "Ended"
-                            if (!dateResponse.success || !dateResponse.editable) {
-                                console.log("The event date is past; updating status to 'Ended'.");
+                                        // f the event is (past date, update status to "Ended"
+                                        if (!dateResponse.success || !dateResponse.editable) {
+                                            console.log("The event date is past; updating status to 'Ended'.");
 
-                                Swal.fire({
-                                    icon: 'info',
-                                    title: 'Event Not Editable',
-                                    text: 'This event is no longer editable as it has already passed.',
-                                    confirmButtonText: 'Okay'
-                                }).then(() => {
-                                                window.location.reload();
-                                            });
+                                            Swal.fire({
+                                                icon: 'info',
+                                                title: 'Event Not Editable',
+                                                text: 'This event is no longer editable as it has already passed.',
+                                                confirmButtonText: 'Okay'
+                                            }).then(() => {
+                                                            window.location.reload();
+                                                        });
 
-                                const xhrUpdateStatus = new XMLHttpRequest();
-                                xhrUpdateStatus.open("POST", "update_event_status.php", true);
-                                xhrUpdateStatus.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                                xhrUpdateStatus.onload = function() {
-                                    if (xhrUpdateStatus.status === 200) {
-                                        const updateResponse = JSON.parse(xhrUpdateStatus.responseText);
-                                        console.log(updateResponse.message);
+                                            const xhrUpdateStatus = new XMLHttpRequest();
+                                            xhrUpdateStatus.open("POST", "update_event_status.php", true);
+                                            xhrUpdateStatus.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                                            xhrUpdateStatus.onload = function() {
+                                                if (xhrUpdateStatus.status === 200) {
+                                                    const updateResponse = JSON.parse(xhrUpdateStatus.responseText);
+                                                    console.log(updateResponse.message);
+                                                }
+                                            };
+                                            xhrUpdateStatus.send("day_id=" + encodeURIComponent(dayId));
+                                            return;
+                                        } else {
+                                            console.log("The event date has not yet passed; proceeding to edit.");
+                                        }
+
+                                        console.log('Event type fetched from database:', fetchedEvent.type);
+
+                                        // Set category options based on fetched event type
+                                        let categoryOptions = '';
+                                        if (fetchedEvent.type === 'Socio-Cultural') {
+                                            categoryOptions = `
+                                                <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
+                                                <option value="sports">Sports</option>
+                                                <option value="others">Others</option>
+                                            `;
+                                        } else if (fetchedEvent.type === 'Sports') {
+                                            categoryOptions = `
+                                                <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
+                                                <option value="Socio-Cultural">Socio-Cultural</option>
+                                                <option value="others">Others</option>
+                                            `;
+                                        } else {
+                                            categoryOptions = `
+                                                <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
+                                                <option value="Socio-Cultural">Socio-Cultural</option>
+                                                <option value="sports">Sports</option>
+                                            `;
+                                        }
+
+                                        // If event type is "Others," no need to fetch teams
+                                        if (fetchedEvent.type === 'Others') {
+                                            showEditEventModal(fetchedEvent, categoryOptions, []); // No teams needed
+                                            return;
+                                        }
+
+                                        const xhrTeams = new XMLHttpRequest();
+                                        xhrTeams.open("POST", "get_teamsForSched.php", true);
+                                        xhrTeams.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                                        xhrTeams.onload = function() {
+                                            if (xhrTeams.status === 200) {
+                                                const teamResponse = JSON.parse(xhrTeams.responseText);
+                                                const teams = teamResponse.success ? teamResponse.teams : [];
+                                                showEditEventModal(fetchedEvent, categoryOptions, teams);
+                                            }
+                                        };
+                                        xhrTeams.send("event_id=" + encodeURIComponent(eventId));
                                     }
                                 };
-                                xhrUpdateStatus.send("day_id=" + encodeURIComponent(dayId));
-                                return;
-                            } else {
-                                console.log("The event date has not yet passed; proceeding to edit.");
+                                xhrDateCheck.send("day_id=" + encodeURIComponent(dayId));
                             }
-
-                            // Proceed to fetch category options and teams if date is editable
-                            console.log('Event type fetched from database:', fetchedEvent.type);
-
-                            // Set category options based on fetched event type
-                            let categoryOptions = '';
-                            if (fetchedEvent.type === 'Socio-Cultural') {
-                                categoryOptions = `
-                                    <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
-                                    <option value="sports">Sports</option>
-                                    <option value="others">Others</option>
-                                `;
-                            } else if (fetchedEvent.type === 'Sports') {
-                                categoryOptions = `
-                                    <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
-                                    <option value="Socio-Cultural">Socio-Cultural</option>
-                                    <option value="others">Others</option>
-                                `;
-                            } else {
-                                categoryOptions = `
-                                    <option value="${fetchedEvent.type}">${fetchedEvent.type}</option>
-                                    <option value="Socio-Cultural">Socio-Cultural</option>
-                                    <option value="sports">Sports</option>
-                                `;
-                            }
-
-                            // If event type is "Others," no need to fetch teams
-                            if (fetchedEvent.type === 'Others') {
-                                showEditEventModal(fetchedEvent, categoryOptions, []); // No teams needed
-                                return;
-                            }
-
-                            // Fetch teams for event types other than "Others"
-                            const xhrTeams = new XMLHttpRequest();
-                            xhrTeams.open("POST", "get_teamsForSched.php", true);
-                            xhrTeams.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                            xhrTeams.onload = function() {
-                                if (xhrTeams.status === 200) {
-                                    const teamResponse = JSON.parse(xhrTeams.responseText);
-                                    const teams = teamResponse.success ? teamResponse.teams : [];
-                                    showEditEventModal(fetchedEvent, categoryOptions, teams);
-                                }
-                            };
-                            xhrTeams.send("event_id=" + encodeURIComponent(eventId));
                         }
                     };
-                    xhrDateCheck.send("day_id=" + encodeURIComponent(dayId));
-                }
-            }
-        };
-        xhr.send("event_id=" + encodeURIComponent(eventId));
-    });
-});
+                    xhr.send("event_id=" + encodeURIComponent(eventId));
+                });
+            });
 
 
 
             // modal connected to edit
             function showEditEventModal(fetchedEvent, categoryOptions, teams, ) {
                 let teamOptionsA = '<option value="" disabled selected>Team A</option>';
-                                            let teamOptionsB = '<option value="" disabled selected>Team B</option>';
+                let teamOptionsB = '<option value="" disabled selected>Team B</option>';
 
-                                            teams.forEach(team => {
-                                                teamOptionsA += `<option value="${team.teamId}" ${team.teamId === fetchedEvent.teamA ? 'selected' : ''}>${team.teamName}</option>`;
-                                                teamOptionsB += `<option value="${team.teamId}" ${team.teamId === fetchedEvent.teamB ? 'selected' : ''}>${team.teamName}</option>`;
-                                            });
+                    teams.forEach(team => {
+                        teamOptionsA += `<option value="${team.teamId}" ${team.teamId === fetchedEvent.teamA ? 'selected' : ''}>${team.teamName}</option>`;
+                    });
 
-                                            Swal.fire({
-                                                title: 'Edit Event',
-                                                html: `
-                                                <input type="hidden" id="event-id" value="${fetchedEvent.id}">
-                                                <input type="hidden" id="day-id" value="${fetchedEvent.day_id}">
+                    // Filter Team B options based on Team A
+                    teams.forEach(team => {
+                        if (team.teamId !== fetchedEvent.teamA) {
+                            teamOptionsB += `<option value="${team.teamId}" ${team.teamId === fetchedEvent.teamB ? 'selected' : ''}>${team.teamName}</option>`;
+                        }
+                    });
 
-                                                <input id="edit-time" class="swal2-input1" type="time" value="${fetchedEvent.time}">
-                                                <select id="edit-event-category" class="swal2-input3">
-                                                    ${categoryOptions}
-                                                </select>
-                                                <select id="edit-event-sports" class="swal2-input3" style="display: none;" required>
-                                                    <option value="${fetchedEvent.activity}" selected disabled> ${fetchedEvent.activity}</option>
-                                                    <?php
-                                                    $sql = "CALL sp_getEventFrom(?);";
-                                                    $ev_type = "Sports";
+                        Swal.fire({
+                            title: 'Edit Event',
+                            html: `
+                                <input type="hidden" id="event-id" value="${fetchedEvent.id}">
+                                <input type="hidden" id="day-id" value="${fetchedEvent.day_id}">
 
-                                                    $stmt = $conn->prepare($sql);
-                                                    $stmt->bind_param("s", $ev_type);
-                                                    $stmt->execute();
-                                                    $result = $stmt->get_result();
+                                <input id="edit-time" class="swal2-input1" type="time" value="${fetchedEvent.time}">
+                                <select id="edit-event-category" class="swal2-input3">
+                                    ${categoryOptions}
+                                </select>
+                                <select id="edit-event-sports" class="swal2-input3" style="display: none;" required>
+                                    <option value="${fetchedEvent.activity}" selected disabled> ${fetchedEvent.activity}</option>
+                                        <?php
+                                            $sql = "CALL sp_getEventFrom(?);";
+                                            $ev_type = "Sports";
 
-                                                    if ($result->num_rows > 0) {
-                                                        while ($row = $result->fetch_assoc()) {
-                                                            $db_eventId = $row['eventID'];
-                                                            $db_evname = $row['eventName'];
+                                            $stmt = $conn->prepare($sql);
+                                            $stmt->bind_param("s", $ev_type);
+                                            $stmt->execute();
+                                            $result = $stmt->get_result();
+
+                                            if ($result->num_rows > 0) {
+                                                while ($row = $result->fetch_assoc()) {
+                                                    $db_eventId = $row['eventID'];
+                                                    $db_evname = $row['eventName'];
                                                     ?>
-                                                                <option value="<?php echo $db_eventId; ?>" data-event-name="<?php echo htmlspecialchars($db_evname); ?>">
-                                                                    <?php echo htmlspecialchars($db_evname); ?>
-                                                                </option>
-                                                                <?php
+                                                        <option value="<?php echo $db_eventId; ?>" data-event-name="<?php echo htmlspecialchars($db_evname); ?>">
+                                                            <?php echo htmlspecialchars($db_evname); ?>
+                                                        </option>
+                                                            <?php
                                                             }
                                                         } else {
                                                             echo '<option selected disabled value=0>No Event/s exist.</option>';
@@ -1013,6 +1017,29 @@ usort($scheduled_days, function ($a, $b) {
                                                         const teamAField = document.getElementById('edit-team-a');
                                                         const teamBField = document.getElementById('edit-team-b');
 
+                                                        // filter team B based on the selected team A
+                                                        function filterTeamBOptions(selectedTeamA) {
+                                                            // re-populate team B options based on team A
+                                                            teamBField.innerHTML = '<option value="" disabled>Team B</option>';
+                                                            teams.forEach(team => {
+                                                                if (team.teamId !== selectedTeamA) {
+                                                                    const newOption = document.createElement('option');
+                                                                    newOption.value = team.teamId;
+                                                                    newOption.textContent = team.teamName;
+                                                                    teamBField.appendChild(newOption);
+                                                                }
+                                                            });
+
+                                                            if (fetchedEvent.teamB) {
+                                                                teamBField.value = fetchedEvent.teamB;
+                                                            }
+                                                        }
+
+                                                        filterTeamBOptions(fetchedEvent.teamA);
+
+                                                        teamAField.addEventListener('change', () => {
+                                                            filterTeamBOptions(teamAField.value);
+                                                        });
 
                                                         gameNoInput.style.display = 'none';
                                                         teamAField.style.display = 'none';

@@ -16,7 +16,6 @@
     }
 
     try {
-        // Retrieve the event date for the specified day ID
         $query = "SELECT * FROM scheduled_days WHERE id = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("i", $dayID);
@@ -28,28 +27,16 @@
             $eventDate = new DateTime($row['day_date']);
             $currentDate = new DateTime();
 
-            error_log("Event Date: " . $eventDate->format('Y-m-d'));
-            error_log("Current Date: " . $currentDate->format('Y-m-d'));
+            $isEditable = ($eventDate->format('Y-m-d') >= $currentDate->format('Y-m-d'));
 
-            if ($eventDate < $currentDate) {
-                echo json_encode([
-                    'success' => true,
-                    'editable' => false,
-                    'debug' => [
-                        'eventDate' => $eventDate->format('Y-m-d'),
-                        'currentDate' => $currentDate->format('Y-m-d')
-                    ]
-                ]);
-            } else {
-                echo json_encode([
-                    'success' => true,
-                    'editable' => true,
-                    'debug' => [
-                        'eventDate' => $eventDate->format('Y-m-d'),
-                        'currentDate' => $currentDate->format('Y-m-d')
-                    ]
-                ]);
-            }
+            echo json_encode([
+                'success' => true,
+                'editable' => $isEditable,
+                'debug' => [
+                    'eventDate' => $eventDate->format('Y-m-d'),
+                    'currentDate' => $currentDate->format('Y-m-d')
+                ]
+            ]);
         } else {
             echo json_encode(['success' => false, 'message' => 'No date found for the specified day ID.']);
         }
