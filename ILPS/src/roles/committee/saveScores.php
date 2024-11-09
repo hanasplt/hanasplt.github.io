@@ -5,9 +5,12 @@ require_once '../../../config/db.php';
 require_once '../admin/verifyLoginSession.php';
 require_once 'committeePermissions.php';
 
+$accId = $_SESSION['userId'];
+
 
 // Function to insert or update sub_results
-function insertOrUpdateSubResult($conn, $evId, $contestantId, $personnelId, $totalScore) {
+function insertOrUpdateSubResult($conn, $evId, $contestantId, $accId, $totalScore)
+{
     // Check if the sub_result already exists
     $checkQuery = "SELECT * FROM sub_results WHERE eventId = ? AND contestantId = ?";
     $checkStmt = $conn->prepare($checkQuery);
@@ -19,7 +22,7 @@ function insertOrUpdateSubResult($conn, $evId, $contestantId, $personnelId, $tot
         // Insert new sub_result
         $insertQuery = "INSERT INTO sub_results (eventId, contestantId, personnelId, total_score) VALUES (?, ?, ?, ?)";
         $insertStmt = $conn->prepare($insertQuery);
-        $insertStmt->bind_param("iiid", $evId, $contestantId, $personnelId, $totalScore);
+        $insertStmt->bind_param("iiid", $evId, $contestantId, $accId, $totalScore);
         $success = $insertStmt->execute();
         $insertStmt->close();
 
@@ -32,6 +35,30 @@ function insertOrUpdateSubResult($conn, $evId, $contestantId, $personnelId, $tot
             $updateSuccess = $updateStatusStmt->execute();
             $updateStatusStmt->close();
 
+            // Fetch team names with their contId
+            $query_teams = "SELECT vt.teamId, vt.teamName, ve.contId FROM vw_eventparti ve INNER JOIN vw_teams vt ON ve.teamId = vt.teamId;";
+            $result_teams = $conn->query($query_teams);
+
+            $teams = [];
+            if ($result_teams->num_rows > 0) {
+                while ($row_team = $result_teams->fetch_assoc()) {
+                    $teams[$row_team['contId']] = $row_team['teamName']; // Use contId as the key
+                }
+            }
+
+            // Initialize a specific teamName by contId
+            $contId = $contestantId; // Assuming $contestantId is defined and holds the desired contId
+            $teamName = $teams[$contId] ?? 'Unknown'; // 'Unknown' if contId not found
+
+            // Insert in the logs
+            $action = "Scores Inserted for Team $teamName in the $evname.";
+            $insertLogAct = "CALL sp_insertLog(?, ?)";
+            $stmt = $conn->prepare($insertLogAct);
+            $stmt->bind_param("is", $accId, $action);
+            $stmt->execute();
+            $stmt->close();
+
+
             return [
                 'success' => true,
                 'message' => "Score for contestant ID $contestantId has been inserted successfully.",
@@ -41,12 +68,38 @@ function insertOrUpdateSubResult($conn, $evId, $contestantId, $personnelId, $tot
             return ['success' => false, 'message' => "Error inserting score for contestant ID $contestantId."];
         }
     } else {
+        $evname = isset($_GET['name']) ? $_GET['name'] : '';
         // Update existing sub_result
         $updateQuery = "UPDATE sub_results SET total_score = ? WHERE eventId = ? AND contestantId = ?";
         $updateStmt = $conn->prepare($updateQuery);
         $updateStmt->bind_param("dii", $totalScore, $evId, $contestantId);
         $success = $updateStmt->execute();
         $updateStmt->close();
+
+
+        // Fetch team names with their contId
+        $query_teams = "SELECT vt.teamId, vt.teamName, ve.contId FROM vw_eventparti ve INNER JOIN vw_teams vt ON ve.teamId = vt.teamId;";
+        $result_teams = $conn->query($query_teams);
+
+        $teams = [];
+        if ($result_teams->num_rows > 0) {
+            while ($row_team = $result_teams->fetch_assoc()) {
+                $teams[$row_team['contId']] = $row_team['teamName']; // Use contId as the key
+            }
+        }
+
+        // Initialize a specific teamName by contId
+        $contId = $contestantId; // Assuming $contestantId is defined and holds the desired contId
+        $teamName = $teams[$contId] ?? 'Unknown'; // 'Unknown' if contId not found
+
+
+        // Insert in the logs
+        $action = "Scores Updated for Team $teamName in the $evname.";
+        $insertLogAct = "CALL sp_insertLog(?, ?)";
+        $stmt = $conn->prepare($insertLogAct);
+        $stmt->bind_param("is", $accId, $action);
+        $stmt->execute();
+        $stmt->close();
 
         return [
             'success' => $success,
@@ -64,7 +117,6 @@ if ($data) {
     // Extract data
     $eventId = $data['eventId'];
     $scores = $data['scores'];
-    $personnelId = $_SESSION['userId'];
 
     $responses = [];
 
@@ -86,7 +138,7 @@ if ($data) {
         }
 
         // Insert or update sub_result
-        $responses[] = insertOrUpdateSubResult($conn, $eventId, $contestantId, $personnelId, $score);
+        $responses[] = insertOrUpdateSubResult($conn, $eventId, $contestantId, $accId, $score);
     }
 
     // Return JSON-encoded response to JavaScript
@@ -94,5 +146,3 @@ if ($data) {
 } else {
     echo json_encode(['success' => false, 'message' => "No valid data received."]);
 }
-
-?>
