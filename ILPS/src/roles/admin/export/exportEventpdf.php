@@ -1,6 +1,7 @@
 <?php
-	require_once '../../../../resources/dompdf/autoload.inc.php';
-	use Dompdf\Dompdf;
+	require '../../../../vendor/autoload.php';
+    use Dompdf\Dompdf;
+    use Dompdf\Options;
 
 	date_default_timezone_set('Asia/Manila');
 
@@ -11,6 +12,8 @@
     $output = ''; // Initialize variable for compiling data output
 	$dt_exported = date("Y-m-d H:i:s"); // Extend as file name
     $year = date("Y"); // For display purposes, Academic Year
+
+    $imagePath = 'useologo.png'; //relative path
 
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['xp_eventId'])) {
 		$evid = $_POST['xp_eventId'];
@@ -38,9 +41,33 @@
                         * {
                             font-family: Arial, Helvetica, sans-serif;
                         }
+                        .usep-logo {
+                            width: 110px;
+                        }
+                        .usep-name {
+                            font-family: Old English Text MT;
+                            font-weight: normal;
+                            font-size: 20px;
+                        }
+                        i {
+                            font-family: Times New Roman;
+                            font-size: 18px;
+                        }
+                        th, td, b, h4 {
+                            font-size: 15px;
+                        }
+                        h4 {
+                            text-decoration: underline;
+                        }
                     </style>
                     <p align="center">
-                        <b style="font-size: 30px;">'.$eventname.'</b></br>
+                        <img class="usep-logo" src="'.$imagePath.'"></br>
+                        <b class="usep-name">
+                            University of Southeastern Philippines</br>
+                            <i>Office of the Student Affairs and Services</br>
+                            Tagum-Mabini Campus</i></br></br>
+                        </b>
+                        <b>'.$eventname.'</b></br>
                         '.$row['eventType'].' - '.$row['eventCategory'].'</br>
                         (A.Y. '.$year.'-'.($year+1).')
                     </p>
@@ -156,7 +183,7 @@
                         <h4 align="left">Contestants</h4>
                         <table style="width: 100%; border-collapse: collapse;">
                                 <tr>
-                                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left; width: 50px;">Contestant No.</th>
+                                    <th style="border: 1px solid #ddd; padding: 8px; text-align: left; width: 20%;">Contestant No.</th>
                                     <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Name</th>
                                 </tr>
                     ';
@@ -204,7 +231,6 @@
                         <h4 align="left">Judges</h4>
                         <table style="width: 100%; border-collapse: collapse;">
                             <tr>
-                                <th style="border: 1px solid #ddd; padding: 8px; text-align: left; width: 50px;">No.</th>
                                 <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Name</th>
                             </tr>
                     ';
@@ -216,7 +242,6 @@
                             // Populate Table
                             $output .= '
                                 <tr>
-                                    <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">'.$count++.'</td>
                                     <td style="border: 1px solid #ddd; padding: 8px; text-align: left;">'
                                         .$row['firstName'].' '.$row['lastName'].
                                     '</td>
@@ -287,10 +312,13 @@
         } 
 	}
 
-	$dompdf = new DOMPDF();
+    $options = new Options();
+    $options->setChroot(__DIR__);
+
+	$dompdf = new DOMPDF($options);
 	$dompdf->loadHtml($output);
 	$dompdf->setPaper("A4", "Portrait");
 	$dompdf->render();
-	$dompdf->stream("ILPS-Event".$eventname." [".$dt_exported."].pdf");
+	$dompdf->stream("ILPS_-".$dt_exported.".pdf");
 	
 ?>
