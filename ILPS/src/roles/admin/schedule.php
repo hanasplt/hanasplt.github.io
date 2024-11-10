@@ -246,7 +246,7 @@ usort($scheduled_days, function ($a, $b) {
                                                         <?php }
                                                         // Display delete button - permitted to delete
                                                         if (in_array('scheduledEvent_delete', $admin_rights)) { ?>
-                                                            <button class="delete-btn"><i class="fa-solid fa-trash-can"></i></button>
+                                                            <button class="delete-btn" data-day-id="<?php echo $day['id']; ?>"><i class="fa-solid fa-trash-can"></i></button>
                                                         <?php } ?>
                                                     </td>
                                                 </tr>
@@ -421,19 +421,35 @@ usort($scheduled_days, function ($a, $b) {
                     const dayId = this.getAttribute('data-day-id');
                     const dayDate = this.getAttribute('data-day-date');
 
-                    // Get the current date and compare it with the dayId
-                    const today = new Date();
-                    const selectedDate = new Date(dayId);
+                    console.log("Event ID:", dayId);
+                    // check if  event date is past
+                    const xhrDateCheck = new XMLHttpRequest();
+                    xhrDateCheck.open("POST", "check_event_date.php", true);
+                    xhrDateCheck.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    xhrDateCheck.onload = function() {
+                        if (xhrDateCheck.status === 200) {
+                            const dateResponse = JSON.parse(xhrDateCheck.responseText);
 
-                    // Check if the selected date is in the past
-                    if (selectedDate < today.setHours(0, 0, 0, 0)) {
-                        Swal.fire({
-                            title: 'Action Not Allowed',
-                            text: 'This date cannot be deleted as it has already passed.',
-                            icon: 'error'
-                        });
-                        return;
-                    }
+                            console.log("Event Date:", dateResponse.debug?.eventDate);
+                            console.log("Current Date:", dateResponse.debug?.currentDate);
+
+                            if (!dateResponse.success || !dateResponse.editable) {
+
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Action Not Allowed',
+                                    text: 'This day cannot be deleted as it has already passed.',
+                                    confirmButtonText: 'Okay'
+                                }).then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                console.log("The date has not yet passed; proceeding to delete the day");
+                            }
+                        }
+                    };
+
+                    xhrDateCheck.send("day_id=" + encodeURIComponent(dayId));
 
                     Swal.fire({
                         title: 'Are you sure?',
@@ -494,19 +510,34 @@ usort($scheduled_days, function ($a, $b) {
                 button.addEventListener('click', function() {
                     const dayId = button.getAttribute('data-day-id');
 
-                    // Get the current date and compare it with the dayId
-                    const today = new Date();
-                    const selectedDate = new Date(dayId); // Assumes dayId is in a format that can be parsed by Date (e.g., 'YYYY-MM-DD')
+                    console.log("Event ID:", dayId);
+                    // check if  event date is past
+                    const xhrDateCheck = new XMLHttpRequest();
+                    xhrDateCheck.open("POST", "check_event_date.php", true);
+                    xhrDateCheck.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    xhrDateCheck.onload = function() {
+                        if (xhrDateCheck.status === 200) {
+                            const dateResponse = JSON.parse(xhrDateCheck.responseText);
 
-                    // Check if the selected date is in the past
-                    if (selectedDate < today.setHours(0, 0, 0, 0)) { // Sets today's time to midnight for an accurate comparison
-                        Swal.fire({
-                            title: 'Action Not Allowed',
-                            text: 'You cannot add an event to a past date.',
-                            icon: 'error'
-                        });
-                        return;
-                    }
+                            console.log("Event Date:", dateResponse.debug?.eventDate);
+                            console.log("Current Date:", dateResponse.debug?.currentDate);
+
+                            if (!dateResponse.success || !dateResponse.editable) {
+
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Action Not Allowed',
+                                    text: 'This event is no longer editable as it has already passed.',
+                                    confirmButtonText: 'Okay'
+                                }).then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                console.log("The event date has not yet passed; proceeding to add an event.");
+                            }
+                        }
+                    };
+                    xhrDateCheck.send("day_id=" + encodeURIComponent(dayId));
 
                     Swal.fire({
                         title: 'Add New Event',
@@ -1333,25 +1364,41 @@ usort($scheduled_days, function ($a, $b) {
 
 
             function reattachEventListeners() {
-
                 document.querySelectorAll('.delete-btn').forEach(button => {
                     button.addEventListener('click', function() {
                         const row = this.closest('tr');
                         const eventId = row.getAttribute('data-event-id');
+                        const dayId = button.getAttribute('data-day-id');
 
-                        // Get the current date and compare it with the dayId
-                        const today = new Date();
-                        const selectedDate = new Date(eventId); // Assumes dayId is in a format that can be parsed by Date (e.g., 'YYYY-MM-DD')
+                        console.log("Event ID:", dayId);
+                        // check if  event date is past
+                        const xhrDateCheck = new XMLHttpRequest();
+                        xhrDateCheck.open("POST", "check_event_date.php", true);
+                        xhrDateCheck.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                        xhrDateCheck.onload = function() {
+                            if (xhrDateCheck.status === 200) {
+                                const dateResponse = JSON.parse(xhrDateCheck.responseText);
 
-                        // Check if the selected date is in the past
-                        if (selectedDate < today.setHours(0, 0, 0, 0)) { // Sets today's time to midnight for an accurate comparison
-                            Swal.fire({
-                                title: 'Action Not Allowed',
-                                text: 'This event cannot be deleted as it has already passed',
-                                icon: 'error'
-                            });
-                            return;
-                        }
+                                console.log("Event Date:", dateResponse.debug?.eventDate);
+                                console.log("Current Date:", dateResponse.debug?.currentDate);
+
+                                if (!dateResponse.success || !dateResponse.editable) {
+
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Action Not Allowed',
+                                        text: 'This event cannot be deleted as it has already passed.',
+                                        confirmButtonText: 'Okay'
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    console.log("The event date has not yet passed; proceeding to delete an event.");
+                                }
+                            }
+                        };
+
+                        xhrDateCheck.send("day_id=" + encodeURIComponent(dayId));
 
                         Swal.fire({
                             title: 'Are you sure?',
