@@ -1,55 +1,25 @@
+<!-- accounts.php -->
 <?php
 require_once '../../../config/sessionConfig.php'; // session Cookie
 require_once '../../../config/db.php'; // database connection
 require_once '../admin/verifyLoginSession.php'; // logged in or not
 require_once 'adminPermissions.php'; // Retrieves admin permissions
 
-// pagination setup
-$recordsPerPage = 5;
-$currentPage = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
-$currentPage = max(1, $currentPage);
-$offset = ($currentPage - 1) * $recordsPerPage;
-
-$searchQuery = isset($_GET['search']) ? "%" . $_GET['search'] . "%" : "%%";  // if no search term, use '%%' (matches everything)
+// Check if search is set, default to '%' (matches everything)
+$searchQuery = isset($_GET['search']) ? "%" . $_GET['search'] . "%" : "%%";
 
 try {
-    // count accounts
-    $countSql = "SELECT fn_getAccountCount(?,?) AS total";
-    $countStmt = $conn->prepare($countSql);
-    if (!$countStmt) {
-        throw new Exception("Prepare failed: " . $conn->error);
-    }
-
-    $countStmt->bind_param("si", $searchQuery, $iddd);
-    $countStmt->execute();
-    $countResult = $countStmt->get_result();
-    if (!$countResult) {
-        throw new Exception("Error retrieving account count: " . $countStmt->error);
-    }
-
-    $totalAccounts = $countResult->fetch_assoc()['total'];
-    $totalPages = ceil($totalAccounts / $recordsPerPage);
-
-    $countResult->free_result();
-    $conn->next_result();
-} catch (Exception $e) {
-    die("Error: " . $e->getMessage());
-}
-
-try {
-    $sql = "CALL sp_getAccount(?, ?, ?, ?)";
+    // Modified SQL query to filter accounts based on search term
+    $sql = "SELECT * FROM accounts WHERE firstName LIKE ? OR middleName LIKE ? OR lastName LIKE ? OR email LIKE ?";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         throw new Exception("Prepare failed: " . $conn->error);
     }
 
-    $stmt->bind_param("ssii", $searchQuery, $recordsPerPage, $offset, $iddd);
+    // Bind the search query to the SQL statement (applied to firstName, middleName, lastName, and email)
+    $stmt->bind_param("ssss", $searchQuery, $searchQuery, $searchQuery, $searchQuery);
     $stmt->execute();
     $result = $stmt->get_result();
-
-    if (!$result) {
-        throw new Exception("Execute failed: " . $stmt->error);
-    }
 
     $accounts = [];
     while ($row = $result->fetch_assoc()) {
@@ -63,8 +33,8 @@ try {
 }
 
 $conn->close();
-
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -151,41 +121,42 @@ $conn->close();
             </div>
         ';
         } ?>
-        <div class="accounts">
-            <div class="name-export-container">
-                <p id="accs">Accounts</p>
-                <div class="export-button">
-                    <form method="post" id="exportForm">
-                        <button type="button" onclick="submitForm('export/exportAccXlxs.php')" name="exportlog_xsls" id="exportlog_xsls">
-                            Export as Excel
-                        </button>
-                        <button type="button" onclick="submitForm('export/exportAccpdf.php')" name="exportlog_pdf" id="exportlog_pdf">
-                            Export as PDF
-                        </button>
-                    </form>
+        <div class="name-export-container">
+            <p id="accs">Accounts</p>
+            <div class="export-button">
+                <form method="post" id="exportForm">
+                    <button type="button" onclick="submitForm('export/exportAccXlxs.php')" name="exportlog_xsls" id="exportlog_xsls">
+                        Export as Excel
+                    </button>
+                    <button type="button" onclick="submitForm('export/exportAccpdf.php')" name="exportlog_pdf" id="exportlog_pdf">
+                        Export as PDF
+                    </button>
+                </form>
 
+            </div>
+        </div>
+        <div class="accounts-title">
+            <input type="text" id="searchBox" name="SearchBox" placeholder="Search Account..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+            <div class="dropdowns">
+                <div class="sort-by">
+                    <select id="sort-type" name="sort-type">
+                        <option value="all">All</option>
+                        <option value="Committee">Committee</option>
+                        <option value="Judge">Judge</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+                <div class="a-z">
+                    <select id="abc" name="abc">
+                        <option value="">Default</option>
+                        <option value="a-z">A-Z</option>
+                        <option value="z-a">Z-A</option>
+                    </select>
                 </div>
             </div>
-            <div class="accounts-title">
-                <input type="text" id="searchBox" name="SearchBox" placeholder="Search Account..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-                <div class="dropdowns">
-                    <div class="sort-by">
-                        <select id="sort-type" name="sort-type">
-                            <option value="all">All</option>
-                            <option value="Committee">Committee</option>
-                            <option value="Judge">Judge</option>
-                            <option value="Admin">Admin</option>
-                        </select>
-                    </div>
-                    <div class="a-z">
-                        <select id="abc" name="abc">
-                            <option value="">Default</option>
-                            <option value="a-z">A-Z</option>
-                            <option value="z-a">Z-A</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+        </div>
+
+        <div class="accounts">
 
             <?php
             if (!empty($accounts)) {
@@ -198,10 +169,9 @@ $conn->close();
                     if (!empty($row['suffix'])) {
                         $fullName .= " " . $row['suffix'];
                     }
-
             ?>
-                    <div class="account" data-name="<?php echo strtolower($fullName); ?>" onclick="showRoleDetails('<?php echo $row['firstName']; ?>', '<?php echo $row['middleName']; ?>', '<?php echo $row['lastName']; ?>', '<?php echo $row['suffix']; ?>', '<?php echo $row['email']; ?>', '<?php echo $row['type']; ?>')">
-                        <div class="left-deets">
+                    <div class="account">
+                        <div style="cursor: pointer;" class="left-deets" data-name="<?php echo strtolower($fullName); ?>" onclick="showRoleDetails('<?php echo $row['firstName']; ?>', '<?php echo $row['middleName']; ?>', '<?php echo $row['lastName']; ?>', '<?php echo $row['suffix']; ?>', '<?php echo $row['email']; ?>', '<?php echo $row['type']; ?>')">
                             <div class="acc-img">
                                 <i class="fas fa-user"></i>
                             </div>
@@ -239,21 +209,7 @@ $conn->close();
                             <div class="popup" id="popupEdit">
                                 <iframe id="editIframe"></iframe>
                             </div>
-                            <script>
-                                document.querySelectorAll('.edit-icon').forEach(function(editIcon) {
-                                    editIcon.addEventListener('click', function() {
-                                        var userId = this.getAttribute('data-user-id');
-                                        var iframe = document.getElementById('editIframe');
-                                        iframe.src = 'edit-account.html?userId=' + userId;
-                                        document.querySelector('.popup').style.display = 'block';
-                                    });
-                                });
-                                window.addEventListener("message", function(event) {
-                                    if (event.data === "closePopup") {
-                                        document.getElementById("popupEdit").style.display = "none";
-                                    }
-                                });
-                            </script>
+
                         </div>
                     </div>
                 <?php
@@ -268,27 +224,73 @@ $conn->close();
             }
             ?>
         </div>
+        <script>
+           // Store the original order of accounts and current sort order
+let originalOrder = [];
+let currentSortOrder = "";
 
-        <!-- Pagination Controls -->
-        <div class="pagination">
-            <?php if ($currentPage > 1): ?>
-                <a href="?page=<?php echo $currentPage - 1; ?>" class="arrow">&laquo; Previous</a>
-            <?php else: ?>
-                <a href="#" class="arrow disabled">&laquo; Previous</a>
-            <?php endif; ?>
+document.addEventListener('DOMContentLoaded', function() {
+    let accountsContainer = document.querySelector('.accounts');
+    originalOrder = Array.from(accountsContainer.getElementsByClassName('account'));
+    
+    // Initialize sort dropdown listener
+    document.getElementById('abc').addEventListener('change', function() {
+        currentSortOrder = this.value;
+        sortAccounts(currentSortOrder);
+    });
 
-            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                <a href="?page=<?php echo $i; ?>" class="<?php echo ($i == $currentPage) ? 'active' : ''; ?>">
-                    <?php echo $i; ?>
-                </a>
-            <?php endfor; ?>
+    // Initialize search box listener
+    document.getElementById('searchBox').addEventListener('input', function() {
+        let searchTerm = this.value;
+        
+        // Fetch searched accounts and maintain sort order
+        fetch('fetchAccounts.php?search=' + encodeURIComponent(searchTerm))
+            .then(response => response.text())
+            .then(data => {
+                document.querySelector('.accounts').innerHTML = data;
+                // Reapply current sort order after search results are loaded
+                if (currentSortOrder) {
+                    sortAccounts(currentSortOrder);
+                }
+            })
+            .catch(error => console.error('Error fetching accounts:', error));
+    });
+});
 
-            <?php if ($currentPage < $totalPages): ?>
-                <a href="?page=<?php echo $currentPage + 1; ?>" class="arrow">Next &raquo;</a>
-            <?php else: ?>
-                <a href="#" class="arrow disabled">Next &raquo;</a>
-            <?php endif; ?>
-        </div>
+function sortAccounts(order) {
+    let accountsContainer = document.querySelector('.accounts');
+    let accounts = Array.from(accountsContainer.getElementsByClassName('account'));
+
+    // If default is selected and no search term, restore original order
+    if (order === "" && document.getElementById('searchBox').value === "") {
+        accountsContainer.innerHTML = '';
+        originalOrder.forEach(function(account) {
+            accountsContainer.appendChild(account.cloneNode(true));
+        });
+        return;
+    }
+
+    // Sort the accounts array based on the selected order
+    accounts.sort(function(a, b) {
+        let nameA = a.querySelector('.acc-deets #name').textContent.trim().toLowerCase();
+        let nameB = b.querySelector('.acc-deets #name').textContent.trim().toLowerCase();
+
+        if (order === 'a-z') {
+            return nameA.localeCompare(nameB);
+        } else if (order === 'z-a') {
+            return nameB.localeCompare(nameA);
+        }
+        return 0;
+    });
+
+    // Clear the accounts container and append sorted accounts
+    accountsContainer.innerHTML = '';
+    accounts.forEach(function(account) {
+        accountsContainer.appendChild(account.cloneNode(true));
+    });
+}
+        </script>
+
 
         <script src="../admin/js/accounts.js"></script>
     <?php } else {

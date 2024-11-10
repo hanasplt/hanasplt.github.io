@@ -3,6 +3,23 @@ document.getElementById("openPopup").addEventListener("click", function() {
     document.getElementById("popupFrame").src = "../admin/html/create-account.html";
     document.getElementById("iframeOverlay").style.display = "block";
 });
+
+// Use event delegation for edit icons by attaching the listener to a parent element
+// that exists when the page loads
+document.querySelector('.accounts').addEventListener('click', function(event) {
+    // Find if the clicked element or its parent is an edit-icon
+    const editIcon = event.target.closest('.edit-icon');
+    if (editIcon) {
+        event.stopPropagation();
+        console.log("Edit icon clicked");
+        
+        const userId = editIcon.getAttribute('data-user-id');
+        const iframe = document.getElementById('editIframe');
+        iframe.src = '../admin/html/edit-account.html?userId=' + userId;
+        document.getElementById('popupEdit').style.display = 'block';
+    }
+});
+
 window.addEventListener("message", function(event) {
     if (event.data === "closePopup") {
         document.getElementById("iframeOverlay").style.display = "none";
@@ -23,54 +40,23 @@ document.getElementById('logout').addEventListener('click', function() {
         cancelButtonText: 'Cancel'
     }).then((result) => {
         if (result.isConfirmed) {
-            // mag redirect siya to the login page
             window.location.href = '../admin/admin.php?logout';
         }
     });
 });
 
-
-// Search functionality
-function debounce(func, delay) {
-    let timeout;
-    return function(...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), delay);
-    };
-}
-// Search functionality
-document.getElementById('searchBox').addEventListener('input', debounce(function() {
-    var searchValue = this.value;
-    if (searchValue.length > 0) {
-        window.location.href = '?search=' + encodeURIComponent(searchValue) + '&page=1';
-    } else {
-        window.location.href = '?page=1';
-    }
-}, 500));
-
-// Display edit account form
-document.querySelectorAll('.edit-icon').forEach(function(editIcon) {
-    editIcon.addEventListener('click', function(event) { 
+// delete confirmation using event delegation
+document.querySelector('.accounts').addEventListener('click', function(event) {
+    const deleteButton = event.target.closest('.trash-icon');
+    if (deleteButton) {
         event.stopPropagation();
-        
-        var userId = this.getAttribute('data-user-id');
-        var iframe = document.getElementById('editIframe');
-        iframe.src = '../admin/html/edit-account.html?userId=' + userId;
-        document.getElementById('popupEdit').style.display = 'block';
-    });
-});
-
-window.addEventListener("message", function(event) {
-    if (event.data === "closePopup") {
-        document.getElementById("popupEdit").style.display = "none";
-        document.getElementById("popupEdit").style.display = "none";
+        const userId = deleteButton.closest('form').querySelector('input[name="userId"]').value;
+        const name = deleteButton.closest('.account').querySelector('#name').textContent.trim();
+        confirmDelete(userId, name);
     }
 });
 
-
-// delete confirmation
 function confirmDelete(userId, name) {
-    event.stopPropagation(); 
     Swal.fire({
         title: 'Confirm',
         text: "Do you want to delete this account?",
@@ -116,7 +102,6 @@ function confirmDelete(userId, name) {
     });
 }
 
-
 // sort by account type
 document.getElementById('sort-type').addEventListener('change', function() { 
     var selectedType = this.value;
@@ -134,34 +119,6 @@ document.getElementById('sort-type').addEventListener('change', function() {
 });
 
 
-var accountsContainer = document.querySelector('.accounts');
-var originalAccounts = Array.from(accountsContainer.querySelectorAll('.account'));
-
-// sort alphabetically
-document.getElementById('abc').addEventListener('change', function() { 
-    var sortOrder = this.value;
-    var accounts = Array.from(originalAccounts);
-
-    if (sortOrder === 'a-z') {
-        accounts.sort(function(a, b) {
-            var nameA = a.querySelector('#name').textContent.trim().toUpperCase();
-            var nameB = b.querySelector('#name').textContent.trim().toUpperCase();
-            return nameA.localeCompare(nameB); // sort A-Z
-        });
-    } else if (sortOrder === 'z-a') {
-        accounts.sort(function(a, b) {
-            var nameA = a.querySelector('#name').textContent.trim().toUpperCase();
-            var nameB = b.querySelector('#name').textContent.trim().toUpperCase();
-            return nameB.localeCompare(nameA); // sort Z-A
-        });
-    } else {
-        accounts = originalAccounts; // show original order
-    }
-    
-    accounts.forEach(function(account) {
-        accountsContainer.appendChild(account);
-    });
-});
 
 
 // Validate form submission for export

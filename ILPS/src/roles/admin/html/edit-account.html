@@ -68,6 +68,11 @@
             </div>
         </form>
     </div>
+    <script>// In the edit-account.html page
+        function closePopup() {
+            window.parent.postMessage("closePopup", "*");
+        }
+        </script>
     <script src="../js/edit-acc.js"></script>
     
 </body>
