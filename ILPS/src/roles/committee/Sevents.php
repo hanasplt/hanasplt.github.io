@@ -382,8 +382,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             echo "</td>";
                             echo "</tr>";
                         }
-                    } else {
-                        echo "<tr><td colspan='2'>No contestants found for team " . htmlspecialchars($teamName) . ".</td></tr>";
                     }
                     $stmt->close(); // Close the contestant query statement
                 }
