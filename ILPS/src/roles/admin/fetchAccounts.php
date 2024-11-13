@@ -5,18 +5,26 @@ require_once '../../../config/db.php'; // database connection
 require_once '../admin/verifyLoginSession.php'; // logged in or not
 require_once 'adminPermissions.php'; // Retrieves admin permissions
 
+// Check if search is set, default to '%' (matches everything)
 $searchQuery = isset($_GET['search']) ? "%" . $_GET['search'] . "%" : "%%";
+$userId = $_SESSION['userId'];
+$main_Admin = 1;
 
 try {
-    $sql = "SELECT * FROM accounts WHERE firstName LIKE ? OR middleName LIKE ? OR lastName LIKE ? OR email LIKE ?";
+    // Modified SQL query to filter accounts based on search term
+    $sql = "SELECT * FROM accounts 
+            WHERE (firstName LIKE ? OR middleName LIKE ? OR lastName LIKE ? OR email LIKE ?)
+            AND userId != ? AND userId != ?";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         throw new Exception("Prepare failed: " . $conn->error);
     }
-    $stmt->bind_param("ssss", $searchQuery, $searchQuery, $searchQuery, $searchQuery);
+
+    // Bind the search query to the SQL statement (applied to firstName, middleName, lastName, and email)
+    $stmt->bind_param("ssssii", $searchQuery, $searchQuery, $searchQuery, $searchQuery, $userId, $main_Admin);
     $stmt->execute();
     $result = $stmt->get_result();
-
+    
     $accounts = [];
     while ($row = $result->fetch_assoc()) {
         $accounts[] = $row;
