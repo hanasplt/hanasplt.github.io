@@ -2,6 +2,19 @@
 let currentPage = 1;
 const rowsPerPage = 6;
 
+// Format the date and time as word
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const options = { 
+        month: 'long', 
+        day: 'numeric', 
+        year: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: true };
+    return date.toLocaleString('en-US', options);
+}
+
 if (typeof data !== 'undefined' && data.length > 0) {
     // Initial load with 'Today' and 'All' filter selected
     if (document.getElementById('filterOpt') && document.getElementById('eventFilter')) {
@@ -30,7 +43,7 @@ function populateTable(filteredData) {
             <td>${item.teamName}</td>
             <td>${item.total_score}</td>
             <td>${item.action_made}</td>
-            <td>${item.action_at}</td>
+            <td>${formatDate(item.action_at)}</td>
         `;
         tableBody.appendChild(row);
     });
@@ -243,6 +256,27 @@ function downloadBackup(file) {
 }
 /* END BACKUP AND DROP - STARTING A NEW FOR THIS YEARS INTRAMURALS */
 
+function printReport() {
+    var printWindow = window.open('../admin/printReport.php', '_blank');
+    
+    // Create a form and submit it to the new window
+    var form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '../admin/printReport.php';
+    
+    // Add the form to the new window and submit it
+    printWindow.onload = function() {
+        this.document.body.appendChild(form);
+        form.submit();
+        
+        // Wait a bit for the content to load then print
+        setTimeout(() => {
+            this.print();
+            // Optional: close the window after printing
+            this.close();
+        }, 500);
+    };
+}
 
 // Logout
 document.getElementById('logout').addEventListener('click', function() {

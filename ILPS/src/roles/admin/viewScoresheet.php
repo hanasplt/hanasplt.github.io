@@ -1,6 +1,6 @@
 <?php
 
-$conn = require_once '../../../config/db.php'; // Database connection
+require_once '../../../config/db.php'; // Database connection
 
 $evId = $_GET['event'];
 $evname = $_GET['evname'];
@@ -30,9 +30,9 @@ if ($purpose !== '') {
 
     <div class="header-container">
         <div class="heading1">
-            <img src="../../../public/assets/icons/logo-top-final.png" alt="ILPS logo" width="80"><br>
-            <b>Intramural Leaderboard and Points System</b><br>
-            +63 994 155 8637 | ilps.usep@gmail.com
+            <img src="../../../public/assets/icons/useologo.png" alt="USeP logo" width="80"><br>
+            <b>University of Southeastern Philippines</b><br>
+            <i>Office of the Student Affairs and Services<br>Tagum-Mabini Campus</i>
         </div>
         <div class="eventname-container">
             <h1><?php echo $evname ?></h1>

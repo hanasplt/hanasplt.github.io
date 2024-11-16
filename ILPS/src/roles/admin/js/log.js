@@ -1,6 +1,20 @@
 let currentPage = 1;
 let totalPages = 1;
 
+
+// Format the date and time as word
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const options = { 
+        month: 'long', 
+        day: 'numeric', 
+        year: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: true };
+    return date.toLocaleString('en-US', options);
+}
+
 // Display Access Log
 window.onload = function() {
     // Initial load
@@ -25,7 +39,7 @@ function loadAccessLog(page = 1) {
                 const logsHTML = response.logs.map((log, index) => 
                     `<tr>
                         <td>${startId + index}</td> <!-- Display sequential ID -->
-                        <td>${log.date_on}</td>
+                        <td>${formatDate(log.date_on)}</td>
                         <td>${log.fullname}</td>
                         <td>${log.actions}</td>
                     </tr>`).join('');
@@ -55,7 +69,6 @@ function loadAccessLog(page = 1) {
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("page=" + page); // Send the year filter as well
 }
-
 
 // Setup pagination controls
 function setupPagination(totalPages, currentPage) {

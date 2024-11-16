@@ -80,40 +80,43 @@ require_once 'adminPermissions.php'; // Retrieves admin permissions
               Export as Excel
             </button>
             <button type="button" onclick="submitForm('export/exportReportpdf.php')" name="exportreport_pdf" id="exportlog_pdf">
-              Print PDF
+              Export as PDF
+            </button>
+            <button type="button" onclick="printReport()">
+              Print
             </button>
           </form>
 
         </div>
-        <div class="dropdown-container">
-          <select name="eventFilter" id="eventFilter" onchange="filterTable()">
-            <option value="all">All</option>
-            <?php
-              // Retrieve events - has score record
-              $getEvents = "CALL sp_getScoredEvent";
+      </div>
+      <div class="dropdown-container">
+        <select name="eventFilter" id="eventFilter" onchange="filterTable()">
+          <option value="all">All</option>
+          <?php
+            // Retrieve events - has score record
+            $getEvents = "CALL sp_getScoredEvent";
 
-              $stmt = $conn->prepare($getEvents);
-              $stmt->execute();
-              $ret_events = $stmt->get_result();
-              
-              if ($ret_events->num_rows > 0) {
-                // Populate options with events
-                while ($row = $ret_events->fetch_assoc()) {
-                  echo "
-                    <option value='$row[eventName]'>$row[eventName]</option>
-                  ";
-                }
+            $stmt = $conn->prepare($getEvents);
+            $stmt->execute();
+            $ret_events = $stmt->get_result();
+            
+            if ($ret_events->num_rows > 0) {
+              // Populate options with events
+              while ($row = $ret_events->fetch_assoc()) {
+                echo "
+                  <option value='$row[eventName]'>$row[eventName]</option>
+                ";
               }
+            }
 
-              $ret_events->free();
-              $stmt->close();
-            ?>
-          </select>
-          <select name="filterOpt" id="filterOpt" onchange="filterTable()">
-            <option value="today">Today</option>
-            <option value="all">All (Current Year)</option>
-          </select>
-        </div>
+            $ret_events->free();
+            $stmt->close();
+          ?>
+        </select>
+        <select name="filterOpt" id="filterOpt" onchange="filterTable()">
+          <option value="today">Today</option>
+          <option value="all">All (Current Year)</option>
+        </select>
       </div>
       <div class="events-scoresheet-container">
         <div class="table-container">

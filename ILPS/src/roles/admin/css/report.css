@@ -192,15 +192,29 @@ body {
     .overall-score-btn-container button:hover {
       background-color: #ddba51;
     }
+    .dropdown-container {
+      display: flex;
+      justify-content: left;
+      align-items: center;
+      margin-left: 10%;
+      margin-right: 10%;
+      margin-bottom: 20px;
+    }
     .dropdown-container select {
-      font-family: Inter, sans-serif;
-      padding: 8px 15px;
-      font-size: 0.95rem;
+      font-family: Poppins, sans-serif;
+      width: 15vw;
+      background-color: #ffffff;
+      color: #4f4f4f;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 0.7vw;
+      padding-left: 10px;
+      margin-right: 20px;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      border-bottom: 2px solid #bdbdbd;
       border-radius: 5px;
-      border: 1px solid #ccc;
-      background-color: #f7f7f7;
-      transition: border-color 0.3s ease;
-      margin-left: 10px;
     }
   .events-scoresheet-container {
     display: flex;

@@ -224,13 +224,11 @@ thead {
     background-color: #d8f17fa2;
     color: #2B2B2B;
     font-weight: 700;
-    text-align: center;
+    text-align: left;
 }
 
 thead td {
-    padding-top: 10px;
-    padding-bottom: 10px;
-
+    padding: 12px;
 }
 
 tbody td {
