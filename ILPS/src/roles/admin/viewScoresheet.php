@@ -85,12 +85,13 @@ if ($purpose !== '') {
             <?php // Data Row
 
             // The final SQL query
-            $getRowData = "SELECT contestantId, $judgeColumnsSql,
-                                    SUM(total_score) AS Total,
-                                    RANK() OVER (ORDER BY SUM(total_score) DESC) AS rank
-                            FROM vw_subresult 
-                            WHERE eventId = ?
-                            GROUP BY contestantId";
+            $getRowData = "SELECT vp.contNo, $judgeColumnsSql,
+                                    SUM(vs.total_score) AS Total,
+                                    RANK() OVER (ORDER BY SUM(vs.total_score) DESC) AS rank
+                            FROM vw_subresult vs
+                            INNER JOIN vw_eventParti vp ON vs.contestantId = vp.contId
+                            WHERE vs.eventId = ?
+                            GROUP BY vp.contId";
 
             $stmt = $conn->prepare($getRowData);
             $stmt->bind_param("i", $evId);
@@ -101,7 +102,7 @@ if ($purpose !== '') {
                 // Table Data
                 while ($row = $result->fetch_assoc()) {
                     echo '<tr style="text-align: left;" id="tabletr">';
-                    echo '<td>' . $row['contestantId'] . '</td>';
+                    echo '<td>' . $row['contNo'] . '</td>';
 
                     foreach ($judges as $judge) {
                         echo '<td>' . $row['judge_' . $judge['personnelId']] . '</td>';

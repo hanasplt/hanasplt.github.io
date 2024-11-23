@@ -85,21 +85,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php
         if ($retval->num_rows > 0) {
             while ($row = $retval->fetch_assoc()) {
-                $formatted_date = "<script>
-                    function formatDate(dateString) {
-                        const date = new Date(dateString);
-                        const options = { 
-                            month: 'long', 
-                            day: 'numeric', 
-                            year: 'numeric', 
-                            hour: '2-digit', 
-                            minute: '2-digit', 
-                            hour12: true 
-                        };
-                        return date.toLocaleString('en-US', options);
-                    }
-                    document.write(formatDate('" . $row['action_at'] . "'));
-                </script>";
+                $date = new DateTime($row['action_at']);
+                $formatted_date = $date->format('M j, Y \a\t g:i A');
+                
                 ?>
                 <tr>
                     <td><?php echo $row['eventName']; ?></td>

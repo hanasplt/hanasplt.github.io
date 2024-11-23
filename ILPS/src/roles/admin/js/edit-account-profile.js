@@ -22,18 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('suffix').value = data.suffix;
                     document.getElementById('email').value = data.email;
                     document.getElementById('password').value = data.password;
-
-                    var passfield = document.getElementById('password');
-                    var passlabel = document.getElementById('passlabel');
-
-                    /* If login status of account is finish
-                        not even the admin will know his/her password
-                        because it wont be displayed for privacy & security purposes */
-                    if(data.log_status == "finish" || data.type == "Admin") {
-                        passfield.style.display = 'none';
-                        passlabel.style.display = 'none';
-                    }
-
                     document.getElementById('sort').value = data.type;
                 } else { // There is an error while fetching the php file
                     Swal.fire({

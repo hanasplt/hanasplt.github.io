@@ -122,7 +122,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // DISPLAY THE JUDGE SCORESHEET
 
-        $sql = "CALL sp_getEventContestant(?)"; // Retrieve Contestants from this event
+        $sql = "SELECT 
+                    vp.contId, vp.contNo, vp.teamId, vt.teamName as team
+                FROM vw_eventParti vp 
+                INNER JOIN vw_teams vt on vp.teamId = vt.teamId
+                INNER JOIN vw_events ve on vp.eventId = ve.eventID
+                WHERE vp.eventId = ?
+                ORDER BY vp.contNo ASC"; // Retrieve Contestants from this event
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $evid);
         $stmt->execute();

@@ -6,12 +6,7 @@ error_reporting(E_ALL);
 require_once '../../../config/sessionConfig.php'; // session Cookie
 require_once '../admin/verifyLoginSession.php'; // logged in or not
 require_once '../../../config/encryption.php';
-
-$conn = require_once '../../../config/db.php';
-
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
+require_once '../../../config/db.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $accId = $_SESSION['userId'];
@@ -110,7 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->bind_param("is", $accId, $action);
             $stmt->execute();
 
-            echo json_encode(array("status" => "success", "message" => "Record updated successfully". $userId));
+            echo json_encode(array("status" => "success", "message" => "Record updated successfully"));
         } else {
             echo json_encode(array("status" => "error", "message" => "Error: " . $stmt->error));
         }

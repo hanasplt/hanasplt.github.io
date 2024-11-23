@@ -11,6 +11,8 @@ require_once 'database.php';
 require_once 'encryption.php';
 require_once 'db.php';
 
+date_default_timezone_set('Asia/Manila');
+
 /* Teams Table */
 try {
     $sqlT = "CREATE TABLE IF NOT EXISTS teams (
@@ -435,18 +437,6 @@ try {
     } else {
         echo "Error creating table: " . $conn->error;
     }
-
-    $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getLead()
-            BEGIN
-                SELECT RANK() OVER (ORDER BY SUM(points) DESC) AS rank, t.teamName as team, SUM(l.points) 
-                AS pts FROM leaderboard l INNER JOIN vw_eventParti p ON l.conId = p.contId 
-                INNER JOIN vw_teams t ON t.teamId = p.teamId
-                GROUP BY team ORDER BY rank ASC;
-            END ;";
-    if ($conn->query($sqlT) === TRUE) {
-    } else {
-        echo "Error creating table: " . $conn->error;
-    }
 } catch (Exception $e) {
     echo $e->getMessage();
 }
@@ -591,11 +581,10 @@ try {
     }
 
     // IDK
-    $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_resetAccPass(IN id INT, IN pass VARCHAR(255),
-            IN token VARCHAR(64))
+    $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_resetAccPass(IN id INT, IN pass VARCHAR(255))
             BEGIN
-                UPDATE vw_accounts SET password = pass, reset_token = token,
-                reset_token_expiration = token WHERE userId = id;
+                UPDATE vw_accounts SET password = pass, reset_token = NULL,
+                reset_token_expiration = NULL WHERE userId = id;
             END ;";
     if ($conn->query($sqlT) === TRUE) {
     } else {
@@ -618,17 +607,6 @@ try {
             BEGIN
                 SELECT * FROM vw_accounts WHERE type = ptype;
             END ;";
-    if ($conn->query($sqlT) === TRUE) {
-    } else {
-        echo "Error creating table: " . $conn->error;
-    }
-
-    // IDK
-    $sqlT = "CREATE PROCEDURE IF NOT EXISTS sp_getAdmin()
-            BEGIN
-                SELECT * FROM vw_admin;
-            END ;";
-
     if ($conn->query($sqlT) === TRUE) {
     } else {
         echo "Error creating table: " . $conn->error;
@@ -1369,7 +1347,7 @@ try {
                 FROM vw_logs al 
                 JOIN vw_accounts a ON al.userId = a.userId
                 WHERE YEAR(al.date_on) = inpYear
-                ORDER BY al.logId
+                ORDER BY al.logId DESC
                 LIMIT inpLimit OFFSET offset;
             END ;";
     if ($conn->query($sqlT) === TRUE) {

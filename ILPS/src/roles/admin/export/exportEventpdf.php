@@ -12,24 +12,24 @@
     $output = ''; // Initialize variable for compiling data output
 	$dt_exported = date("Y-m-d H:i:s"); // Extend as file name
     $year = date("Y"); // For display purposes, Academic Year
-
-    $imagePath = 'useologo.png'; //relative path
+    $imageData = base64_encode(file_get_contents('../../../../public/assets/icons/useologo.png'));
+    $src = 'data:image/png;base64,'.$imageData;
 
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['xp_eventId'])) {
 		$evid = $_POST['xp_eventId'];
 
         // Retrieve event data for conditional statement
-        $getEvent = "CALL sp_getEvent(?)";
-
-        $stmt = $conn->prepare($getEvent);
-        $stmt->bind_param("i", $evid);
-        $stmt->execute();
-        $resullt = $stmt->get_result();
-
-        $type = '';
-        $eventname = '';
-
         try {
+            $getEvent = "CALL sp_getEvent(?)";
+
+            $stmt = $conn->prepare($getEvent);
+            $stmt->bind_param("i", $evid);
+            $stmt->execute();
+            $resullt = $stmt->get_result();
+
+            $type = '';
+            $eventname = '';
+
             if ($resullt->num_rows > 0) {
                 // Display data
                 $row = $resullt->fetch_assoc();
@@ -41,17 +41,20 @@
                         * {
                             font-family: Arial, Helvetica, sans-serif;
                         }
-                        .usep-logo {
-                            width: 110px;
+                        .header {
+                            top: 0px;
+                            left: 0px;
+                            right: 0px;
+                            height: 150px;
+                            text-align: center;
+                        }
+                        .header-image {
+                            width: 100px;
+                            margin: 0 auto;
                         }
                         .usep-name {
                             font-family: Old English Text MT;
-                            font-weight: normal;
                             font-size: 20px;
-                        }
-                        i {
-                            font-family: Times New Roman;
-                            font-size: 18px;
                         }
                         th, td, b, h4 {
                             font-size: 15px;
@@ -59,14 +62,16 @@
                         h4 {
                             text-decoration: underline;
                         }
+                        p {
+                            margin-top: 30px;
+                        }
                     </style>
+                    <div class="header">
+                        <img src="'.$src.'" class="header-image" alt="usep logo"><br>
+                        <span class="usep-name">University of Southeastern Philippines</span><br>
+                        <i>Office of the Student Affairs and Services<br>Tagum-Mabini Campus</i><br>
+                    </div>
                     <p align="center">
-                        <img class="usep-logo" src="'.$imagePath.'"></br>
-                        <b class="usep-name">
-                            University of Southeastern Philippines</br>
-                            <i>Office of the Student Affairs and Services</br>
-                            Tagum-Mabini Campus</i></br></br>
-                        </b>
                         <b>'.$eventname.'</b></br>
                         '.$row['eventType'].' - '.$row['eventCategory'].'</br>
                         (A.Y. '.$year.'-'.($year+1).')
@@ -312,10 +317,10 @@
         } 
 	}
 
-    $options = new Options();
+	$options = new Options();
     $options->setChroot(__DIR__);
 
-	$dompdf = new DOMPDF($options);
+    $dompdf = new Dompdf($options);
 	$dompdf->loadHtml($output);
 	$dompdf->setPaper("A4", "Portrait");
 	$dompdf->render();
