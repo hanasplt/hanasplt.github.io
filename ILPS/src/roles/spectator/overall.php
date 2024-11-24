@@ -89,48 +89,74 @@ foreach ($teams as $team) {
 }
 
 
-// Get all event IDs
-$sql_all_event_ids = "SELECT eventID FROM vw_events";
-$result_all_events = $conn->query($sql_all_event_ids);
+// Get all events and their categories in one query
+$sql_all_events = "SELECT eventID, eventCategory FROM vw_events";
+$result_all_events = $conn->query($sql_all_events);
 
-$events_data = []; // Array to hold event data with ranks
 $team_performance = []; // Array to track teams' medals and scores
 
 if ($result_all_events) {
     while ($row = $result_all_events->fetch_assoc()) {
         $event_id = $row['eventID'];
+        $event_category = $row['eventCategory'];
 
-        // Call sp_getEvent for each event ID
-        $sql_event = "CALL sp_getEvent(?)";
-        $stmt_event = $conn->prepare($sql_event);
-        $stmt_event->bind_param("i", $event_id);
-
-        if ($stmt_event->execute()) {
-            $result_event = $stmt_event->get_result();
-            $event_details = $result_event->fetch_assoc(); // Get event details
-
-            // Clear result for the next call
-            $result_event->free();
-        } else {
-            echo "Error executing sp_getEvent: " . $stmt_event->error;
-            continue; // Skip this iteration on error
-        }
-
-        // Clear statement to prepare for the next call
-        $stmt_event->close();
-
-        // Call sp_getData to retrieve rank data by event ID
+        // Call sp_getData to retrieve all scores for the current event
         $sql_data = "CALL sp_getData(?)";
         $stmt_data = $conn->prepare($sql_data);
+        
+        if (!$stmt_data) {
+            error_log("Error preparing sp_getData statement: " . $conn->error);
+            continue;
+        }
+
         $stmt_data->bind_param("i", $event_id);
 
         if ($stmt_data->execute()) {
             $result_data = $stmt_data->get_result();
-
+            $event_scores = []; // To store scores per team for ranking
+            
             while ($data = $result_data->fetch_assoc()) {
                 $team_name = $data['team'];
                 $score = $data['score'];
-                $rank = $data['rank'];
+                $event_scores[$team_name] = $score;
+            }
+
+            // Free result before next iteration
+            $result_data->free();
+            $stmt_data->close();
+
+            if (empty($event_scores)) {
+                continue; // Skip if no scores for this event
+            }
+
+            // Rank the teams based on their scores (highest first)
+            arsort($event_scores);
+            $rank = 1;
+
+            // Prepare ranking statement outside the loop
+            $stmt_ranking = $conn->prepare("
+                SELECT points 
+                FROM vw_eventscore 
+                WHERE rankNo = ? AND eventCategory = ?
+            ");
+
+            if (!$stmt_ranking) {
+                error_log("Error preparing ranking statement: " . $conn->error);
+                continue;
+            }
+
+            foreach ($event_scores as $team_name => $score) {
+                $stmt_ranking->bind_param("is", $rank, $event_category);
+
+                if ($stmt_ranking->execute()) {
+                    $result_ranking = $stmt_ranking->get_result();
+                    $ranking_data = $result_ranking->fetch_assoc();
+                    $points = $ranking_data['points'] ?? 0;
+                    $result_ranking->free();
+                } else {
+                    error_log("Error executing ranking query: " . $stmt_ranking->error);
+                    continue;
+                }
 
                 // Initialize team performance data if it doesn't exist
                 if (!isset($team_performance[$team_name])) {
@@ -155,22 +181,27 @@ if ($result_all_events) {
                         break;
                 }
 
-                // Accumulate the total score for the team
-                $team_performance[$team_name]['total_score'] += $score;
+                // Accumulate the total score based on points
+                $team_performance[$team_name]['total_score'] += $points;
+
+                $rank++;
             }
 
-            // Clear result for the next call
-            $result_data->free();
+            // Close ranking statement after processing all teams
+            $stmt_ranking->close();
         } else {
-            echo "Error executing sp_getData: " . $stmt_data->error;
-            continue; // Skip this iteration on error
+            error_log("Error executing sp_getData: " . $stmt_data->error);
+            $stmt_data->close();
+            continue;
         }
-
-        // Clear statement for sp_getData
-        $stmt_data->close();
     }
+
+    // Free the main result set
+    $result_all_events->free();
 } else {
-    echo "Error fetching event IDs: " . $conn->error;
+    error_log("Error fetching event IDs: " . $conn->error);
+    echo '<tr><td colspan="6">Error fetching rankings.</td></tr>';
+    exit;
 }
 
 // Sort the team_performance array by total_score (highest to lowest)
@@ -178,31 +209,39 @@ uasort($team_performance, function ($a, $b) {
     return $b['total_score'] <=> $a['total_score'];
 });
 
-// Display the sorted teams with rank
-$rank = 1; // Initialize rank counter
+// Generate table output
 $output = '<tr>
-<th class="rank-column">Rank</th>
-<th class="name-column">Team Name</th>
-<th class="gold-column"><img src="../../../public/assets/icons/gold-medal.png" class="medal-icon"></th>
-<th class="silver-column"><img src="../../../public/assets/icons/silver-medal.png" class="medal-icon"></th>
-<th class="bronze-column"><img src="../../../public/assets/icons/bronze-medal.png" class="medal-icon"></th>
-<th class="points-column">Total Points</th>
+    <th class="rank-column">Rank</th>
+    <th class="name-column">Team Name</th>
+    <th class="gold-column"><img src="../../../public/assets/icons/gold-medal.png" class="medal-icon" alt="Gold Medal"></th>
+    <th class="silver-column"><img src="../../../public/assets/icons/silver-medal.png" class="medal-icon" alt="Silver Medal"></th>
+    <th class="bronze-column"><img src="../../../public/assets/icons/bronze-medal.png" class="medal-icon" alt="Bronze Medal"></th>
+    <th class="points-column">Total Points</th>
 </tr>';
-foreach ($team_performance as $team_name => $performance) {
-    $output .= '<tr>
-                    <td>' . htmlspecialchars($rank) . '</td>
-                    <td>' . htmlspecialchars($team_name) . '</td>
-                    <td>' . htmlspecialchars($performance['gold']) . '</td>
-                    <td>' . htmlspecialchars($performance['silver']) . '</td>
-                    <td>' . htmlspecialchars($performance['bronze']) . '</td>
-                    <td>' . htmlspecialchars($performance['total_score']) . '</td>
-                </tr>';
-    $rank++; // Increment rank for next team
-}
 
-if (count($team_performance) === 0) {
-    // Inform user of no ranking yet
-    $output .= '<tr><td colspan=6>No Ranking Available.</td></tr>';
+if (empty($team_performance)) {
+    $output .= '<tr><td colspan="6">No Ranking Available.</td></tr>';
+} else {
+    $rank = 1;
+    foreach ($team_performance as $team_name => $performance) {
+        $output .= sprintf(
+            '<tr>
+                <td>%s</td>
+                <td>%s</td>
+                <td>%s</td>
+                <td>%s</td>
+                <td>%s</td>
+                <td>%s</td>
+            </tr>',
+            htmlspecialchars($rank),
+            htmlspecialchars($team_name),
+            htmlspecialchars($performance['gold']),
+            htmlspecialchars($performance['silver']),
+            htmlspecialchars($performance['bronze']),
+            htmlspecialchars($performance['total_score'])
+        );
+        $rank++;
+    }
 }
 
 echo $output;
