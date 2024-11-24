@@ -34,11 +34,10 @@ function loadAccessLog(page = 1) {
                 // Assign totalPages from the response
                 totalPages = response.totalPages;
                 
-                // Start ID number for display
-                const startId = (page - 1) * 10 + 1; // Assuming 10 logs per page
-                const logsHTML = response.logs.map((log, index) => 
+                // Generate the logs table rows based on the response
+                const logsHTML = response.logs.map((log) => 
                     `<tr>
-                        <td>${startId + index}</td> <!-- Display sequential ID -->
+                        <td>${log.logId}</td> <!-- Use logId from the response -->
                         <td>${formatDate(log.date_on)}</td>
                         <td>${log.fullname}</td>
                         <td>${log.actions}</td>
@@ -69,6 +68,7 @@ function loadAccessLog(page = 1) {
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("page=" + page); // Send the year filter as well
 }
+
 
 // Setup pagination controls
 function setupPagination(totalPages, currentPage) {

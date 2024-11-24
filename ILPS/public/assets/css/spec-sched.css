@@ -581,12 +581,17 @@ button:hover {
     text-align: center;
 }
 
+.schedule-list-wrapper {
+    overflow-x: scroll; /* Always show horizontal scrollbar */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling for touch devices */
+    width: 100%; /* Ensure the wrapper takes full width */
+    margin-bottom: 20px; /* Optional: Add some space at the bottom */
+}
+
 .schedule-list table {
-    width: 90%;
-    margin-right: 5%;
-    margin-left: 5%;
-    margin-bottom: 50px;
-    border-collapse: collapse;
+    width: 100%; /* Ensure the table stretches to fill the container */
+    min-width: 800px; /* Set a minimum width to ensure horizontal scrolling */
+    border-collapse: collapse; /* Collapsing borders for better layout */
     font-family: 'Montserrat', sans-serif;
     background-color: #f9f9f9;
     border-radius: 8px;
@@ -623,11 +628,28 @@ button:hover {
     text-align: center;
 }
 
-.schedule-list td {
-    text-align: center;
-    padding: 15px;
+/* For smaller screens like phones */
+@media screen and (max-width: 480px) {
+    .schedule-list th, .schedule-list td {
+        font-size: 16px; /* Keep font size readable */
+        padding: 12px; /* Ensure padding is not too small */
+    }
+
+    .schedule-list-wrapper {
+        margin-left: 5px; /* Prevent touching edges */
+        margin-right: 5px;
+    }
 }
 
+/* For tablets or smaller devices */
+@media screen and (max-width: 768px) {
+    .schedule-list th, .schedule-list td {
+        font-size: 16px; /* Ensure readability */
+        padding: 12px; /* Adjust padding for comfort */
+    }
 
-
-
+    .schedule-list-wrapper {
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+}
