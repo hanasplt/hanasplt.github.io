@@ -124,7 +124,6 @@ nav a {
         max-width: 90px; 
         margin-right: 2rem;
     }
-
     
 }
 
@@ -551,6 +550,7 @@ button:hover {
 }
 
 .banner-left p {
+    margin-top: 15px;
     font-weight: 400;
     margin-left: 5%;
 }
@@ -582,21 +582,26 @@ button:hover {
 }
 
 .schedule-list-wrapper {
-    overflow-x: scroll; /* Always show horizontal scrollbar */
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling for touch devices */
-    width: 100%; /* Ensure the wrapper takes full width */
-    margin-bottom: 20px; /* Optional: Add some space at the bottom */
+    overflow-x: scroll; 
+    -webkit-overflow-scrolling: touch; 
+    width: 100%; 
+    margin-bottom: 20px;
 }
 
 .schedule-list table {
-    width: 100%; /* Ensure the table stretches to fill the container */
-    min-width: 800px; /* Set a minimum width to ensure horizontal scrolling */
-    border-collapse: collapse; /* Collapsing borders for better layout */
+    width: calc(100% - 2vw);
+    min-width: 800px; 
+    border-collapse: collapse;
     font-family: 'Montserrat', sans-serif;
     background-color: #f9f9f9;
     border-radius: 8px;
     overflow: hidden;
+    margin: 0 auto; 
+    margin-top: 5vh; 
+    margin-bottom: 15vh; 
+    padding: 0; 
 }
+
 
 .schedule-list th, .schedule-list td {
     padding: 12px;
@@ -628,28 +633,196 @@ button:hover {
     text-align: center;
 }
 
-/* For smaller screens like phones */
-@media screen and (max-width: 480px) {
-    .schedule-list th, .schedule-list td {
-        font-size: 16px; /* Keep font size readable */
-        padding: 12px; /* Ensure padding is not too small */
+@media screen and (max-width: 1024px) {
+    .banner-right {
+        margin-top: 4vh; 
     }
 
-    .schedule-list-wrapper {
-        margin-left: 5px; /* Prevent touching edges */
-        margin-right: 5px;
+    .banner-left p{
+        margin-top: 1vh;
+    }
+
+    .container-3 {
+        margin-left: 5vw;
+        margin-right: 5vw;
+    }
+
+    .banner-left {
+        padding: 15px;
+    }
+
+    .banner-left h1 {
+        font-size: 2rem;
+    }
+
+    .schedule-list table {
+        margin-bottom: 25px;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .schedule-list {
+        padding: 12px;
+        overflow-x: auto;
+        display: block;
+        white-space: nowrap;
+        margin: 0 auto 4vh;
+        max-width: 100%;
+    }
+
+    .schedule-list th, .schedule-list td {
+        font-size: 15px;
+        padding: 10px;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .schedule-list::-webkit-scrollbar {
+        height: 6px; 
+    }
+    .schedule-list::-webkit-scrollbar-thumb {
+        background: #bbb;
+        border-radius: 3px;
+    }
+    .schedule-list::-webkit-scrollbar-thumb:hover {
+        background: #777;
     }
 }
 
-/* For tablets or smaller devices */
-@media screen and (max-width: 768px) {
-    .schedule-list th, .schedule-list td {
-        font-size: 16px; /* Ensure readability */
-        padding: 12px; /* Adjust padding for comfort */
+@media screen and (max-width: 932px) {
+    .login-btn {
+        pointer-events: none; 
+        background-color: #D9F17F;
+        color: #2B2B2B;
+        cursor: not-allowed; 
     }
 
-    .schedule-list-wrapper {
-        margin-left: 5px;
-        margin-right: 5px;
+    .banner-right {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat; 
+        display: flex;
+        padding-top: 15vh;
+        margin-left: 0;
+        margin-right: 0;
+        height: 45vh;
+        opacity: 0.2 ; 
+        transition: opacity 0.2s ease;
+    }
+    
+    .container-3{
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+
+    .banner-left {
+        display: flex; 
+        flex-direction: column; 
+        align-items: flex-start;
+        height: 75vh; 
+        padding: 20px; 
+    }
+    
+    .banner-left h1 {
+        font-size: 2.5rem;
+    }
+
+    .banner-left p {
+        font-size: 1rem; 
+        position: absolute;
+        margin-right: 8vh;
+        margin-top: 50vh;
+        padding-top: 8px;
+    }
+
+    footer {
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center; 
+        flex-direction: column; 
+        width: 100%; 
+    }
+    
+    .footer-left, .footer-right, .footer-footer p {
+        display: flex;
+        flex-direction: column; 
+        align-items: center; 
+        text-align: center;
+        width: 100%;
+    }
+    
+    .footer-left h6 {
+        font-size: 18px;
+        margin: 0;
+        padding-top: 15px;
+        padding-bottom: 15px; 
+        width: 125%;
+    }
+
+    .footer-right h6 {
+        font-size: 18px;
+        margin: 0;
+        padding-top: 15px;
+        padding-bottom: 20px; 
+    }
+    
+    .footer-left p, .footer-right p {
+        font-size: 14px;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        width: 130%; 
+        display: block; 
+    }
+
+    .schedule-list {
+        padding: 10px;
+        display: block;
+        max-width: 100%;
+        overflow: hidden;
+        scroll-behavior: smooth;
+        margin: 0 1vw 5vh; 
+    }
+    
+    .schedule-list table {
+        margin: 0 auto; 
+        border-collapse: separate;
+        border-spacing: 0;
+        min-width: 300px; 
+        overflow-x: auto; 
+        display: block; 
+    }
+    
+    .schedule-list th, .schedule-list td {
+        font-size: 16px;
+        padding: 12px;
+        text-align: left;
+        white-space: nowrap;
+    }
+    
+    .schedule-list table::-webkit-scrollbar {
+        height: 8px;
+    }
+    
+    .schedule-list table::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 4px;
+    }
+    
+    .schedule-list table::-webkit-scrollbar-thumb:hover {
+        background: #888;
     }
 }
+
+    @media (max-width: 768px) {
+        .schedule-list {
+            padding: 15px;
+            margin: 0 1vw 3vh;
+        }
+    
+        .schedule-list table {
+            margin-bottom: 20px;
+        }
+    }
+    

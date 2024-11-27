@@ -112,15 +112,15 @@ body {
 }
 
 .status {
-    color: white; /* Default color for dashes */
+    color: white; 
 }
 
 .valid {
-    color: #D9F17F; /* Color for valid status */
+    color: #D9F17F; 
 }
 
 .invalid {
-    color: red; /* Color for invalid status */
+    color: red; 
 }
 
 
