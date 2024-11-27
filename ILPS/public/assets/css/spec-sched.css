@@ -110,21 +110,6 @@ nav a {
     .nav-links a:last-child {
         border-bottom: none; 
     }
-
-    .login-btn {
-        margin-top: 2rem; 
-        color: white; 
-        border: none; 
-        border-radius: 5px; 
-        padding: 10px; 
-        text-align: center; 
-        cursor: pointer; 
-        display: block; 
-        width: 100%; 
-        max-width: 90px; 
-        margin-right: 2rem;
-    }
-    
 }
 
 
@@ -692,11 +677,8 @@ button:hover {
 
 @media screen and (max-width: 932px) {
     .login-btn {
-        pointer-events: none; 
-        background-color: #D9F17F;
-        color: #2B2B2B;
-        cursor: not-allowed; 
-    }
+        display: none;
+      }
 
     .banner-right {
         background-size: cover;

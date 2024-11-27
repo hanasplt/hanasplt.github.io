@@ -109,27 +109,6 @@ header {
         border-bottom: none; 
     }
 
-    .login-btn {
-        margin-top: 2rem; 
-        color: white; 
-        border: none; 
-        border-radius: 5px; 
-        padding: 10px; 
-        text-align: center; 
-        cursor: pointer; 
-        display: block; 
-        width: 100%; 
-        max-width: 90px; 
-        margin-right: 2rem;
-    }
-
-    .login-btn {
-        pointer-events: none; 
-        background-color: #ccc;
-        color: #666;
-        cursor: not-allowed; 
-    }
-
     .rank-list p {
         margin-right: -3vw;
         padding-left: 1vw;
@@ -774,6 +753,10 @@ button:hover {
 
 /*responsive part for small screen*/
 @media screen and (max-width: 425px) {
+    .login-btn {
+        display: none;
+      }
+
     .banner-right{
         background-size: cover;
         background-position: center;
@@ -1023,6 +1006,10 @@ button:hover {
 
 /* Responsive styling for smaller screens */
 @media (max-width: 768px) {
+    .login-btn, .get-started-btn{
+        display: none;
+      }
+    
     .container-3{
         max-height: 100%;
     }
