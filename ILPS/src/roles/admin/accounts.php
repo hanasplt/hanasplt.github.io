@@ -211,11 +211,10 @@ $conn->close();
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </div>
                             <?php } ?>
-                            <div class="popup" id="popupEdit">
-                                <iframe id="editIframe"></iframe>
-                            </div>
-
                         </div>
+                    </div>
+                    <div class="popup" id="popupEdit">
+                        <iframe id="editIframe"></iframe>
                     </div>
                 <?php
                 }
@@ -230,70 +229,70 @@ $conn->close();
             ?>
         </div>
         <script>
-           // Store the original order of accounts and current sort order
-let originalOrder = [];
-let currentSortOrder = "";
+            // Store the original order of accounts and current sort order
+            let originalOrder = [];
+            let currentSortOrder = "";
 
-document.addEventListener('DOMContentLoaded', function() {
-    let accountsContainer = document.querySelector('.accounts');
-    originalOrder = Array.from(accountsContainer.getElementsByClassName('account'));
-    
-    // Initialize sort dropdown listener
-    document.getElementById('abc').addEventListener('change', function() {
-        currentSortOrder = this.value;
-        sortAccounts(currentSortOrder);
-    });
+            document.addEventListener('DOMContentLoaded', function() {
+                let accountsContainer = document.querySelector('.accounts');
+                originalOrder = Array.from(accountsContainer.getElementsByClassName('account'));
 
-    // Initialize search box listener
-    document.getElementById('searchBox').addEventListener('input', function() {
-        let searchTerm = this.value;
-        
-        // Fetch searched accounts and maintain sort order
-        fetch('fetchAccounts.php?search=' + encodeURIComponent(searchTerm))
-            .then(response => response.text())
-            .then(data => {
-                document.querySelector('.accounts').innerHTML = data;
-                // Reapply current sort order after search results are loaded
-                if (currentSortOrder) {
+                // Initialize sort dropdown listener
+                document.getElementById('abc').addEventListener('change', function() {
+                    currentSortOrder = this.value;
                     sortAccounts(currentSortOrder);
+                });
+
+                // Initialize search box listener
+                document.getElementById('searchBox').addEventListener('input', function() {
+                    let searchTerm = this.value;
+
+                    // Fetch searched accounts and maintain sort order
+                    fetch('fetchAccounts.php?search=' + encodeURIComponent(searchTerm))
+                        .then(response => response.text())
+                        .then(data => {
+                            document.querySelector('.accounts').innerHTML = data;
+                            // Reapply current sort order after search results are loaded
+                            if (currentSortOrder) {
+                                sortAccounts(currentSortOrder);
+                            }
+                        })
+                        .catch(error => console.error('Error fetching accounts:', error));
+                });
+            });
+
+            function sortAccounts(order) {
+                let accountsContainer = document.querySelector('.accounts');
+                let accounts = Array.from(accountsContainer.getElementsByClassName('account'));
+
+                // If default is selected and no search term, restore original order
+                if (order === "" && document.getElementById('searchBox').value === "") {
+                    accountsContainer.innerHTML = '';
+                    originalOrder.forEach(function(account) {
+                        accountsContainer.appendChild(account.cloneNode(true));
+                    });
+                    return;
                 }
-            })
-            .catch(error => console.error('Error fetching accounts:', error));
-    });
-});
 
-function sortAccounts(order) {
-    let accountsContainer = document.querySelector('.accounts');
-    let accounts = Array.from(accountsContainer.getElementsByClassName('account'));
+                // Sort the accounts array based on the selected order
+                accounts.sort(function(a, b) {
+                    let nameA = a.querySelector('.acc-deets #name').textContent.trim().toLowerCase();
+                    let nameB = b.querySelector('.acc-deets #name').textContent.trim().toLowerCase();
 
-    // If default is selected and no search term, restore original order
-    if (order === "" && document.getElementById('searchBox').value === "") {
-        accountsContainer.innerHTML = '';
-        originalOrder.forEach(function(account) {
-            accountsContainer.appendChild(account.cloneNode(true));
-        });
-        return;
-    }
+                    if (order === 'a-z') {
+                        return nameA.localeCompare(nameB);
+                    } else if (order === 'z-a') {
+                        return nameB.localeCompare(nameA);
+                    }
+                    return 0;
+                });
 
-    // Sort the accounts array based on the selected order
-    accounts.sort(function(a, b) {
-        let nameA = a.querySelector('.acc-deets #name').textContent.trim().toLowerCase();
-        let nameB = b.querySelector('.acc-deets #name').textContent.trim().toLowerCase();
-
-        if (order === 'a-z') {
-            return nameA.localeCompare(nameB);
-        } else if (order === 'z-a') {
-            return nameB.localeCompare(nameA);
-        }
-        return 0;
-    });
-
-    // Clear the accounts container and append sorted accounts
-    accountsContainer.innerHTML = '';
-    accounts.forEach(function(account) {
-        accountsContainer.appendChild(account.cloneNode(true));
-    });
-}
+                // Clear the accounts container and append sorted accounts
+                accountsContainer.innerHTML = '';
+                accounts.forEach(function(account) {
+                    accountsContainer.appendChild(account.cloneNode(true));
+                });
+            }
         </script>
 
 
