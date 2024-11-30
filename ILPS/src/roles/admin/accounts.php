@@ -267,9 +267,8 @@ $conn->close();
 
                 // If default is selected and no search term, restore original order
                 if (order === "" && document.getElementById('searchBox').value === "") {
-                    accountsContainer.innerHTML = '';
                     originalOrder.forEach(function(account) {
-                        accountsContainer.appendChild(account.cloneNode(true));
+                        accountsContainer.appendChild(account);
                     });
                     return;
                 }
@@ -288,9 +287,8 @@ $conn->close();
                 });
 
                 // Clear the accounts container and append sorted accounts
-                accountsContainer.innerHTML = '';
                 accounts.forEach(function(account) {
-                    accountsContainer.appendChild(account.cloneNode(true));
+                    accountsContainer.appendChild(account);
                 });
             }
         </script>

@@ -108,11 +108,11 @@ try {
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </div>
                         <?php } ?>
-                        <div class="popup" id="popupEdit">
-                            <iframe id="editIframe"></iframe>
-                        </div>
                     </div>
                 </div>
+                <div class="popup" id="popupEdit">
+                            <iframe id="editIframe"></iframe>
+                        </div>
             <?php
             }
         } else {
