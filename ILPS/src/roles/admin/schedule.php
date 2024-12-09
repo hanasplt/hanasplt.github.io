@@ -142,6 +142,7 @@ usort($scheduled_days, function ($a, $b) {
                     <p onclick="window.location.href = 'reports.php';" class="dc-text" title="Reports">Reports</p>
                     <p onclick="window.location.href = 'accesslog.php';" class="dc-text" title="Logs">Logs</p>
                     <p onclick="showConfirmationMsg()" class="dc-text" title="Backup">Backup and Reset</p>
+                    <p onclick="window.location.href = 'restore_db.php';" class="dc-text" title="Backup & Restore">Backup & Restore</p>
                     <div class="menu-icon">
                         <p id="logout" title="Logout">Logout</p>
                     </div>
@@ -333,7 +334,7 @@ usort($scheduled_days, function ($a, $b) {
             document.getElementById('openPopup').addEventListener('click', function() {
                 Swal.fire({
                     title: 'Add New Day',
-                    html: ` 
+                    html: `
                     <input id="new-day-date" class="swal2-input1" placeholder="Date" type="date">
                 `,
                     confirmButtonText: 'Add',
@@ -1360,7 +1361,7 @@ usort($scheduled_days, function ($a, $b) {
 
                     Swal.fire({
                         title: 'Edit Date',
-                        html: ` 
+                        html: `
                         <input id="new-day-date" class="swal2-input1" type="date" value="${dateDay}">
                     `,
                         confirmButtonText: 'Save',
