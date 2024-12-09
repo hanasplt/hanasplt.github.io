@@ -1120,42 +1120,51 @@ usort($scheduled_days, function ($a, $b) {
                                                             teamAField.value = fetchedEvent.teamA;
                                                         }
 
-                                                        function filterTeamB() {
-                        const selectedTeamA = teamAField.value;
-                        
-                        // Clear and reset Team B options
-                        teamBField.innerHTML = '<option value="" disabled selected>Team B</option>';
+                                                        
 
-                        // Populate Team B with filtered options
-                        teamResponse.teams.forEach(team => {
-                            if (team.teamId !== selectedTeamA) {
-                                const option = document.createElement('option');
-                                option.value = team.teamId;
-                                option.textContent = team.teamName;
-                                teamBField.appendChild(option);
-                            }
-                        });
+                                                        // Event listener for Team A change to filter Team B
+                                                        teamAField.addEventListener('change', function () {
+                                                            const selectedTeamA = this.value;
 
-                        // Restore previous Team B selection if available and valid
-                        if (fetchedEvent.teamB && 
-                            teamBField.querySelector(`option[value="${fetchedEvent.teamB}"]`) && 
-                            fetchedEvent.teamB !== selectedTeamA) {
-                            teamBField.value = fetchedEvent.teamB;
-                        }
-                    }
+                                                            // Clear and reset Team B options
+                                                            teamBField.innerHTML = '<option value="" disabled selected>Select Team B</option>';
 
-                    // Add event listener for Team A change
-                    teamAField.addEventListener('change', filterTeamB);
+                                                            // Populate Team B with filtered options
+                                                            teamResponse.teams.forEach(team => {
+                                                                if (team.teamId !== selectedTeamA) {
+                                                                    const option = document.createElement('option');
+                                                                    option.value = team.teamId;
+                                                                    option.textContent = team.teamName;
+                                                                    teamBField.appendChild(option);
+                                                                }
+                                                            });
 
-                    // Initial filtering if Team A is already selected
-                    if (teamAField.value) {
-                        filterTeamB();
-                    }
-                }
-            } catch (error) {
-                console.error("Error processing teams:", error);
-            }
-        
+                                                            // Restore previous Team B selection if available
+                                                            if (fetchedEvent.teamB && teamBField.querySelector(`option[value="${fetchedEvent.teamB}"]`)) {
+                                                                teamBField.value = fetchedEvent.teamB;
+                                                            }
+                                                        });
+
+                                                        // Trigger initial filter if Team A is already selected
+                                                        if (teamAField.value) {
+                                                            teamAField.dispatchEvent(new Event('change'));
+                                                        }
+                                                    } else {
+                                                        console.error('Failed to fetch teams:', teamResponse.message);
+                                                        Swal.fire({
+                                                            icon: 'error',
+                                                            title: 'Team Fetch Error',
+                                                            text: teamResponse.message || 'Unable to retrieve teams for this activity.'
+                                                        });
+                                                    }
+                                                } catch (e) {
+                                                    console.error("Invalid JSON response:", e);
+                                                    Swal.fire({
+                                                        icon: 'error',
+                                                        title: 'Unexpected Response',
+                                                        text: 'The server returned an unexpected response.'
+                                                    });
+                                                }
                                             } else {
                                                 Swal.fire({
                                                     icon: 'error',
