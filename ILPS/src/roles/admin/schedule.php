@@ -938,6 +938,7 @@ usort($scheduled_days, function ($a, $b) {
                                             `;
                                         }
 
+                                        
                                         // If event type is "Others," no need to fetch teams
                                         if (fetchedEvent.type === 'Others') {
                                             showEditEventModal(fetchedEvent, categoryOptions, []); // No teams needed
@@ -951,6 +952,7 @@ usort($scheduled_days, function ($a, $b) {
                                             if (xhrTeams.status === 200) {
                                                 const teamResponse = JSON.parse(xhrTeams.responseText);
                                                 const teams = teamResponse.success ? teamResponse.teams : [];
+                                                console.log("Teams fetched:", teams);
                                                 showEditEventModal(fetchedEvent, categoryOptions, teams);
                                             }
                                         };
@@ -969,17 +971,32 @@ usort($scheduled_days, function ($a, $b) {
 
             // modal connected to edit
             function showEditEventModal(fetchedEvent, categoryOptions, teams, ) {
+                console.log("Fetched Event:", fetchedEvent);
+                console.log("Fetched Event Team A:", fetchedEvent.teamA);
+                console.log("Fetched Event Team B:", fetchedEvent.teamB);
+
                 let teamOptionsA = '<option value="" disabled selected>Team A</option>';
                 let teamOptionsB = '<option value="" disabled selected>Team B</option>';
 
+                console.log("Teams Array:", teams);
+
+
                 teams.forEach(team => {
-                    teamOptionsA += `<option value="${team.teamId}" ${team.teamId === fetchedEvent.teamA ? 'selected' : ''}>${team.teamName}</option>`;
+                    teamOptionsA += `
+                        <option value="${team.teamId}" 
+                                ${team.teamId === (fetchedEvent.teamA || '') ? 'selected' : ''}>
+                            ${team.teamName}
+                        </option>`;
                 });
 
                 // Filter Team B options based on Team A
                 teams.forEach(team => {
-                    if (team.teamId !== fetchedEvent.teamA) {
-                        teamOptionsB += `<option value="${team.teamId}" ${team.teamId === fetchedEvent.teamB ? 'selected' : ''}>${team.teamName}</option>`;
+                    if (!fetchedEvent.teamA || team.teamId !== fetchedEvent.teamA) {
+                        teamOptionsB += `
+                            <option value="${team.teamId}" 
+                                    ${team.teamId === (fetchedEvent.teamB || '') ? 'selected' : ''}>
+                                ${team.teamName}
+                            </option>`;
                     }
                 });
 
@@ -1065,104 +1082,160 @@ usort($scheduled_days, function ($a, $b) {
                                                     <option value="Moved" ${fetchedEvent.status === 'Moved' ? 'selected' : ''}>Moved</option>
                                                 </select>
                                             `,
-                    didOpen: () => {
-                        const categorySelect = document.getElementById('edit-event-category');
-                        const eventSportsSelect = document.getElementById('edit-event-sports');
-                        const eventSocioSelect = document.getElementById('edit-event-socio');
-                        const activityOthersInput = document.getElementById('edit-event-activity-others');
-                        const gameNoInput = document.getElementById('edit-game-no');
+                                    didOpen: () => {
+                                        const categorySelect = document.getElementById('edit-event-category');
+                                        const eventSportsSelect = document.getElementById('edit-event-sports');
+                                        const eventSocioSelect = document.getElementById('edit-event-socio');
+                                        const activityOthersInput = document.getElementById('edit-event-activity-others');
+                                        const gameNoInput = document.getElementById('edit-game-no');
+                                        const teamAField = document.getElementById('edit-team-a');
+                                        const teamBField = document.getElementById('edit-team-b');
 
-                        function toggleGameFields(category) {
-                            const teamAField = document.getElementById('edit-team-a');
-                            const teamBField = document.getElementById('edit-team-b');
+                                        function populateTeams(activityId) {
+                                            // Fetch teams specific to the selected activity
+                                            const xhrTeams = new XMLHttpRequest();
+                                            xhrTeams.open("POST", "get_teamsForActivity.php", true);
+                                            xhrTeams.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                                            xhrTeams.onload = function() {
+                                                console.log("Server Response:", xhrTeams.responseText);
+                                                if (xhrTeams.status === 200) {
+                                                    try {
+                                                    const teamResponse = JSON.parse(xhrTeams.responseText);
+                                                    
+                                                    if (teamResponse.success) {
+                                                        // Clear existing options
+                                                        teamAField.innerHTML = '<option value="" disabled selected>Team A</option>';
+                                                        teamBField.innerHTML = '<option value="" disabled selected>Team B</option>';
 
-                            // filter team B based on the selected team A
-                            function filterTeamBOptions(selectedTeamA) {
-                                // re-populate team B options based on team A
-                                teamBField.innerHTML = '<option value="" disabled>Team B</option>';
-                                teams.forEach(team => {
-                                    if (team.teamId !== selectedTeamA) {
+                                                        // Populate Team A options
+                                                        teamResponse.teams.forEach(team => {
+                                                            const option = document.createElement('option');
+                                                            option.value = team.teamId;
+                                                            option.textContent = team.teamName;
+                                                            teamAField.appendChild(option);
+                                                        });
+
+                                                        // Restore previous selections if available
+                                                        if (fetchedEvent.teamA) {
+                                                            teamAField.value = fetchedEvent.teamA;
+                                                        }
+
+                                                        function filterTeamB() {
+                        const selectedTeamA = teamAField.value;
+                        
+                        // Clear and reset Team B options
+                        teamBField.innerHTML = '<option value="" disabled selected>Team B</option>';
+
+                        // Populate Team B with filtered options
+                        teamResponse.teams.forEach(team => {
+                            if (team.teamId !== selectedTeamA) {
+                                const option = document.createElement('option');
+                                option.value = team.teamId;
+                                option.textContent = team.teamName;
+                                teamBField.appendChild(option);
+                            }
+                        });
+
+                        // Restore previous Team B selection if available and valid
+                        if (fetchedEvent.teamB && 
+                            teamBField.querySelector(`option[value="${fetchedEvent.teamB}"]`) && 
+                            fetchedEvent.teamB !== selectedTeamA) {
+                            teamBField.value = fetchedEvent.teamB;
+                        }
+                    }
+
+                    // Add event listener for Team A change
+                    teamAField.addEventListener('change', filterTeamB);
+
+                    // Initial filtering if Team A is already selected
+                    if (teamAField.value) {
+                        filterTeamB();
+                    }
+                }
+            } catch (error) {
+                console.error("Error processing teams:", error);
+            }
+        
+                                            } else {
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'Server Error',
+                                                    text: 'Failed to fetch teams. Please try again later.'
+                                                });
+                                            }
+    };
+                                            // Send the activity ID to fetch specific teams
+                                            xhrTeams.send("activityId=" + encodeURIComponent(activityId));
+                                        }
+                                        function toggleGameFields(category) {
+                                            gameNoInput.style.display = 'none';
+                                            teamAField.style.display = 'none';
+                                            teamBField.style.display = 'none';
+                                            activityOthersInput.style.display = 'none';
+                                            eventSportsSelect.style.display = 'none';
+                                            eventSocioSelect.style.display = 'none';
+
+                                            if (category === 'sports') {
+                                                activityOthersInput.style.display = 'none';
+                                                gameNoInput.style.display = 'block';
+                                                teamAField.style.display = 'block';
+                                                teamBField.style.display = 'block';
+                                                eventSportsSelect.style.display = 'block';
+
+                                                //if changed type
+                                                activityOthersInput.value = '';
+                                                const socioDropdown = document.getElementById('edit-event-socio');
+                                                socioDropdown.selectedIndex = -1;
+                                            } else if (category === 'socio-cultural') {
+                                                activityOthersInput.style.display = 'none';
+                                                eventSocioSelect.style.display = 'block';
+
+                                                //if changed type
+                                                activityOthersInput.value = '';
+                                                const sportsDropdown = document.getElementById('edit-event-sports');
+                                                sportsDropdown.selectedIndex = -1;
+                                            } else if (category === 'others') {
+                                                activityOthersInput.style.display = 'block';
+
+                                                //if changed type
+                                                const socioDropdown = document.getElementById('edit-event-socio');
+                                                socioDropdown.selectedIndex = -1;
+                                                const sportsDropdown = document.getElementById('edit-event-sports');
+                                                sportsDropdown.selectedIndex = -1;
+                                            }
+                                        }
+
+                            toggleGameFields(fetchedEvent.type.toLowerCase());
+
+                            categorySelect.addEventListener('change', function() {
+                                toggleGameFields(this.value.toLowerCase());
+                            });
+
+                            document.getElementById('edit-event-sports').addEventListener('change', function() {
+                                const selectedSports = this.value;
+                                populateTeams(selectedSports);
+                            });
+
+                            document.getElementById('edit-team-a').addEventListener('change', function() {
+                                const selectedTeamA = this.value;
+                                const teamB = document.getElementById('edit-team-b');
+
+                                teamB.style.display = 'block';
+
+                                teamB.innerHTML = '<option value="" disabled selected>Team B</option>';
+
+                                const teamAOptions = document.querySelectorAll('#edit-team-a option');
+
+                                teamAOptions.forEach(option => {
+                                    if (option.value && option.value !== selectedTeamA) {
                                         const newOption = document.createElement('option');
-                                        newOption.value = team.teamId;
-                                        newOption.textContent = team.teamName;
-                                        teamBField.appendChild(newOption);
+                                        newOption.value = option.value;
+                                        newOption.textContent = option.textContent;
+                                        teamB.appendChild(newOption);
                                     }
                                 });
-
-                                if (fetchedEvent.teamB) {
-                                    teamBField.value = fetchedEvent.teamB;
-                                }
-                            }
-
-                            filterTeamBOptions(fetchedEvent.teamA);
-
-                            teamAField.addEventListener('change', () => {
-                                filterTeamBOptions(teamAField.value);
                             });
-
-                            gameNoInput.style.display = 'none';
-                            teamAField.style.display = 'none';
-                            teamBField.style.display = 'none';
-                            activityOthersInput.style.display = 'none';
-                            eventSportsSelect.style.display = 'none';
-                            eventSocioSelect.style.display = 'none';
-
-                            if (category === 'sports') {
-                                activityOthersInput.style.display = 'none';
-                                gameNoInput.style.display = 'block';
-                                teamAField.style.display = 'block';
-                                teamBField.style.display = 'block';
-                                eventSportsSelect.style.display = 'block';
-
-                                //if changed type
-                                activityOthersInput.value = '';
-                                const socioDropdown = document.getElementById('edit-event-socio');
-                                socioDropdown.selectedIndex = -1;
-                            } else if (category === 'socio-cultural') {
-                                activityOthersInput.style.display = 'none';
-                                eventSocioSelect.style.display = 'block';
-
-                                //if changed type
-                                activityOthersInput.value = '';
-                                const sportsDropdown = document.getElementById('edit-event-sports');
-                                sportsDropdown.selectedIndex = -1;
-                            } else if (category === 'others') {
-                                activityOthersInput.style.display = 'block';
-
-                                //if changed type
-                                const socioDropdown = document.getElementById('edit-event-socio');
-                                socioDropdown.selectedIndex = -1;
-                                const sportsDropdown = document.getElementById('edit-event-sports');
-                                sportsDropdown.selectedIndex = -1;
-                            }
-                        }
-
-                        toggleGameFields(fetchedEvent.type.toLowerCase());
-
-                        categorySelect.addEventListener('change', function() {
-                            toggleGameFields(this.value.toLowerCase());
-                        });
-
-                        document.getElementById('edit-team-a').addEventListener('change', function() {
-                            const selectedTeamA = this.value;
-                            const teamB = document.getElementById('edit-team-b');
-
-                            teamB.style.display = 'block';
-
-                            teamB.innerHTML = '<option value="" disabled selected>Team B</option>';
-
-                            const teamAOptions = document.querySelectorAll('#edit-team-a option');
-
-                            teamAOptions.forEach(option => {
-                                if (option.value && option.value !== selectedTeamA) {
-                                    const newOption = document.createElement('option');
-                                    newOption.value = option.value;
-                                    newOption.textContent = option.textContent;
-                                    teamB.appendChild(newOption);
-                                }
-                            });
-                        });
-                    },
+                        },
                     confirmButtonText: 'Save',
                     showCancelButton: true,
                     preConfirm: () => {
